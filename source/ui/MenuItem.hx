@@ -8,6 +8,7 @@ class MenuItem extends FlxSprite
 	public var name:String;
 	public var callback:Dynamic;
 	public var selected(get, never):Bool;
+	public var mouseHitbox:Hitbox;
 
 	function get_selected()
 		return alpha == 1;
@@ -51,4 +52,12 @@ class MenuItem extends FlxSprite
 	{
 		alpha = 1;
 	}
+}
+
+typedef Hitbox =
+{
+	var x:Float;
+	var y:Float;
+	var width:Float;
+	var height:Float;
 }

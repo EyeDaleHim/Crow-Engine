@@ -63,10 +63,6 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-		#if polymod
-		polymod.Polymod.init({modRoot: "mods", dirs: ['introMod'], framework: OPENFL});
-		#end
-
 		FlxG.game.focusLostFramerate = 60;
 
 		swagShader = new ColorSwap();
@@ -120,6 +116,8 @@ class TitleState extends MusicBeatState
 		Application.current.onExit.add(function(exitCode)
 		{
 			DiscordClient.shutdown();
+
+			
 		});
 		#end
 	}
@@ -257,8 +255,6 @@ class TitleState extends MusicBeatState
 		ngSpr.antialiasing = true;
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
-
-		FlxG.mouse.visible = false;
 
 		if (initialized)
 			skipIntro();

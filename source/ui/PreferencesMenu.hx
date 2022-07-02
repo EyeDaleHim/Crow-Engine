@@ -26,7 +26,8 @@ class PreferencesMenu extends Page
 		add(items = new TextMenuList());
 		createPrefItem('naughtyness', 'censor-naughty', true);
 		createPrefItem('downscroll', 'downscroll', false);
-		createPrefItem('flashing menu', 'flashing-menu', true);
+		createPrefItem('ghost tap', 'ghost-tap', false);
+		createPrefItem('flashing lights', 'flashing-lights', true);
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
 		createPrefItem('FPS Counter', 'fps-counter', true);
 		createPrefItem('Auto Pause', 'auto-pause', false);
@@ -53,7 +54,8 @@ class PreferencesMenu extends Page
 	{
 		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
-		preferenceCheck('flashing-menu', true);
+		preferenceCheck('ghost-tap', false);
+		preferenceCheck('flashing-lights', true);
 		preferenceCheck('camera-zoom', true);
 		preferenceCheck('fps-counter', true);
 		preferenceCheck('auto-pause', false);
@@ -63,6 +65,7 @@ class PreferencesMenu extends Page
 			Lib.current.stage.removeChild(Main.fpsCounter);
 		}
 		FlxG.autoPause = getPref('auto-pause');
+		Settings.init();
 	}
 
 	public static function preferenceCheck(identifier:String, defaultValue:Dynamic)
@@ -70,6 +73,7 @@ class PreferencesMenu extends Page
 		if (preferences.get(identifier) == null)
 		{
 			preferences.set(identifier, defaultValue);
+			
 			trace('set preference!');
 		}
 		else
