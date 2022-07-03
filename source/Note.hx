@@ -59,24 +59,24 @@ class Note extends FlxSprite
 			case 'school' | 'schoolEvil':
 				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
 
-				animation.add('greenScroll', [6]);
-				animation.add('redScroll', [7]);
-				animation.add('blueScroll', [5]);
-				animation.add('purpleScroll', [4]);
+				animation.add('greenScroll', [GREEN_NOTE + 4]);
+				animation.add('redScroll', [RED_NOTE + 4]);
+				animation.add('blueScroll', [BLUE_NOTE + 4]);
+				animation.add('purpleScroll', [PURP_NOTE + 4]);
 
 				if (isSustainNote)
 				{
 					loadGraphic(Paths.image('weeb/pixelUI/arrowEnds'), true, 7, 6);
 
-					animation.add('purpleholdend', [4]);
-					animation.add('greenholdend', [6]);
-					animation.add('redholdend', [7]);
-					animation.add('blueholdend', [5]);
+					animation.add('purpleholdend', [PURP_NOTE + 4]);
+					animation.add('greenholdend', [GREEN_NOTE + 4]);
+					animation.add('redholdend', [RED_NOTE + 4]);
+					animation.add('blueholdend', [BLUE_NOTE + 4]);
 
-					animation.add('purplehold', [0]);
-					animation.add('greenhold', [2]);
-					animation.add('redhold', [3]);
-					animation.add('bluehold', [1]);
+					animation.add('purplehold', [PURP_NOTE]);
+					animation.add('greenhold', [GREEN_NOTE]);
+					animation.add('redhold', [RED_NOTE]);
+					animation.add('bluehold', [BLUE_NOTE]);
 				}
 
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
@@ -171,7 +171,8 @@ class Note extends FlxSprite
 						prevNote.animation.play('redhold');
 				}
 
-				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
+				prevNote.scale.y *= (Conductor.stepCrochet / 100) * 1.5;
+				prevNote.scale.y *= FlxMath.roundDecimal(PlayState.SONG.speed, 2);
 				prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}

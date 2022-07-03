@@ -136,10 +136,15 @@ class PlayState extends MusicBeatState
 	var bfTankCutsceneLayer:FlxTypedGroup<FlxAnimate>;
 
 	var talking:Bool = true;
-	var songScore:Int = 0;
 	var scoreTxt:FlxText;
+	var scoreBG:FlxSprite;
 
-	public static var campaignScore:Int = 0;
+	private var songScore:Float = 0;
+	private var songMisses:Int = 0;
+	private var songAccuracy:Float = 0.0;
+	private var totalHits:Int = 0;
+
+	public static var campaignScore:Float = 0;
 
 	var defaultCamZoom:Float = 1.05;
 
@@ -883,11 +888,6 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 
-		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
-		scoreTxt.scrollFactor.set();
-		add(scoreTxt);
-
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
@@ -895,6 +895,17 @@ class PlayState extends MusicBeatState
 		iconP2 = new HealthIcon(SONG.player2, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
+
+		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		scoreTxt.scrollFactor.set();
+
+		scoreBG = new FlxSprite(scoreTxt.x - 4, scoreTxt.y - 4).makeGraphic(Math.floor(scoreTxt.width + 8), Math.floor(scoreTxt.height + 8), 0xFF000000);
+		scoreBG.alpha = 0.4;
+		scoreBG.scrollFactor.set();
+		add(scoreBG);
+
+		add(scoreTxt);
 
 		grpNoteSplashes.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
@@ -904,6 +915,7 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+		scoreBG.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
@@ -1362,7 +1374,6 @@ class PlayState extends MusicBeatState
 				if (swagNote.mustPress)
 				{
 					swagNote.x += (FlxG.width / 2) + 50; // general offset
-
 				}
 			}
 			daBeats += 1;
@@ -1676,7 +1687,18 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		scoreTxt.text = "Score:" + songScore;
+		scoreTxt.x = (healthBarBG.x + healthBarBG.width / 2) - (scoreTxt.width / 2);
+
+		var accuracyAdds:Float = songAccuracy / (totalHits + songMisses);
+		if (Math.isNaN(accuracyAdds))
+			accuracyAdds = 0;
+		else
+			accuracyAdds = FlxMath.roundDecimal(accuracyAdds * 100, 2);
+		scoreTxt.text = "[Score] " + songScore + " [Misses] " + songMisses + ' [Accuracy] ${CoolUtil.formatAccuracy(accuracyAdds)}%';
+
+		scoreBG.setPosition(scoreTxt.x - 4, scoreTxt.y - 4);
+		scoreBG.setGraphicSize(Math.floor(scoreTxt.width + 8), Math.floor(scoreTxt.height + 8));
+		scoreBG.updateHitbox();
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
@@ -1715,8 +1737,8 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.85)));
-		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.85)));
+		iconP1.setGraphicSize(Std.int(CoolUtil.coolLerp(150, iconP1.width, 0.85)));
+		iconP2.setGraphicSize(Std.int(CoolUtil.coolLerp(150, iconP2.width, 0.85)));
 
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
@@ -1856,6 +1878,8 @@ class PlayState extends MusicBeatState
 
 		if (generatedMusic)
 		{
+			var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
+			var songSpeed:Float = FlxMath.roundDecimal(SONG.speed, 2);
 			notes.forEachAlive(function(daNote:Note)
 			{
 				if (daNote.y > FlxG.height)
@@ -1871,20 +1895,34 @@ class PlayState extends MusicBeatState
 
 				var center = strumLine.y + (Note.swagWidth / 2);
 
-				// i am so fucking sorry for these if conditions
 				if (PreferencesMenu.getPref('downscroll'))
 				{
-					daNote.y = strumLine.y + 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(SONG.speed, 2);
-
+					daNote.y = strumLine.y + 0.45 * (Conductor.songPosition - daNote.strumTime) * songSpeed;
+					// use psych values while i come up with an alternative formula
 					if (daNote.isSustainNote)
 					{
-						if (daNote.animation.curAnim.name.endsWith('end') && daNote.prevNote != null)
-							daNote.y += daNote.prevNote.height;
-						else
-							daNote.y += daNote.height / 2;
+						if (daNote.animation.curAnim.name.endsWith('end'))
+						{
+							daNote.y += 10.5 * (fakeCrochet / 400) * 1.5 * songSpeed + (46 * (songSpeed - 1));
+							daNote.y -= 46 * (1 - (fakeCrochet / 600)) * songSpeed;
+						}
+						daNote.y += (Note.swagWidth / 2) - (60.5 * (songSpeed - 1));
+						daNote.y += 27.5 * ((SONG.bpm / 100) - 1) * (songSpeed - 1);
+					}
+					daNote.y += 10 + (2 * fakeCrochet / 100);
+				}
+				else
+				{
+					daNote.y = strumLine.y - 0.45 * (Conductor.songPosition - daNote.strumTime) * songSpeed;
+					if (daNote.isSustainNote)
+						daNote.y -= 10 + (2 * fakeCrochet / 100);
+				}
 
-						if (daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= center
-							&& (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
+				if (daNote.isSustainNote && (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
+				{
+					if (PreferencesMenu.getPref('downscroll'))
+					{
+						if (daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= center)
 						{
 							var swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
 							swagRect.height = (center - daNote.y) / daNote.scale.y;
@@ -1893,20 +1931,16 @@ class PlayState extends MusicBeatState
 							daNote.clipRect = swagRect;
 						}
 					}
-				}
-				else
-				{
-					daNote.y = strumLine.y - 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(SONG.speed, 2);
-
-					if (daNote.isSustainNote
-						&& daNote.y + daNote.offset.y * daNote.scale.y <= center
-						&& (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
+					else
 					{
-						var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
-						swagRect.y = (center - daNote.y) / daNote.scale.y;
-						swagRect.height -= swagRect.y;
+						if (daNote.y + daNote.offset.y * daNote.scale.y <= center)
+						{
+							var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
+							swagRect.y = (center - daNote.y) / daNote.scale.y;
+							swagRect.height -= swagRect.y;
 
-						daNote.clipRect = swagRect;
+							daNote.clipRect = swagRect;
+						}
 					}
 				}
 
@@ -1953,14 +1987,12 @@ class PlayState extends MusicBeatState
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
-				var doKill = daNote.y < -daNote.height;
-				if (PreferencesMenu.getPref('downscroll'))
-					doKill = daNote.y > FlxG.height;
-
+				var doKill = !PreferencesMenu.getPref('downscroll') ? daNote.y < -daNote.height - 50 : daNote.y > FlxG.height + 50;
 				if (doKill)
 				{
 					if (daNote.tooLate || !daNote.wasGoodHit)
 					{
+						songMisses++;
 						health -= 0.0475;
 						vocals.volume = 0;
 					}
@@ -2107,6 +2139,7 @@ class PlayState extends MusicBeatState
 		var rating:FlxSprite = new FlxSprite();
 		var score:Int = 350;
 
+		var addedAccuracy:Float = 1;
 		var daRating:String = "sick";
 		var doSplash:Bool = true;
 
@@ -2114,18 +2147,21 @@ class PlayState extends MusicBeatState
 		{
 			daRating = 'shit';
 			score = 50;
+			addedAccuracy = 0.25;
 			doSplash = false;
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.75)
 		{
 			daRating = 'bad';
 			score = 100;
+			addedAccuracy = 0.50;
 			doSplash = false;
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.2)
 		{
 			daRating = 'good';
 			score = 200;
+			addedAccuracy = 0.75;
 			doSplash = false;
 		}
 
@@ -2135,6 +2171,9 @@ class PlayState extends MusicBeatState
 			splash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
 			grpNoteSplashes.add(splash);
 		}
+
+		songAccuracy += addedAccuracy;
+		totalHits += 1;
 
 		if (!practiceMode)
 			songScore += score;
@@ -2500,7 +2539,7 @@ class PlayState extends MusicBeatState
 				{
 					if (controlArray[i] && !ignoreList.contains(i))
 					{
-						badNoteHit();
+						noteMiss(i);
 					}
 				}
 				for (possibleNote in possibleNotes)
@@ -2511,8 +2550,6 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
-			else
-				badNoteHit();
 		}
 		if (boyfriend.holdTimer > 0.004 * Conductor.stepCrochet
 			&& !holdingArray.contains(true)
@@ -2553,6 +2590,8 @@ class PlayState extends MusicBeatState
 			if (!practiceMode)
 				songScore -= 10;
 
+			songMisses++;
+
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
@@ -2577,25 +2616,6 @@ class PlayState extends MusicBeatState
 					boyfriend.playAnim('singRIGHTmiss', true);
 			}
 		}
-	}
-
-	function badNoteHit()
-	{
-		// just double pasting this shit cuz fuk u
-		// REDO THIS SYSTEM!
-		var leftP = controls.NOTE_LEFT_P;
-		var downP = controls.NOTE_DOWN_P;
-		var upP = controls.NOTE_UP_P;
-		var rightP = controls.NOTE_RIGHT_P;
-
-		if (leftP)
-			noteMiss(0);
-		if (downP)
-			noteMiss(1);
-		if (upP)
-			noteMiss(2);
-		if (rightP)
-			noteMiss(3);
 	}
 
 	function goodNoteHit(note:Note):Void

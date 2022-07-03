@@ -119,6 +119,7 @@ class ControlsMenu extends Page
 			});
 			labels.members[Std.int(controlGrid.selectedIndex / 2)].alpha = 1;
 		});
+		menuCamera.maxScrollY = controlGrid.members[controlGrid.length - 1].y + controlGrid.members[controlGrid.length - 1].height + 24;
 		prompt = new Prompt('\nPress any key to rebind\n\n\n\n    Escape to cancel', None);
 		prompt.create();
 		prompt.createBgFromMargin(100, 0x00000000);

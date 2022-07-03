@@ -5,13 +5,13 @@ import flixel.FlxG;
 class Highscore
 {
 	#if (haxe >= "4.0.0")
-	public static var songScores:Map<String, Int> = new Map();
+	public static var songScores:Map<String, Float> = new Map();
 	#else
-	public static var songScores:Map<String, Int> = new Map<String, Int>();
+	public static var songScores:Map<String, Float> = new Map<String, Float>();
 	#end
 
 
-	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0):Void
+	public static function saveScore(song:String, score:Float = 0, ?diff:Int = 0):Void
 	{
 		var daSong:String = formatSong(song, diff);
 
@@ -24,7 +24,7 @@ class Highscore
 			setScore(daSong, score);
 	}
 
-	public static function saveWeekScore(week:Int = 1, score:Int = 0, ?diff:Int = 0):Void
+	public static function saveWeekScore(week:Int = 1, score:Float = 0, ?diff:Int = 0):Void
 	{
 		var daWeek:String = formatSong('week' + week, diff);
 
@@ -40,7 +40,7 @@ class Highscore
 	/**
 	 * YOU SHOULD FORMAT SONG WITH formatSong() BEFORE TOSSING IN SONG VARIABLE
 	 */
-	static function setScore(song:String, score:Int):Void
+	static function setScore(song:String, score:Float):Void
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
 		songScores.set(song, score);
@@ -60,7 +60,7 @@ class Highscore
 		return daSong;
 	}
 
-	public static function getScore(song:String, diff:Int):Int
+	public static function getScore(song:String, diff:Int):Float
 	{
 		if (!songScores.exists(formatSong(song, diff)))
 			setScore(formatSong(song, diff), 0);
@@ -68,7 +68,7 @@ class Highscore
 		return songScores.get(formatSong(song, diff));
 	}
 
-	public static function getWeekScore(week:Int, diff:Int):Int
+	public static function getWeekScore(week:Int, diff:Int):Float
 	{
 		if (!songScores.exists(formatSong('week' + week, diff)))
 			setScore(formatSong('week' + week, diff), 0);

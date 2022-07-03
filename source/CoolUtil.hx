@@ -1,7 +1,6 @@
 package;
 
 import flixel.FlxG;
-import flixel.math.FlxMath;
 import lime.utils.Assets;
 
 using StringTools;
@@ -27,6 +26,45 @@ class CoolUtil
 		return daList;
 	}
 
+	public static function formatAccuracy(value:Float)
+	{
+		var conversion:Map<String, String> = [
+			'0' => '0.00',
+			'0.0' => '0.00',
+			'0.00' => '0.00',
+			'00' => '00.00',
+			'00.0' => '00.00',
+			'00.00' => '00.00', // gotta do these as well because lazy
+			'000' => '000.00'
+		]; // these are to ensure you're getting the right values, instead of using complex if statements depending on string length
+
+		var stringVal:String = Std.string(value);
+		var converVal:String = '';
+		for (i in 0...stringVal.length)
+		{
+			if (stringVal.charAt(i) == '.')
+				converVal += '.';
+			else
+				converVal += '0';
+		}
+
+		var wantedConversion:String = conversion.get(converVal);
+		var convertedValue:String = '';
+
+		for (i in 0...wantedConversion.length)
+		{
+			if (stringVal.charAt(i) == '')
+				convertedValue += wantedConversion.charAt(i);
+			else
+				convertedValue += stringVal.charAt(i);
+		}
+
+		if (convertedValue.length == 0)
+			return '$value';
+
+		return convertedValue;
+	}
+
 	public static function numberArray(max:Int, ?min = 0):Array<Int>
 	{
 		var dumbArray:Array<Int> = [];
@@ -44,6 +82,6 @@ class CoolUtil
 
 	public static function coolLerp(a:Float, b:Float, ratio:Float)
 	{
-		return Math.max(0, Math.min(1, a + camLerpShit(ratio) * (b - a)));
+		return a + camLerpShit(Math.max(0, Math.min(1, ratio))) * (b - a);
 	}
 }

@@ -248,7 +248,7 @@ class FreeplayState extends MusicBeatState
 			curDifficulty = 0;
 
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Math.floor(Highscore.getScore(songs[curSelected].songName, curDifficulty));
 		#end
 
 		PlayState.storyDifficulty = curDifficulty;
@@ -270,7 +270,7 @@ class FreeplayState extends MusicBeatState
 		// selector.y = (70 * curSelected) + 30;
 
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Math.floor(Highscore.getScore(songs[curSelected].songName, curDifficulty));
 		// lerpScore = 0;
 		#end
 
