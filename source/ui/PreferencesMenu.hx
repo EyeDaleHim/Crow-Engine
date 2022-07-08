@@ -3,7 +3,9 @@ package ui;
 import openfl.Lib;
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.FlxCamera;
+import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import haxe.ds.StringMap;
 
@@ -16,21 +18,40 @@ class PreferencesMenu extends Page
 	var items:TextMenuList;
 	var camFollow:FlxObject;
 
+	var descriptionTxt:FlxText;
+	var descriptionBG:FlxSprite;
+
 	override public function new()
 	{
 		super();
+
 		menuCamera = new FlxCamera();
 		FlxG.cameras.add(menuCamera, false);
 		menuCamera.bgColor = FlxColor.TRANSPARENT;
 		camera = menuCamera;
+
 		add(items = new TextMenuList());
-		createPrefItem('naughtyness', 'censor-naughty', true);
-		createPrefItem('downscroll', 'downscroll', false);
-		createPrefItem('ghost tap', 'ghost-tap', false);
-		createPrefItem('flashing lights', 'flashing-lights', true);
-		createPrefItem('Camera Zooming on Beat', 'camera-zoom', true);
-		createPrefItem('FPS Counter', 'fps-counter', true);
-		createPrefItem('Auto Pause', 'auto-pause', false);
+		createPrefItem('naughtyness', 'censor-naughty', 'Censor inappropriate words', true);
+		createPrefItem('downscroll', 'downscroll', 'Which direction the notes should go from', false);
+		createPrefItem('ghost tap', 'ghost-tap', 'Give the player a miss penalty for tapping with no hittable notes', false);
+		createPrefItem('flashing lights', 'flashing-lights', 'Prevent flashing lights for photosensitive players', true);
+		createPrefItem('Camera Zooming on Beat', 'camera-zoom', 'If the camera should zoom based on the beat', true);
+		createPrefItem('Performance Counter', 'fps-counter', 'Should the FPS Counter be visible', true);
+		createPrefItem('Auto Pause', 'auto-pause', 'If the game should pause when you focus out of it', false);
+
+		descriptionTxt = new FlxText(0, FlxG.height * 0.80, 800, "", 32);
+		descriptionTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		descriptionTxt.scrollFactor.set();
+		descriptionTxt.text = items.members[items.selectedIndex].description;
+
+		descriptionBG = new FlxSprite(0, FlxG.height * 0.80).makeGraphic(Math.floor(descriptionTxt.width + 8), Math.floor(descriptionTxt.height + 8), 0xFF000000);
+		descriptionBG.alpha = 0.4;
+		descriptionBG.scrollFactor.set();
+		descriptionBG.y = descriptionTxt.y - 4;
+		descriptionBG.screenCenter(X);
+		add(descriptionBG);
+		add(descriptionTxt);
+
 		camFollow = new FlxObject(FlxG.width / 2, 0, 140, 70);
 		if (items != null)
 		{
@@ -83,7 +104,7 @@ class PreferencesMenu extends Page
 		}
 	}
 
-	public function createPrefItem(label:String, identifier:String, value:Dynamic)
+	public function createPrefItem(label:String, identifier:String, description:String, value:Dynamic)
 	{
 		items.createItem(120, 120 * items.length + 30, label, Bold, function()
 		{
@@ -97,6 +118,7 @@ class PreferencesMenu extends Page
 				trace('swag');
 			}
 		});
+		items.members[items.length - 1].description = description;
 		if (Type.typeof(value) == TBool)
 		{
 			createCheckbox(identifier);
@@ -145,5 +167,19 @@ class PreferencesMenu extends Page
 			else
 				item.x = 120;
 		});
+		descriptionTxt.text = items.members[items.selectedIndex].description;
+		descriptionTxt.screenCenter(X);
+
+		descriptionBG.setPosition(
+			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 4, 0.50), 
+			CoolUtil.coolLerp(descriptionBG.y, descriptionTxt.y - 4, 0.50)
+		);
+		descriptionBG.setGraphicSize(
+			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 8, 0.50)), 
+			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, 0.50))
+		);
+		descriptionBG.updateHitbox();
+
+		descriptionTxt.clipRect = new flixel.math.FlxRect(0, 0, descriptionBG.width, descriptionBG.height);
 	}
 }

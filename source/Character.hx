@@ -462,7 +462,7 @@ class Character extends FlxSprite
 				quickAnimAdd('singDOWNmiss', 'Tankman DOWN note MISS');
 
 				quickAnimAdd('singDOWN-alt', 'PRETTY GOOD');
-				quickAnimAdd('singUP-alt', 'TANKMAN UGH');
+				quickAnimAdd('singUP-alt', 'TANKMAN UGH', true);
 
 				loadOffsetFile(curCharacter);
 
@@ -508,7 +508,7 @@ class Character extends FlxSprite
 			}
 		}
 		TankmenBG.animationNotes = animationNotes;
-		trace(animationNotes);
+		// trace(animationNotes);
 		animationNotes.sort(sortAnims);
 	}
 
@@ -517,9 +517,9 @@ class Character extends FlxSprite
 		return x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0;
 	}
 
-	function quickAnimAdd(Name:String, Prefix:String)
+	function quickAnimAdd(Name:String, Prefix:String, Force:Bool = false)
 	{
-		animation.addByPrefix(Name, Prefix, 24, false);
+		animation.addByPrefix(Name, Prefix, 24, Force);
 	}
 
 	function loadOffsetFile(char:String)
@@ -565,7 +565,6 @@ class Character extends FlxSprite
 			case 'pico-speaker':
 				if (animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0])
 				{
-					trace("played shoot anim" + animationNotes[0][1]);
 					var shotDirection:Int = 1;
 					if (animationNotes[0][1] >= 2)
 					{

@@ -38,6 +38,7 @@ class HealthIcon extends FlxSprite
 		}
 	}
 
+	private var iconOffsets:Array<Float> = [0, 0];
 	public function changeIcon(char:String)
 	{
 		if (char != 'bf-pixel' && char != 'bf-old')
@@ -50,9 +51,20 @@ class HealthIcon extends FlxSprite
 				loadGraphic(Paths.image('icons/icon-' + char), true, 150, 150);
 				animation.add(char, [0, 1], 0, false, isPlayer);
 			}
+
+			iconOffsets[0] = (width - 150) / 2;
+			iconOffsets[1] = (width - 150) / 2;
+			updateHitbox();
 			animation.play(char);
 			this.char = char;
 		}
+	}
+
+	override public function updateHitbox()
+	{
+		super.updateHitbox();
+		offset.x = iconOffsets[0];
+		offset.y = iconOffsets[1];
 	}
 
 	override function update(elapsed:Float)

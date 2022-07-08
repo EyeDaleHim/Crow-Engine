@@ -139,6 +139,11 @@ class PauseSubState extends MusicBeatSubstate
 			switch (daSelected)
 			{
 				case "Resume":
+					var keys:Array<Bool> = [controls.NOTE_LEFT, controls.NOTE_DOWN,controls.NOTE_UP, controls.NOTE_RIGHT];
+					for (i in 0...keys.length)
+					{
+						PlayState.current.pressedKeys[i] = keys[i];
+					}
 					close();
 				case "Restart Song":
 					FlxG.resetState();
