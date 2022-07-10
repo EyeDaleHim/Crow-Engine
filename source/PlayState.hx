@@ -2634,11 +2634,21 @@ class PlayState extends MusicBeatState
 
 				FlxTween.cancelTweensOf(scoreTxt.scale);
 				scoreTxt.scale.set(1.075, 1.075);
+				scoreTxt.updateHitbox();
+
+				scoreBG.setPosition(scoreTxt.x - 4, scoreTxt.y - 4);
+				scoreBG.setGraphicSize(Math.floor(scoreTxt.width + 8), Math.floor(scoreTxt.height + 8));
+				scoreBG.updateHitbox();
+
 				FlxTween.tween(scoreTxt.scale, {x: 1, y: 1}, 0.2, {
 					ease: FlxEase.quadOut,
 					onUpdate: function(twn:FlxTween)
 					{
 						scoreTxt.updateHitbox();
+
+						scoreBG.setPosition(scoreTxt.x - 4, scoreTxt.y - 4);
+						scoreBG.setGraphicSize(Math.floor(scoreTxt.width + 8), Math.floor(scoreTxt.height + 8));
+						scoreBG.updateHitbox();
 					}
 				});
 			}
