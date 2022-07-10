@@ -1681,7 +1681,7 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
-			//Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
+			// Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
 			Conductor.songPosition += FlxG.elapsed * 1000;
 
 			if (!paused)
@@ -2631,6 +2631,16 @@ class PlayState extends MusicBeatState
 				note.kill();
 				notes.remove(note, true);
 				note.destroy();
+
+				FlxTween.cancelTweensOf(scoreTxt.scale);
+				scoreTxt.scale.set(1.075, 1.075);
+				FlxTween.tween(scoreTxt.scale, {x: 1, y: 1}, 0.2, {
+					ease: FlxEase.quadOut,
+					onUpdate: function(twn:FlxTween)
+					{
+						scoreTxt.updateHitbox();
+					}
+				});
 			}
 		}
 	}
