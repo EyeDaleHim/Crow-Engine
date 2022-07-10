@@ -1297,12 +1297,12 @@ class PlayState extends MusicBeatState
 			},
 			onUpdate: function(twn:FlxTween)
 			{
-				var daHeight:Float = FlxMath.remapToRange(tweenVal.value, 0, 1, 0, scoreBG.frameHeight);
-				var daRect:FlxRect = new FlxRect(0, 0, scoreBG.frameWidth, daHeight);
+				var daWidth:Float = FlxMath.remapToRange(tweenVal.value, 0, 1, 0, scoreBG.frameWidth);
+				var daRect:FlxRect = new FlxRect(0, 0, daWidth, scoreBG.frameHeight);
 
 				scoreBG.clipRect = daRect;
-				daHeight = FlxMath.remapToRange(tweenVal.value, 0, 1, 0, scoreTxt.frameHeight + 4);
-				daRect.set(-4, -4, scoreTxt.frameWidth + 4, daHeight); // FlxRect clipping is relative to sprite position too
+				daWidth = FlxMath.remapToRange(tweenVal.value, 0, 1, 0, scoreTxt.frameWidth + 4);
+				daRect.set(-4, -4, daWidth, scoreTxt.frameHeight + 4); // FlxRect clipping is relative to sprite position too
 				scoreTxt.clipRect = daRect;
 			},
 			onComplete: function(twn:FlxTween)
@@ -1681,8 +1681,8 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
-			Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
-			// Conductor.songPosition += FlxG.elapsed * 1000;
+			//Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
+			Conductor.songPosition += FlxG.elapsed * 1000;
 
 			if (!paused)
 			{
@@ -1699,7 +1699,7 @@ class PlayState extends MusicBeatState
 				}
 			}
 
-			// Conductor.lastSongPos = FlxG.sound.music.time;
+			Conductor.lastSongPos = FlxG.sound.music.time;
 		}
 
 		switch (curStage)
@@ -1773,10 +1773,10 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP1.scale.x, 0.85);
+		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP1.scale.x, 0.85, Main.fpsCounter.currentFPS);
 		iconP1.scale.set(scaleLerp, scaleLerp);
 
-		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP2.scale.x, 0.85);
+		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP2.scale.x, 0.85, Main.fpsCounter.currentFPS);
 		iconP2.scale.set(scaleLerp, scaleLerp);
 
 		iconP1.updateHitbox();
@@ -2032,8 +2032,7 @@ class PlayState extends MusicBeatState
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
-				var doKill = !PreferencesMenu.getPref('downscroll') ? daNote.y < -daNote.height - 50 : daNote.y > FlxG.height + 50;
-				if (doKill)
+				if (Conductor.songPosition > daNote.strumTime + 260)
 				{
 					if (daNote.tooLate || !daNote.wasGoodHit)
 					{

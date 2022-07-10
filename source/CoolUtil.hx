@@ -75,13 +75,15 @@ class CoolUtil
 		return dumbArray;
 	}
 
-	public static function camLerpShit(ratio:Float)
+	public static function camLerpShit(ratio:Float, ?offset:Null<Float>)
 	{
-		return FlxG.elapsed / (1 / 60) * ratio;
+		if (offset == null)
+			offset = FlxG.updateFramerate;
+		return FlxG.elapsed / (1 / offset) * ratio;
 	}
 
-	public static function coolLerp(a:Float, b:Float, ratio:Float)
+	public static function coolLerp(a:Float, b:Float, ratio:Float, ?offset:Null<Float>)
 	{
-		return a + camLerpShit(Math.max(0, Math.min(1, ratio))) * (b - a);
+		return a + camLerpShit(Math.max(0, Math.min(1, ratio)), offset) * (b - a);
 	}
 }

@@ -77,7 +77,7 @@ class MainMenuState extends MusicBeatState
 		magenta.visible = false;
 		magenta.antialiasing = true;
 		magenta.color = 0xFFFD719B;
-		if (PreferencesMenu.preferences.get('flashing-menu'))
+		if (PreferencesMenu.preferences.get('flashing-light'))
 		{
 			add(magenta);
 		}
