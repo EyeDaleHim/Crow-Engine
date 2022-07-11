@@ -1682,6 +1682,7 @@ class PlayState extends MusicBeatState
 		else
 		{
 			// Conductor.songPosition = FlxG.sound.music.time + Conductor.offset;
+			// FlxG.sound.music.time is prune to update slower than this
 			Conductor.songPosition += FlxG.elapsed * 1000;
 
 			if (!paused)
@@ -2419,6 +2420,8 @@ class PlayState extends MusicBeatState
 				hittableNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
 
 				var canHitMore:Bool = false; // avoid hitting two notes that are possible to be hit, only count for stacked ones instead
+				var countedNotes:Int = 0;
+				var maximumNotes:Int = 24;
 
 				if (hittableNotes.length > 0)
 				{
@@ -2426,10 +2429,12 @@ class PlayState extends MusicBeatState
 
 					for (epicNote in hittableNotes)
 					{
+						if (countedNotes >= maximumNotes)
+							break;
 						verifiedNotes.push(epicNote);
 						for (doubleNote in hittableNotes)
 						{
-							if (canHitMore)
+							if (canHitMore || countedNotes >= maximumNotes)
 								break;
 
 							if (doubleNote != epicNote && Math.abs(doubleNote.strumTime - epicNote.strumTime) < 10)
@@ -2437,7 +2442,9 @@ class PlayState extends MusicBeatState
 								canHitMore = true;
 								verifiedNotes.push(doubleNote);
 							}
+							countedNotes++;
 						}
+						countedNotes++;
 					}
 
 					if (canHitMore)
