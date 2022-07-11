@@ -117,8 +117,6 @@ class TitleState extends MusicBeatState
 		Application.current.onExit.add(function(exitCode)
 		{
 			DiscordClient.shutdown();
-
-			
 		});
 		#end
 	}
@@ -386,7 +384,7 @@ class TitleState extends MusicBeatState
 
 		if (logoBl != null)
 		{
-			var coolLerp:Float = FlxMath.lerp(1, logoBl.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+			var coolLerp:Float = CoolUtil.coolLerp(1, logoBl.scale.x, 0.85, Main.fpsCounter.currentFPS);
 			logoBl.scale.set(coolLerp, coolLerp);
 		}
 	}
