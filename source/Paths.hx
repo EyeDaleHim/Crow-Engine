@@ -13,6 +13,8 @@ class Paths
 
 	static var currentLevel:String;
 
+	public static var defaultFont = Paths.font("vcr.ttf");
+
 	static public function setCurrentLevel(name:String)
 	{
 		currentLevel = name.toLowerCase();

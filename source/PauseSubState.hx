@@ -47,27 +47,27 @@ class PauseSubState extends MusicBeatSubstate
 		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
 		levelInfo.text += PlayState.SONG.song;
 		levelInfo.scrollFactor.set();
-		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
+		levelInfo.setFormat(Paths.defaultFont, 32);
 		levelInfo.updateHitbox();
 		add(levelInfo);
 
 		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, "", 32);
 		levelDifficulty.text += CoolUtil.difficultyString();
 		levelDifficulty.scrollFactor.set();
-		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
+		levelDifficulty.setFormat(Paths.defaultFont, 32);
 		levelDifficulty.updateHitbox();
 		add(levelDifficulty);
 
 		var deathCounter:FlxText = new FlxText(20, 15 + 64, 0, "", 32);
 		deathCounter.text = 'Blue balled: ' + PlayState.deathCounter;
 		deathCounter.scrollFactor.set();
-		deathCounter.setFormat(Paths.font('vcr.ttf'), 32);
+		deathCounter.setFormat(Paths.defaultFont, 32);
 		deathCounter.updateHitbox();
 		add(deathCounter);
 
 		practiceText = new FlxText(20, 15 + 96, 0, "PRACTICE MODE", 32);
 		practiceText.scrollFactor.set();
-		practiceText.setFormat(Paths.font('vcr.ttf'), 32);
+		practiceText.setFormat(Paths.defaultFont, 32);
 		practiceText.updateHitbox();
 		practiceText.x = FlxG.width - (practiceText.width + 20);
 		practiceText.visible = PlayState.practiceMode;

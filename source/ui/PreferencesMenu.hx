@@ -39,12 +39,12 @@ class PreferencesMenu extends Page
 		createPrefItem('Performance Counter', 'fps-counter', 'Should the FPS Counter be visible', true);
 		createPrefItem('Auto Pause', 'auto-pause', 'If the game should pause when you focus out of it', false);
 
-		descriptionTxt = new FlxText(0, FlxG.height * 0.80, 800, "", 32);
-		descriptionTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		descriptionTxt = new FlxText(0, FlxG.height * 0.85, 0, "", 32);
+		descriptionTxt.setFormat(Paths.defaultFont, 32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		descriptionTxt.scrollFactor.set();
 		descriptionTxt.text = items.members[items.selectedIndex].description;
 
-		descriptionBG = new FlxSprite(0, FlxG.height * 0.80).makeGraphic(Math.floor(descriptionTxt.width + 8), Math.floor(descriptionTxt.height + 8), 0xFF000000);
+		descriptionBG = new FlxSprite(0, FlxG.height * 0.85).makeGraphic(Math.floor(descriptionTxt.width + 8), Math.floor(descriptionTxt.height + 8), 0xFF000000);
 		descriptionBG.alpha = 0.4;
 		descriptionBG.scrollFactor.set();
 		descriptionBG.y = descriptionTxt.y - 4;
@@ -167,19 +167,27 @@ class PreferencesMenu extends Page
 			else
 				item.x = 120;
 		});
-		descriptionTxt.text = items.members[items.selectedIndex].description;
+		changeDescTxt(items.members[items.selectedIndex].description);
 		descriptionTxt.screenCenter(X);
 
 		descriptionBG.setPosition(
-			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 4, 0.50), 
+			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 16, 0.50), 
 			CoolUtil.coolLerp(descriptionBG.y, descriptionTxt.y - 4, 0.50)
 		);
 		descriptionBG.setGraphicSize(
-			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 8, 0.50)), 
-			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, 0.50))
+			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 32, 0.40)), 
+			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, 0.40))
 		);
 		descriptionBG.updateHitbox();
 
 		descriptionTxt.clipRect = new flixel.math.FlxRect(0, 0, descriptionBG.width, descriptionBG.height);
+	}
+
+	function changeDescTxt(text:String)
+	{
+		descriptionTxt.fieldWidth = 0;
+		descriptionTxt.text = text;
+		descriptionTxt.fieldWidth = descriptionTxt.width;
+		descriptionTxt.updateHitbox();
 	}
 }

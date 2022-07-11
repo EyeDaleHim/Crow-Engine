@@ -384,7 +384,7 @@ class TitleState extends MusicBeatState
 
 		if (logoBl != null)
 		{
-			var coolLerp:Float = CoolUtil.coolLerp(1, logoBl.scale.x, 0.85, Main.fpsCounter.currentFPS);
+			var coolLerp:Float = CoolUtil.coolLerp(1, logoBl.scale.x, 0.85);
 			logoBl.scale.set(coolLerp, coolLerp);
 		}
 	}
@@ -423,7 +423,8 @@ class TitleState extends MusicBeatState
 	{
 		super.beatHit();
 
-		logoBl.scale.set(1.1, 1.1);
+		if (logoBl != null)
+			logoBl.scale.set(1.1, 1.1);
 
 		danceLeft = !danceLeft;
 

@@ -80,6 +80,7 @@ class PlayState extends MusicBeatState
 	private var curSection:Int = 0;
 
 	private var camFollow:FlxObject;
+	private var camLerp:FlxObject;
 	private var camPos:FlxPoint;
 
 	private static var prevCamFollow:FlxObject;
@@ -858,21 +859,25 @@ class PlayState extends MusicBeatState
 		// add(strumLine);
 
 		camFollow = new FlxObject(0, 0, 1, 1);
+		camLerp = new FlxObject(0, 0, 1, 1);
 
 		camFollow.setPosition(camPos.x, camPos.y);
+		camLerp.setPosition(camPos.x, camPos.y);
 
 		if (prevCamFollow != null)
 		{
 			camFollow = prevCamFollow;
+			camLerp = prevCamFollow;
 			prevCamFollow = null;
 		}
 
 		add(camFollow);
+		add(camLerp);
 
-		FlxG.camera.follow(camFollow, LOCKON, 0.04);
+		FlxG.camera.follow(camLerp, LOCKON, 1);
 		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
 		FlxG.camera.zoom = defaultCamZoom;
-		FlxG.camera.focusOn(camFollow.getPosition());
+		FlxG.camera.focusOn(camLerp.getPosition());
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
@@ -901,7 +906,7 @@ class PlayState extends MusicBeatState
 		add(iconP2);
 
 		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		scoreTxt.setFormat(Paths.defaultFont, 20, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 
 		scoreBG = new FlxSprite(scoreTxt.x - 4, scoreTxt.y - 4).makeGraphic(Math.floor(scoreTxt.width + 8), Math.floor(scoreTxt.height + 8), 0xFF000000);
@@ -946,9 +951,9 @@ class PlayState extends MusicBeatState
 					{
 						remove(blackScreen);
 						FlxG.sound.play(Paths.sound('Lights_Turn_On'));
-						camFollow.y = -2050;
-						camFollow.x += 200;
-						FlxG.camera.focusOn(camFollow.getPosition());
+						camLerp.y = -2050;
+						camLerp.x += 200;
+						FlxG.camera.focusOn(camLerp.getPosition());
 						FlxG.camera.zoom = 1.5;
 
 						new FlxTimer().start(0.8, function(tmr:FlxTimer)
@@ -1012,8 +1017,8 @@ class PlayState extends MusicBeatState
 			cameraMovement();
 		};
 		FlxG.camera.zoom = defaultCamZoom * 1.2;
-		camFollow.x += 100;
-		camFollow.y += 100;
+		camLerp.x += 100;
+		camLerp.y += 100;
 	}
 
 	function gunsIntro():Void
@@ -1074,6 +1079,7 @@ class PlayState extends MusicBeatState
 		senpaiEvil.x += senpaiEvil.width / 5;
 
 		camFollow.setPosition(camPos.x, camPos.y);
+		camLerp.setPosition(camPos.x, camPos.y);
 
 		if (SONG.song.toLowerCase() == 'roses' || SONG.song.toLowerCase() == 'thorns')
 		{
@@ -1659,7 +1665,12 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		FlxG.camera.followLerp = CoolUtil.camLerpShit(0.04);
+		if (!inCutscene)
+		{
+			var lerpValue:Float = elapsed * 2.75;
+
+			camLerp.setPosition(CoolUtil.coolLerp(camLerp.x, camFollow.x, lerpValue), CoolUtil.coolLerp(camLerp.y, camFollow.y, lerpValue));
+		}
 
 		#if !debug
 		perfectMode = false;
@@ -1774,10 +1785,10 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP1.scale.x, 0.85, Main.fpsCounter.currentFPS);
+		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP1.scale.x, 1 - (elapsed * 9));
 		iconP1.scale.set(scaleLerp, scaleLerp);
 
-		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP2.scale.x, 0.85, Main.fpsCounter.currentFPS);
+		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP2.scale.x, 1 - (elapsed * 9));
 		iconP2.scale.set(scaleLerp, scaleLerp);
 
 		iconP1.updateHitbox();

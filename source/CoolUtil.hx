@@ -81,9 +81,8 @@ class CoolUtil
 			offset = FlxG.updateFramerate;
 		return FlxG.elapsed / (1 / offset) * ratio;
 	}
-
-	public static function coolLerp(a:Float, b:Float, ratio:Float, ?offset:Null<Float>)
+	public static function coolLerp(a:Float, b:Float, ratio:Float)
 	{
-		return a + camLerpShit(Math.max(0, Math.min(1, ratio)), offset) * (b - a);
+		return (1 - Math.max(0, Math.min(1, ratio))) * a + Math.max(0, Math.min(1, ratio)) * b;
 	}
 }
