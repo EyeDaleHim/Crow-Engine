@@ -6,6 +6,7 @@ import haxe.ds.EnumValueMap;
 
 class OptionsState extends MusicBeatState
 {
+	public static var fromPlayState:Bool = false;
 	public var pages:EnumValueMap<PageName, Page> = new EnumValueMap();
 	public var currentName:PageName = Options;
 	public var currentPage(get, never):Page;
@@ -82,6 +83,10 @@ class OptionsState extends MusicBeatState
 	function exitToMainMenu()
 	{
 		currentPage.enabled = false;
-		FlxG.switchState(new MainMenuState());
+		if (fromPlayState)
+			FlxG.switchState(new PlayState());
+		else
+			FlxG.switchState(new MainMenuState());
+		fromPlayState = false;
 	}
 }

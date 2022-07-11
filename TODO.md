@@ -25,21 +25,25 @@ Usually game editors, systems will appear here.
 
 ## Medium Priority
 
-### Chart Editor
+### Chart Editor (0.2.0+)
 
 * Make the chart editor easier to use, less laggy hopefully
 * Allow right clicking on notes to change their attributes properly
+* Add Dragging to Chart Editor (right click and then drag)
+* Allow to use multiple notes with a simple hold & drag over
 * Add Tooltips
 
-### Character Editor
+### Character Editor (0.2.0+)
 
 * Self-explanatory
 
-### Tween Editor
+### Tween Editor (0.2.0+)
 
 * Tween Editor to tween stuff, simple, such as the camera movement
 
 ## Low Priority
 
+* Allow scanning through the HScript files to search for possible sounds that will be played
+* Add Credits (Release)
 * Spritesheet Editor
 * Bug Fixes

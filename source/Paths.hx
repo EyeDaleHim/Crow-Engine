@@ -2,6 +2,8 @@ package;
 
 import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.graphics.FlxGraphic;
+import openfl.display.BitmapData;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 
@@ -95,16 +97,33 @@ class Paths
 		return 'songs:assets/songs/${song.toLowerCase()}/Inst.$SOUND_EXT';
 	}
 
-	inline static public function image(key:String, ?library:String)
+	inline static public function image(key:String, ?library:String)// :FlxGraphic
 	{
+		/*
+		// reason why we're casting it is to avoid any potential compiler fails that it isn't BitmapData
+		var getImage:BitmapData = cast(AssetManager.getAsset('${key}-$library', 'images').trackedAsset, BitmapData);
+		if (getImage != null)
+		{
+			return FlxGraphic.fromBitmapData(getImage, false, null, false);
+		}
+		// this is extraordinarily long
+		var returnImage:BitmapData = AssetManager.setAsset('$key-$library', 'images', BitmapData.fromFile(getPath('images/$key.png', IMAGE, library)))
+			.trackedAsset;
+		return FlxGraphic.fromBitmapData(returnImage, false, null, false);*/
+
 		return getPath('images/$key.png', IMAGE, library);
 	}
 
-	public static var endFiles:Array<String> = ['hx', 'haxe', 'hxc', 'hscript', 'hxscript', 'haxescript'];
+	public static function setAsset(key:String, type:String, ?library:String)
+	{
+		var path = getPath('images/$key.png', IMAGE, library);
+	}
+
+	public static var scriptEnds:Array<String> = ['haxe', 'hxc', 'hscript', 'hxscript', 'haxescript'];
 
 	inline static public function hscript(key:String, ?library:String)
 	{
-		for (file in endFiles)
+		for (file in scriptEnds)
 		{
 			var path:String = getPath('scripts/$key.$file', TEXT, library);
 
@@ -127,11 +146,87 @@ class Paths
 
 	inline static public function getSparrowAtlas(key:String, ?library:String)
 	{
-		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
+		return FlxAtlasFrames.fromSparrow(getPath('images/$key.png', IMAGE, library), file('images/$key.xml', library));
 	}
 
 	inline static public function getPackerAtlas(key:String, ?library:String)
 	{
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
+		return FlxAtlasFrames.fromSpriteSheetPacker(getPath('images/$key.png', IMAGE, library), file('images/$key.txt', library));
+	}
+}
+
+class AssetManager
+{
+	public static var cachedAssets:Map<String, Map<String, CachedAsset>>;
+	public static var init(default, set):Bool = false; // unsettable to true after
+	public static var allowCaching:Bool = true;
+
+	public static function initAssetManager():Void
+	{
+		if (!init)
+		{
+			init = true;
+			cachedAssets = [];
+			// parsed is basically whatever data like chart data or smth
+			for (type in ['images', 'sounds', 'text', 'parsed', 'packer', 'sparrow'])
+			{
+				cachedAssets.set(type, new Map<String, CachedAsset>());
+			}
+		}
+	}
+
+	public static function getAsset(name:String, type:String):CachedAsset
+	{
+		initAssetManager();
+
+		if (!allowCaching)
+			return null;
+
+		if (cachedAssets.exists(type))
+		{
+			if (cachedAssets[type].exists(name))
+				return cachedAssets[type].get(name).trackedAsset;
+
+			return null;
+		}
+		trace('Asset Type $type does not exist!');
+		return null;
+	}
+
+	public static function setAsset(name:String, type:String, asset:Dynamic):CachedAsset
+	{
+		initAssetManager();
+
+		if (!allowCaching)
+			return null;
+
+		if (cachedAssets.exists(type))
+		{
+			cachedAssets[type].set(name, new CachedAsset(asset));
+			return cachedAssets[type].get(name).trackedAsset; // unless you're planning to get the asset directly after setting it
+		}
+		trace('Asset Type $type does not exist!');
+		return null;
+	}
+
+	static function set_init(value:Bool):Bool
+	{
+		if (init)
+			return value;
+
+		init = value;
+		return value;
+	}
+}
+
+class CachedAsset // max duration to stay in cache is 180 seconds
+{
+	public var timeSinceLastUse:Int = 0;
+	public var persistent:Bool;
+	public var trackedAsset:Dynamic;
+
+	public function new(trackedAsset:Dynamic)
+	{
+		this.trackedAsset = trackedAsset;
 	}
 }

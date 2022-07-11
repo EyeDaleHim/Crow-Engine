@@ -187,7 +187,7 @@ class PlayState extends MusicBeatState
 		FlxG.cameras.add(camHUD, false);
 
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
-		var splash:NoteSplash = new NoteSplash(100, 100, 0);
+		var splash:NoteSplash = new NoteSplash(-500, -500, 0);
 		grpNoteSplashes.add(splash);
 		splash.alpha = 0.1;
 
