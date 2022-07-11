@@ -21,6 +21,7 @@ import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
+import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxSound;
@@ -195,12 +196,9 @@ class TitleState extends MusicBeatState
 		// bg.updateHitbox();
 		add(bg);
 
-		logoBl = new FlxSprite(-150, -100);
-		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
+		logoBl = new FlxSprite(-50, -160);
+		logoBl.loadGraphic(Paths.image("modLogo"));
 		logoBl.antialiasing = true;
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
-		logoBl.animation.play('bump');
-		logoBl.updateHitbox();
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 		logoBl.shader = swagShader.shader;
@@ -385,6 +383,12 @@ class TitleState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		if (logoBl != null)
+		{
+			var coolLerp:Float = FlxMath.lerp(1, logoBl.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
+			logoBl.scale.set(coolLerp, coolLerp);
+		}
 	}
 
 	function createCoolText(textArray:Array<String>)
@@ -421,7 +425,8 @@ class TitleState extends MusicBeatState
 	{
 		super.beatHit();
 
-		logoBl.animation.play('bump');
+		logoBl.scale.set(1.1, 1.1);
+
 		danceLeft = !danceLeft;
 
 		if (danceLeft)
