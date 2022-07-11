@@ -1396,7 +1396,7 @@ class PlayState extends MusicBeatState
 
 					if (sustainNote.mustPress)
 					{
-						sustainNote.x += (FlxG.width / 2) + 50; // general offset
+						sustainNote.x += (FlxG.width / 2) + 70; // general offset
 					}
 				}
 
@@ -1404,7 +1404,7 @@ class PlayState extends MusicBeatState
 
 				if (swagNote.mustPress)
 				{
-					swagNote.x += (FlxG.width / 2) + 50; // general offset
+					swagNote.x += (FlxG.width / 2) + 70; // general offset
 				}
 			}
 			daBeats += 1;
@@ -1545,7 +1545,7 @@ class PlayState extends MusicBeatState
 			babyArrow.x += ((FlxG.width / 2) * player);
 			if (player == 1)
 			{
-				babyArrow.x += 50;
+				babyArrow.x += 70;
 			}
 
 			strumLineNotes.add(babyArrow);

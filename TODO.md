@@ -18,11 +18,6 @@ Usually game editors, systems will appear here.
 * Manually get the image specified rather than typing out the directory
 * Allow song-defined conditionals
 
-### Script Editor (0.2.0)
-
-* Allow script editing inside of the game itself
-* Allow previews before testing
-
 ## Medium Priority
 
 ### Chart Editor (0.2.0+)
@@ -32,6 +27,13 @@ Usually game editors, systems will appear here.
 * Add Dragging to Chart Editor (right click and then drag)
 * Allow to use multiple notes with a simple hold & drag over
 * Add Tooltips
+
+### Script Editor (0.2.0)
+
+* Allow script editing inside of the game itself
+* Allow previews before testing
+
+### Song Event Editor (0.3.0+)
 
 ### Character Editor (0.2.0+)
 

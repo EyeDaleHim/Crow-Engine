@@ -35,6 +35,8 @@ class GameOverSubstate extends MusicBeatSubstate
 			daBf = 'bf-holding-gf-dead';
 		}
 
+		FlxG.camera.active = true;
+
 		super();
 
 		Conductor.songPosition = 0;
