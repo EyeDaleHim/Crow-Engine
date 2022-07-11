@@ -100,24 +100,19 @@ class Paths
 		return getPath('images/$key.png', IMAGE, library);
 	}
 
-	public static var endFiles:Array<String> = 
-	[
-		'hx',
-		'haxe',
-		'hxc',
-		'hscript',
-		'hxscript',
-		'haxescript'
-	];
+	public static var endFiles:Array<String> = ['hx', 'haxe', 'hxc', 'hscript', 'hxscript', 'haxescript'];
+
 	inline static public function hscript(key:String, ?library:String)
 	{
 		for (file in endFiles)
 		{
-			var path:String = getPath('scripts/$key.$file', TEXT);
+			var path:String = getPath('scripts/$key.$file', TEXT, library);
+
 			if (OpenFlAssets.exists(path, TEXT))
 				return path;
 		}
-		return getPath('scripts/$key.hx', TEXT);;
+
+		return getPath('scripts/$key.hx', TEXT, library);
 	}
 
 	inline static public function font(key:String)
