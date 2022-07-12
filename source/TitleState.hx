@@ -384,7 +384,7 @@ class TitleState extends MusicBeatState
 
 		if (logoBl != null)
 		{
-			var coolLerp:Float = CoolUtil.coolLerp(1, logoBl.scale.x, 0.85);
+			var coolLerp:Float = CoolUtil.coolLerp(1, logoBl.scale.x, 1 - (elapsed * 9));
 			logoBl.scale.set(coolLerp, coolLerp);
 		}
 	}
