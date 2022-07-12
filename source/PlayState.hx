@@ -47,6 +47,7 @@ import openfl.display.StageQuality;
 import openfl.events.KeyboardEvent;
 import openfl.filters.ShaderFilter;
 import openfl.utils.Assets as OpenFlAssets;
+import openfl.Lib;
 
 using StringTools;
 
@@ -1839,8 +1840,8 @@ class PlayState extends MusicBeatState
 
 		if (camZooming)
 		{
-			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
-			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
+			FlxG.camera.zoom = CoolUtil.coolLerp(defaultCamZoom, FlxG.camera.zoom, 1 - (elapsed * 3.125));
+			camHUD.zoom = CoolUtil.coolLerp(1, camHUD.zoom,1 - (elapsed * 3.125));
 		}
 
 		FlxG.watch.addQuick("beatShit", curBeat);
@@ -2082,6 +2083,8 @@ class PlayState extends MusicBeatState
 		if (FlxG.keys.justPressed.ONE)
 			endSong();
 		#end
+
+		timeSinceLastUpdate = Lib.getTimer() / 1000;
 	}
 
 	function endSong():Void
@@ -2404,6 +2407,8 @@ class PlayState extends MusicBeatState
 
 	public var pressedKeys:Array<Bool> = [false, false, false, false];
 
+	public var timeSinceLastUpdate:Float = 0.0;
+
 	// do this later
 	private function keyInput(event:KeyboardEvent)
 	{
@@ -2414,7 +2419,8 @@ class PlayState extends MusicBeatState
 			if (!boyfriend.stunned && generatedMusic)
 			{
 				var calcTime:Float = Conductor.songPosition;
-				Conductor.songPosition = FlxG.sound.music.time;
+				Conductor.songPosition += ((Lib.getTimer() / 1000) - timeSinceLastUpdate);
+				trace('${FlxG.sound.music.time} and ${Conductor.songPosition} difference: ${Conductor.songPosition - FlxG.sound.music.time}');
 
 				var verifiedNotes:Array<Note> = []; // notes that are verified to be hit
 				var hittableNotes:Array<Note> = []; // notes that can be hit by player
