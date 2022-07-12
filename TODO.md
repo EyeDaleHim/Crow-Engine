@@ -7,8 +7,7 @@ Usually game editors, systems will appear here.
 
 ### Modified HScript System (Release)
 
-* Allow overriding functions and importing classes (can't guarantee much)
-* Do not allow imports to various OpenFL/Lime classes due to security concerns
+* Do not allow imports to various classes due to security concerns
 * Allow an option to turn off, warn player first, or turn on possible malicious scripts
 
 ### Stage Editor (Release)
@@ -18,6 +17,12 @@ Usually game editors, systems will appear here.
 * Manually get the image specified rather than typing out the directory
 * Allow song-defined conditionals
 
+### Mod System (0.2.0)
+
+* Mod Menu
+* Mod Support
+* API for Mods
+
 ## Medium Priority
 
 ### Chart Editor (0.2.0+)
@@ -25,7 +30,7 @@ Usually game editors, systems will appear here.
 * Make the chart editor easier to use, less laggy hopefully
 * Allow right clicking on notes to change their attributes properly
 * Add Dragging to Chart Editor (right click and then drag)
-* Allow to use multiple notes with a simple hold & drag over
+* Allow to drag over multiple notes
 * Add Tooltips
 
 ### Script Editor (0.2.0)
@@ -45,10 +50,17 @@ Usually game editors, systems will appear here.
 
 * Tween Editor to tween stuff, simple, such as the camera movement
 
+### Achievement System (0.3.0+)
+
+* Achievement System
+* GameJolt Support (Soft-Coded Mod Achievements only through Crow Engine due to concerns)
+
 ## Low Priority
 
 * Play Against AI (0.3.1+)
+* Replay System (0.2.0+)
 * Allow scanning through the HScript files to search for possible sounds that will be played
 * Add Credits (Release)
+* Botplay (Release)
 * Spritesheet Editor
 * Bug Fixes
