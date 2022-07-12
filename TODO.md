@@ -35,6 +35,8 @@ Usually game editors, systems will appear here.
 
 ### Song Event Editor (0.3.0+)
 
+* Trigger HScript-based events based on arguments
+
 ### Character Editor (0.2.0+)
 
 * Self-explanatory
@@ -45,6 +47,7 @@ Usually game editors, systems will appear here.
 
 ## Low Priority
 
+* Play Against AI (0.3.1+)
 * Allow scanning through the HScript files to search for possible sounds that will be played
 * Add Credits (Release)
 * Spritesheet Editor

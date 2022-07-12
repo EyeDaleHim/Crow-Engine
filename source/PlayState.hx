@@ -2420,7 +2420,6 @@ class PlayState extends MusicBeatState
 			{
 				var calcTime:Float = Conductor.songPosition;
 				Conductor.songPosition += ((Lib.getTimer() / 1000) - timeSinceLastUpdate);
-				trace('${FlxG.sound.music.time} and ${Conductor.songPosition} difference: ${Conductor.songPosition - FlxG.sound.music.time}');
 
 				var verifiedNotes:Array<Note> = []; // notes that are verified to be hit
 				var hittableNotes:Array<Note> = []; // notes that can be hit by player

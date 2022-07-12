@@ -135,7 +135,7 @@ class StageEditorState extends MusicBeatState
 
     function createSpriteUI()
     {
-        var UI_spriteTitle = new FlxUIInputText(10, 50, 70, "", 8);
+        var UI_spriteTitle = new FlxUIInputText(12, 50, 70, "", 8);
         curSpriteTitle = UI_spriteTitle;
 
         var tab_group_sprite = new FlxUI(null, UI_box);
