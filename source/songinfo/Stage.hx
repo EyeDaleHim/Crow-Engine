@@ -44,8 +44,8 @@ class Stage
 				{
 					if (Assets.exists(Paths.getPath('images/stages/$file.json', IMAGE, null)))
 					{
-						var stageParsed:StageInfo = Json.parse(Assets.getText(Paths.getPath('images/stages/$file.json', IMAGE, null)));
-						parsedStage = cast stageParsed; // for characters, we'll not be manually placing them here
+						// for characters we'll not be manually placing them here
+						parsedStage = cast Json.parse(Assets.getText(Paths.getPath('images/stages/$file.json', IMAGE, null)));
 
 						for (spr in parsedStage.sprites)
 						{
