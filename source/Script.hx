@@ -30,8 +30,19 @@ class Script
 	public static final FUNCTION_CONTINUE = -128;
 	public static final FUNCTION_FORCESTOP = -32;
 
+	public static var libraries:Map<String, Script> = [];
+
 	public var name:String;
 	public var hscript:Interp;
+
+	public static function executeLibraryFunc(script:String, funcName:String, ?args:Array<Any>)
+	{
+		if (libraries.exists(script))
+		{
+			return libraries[script].executeFunc(funcName, args);
+		}
+		return FUNCTION_STOP;
+	}
 
 	public function new(path:String)
 	{

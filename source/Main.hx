@@ -77,6 +77,9 @@ class Main extends Sprite
 		addChild(fpsCounter);
 		#end
 
+		if (FlxG.save.data.globalVolume != null)
+			FlxG.sound.volume = FlxG.save.data.globalVolume;
+
 		FlxG.fixedTimestep = false;
 		FlxG.mouse.useSystemCursor = true;
 		FlxG.mouse.visible = false;

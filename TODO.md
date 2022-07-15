@@ -10,6 +10,10 @@ Usually game editors, systems will appear here.
 * Do not allow imports to various classes due to security concerns
 * Allow an option to turn off, warn player first, or turn on possible malicious scripts
 
+### Script Library System (0.1.1)
+
+* Allow global runnable scripts for helpful use for mods
+
 ### Stage Editor (Release)
 
 * Easy-to-use Stage Editor with easy-to-understand features
@@ -53,7 +57,7 @@ Usually game editors, systems will appear here.
 ### Achievement System (0.3.0+)
 
 * Achievement System
-* GameJolt Support (Soft-Coded Mod Achievements only through Crow Engine due to concerns)
+* GameJolt Support (Soft-Coded Mod Achievements only through Crow Engine GameJolt due to concerns)
 
 ## Low Priority
 
@@ -62,5 +66,6 @@ Usually game editors, systems will appear here.
 * Allow scanning through the HScript files to search for possible sounds that will be played
 * Add Credits (Release)
 * Botplay (Release)
+* Subtitle
 * Spritesheet Editor
 * Bug Fixes

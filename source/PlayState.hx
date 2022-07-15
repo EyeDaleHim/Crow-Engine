@@ -108,6 +108,7 @@ class PlayState extends MusicBeatState
 	private var iconP2:HealthIcon;
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
+
 	public var pauseCamera:FlxCamera;
 
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
@@ -1005,6 +1006,10 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
+		cameraMovement();
+		camLerp.setPosition(camFollow.x, camFollow.y);
+		FlxG.camera.focusOn(camLerp.getPosition());
+
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyInput);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
 	}
@@ -1544,11 +1549,19 @@ class PlayState extends MusicBeatState
 			{
 				if (babyArrow.animation.curAnim.name == 'confirm')
 				{
-					babyArrow.animation.play('static');
+					if (pressedKeys[i] && player == 1)
+					{
+						babyArrow.animation.play('pressed');
+						babyArrow.animation.curAnim.curFrame = babyArrow.animation.curAnim.frames.length - 1;
+					}
+					else
+					{
+						babyArrow.animation.play('static');
 
-					babyArrow.centerOffsets();
-					babyArrow.offset.x -= 13;
-					babyArrow.offset.y -= 13;
+						babyArrow.centerOffsets();
+						babyArrow.offset.x -= 13;
+						babyArrow.offset.y -= 13;
+					}
 				}
 			}
 
@@ -1846,7 +1859,7 @@ class PlayState extends MusicBeatState
 		if (camZooming)
 		{
 			FlxG.camera.zoom = CoolUtil.coolLerp(defaultCamZoom, FlxG.camera.zoom, 1 - (elapsed * 3.125));
-			camHUD.zoom = CoolUtil.coolLerp(1, camHUD.zoom,1 - (elapsed * 3.125));
+			camHUD.zoom = CoolUtil.coolLerp(1, camHUD.zoom, 1 - (elapsed * 3.125));
 		}
 
 		FlxG.watch.addQuick("beatShit", curBeat);

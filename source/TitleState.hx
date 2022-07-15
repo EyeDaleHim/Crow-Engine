@@ -75,7 +75,7 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('crowengine', 'eyedalehim');
 
 		PreferencesMenu.initPrefs();
 		PlayerSettings.init();
@@ -116,6 +116,9 @@ class TitleState extends MusicBeatState
 
 		Application.current.onExit.add(function(exitCode)
 		{
+			FlxG.save.data.globalVolume = FlxG.sound.volume;
+			FlxG.save.flush();
+			
 			DiscordClient.shutdown();
 		});
 		#end
