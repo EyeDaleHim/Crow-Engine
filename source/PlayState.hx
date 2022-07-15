@@ -108,6 +108,7 @@ class PlayState extends MusicBeatState
 	private var iconP2:HealthIcon;
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
+	public var pauseCamera:FlxCamera;
 
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 
@@ -183,10 +184,14 @@ class PlayState extends MusicBeatState
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
+		pauseCamera = new FlxCamera();
+
 		camHUD.bgColor.alpha = 0;
+		pauseCamera.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD, false);
+		FlxG.cameras.add(pauseCamera, false);
 
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
 		var splash:NoteSplash = new NoteSplash(-500, -500, 0);
@@ -2419,6 +2424,8 @@ class PlayState extends MusicBeatState
 			if (!boyfriend.stunned && generatedMusic)
 			{
 				var calcTime:Float = Conductor.songPosition;
+				// explanation: i had to use prediction-based for note positions instead of setting it directly to the music time
+				// that way you'll be more satisified with the results
 				Conductor.songPosition += ((Lib.getTimer() / 1000) - timeSinceLastUpdate);
 
 				var verifiedNotes:Array<Note> = []; // notes that are verified to be hit

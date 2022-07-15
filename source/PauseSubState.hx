@@ -90,6 +90,8 @@ class PauseSubState extends MusicBeatSubstate
 		add(grpMenuShit);
 
 		regenMenu();
+
+		cameras = [PlayState.current.pauseCamera];
 	}
 
 	private function regenMenu()

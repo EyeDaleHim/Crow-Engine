@@ -9,7 +9,9 @@ import flixel.text.FlxText;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import flixel.util.typeLimit.OneOfTwo;
+import flixel.ui.FlxButton;
 import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.ui.FlxUIButton;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
@@ -146,6 +148,7 @@ class StageEditorState extends MusicBeatState
 	var curSpritePosY:FlxUINumericStepper;
 	var curSpriteScrollX:FlxUINumericStepper;
 	var curSpriteScrollY:FlxUINumericStepper;
+	var addSpriteButton:FlxUIButton;
 
 	function createSpriteUI()
 	{
@@ -167,6 +170,10 @@ class StageEditorState extends MusicBeatState
 		var UI_spriteScrollY = new FlxUINumericStepper(102, 190, 0.10, 1.0, -10, 10, 2);
 		curSpriteScrollY = UI_spriteScrollY;
 
+		addSpriteButton = new FlxUIButton(12, 400, "Add Sprite", function()
+			{
+			});
+
 		var tab_group_sprite = new FlxUI(null, UI_box);
 		tab_group_sprite.name = 'Sprite';
 
@@ -182,6 +189,7 @@ class StageEditorState extends MusicBeatState
 		tab_group_sprite.add(UI_spritePosY);
 		tab_group_sprite.add(UI_spriteScrollX);
 		tab_group_sprite.add(UI_spriteScrollY);
+		tab_group_sprite.add(addSpriteButton);
 
 		UI_box.addGroup(tab_group_sprite);
 	}
@@ -216,7 +224,7 @@ class StageEditorState extends MusicBeatState
 		{
 			if (FlxG.mouse.justPressedRight)
 				heldPoint.set(FlxG.mouse.getScreenPosition().x, FlxG.mouse.getScreenPosition().y);
-			
+
 			if (FlxG.mouse.pressedRight)
 			{
 				currentPoint.set(FlxG.mouse.getScreenPosition().x, FlxG.mouse.getScreenPosition().y);
@@ -231,7 +239,6 @@ class StageEditorState extends MusicBeatState
 
 	private function addAnonymousSprite():Void
 	{
-
 	}
 }
 
