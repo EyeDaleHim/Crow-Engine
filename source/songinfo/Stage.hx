@@ -120,6 +120,10 @@ class StageEditorState extends MusicBeatState
 		camFollow.screenCenter();
 		add(camFollow);
 
+		var GRID_SIZE = 64;
+		var gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
+		add(gridBG);
+
 		FlxG.camera.follow(camFollow, null, 1);
 
 		var tabs = [
@@ -136,6 +140,8 @@ class StageEditorState extends MusicBeatState
 		UI_box.cameras = [camHUD];
 		UI_box.scrollFactor.set();
 		add(UI_box);
+
+		FlxG.mouse.visible = true;
 
 		createSpriteUI();
 
@@ -171,8 +177,8 @@ class StageEditorState extends MusicBeatState
 		curSpriteScrollY = UI_spriteScrollY;
 
 		addSpriteButton = new FlxUIButton(12, 400, "Add Sprite", function()
-			{
-			});
+		{
+		});
 
 		var tab_group_sprite = new FlxUI(null, UI_box);
 		tab_group_sprite.name = 'Sprite';
@@ -229,11 +235,23 @@ class StageEditorState extends MusicBeatState
 			{
 				currentPoint.set(FlxG.mouse.getScreenPosition().x, FlxG.mouse.getScreenPosition().y);
 
-				camFollow.x = camFollow.x + ((heldPoint.x - currentPoint.x) / 4);
-				camFollow.y = camFollow.y + ((heldPoint.y - currentPoint.y) / 4);
+				camFollow.x = camFollow.x + (heldPoint.x - currentPoint.x);
+				camFollow.y = camFollow.y + (heldPoint.y - currentPoint.y);
+
+				heldPoint.set(FlxG.mouse.getScreenPosition().x, FlxG.mouse.getScreenPosition().y);
 			}
 
-			FlxG.mouse.visible = !FlxG.mouse.pressedRight;
+			if (FlxG.mouse.wheel != 0)
+			{
+				FlxG.camera.zoom += ((FlxG.mouse.wheel) / 10);
+				if (FlxG.camera.zoom < 0.1)
+					FlxG.camera.zoom = 0.1;
+				if (FlxG.camera.zoom > 3)
+					FlxG.camera.zoom = 3;
+			}
+
+			// if wanted, make a PR of this and tell me why you uncommented this
+			// FlxG.mouse.visible = !FlxG.mouse.pressedRight;
 		}
 	}
 
