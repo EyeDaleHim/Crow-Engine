@@ -123,11 +123,6 @@ class PreferencesMenu extends Page
 		{
 			createCheckbox(identifier);
 		}
-		else
-		{
-			trace('swag');
-		}
-		trace(Type.typeof(value));
 	}
 
 	public function createCheckbox(identifier:String)
