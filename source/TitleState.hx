@@ -4,8 +4,8 @@ import openfl.display.Sprite;
 import openfl.net.NetStream;
 import openfl.media.Video;
 import ui.PreferencesMenu;
-import shaderslmfao.BuildingShaders;
-import shaderslmfao.ColorSwap;
+import shaders.BuildingShaders;
+import shaders.ColorSwap;
 #if desktop
 import Discord.DiscordClient;
 import sys.thread.Thread;

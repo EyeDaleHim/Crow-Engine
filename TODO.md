@@ -21,6 +21,10 @@ Usually game editors, systems will appear here.
 * Manually get the image specified rather than typing out the directory
 * Allow song-defined conditionals
 
+### FlxRuntimeShader.hx (Release, full mod support on 0.2.0)
+
+* Implementation of FlxRuntimeShader (courtesy of MasterEric)
+
 ### Mod System (0.2.0)
 
 * Mod Menu
@@ -63,7 +67,7 @@ Usually game editors, systems will appear here.
 
 * Play Against AI (0.3.1+)
 * Replay System (0.2.0+)
-* Allow scanning through the HScript files to search for possible sounds that will be played
+* Allow scanning through the HScript files to search for possible assets that will be played
 * Add Credits (Release)
 * Botplay (Release)
 * Subtitle

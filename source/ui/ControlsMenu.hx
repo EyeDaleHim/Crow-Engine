@@ -14,7 +14,10 @@ import flixel.util.FlxColor;
 class ControlsMenu extends Page
 {
 	public static var controlList:Array<Control> = Control.createAll();
-	public static var controlGroups:Array<Array<Control>> = [[NOTE_UP, NOTE_DOWN, NOTE_LEFT, NOTE_RIGHT], [UI_UP, UI_DOWN, UI_LEFT, UI_RIGHT, ACCEPT, BACK]];
+	public static var controlGroups:Array<Array<Control>> = [
+		[NOTE_UP, NOTE_DOWN, NOTE_LEFT, NOTE_RIGHT],
+		[UI_UP, UI_DOWN, UI_LEFT, UI_RIGHT, ACCEPT, BACK]
+	];
 
 	var currentDevice:Device = Device.Keys;
 	var deviceList:TextMenuList;

@@ -163,19 +163,21 @@ class PreferencesMenu extends Page
 				item.x = 120;
 		});
 		changeDescTxt(items.members[items.selectedIndex].description);
+		
 		descriptionTxt.screenCenter(X);
 
 		descriptionBG.setPosition(
-			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 16, 0.50), 
-			CoolUtil.coolLerp(descriptionBG.y, descriptionTxt.y - 4, 0.50)
+			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 16, 0.35), 
+			CoolUtil.coolLerp(descriptionBG.y, descriptionTxt.y - 4, 0.35)
 		);
 		descriptionBG.setGraphicSize(
-			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 32, 0.40)), 
-			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, 0.40))
+			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 32, 0.35)), 
+			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, 0.35))
 		);
 		descriptionBG.updateHitbox();
+		descriptionBG.screenCenter(X); // eh still messy but sure
 
-		descriptionTxt.clipRect = new flixel.math.FlxRect(0, 0, descriptionBG.width, descriptionBG.height);
+		descriptionTxt.clipRect = new flixel.math.FlxRect(-16, -4, descriptionBG.width, descriptionBG.height);
 	}
 
 	function changeDescTxt(text:String)

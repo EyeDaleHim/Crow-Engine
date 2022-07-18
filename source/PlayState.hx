@@ -1,9 +1,9 @@
 package;
 
 import animate.FlxAnimate;
-import shaderslmfao.BuildingShaders;
+import shaders.BuildingShaders;
 import ui.PreferencesMenu;
-import shaderslmfao.ColorSwap;
+import shaders.ColorSwap;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -2676,11 +2676,12 @@ class PlayState extends MusicBeatState
 				note.destroy();
 
 				FlxTween.cancelTweensOf(scoreTxt.scale);
+				FlxTween.cancelTweensOf(scoreBG.scale);
+
 				scoreTxt.scale.set(1.075, 1.075);
 				scoreTxt.updateHitbox();
 
-				scoreBG.setPosition(scoreTxt.x - 4, scoreTxt.y - 4);
-				scoreBG.setGraphicSize(Math.floor(scoreTxt.width + 8), Math.floor(scoreTxt.height + 8));
+				scoreBG.scale.set(1.075, 1.075);
 				scoreBG.updateHitbox();
 
 				FlxTween.tween(scoreTxt.scale, {x: 1, y: 1}, 0.2, {
@@ -2688,9 +2689,13 @@ class PlayState extends MusicBeatState
 					onUpdate: function(twn:FlxTween)
 					{
 						scoreTxt.updateHitbox();
+					}
+				});
 
-						scoreBG.setPosition(scoreTxt.x - 4, scoreTxt.y - 4);
-						scoreBG.setGraphicSize(Math.floor(scoreTxt.width + 8), Math.floor(scoreTxt.height + 8));
+				FlxTween.tween(scoreBG.scale, {x: 1, y: 1}, 0.2, {
+					ease: FlxEase.quadOut,
+					onUpdate: function(twn:FlxTween)
+					{
 						scoreBG.updateHitbox();
 					}
 				});

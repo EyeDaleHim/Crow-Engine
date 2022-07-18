@@ -1,4 +1,4 @@
-package shaderslmfao;
+package shaders;
 
 class ColorSwap
 {
