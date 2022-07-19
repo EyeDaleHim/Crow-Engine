@@ -55,7 +55,6 @@ class PlayerSettings
 			if (keys != null)
 			{
 				setDefault = false;
-				trace('loaded key data: ' + Json.stringify(keys));
 				controls.fromSaveData(keys, Device.Keys);
 			}
 		}

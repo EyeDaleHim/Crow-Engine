@@ -12,6 +12,8 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
+import flixel.effects.FlxFlicker;
 
 class PauseSubState extends MusicBeatSubstate
 {
@@ -59,7 +61,7 @@ class PauseSubState extends MusicBeatSubstate
 		add(levelDifficulty);
 
 		var deathCounter:FlxText = new FlxText(20, 15 + 64, 0, "", 32);
-		deathCounter.text = 'Blue balled: ' + PlayState.deathCounter;
+		deathCounter.text = 'Blueballed: ' + PlayState.deathCounter;
 		deathCounter.scrollFactor.set();
 		deathCounter.setFormat(Paths.defaultFont, 32);
 		deathCounter.updateHitbox();
@@ -146,7 +148,11 @@ class PauseSubState extends MusicBeatSubstate
 					{
 						PlayState.current.pressedKeys[i] = keys[i];
 					}
-					close();
+					FlxG.sound.play(Paths.sound("cancelMenu"));
+					FlxFlicker.flicker(grpMenuShit.members[curSelected], 0.5, 0.08, false, true, function(flckr:FlxFlicker)
+					{
+						close();
+					});
 				case "Restart Song":
 					FlxG.resetState();
 				case "Change Difficulty":

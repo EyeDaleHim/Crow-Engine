@@ -37,14 +37,16 @@ class PreferencesMenu extends Page
 		createPrefItem('flashing lights', 'flashing-lights', 'Prevent flashing lights for photosensitive players', true);
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', 'If the camera should zoom based on the beat', true);
 		createPrefItem('Performance Counter', 'fps-counter', 'Should the FPS Counter be visible', true);
+		#if !web // no point of using this option if HTML5 doesn't allow you to pause tabs
 		createPrefItem('Auto Pause', 'auto-pause', 'If the game should pause when you focus out of it', false);
+		#end
 
 		descriptionTxt = new FlxText(0, FlxG.height * 0.85, 0, "", 32);
 		descriptionTxt.setFormat(Paths.defaultFont, 32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		descriptionTxt.scrollFactor.set();
 		descriptionTxt.text = items.members[items.selectedIndex].description;
 
-		descriptionBG = new FlxSprite(0, FlxG.height * 0.85).makeGraphic(Math.floor(descriptionTxt.width + 8), Math.floor(descriptionTxt.height + 8), 0xFF000000);
+		descriptionBG = new FlxSprite(0, FlxG.height * 0.85).makeGraphic(Math.floor(descriptionTxt.width + 16), Math.floor(descriptionTxt.height + 8), 0xFF000000);
 		descriptionBG.alpha = 0.4;
 		descriptionBG.scrollFactor.set();
 		descriptionBG.y = descriptionTxt.y - 4;
@@ -93,15 +95,7 @@ class PreferencesMenu extends Page
 	public static function preferenceCheck(identifier:String, defaultValue:Dynamic)
 	{
 		if (preferences.get(identifier) == null)
-		{
 			preferences.set(identifier, defaultValue);
-			
-			trace('set preference!');
-		}
-		else
-		{
-			trace('found preference: ' + Std.string(preferences.get(identifier)));
-		}
 	}
 
 	public function createPrefItem(label:String, identifier:String, description:String, value:Dynamic)
@@ -167,17 +161,17 @@ class PreferencesMenu extends Page
 		descriptionTxt.screenCenter(X);
 
 		descriptionBG.setPosition(
-			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 16, 0.35), 
+			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 8, 0.35), 
 			CoolUtil.coolLerp(descriptionBG.y, descriptionTxt.y - 4, 0.35)
 		);
 		descriptionBG.setGraphicSize(
-			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 32, 0.35)), 
+			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 16, 0.35)), 
 			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, 0.35))
 		);
 		descriptionBG.updateHitbox();
 		descriptionBG.screenCenter(X); // eh still messy but sure
 
-		descriptionTxt.clipRect = new flixel.math.FlxRect(-16, -4, descriptionBG.width, descriptionBG.height);
+		descriptionTxt.clipRect = new flixel.math.FlxRect(-4, -4, descriptionBG.width, descriptionBG.height);
 	}
 
 	function changeDescTxt(text:String)

@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin': Crow Engine" file="Funkin" packageName="com.eyedalehim.crowengine" package="com.eyedalehim.crowengine" main="Main" version="0.2.8" company="ninjamuffin99" />
+	<app title="Friday Night Funkin': Crow Engine" file="CrowEngine" packageName="com.eyedalehim.crowengine" package="com.eyedalehim.crowengine" main="Main" version="0.2.8" company="ninjamuffin99" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -129,6 +129,8 @@
 	<!--<haxelib name="nape-haxe4" />-->
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
+
+	<haxedef name="HSCRIPT_ALLOWED" />
 
 	<!--Enable the Flixel core recording system-->
 	<!--<haxedef name="FLX_RECORD" />-->

@@ -96,6 +96,7 @@ class PlayState extends MusicBeatState
 
 	private var gfSpeed:Int = 1;
 	private var health:Float = 1;
+	private var lerpHealth:Float = 1;
 	private var combo:Int = 0;
 
 	private var healthBarBG:FlxSprite;
@@ -898,7 +899,8 @@ class PlayState extends MusicBeatState
 			healthBarBG.y = FlxG.height * 0.1;
 
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
-			'health', 0, 2);
+			'lerpHealth', 0, 2);
+		healthBar.numDivisions = healthBar.barWidth;
 		healthBar.scrollFactor.set();
 		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		// healthBar
@@ -1804,6 +1806,14 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
+		if (health > 2)
+			health = 2;
+
+		lerpHealth = CoolUtil.coolLerp(lerpHealth, health, elapsed * 14);
+
+		if (Math.abs(lerpHealth - health) < 0.02)
+			lerpHealth = health;
+
 		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP1.scale.x, 1 - (elapsed * 9));
 		iconP1.scale.set(scaleLerp, scaleLerp);
 
@@ -1814,18 +1824,20 @@ class PlayState extends MusicBeatState
 		iconP2.updateHitbox();
 
 		var iconOffset:Int = 26;
+		var realPrt:Float = healthBar.percent;
+		@:privateAccess
+		{
+			realPrt = ((healthBar.value - healthBar.min) / healthBar.range) * healthBar._maxPercent;
+		}
 
 		iconP1.x = healthBar.x
-			+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
+			+ (healthBar.width * (FlxMath.remapToRange(realPrt, 0, 100, 100, 0) * 0.01))
 			+ (150 * iconP1.scale.x - 150) / 2
 			- iconOffset;
 		iconP2.x = healthBar.x
-			+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
+			+ (healthBar.width * (FlxMath.remapToRange(realPrt, 0, 100, 100, 0) * 0.01))
 			- (150 * iconP2.scale.x) / 2
 			- iconOffset * 2;
-
-		if (health > 2)
-			health = 2;
 
 		if (healthBar.percent < 20)
 			iconP1.animation.curAnim.curFrame = 1;
