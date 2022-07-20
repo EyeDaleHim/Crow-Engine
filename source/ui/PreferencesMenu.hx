@@ -67,6 +67,8 @@ class PreferencesMenu extends Page
 			camFollow.y = item.y;
 		});
 		menuCamera.maxScrollY = items.members[items.length - 1].y + items.members[items.length - 1].height + 16;
+
+		onExit.add(Settings.save);
 	}
 
 	public static function getPref(pref:String)

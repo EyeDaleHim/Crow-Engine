@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import lime.app.Application;
 
 class Settings
 {
@@ -8,19 +9,26 @@ class Settings
     
     public static var preferences:Map<String, Dynamic> = [];
 
-    public static function init() // should save every 1500ms
+    public static function init()
     {
         FlxG.save.bind('crow-engine', 'eyedalehim');
 
         if (FlxG.save.data.preferences != null)
             ui.PreferencesMenu.preferences = FlxG.save.data.preferences;
-       
-        timer = new haxe.Timer(1500);
-        timer.run = function()
+
+        Application.current.onExit.add(function(v:Int)
         {
-            preferences = ui.PreferencesMenu.preferences;
-            FlxG.save.data.preferences = preferences;
-            FlxG.save.flush();
-        }
+            save();
+        });
+       
+        timer = new haxe.Timer(60000); // in case something goes wrong
+        timer.run = save;
+    }
+
+    public static function save():Void
+    {
+        preferences = ui.PreferencesMenu.preferences;
+        FlxG.save.data.preferences = preferences;
+        FlxG.save.flush();
     }
 }

@@ -294,7 +294,8 @@ class TitleState extends MusicBeatState
 	{
 		if (FlxG.keys.justPressed.EIGHT)
 		{
-			FlxG.switchState(new CutsceneAnimTestState());
+			//FlxG.switchState(new CutsceneAnimTestState());
+			FlxG.switchState(new TestState());
 		}
 
 		if (FlxG.sound.music != null)
