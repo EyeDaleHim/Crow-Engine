@@ -47,6 +47,9 @@ class Note extends FlxSprite
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
 
+		attributes.set('health-gain', 0.025);
+		attributes.set('health-loss', 0.0675);
+
 		x += 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;

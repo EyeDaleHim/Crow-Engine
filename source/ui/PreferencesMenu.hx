@@ -171,7 +171,7 @@ class PreferencesMenu extends Page
 			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, 0.35))
 		);
 		descriptionBG.updateHitbox();
-		descriptionBG.screenCenter(X); // eh still messy but sure
+		descriptionBG.x = descriptionTxt.getGraphicMidpoint().x - (descriptionBG.width / 2);
 
 		descriptionTxt.clipRect = new flixel.math.FlxRect(-4, -4, descriptionBG.width, descriptionBG.height);
 	}

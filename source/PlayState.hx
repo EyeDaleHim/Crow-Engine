@@ -1409,6 +1409,7 @@ class PlayState extends MusicBeatState
 
 					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true);
 					sustainNote.scrollFactor.set();
+					sustainNote.attributes['health-gain'] /= Math.floor(susLength); // this is to ensure that sustain notes are the equivalent to hitting two notes
 					unspawnNotes.push(sustainNote);
 
 					sustainNote.mustPress = gottaHitNote;
@@ -1811,7 +1812,7 @@ class PlayState extends MusicBeatState
 
 		lerpHealth = CoolUtil.coolLerp(lerpHealth, health, elapsed * 14);
 
-		if (Math.abs(lerpHealth - health) < 0.02)
+		if (Math.abs(lerpHealth - health) < 0.001)
 			lerpHealth = health;
 
 		var scaleLerp:Float = CoolUtil.coolLerp(1, iconP1.scale.x, 1 - (elapsed * 9));
@@ -2080,7 +2081,7 @@ class PlayState extends MusicBeatState
 					if (daNote.tooLate || !daNote.wasGoodHit)
 					{
 						songMisses++;
-						health -= 0.0475;
+						health -= daNote.attributes['health-loss'];
 						vocals.volume = 0;
 					}
 
@@ -2653,10 +2654,7 @@ class PlayState extends MusicBeatState
 				combo += 1;
 			}
 
-			if (note.noteData >= 0)
-				health += 0.023;
-			else
-				health += 0.004;
+			health += note.attributes['health-gain'];
 
 			switch (note.noteData)
 			{

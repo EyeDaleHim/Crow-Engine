@@ -261,14 +261,6 @@ class TitleState extends MusicBeatState
 			initialized = true;
 
 		// credGroup.add(credTextShit);
-
-		if (FlxG.sound.music != null)
-		{
-			FlxG.sound.music.onComplete = function()
-			{
-				FlxG.switchState(new VideoState());
-			}
-		}
 	}
 
 	function getIntroTextShit():Array<Array<String>>
@@ -292,27 +284,11 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		if (FlxG.keys.justPressed.EIGHT)
-		{
-			//FlxG.switchState(new CutsceneAnimTestState());
-			FlxG.switchState(new TestState());
-		}
-
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
 
-		if (FlxG.keys.justPressed.F)
-		{
-			FlxG.fullscreen = !FlxG.fullscreen;
-		}
-
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
-
-		if (FlxG.keys.justPressed.FIVE)
-		{
-			FlxG.switchState(new CutsceneAnimTestState());
-		}
 
 		#if mobile
 		for (touch in FlxG.touches.list)
@@ -339,11 +315,6 @@ class TitleState extends MusicBeatState
 
 		if (pressedEnter && !transitioning && skippedIntro)
 		{
-			if (FlxG.sound.music != null)
-			{
-				FlxG.sound.music.onComplete = null;
-			}
-
 			#if !switch
 			// If it's Friday according to da clock
 			if (Date.now().getDay() == 5)

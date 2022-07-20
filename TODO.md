@@ -22,7 +22,7 @@ Usually game editors, systems will appear here.
 * Manually get the image specified rather than typing out the directory
 * Allow song-defined conditionals
 
-### FlxRuntimeShader.hx (Release, full mod support on 0.2.0)
+### FlxRuntimeShader.hx (Release, full mod support on 0.2.0) --DONE, PARTIALLY
 
 * Implementation of FlxRuntimeShader (courtesy of MasterEric)
 
