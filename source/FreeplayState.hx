@@ -20,7 +20,8 @@ class FreeplayState extends MusicBeatState
 	var songs:Array<SongMetadata> = [];
 
 	var selector:FlxText;
-	static var curSelected:Int = 0;
+
+	static var curSelected:Float = 0;
 	static var curDifficulty:Int = 1;
 
 	var bg:FlxSprite;
@@ -31,7 +32,16 @@ class FreeplayState extends MusicBeatState
 	var intendedScore:Int = 0;
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
-	private var coolColors = [0xFF9271FD, 0xFF9271FD, 0xFF223344, 0xFF941653, 0xFFFC96D7, 0xFFA0D1FF, 0xFFFF78BF, 0xFFF6B604];
+	private var coolColors = [
+		0xFF9271FD,
+		0xFF9271FD,
+		0xFF223344,
+		0xFF941653,
+		0xFFFC96D7,
+		0xFFA0D1FF,
+		0xFFFF78BF,
+		0xFFF6B604
+	];
 
 	private var curPlaying:Bool = false;
 
@@ -141,24 +151,7 @@ class FreeplayState extends MusicBeatState
 		selector.text = ">";
 		// add(selector);
 
-		var swag:Alphabet = new Alphabet(1, 0, "swag");
-
-		// JUST DOIN THIS SHIT FOR TESTING!!!
-		/* 
-			var md:String = Markdown.markdownToHtml(Assets.getText('CHANGELOG.md'));
-
-			var texFel:TextField = new TextField();
-			texFel.width = FlxG.width;
-			texFel.height = FlxG.height;
-			// texFel.
-			texFel.htmlText = md;
-
-			FlxG.stage.addChild(texFel);
-
-			// scoreText.textField.htmlText = md;
-
-			trace(md);
-		 */
+		lastSelected = Math.floor(curSelected);
 
 		super.create();
 	}
@@ -183,6 +176,9 @@ class FreeplayState extends MusicBeatState
 		}
 	}
 
+	private var holdTime:Float = 0;
+	private var lastSelected:Int = 0;
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
@@ -193,7 +189,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		lerpScore = CoolUtil.coolLerp(lerpScore, intendedScore, elapsed * 24);
-		bg.color = FlxColor.interpolate(bg.color, coolColors[songs[curSelected].week % coolColors.length], CoolUtil.camLerpShit(0.045));
+		bg.color = FlxColor.interpolate(bg.color, coolColors[songs[lastSelected].week % coolColors.length], CoolUtil.camLerpShit(0.045));
 
 		scoreText.text = "PERSONAL BEST:" + Math.round(lerpScore);
 		positionHighscore();
@@ -201,6 +197,48 @@ class FreeplayState extends MusicBeatState
 		var upP = controls.UI_UP_P;
 		var downP = controls.UI_DOWN_P;
 		var accepted = controls.ACCEPT;
+
+		if (controls.UI_UP || controls.UI_DOWN)
+			holdTime += elapsed;
+		else
+		{
+			holdTime = 0;
+			// this is strange but ok
+			if (Std.string(curSelected).contains('.'))
+				changeSelection();
+		}
+
+		if (holdTime > 0.75)
+		{
+			if ((controls.UI_UP && !controls.UI_DOWN) || (!controls.UI_UP && controls.UI_DOWN))
+			{
+				var increase:Float = elapsed * 10;
+				if (increase > 2.5)
+					increase = 2.5;
+				
+				if (controls.UI_UP)
+					curSelected -= increase;
+				if (controls.UI_DOWN)
+					curSelected += increase;
+			}
+			else
+			{
+				holdTime = 0;
+				changeSelection();
+			}
+
+			if (curSelected < 0)
+				curSelected = songs.length - 1;
+			if (curSelected >= songs.length)
+				curSelected = 0;
+
+			var bullShit:Int = 0;
+			for (item in grpSongs.members)
+			{
+				item.targetY = bullShit - curSelected;
+				bullShit++;
+			}
+		}
 
 		if (upP)
 		{
@@ -211,7 +249,7 @@ class FreeplayState extends MusicBeatState
 			changeSelection(1);
 		}
 		if (FlxG.mouse.wheel != 0)
-			changeSelection(-Math.round(FlxG.mouse.wheel / 4));
+			changeSelection(-Math.round(FlxG.mouse.wheel));
 
 		if (controls.UI_LEFT_P)
 			changeDiff(-1);
@@ -224,15 +262,15 @@ class FreeplayState extends MusicBeatState
 			FlxG.switchState(new MainMenuState());
 		}
 
-		if (accepted)
+		if (accepted && holdTime <= 0)
 		{
-			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+			var poop:String = Highscore.formatSong(songs[lastSelected].songName.toLowerCase(), curDifficulty);
 
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+			PlayState.SONG = Song.loadFromJson(poop, songs[lastSelected].songName.toLowerCase());
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 
-			PlayState.storyWeek = songs[curSelected].week;
+			PlayState.storyWeek = songs[lastSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
 			LoadingState.loadAndSwitchState(new PlayState());
 		}
@@ -248,7 +286,7 @@ class FreeplayState extends MusicBeatState
 			curDifficulty = 0;
 
 		#if !switch
-		intendedScore = Math.floor(Highscore.getScore(songs[curSelected].songName, curDifficulty));
+		intendedScore = Math.floor(Highscore.getScore(songs[Math.floor(curSelected)].songName, curDifficulty));
 		#end
 
 		PlayState.storyDifficulty = curDifficulty;
@@ -262,22 +300,26 @@ class FreeplayState extends MusicBeatState
 
 		curSelected += change;
 
+		curSelected = Math.floor(curSelected);
+
 		if (curSelected < 0)
 			curSelected = songs.length - 1;
 		if (curSelected >= songs.length)
 			curSelected = 0;
 
+		lastSelected = Math.floor(curSelected);
+
 		// selector.y = (70 * curSelected) + 30;
 
 		#if !switch
-		intendedScore = Math.floor(Highscore.getScore(songs[curSelected].songName, curDifficulty));
+		intendedScore = Math.floor(Highscore.getScore(songs[Math.floor(curSelected)].songName, curDifficulty));
 		// lerpScore = 0;
 		#end
 
 		#if PRELOAD_ALL
 		// No clue if this was removed or not, but I wanted to keep this as close as possible to the web version, and this is not in there.
 		// Yes, I know it's because the web version doesn't preload everything. If this being gone bothers you so much, then do it yourself lol.
-		//FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		// FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
 		#end
 
 		var bullShit:Int = 0;
@@ -287,7 +329,7 @@ class FreeplayState extends MusicBeatState
 			iconArray[i].alpha = 0.6;
 		}
 
-		iconArray[curSelected].alpha = 1;
+		iconArray[Math.floor(curSelected)].alpha = 1;
 
 		for (item in grpSongs.members)
 		{
