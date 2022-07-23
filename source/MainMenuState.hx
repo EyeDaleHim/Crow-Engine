@@ -185,7 +185,7 @@ class MainMenuState extends MusicBeatState
 		}
 
 		if (FlxG.keys.justPressed.F7)
-			FlxG.switchState(new songinfo.Stage.StageEditorState());
+			FlxG.switchState(new editors.StageEditor());
 
 		if (controls.BACK && menuItems.enabled && !menuItems.busy)
 		{

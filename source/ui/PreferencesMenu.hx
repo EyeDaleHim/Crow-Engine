@@ -36,7 +36,8 @@ class PreferencesMenu extends Page
 		createPrefItem('ghost tap', 'ghost-tap', 'Give the player a miss penalty for tapping with no hittable notes', false);
 		createPrefItem('flashing lights', 'flashing-lights', 'Prevent flashing lights for photosensitive players', true);
 		createPrefItem('Camera Zooming on Beat', 'camera-zoom', 'If the camera should zoom based on the beat', true);
-		createPrefItem('Performance Counter', 'fps-counter', 'Should the FPS Counter be visible', true);
+		createPrefItem('Performance Counter', 'fps-counter', 'Should the Performance Counter be visible', true);
+		createPrefItem('Engine Watermarks', 'watermark', 'If the engine\'s watermark should appear on-screen', true);
 		#if !web // no point of using this option if HTML5 doesn't allow you to pause tabs
 		createPrefItem('Auto Pause', 'auto-pause', 'If the game should pause when you focus out of it', false);
 		#end
@@ -86,6 +87,8 @@ class PreferencesMenu extends Page
 		preferenceCheck('fps-counter', true);
 		preferenceCheck('auto-pause', false);
 		preferenceCheck('master-volume', 1);
+		preferenceCheck('watermark', true);
+
 		if (!getPref('fps-counter'))
 		{
 			Lib.current.stage.removeChild(Main.fpsCounter);

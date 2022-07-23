@@ -102,6 +102,8 @@ class PlayState extends MusicBeatState
 	private var healthBarBG:FlxSprite;
 	private var healthBar:FlxBar;
 
+	private var watermarkTxt:FlxText;
+
 	private var generatedMusic:Bool = false;
 	private var startingSong:Bool = false;
 
@@ -915,7 +917,8 @@ class PlayState extends MusicBeatState
 		add(iconP2);
 
 		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.defaultFont, 20, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		scoreTxt.setFormat(Paths.defaultFont, 20, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		scoreTxt.borderSize = 1.5;
 		scoreTxt.scrollFactor.set();
 
 		scoreBG = new FlxSprite(scoreTxt.x - 4, scoreTxt.y - 4).makeGraphic(Math.floor(scoreTxt.width + 8), Math.floor(scoreTxt.height + 8), 0xFF000000);
@@ -923,6 +926,15 @@ class PlayState extends MusicBeatState
 		scoreBG.scrollFactor.set();
 		add(scoreBG);
 		add(scoreTxt);
+
+		if (PreferencesMenu.getPref('watermark'))
+		{
+			watermarkTxt = new FlxText(0, 0, 0, "Crow Engine v0.1.0", 16);
+			watermarkTxt.setFormat(Paths.defaultFont, 16, FlxColor.WHITE, LEFT, null, 0);
+			watermarkTxt.alpha = 0.3;
+			watermarkTxt.setPosition(4, FlxG.height - watermarkTxt.height - 4);
+			add(watermarkTxt);
+		}
 
 		scoreBG.visible = false;
 		scoreTxt.visible = false;
@@ -936,6 +948,8 @@ class PlayState extends MusicBeatState
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
 		scoreBG.cameras = [camHUD];
+		if (watermarkTxt != null)
+			watermarkTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
@@ -1984,9 +1998,10 @@ class PlayState extends MusicBeatState
 
 				var center = strumLine.y + (Note.swagWidth / 2);
 
+				daNote.y = strumLine.y + (PreferencesMenu.getPref('downscroll') ? 0.45 : -0.45) * (Conductor.songPosition - daNote.strumTime) * songSpeed;
+
 				if (PreferencesMenu.getPref('downscroll'))
 				{
-					daNote.y = strumLine.y + 0.45 * (Conductor.songPosition - daNote.strumTime) * songSpeed;
 					// use psych values while i come up with an alternative formula
 					if (daNote.isSustainNote)
 					{
@@ -2002,7 +2017,6 @@ class PlayState extends MusicBeatState
 				}
 				else
 				{
-					daNote.y = strumLine.y - 0.45 * (Conductor.songPosition - daNote.strumTime) * songSpeed;
 					if (daNote.isSustainNote)
 						daNote.y -= 10 + (2 * fakeCrochet / 100);
 				}
@@ -2016,7 +2030,7 @@ class PlayState extends MusicBeatState
 							var swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
 							swagRect.height = (center - daNote.y) / daNote.scale.y;
 							swagRect.y = daNote.frameHeight - swagRect.height;
-
+							
 							daNote.clipRect = swagRect;
 						}
 					}
@@ -2466,14 +2480,14 @@ class PlayState extends MusicBeatState
 					}
 				});
 
-				hittableNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-
 				var canHitMore:Bool = false; // avoid hitting two notes that are possible to be hit, only count for stacked ones instead
 				var countedNotes:Int = 0;
 				var maximumNotes:Int = 24;
 
 				if (hittableNotes.length > 0)
 				{
+					hittableNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+
 					boyfriend.holdTimer = 0;
 
 					for (epicNote in hittableNotes)
@@ -2490,8 +2504,8 @@ class PlayState extends MusicBeatState
 							{
 								canHitMore = true;
 								verifiedNotes.push(doubleNote);
+								countedNotes++;
 							}
-							countedNotes++;
 						}
 						countedNotes++;
 					}

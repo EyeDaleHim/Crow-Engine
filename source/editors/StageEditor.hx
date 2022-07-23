@@ -1,3 +1,3 @@
 package editors;
 
-typedef StageEditor = songinfo.Stage.StageEditorState;
+typedef StageEditor = game.Stage.StageEditorState;
