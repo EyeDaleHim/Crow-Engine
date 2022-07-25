@@ -1492,22 +1492,22 @@ class PlayState extends MusicBeatState
 							babyArrow.x += Note.swagWidth * 0;
 							babyArrow.animation.add('static', [0]);
 							babyArrow.animation.add('pressed', [4, 8], 12, false);
-							babyArrow.animation.add('confirm', [12, 16], 24, false);
+							babyArrow.animation.add('confirm', [12, 16], 8, false);
 						case 1:
 							babyArrow.x += Note.swagWidth * 1;
 							babyArrow.animation.add('static', [1]);
 							babyArrow.animation.add('pressed', [5, 9], 12, false);
-							babyArrow.animation.add('confirm', [13, 17], 24, false);
+							babyArrow.animation.add('confirm', [13, 17], 8, false);
 						case 2:
 							babyArrow.x += Note.swagWidth * 2;
 							babyArrow.animation.add('static', [2]);
 							babyArrow.animation.add('pressed', [6, 10], 12, false);
-							babyArrow.animation.add('confirm', [14, 18], 12, false);
+							babyArrow.animation.add('confirm', [14, 18], 8, false);
 						case 3:
 							babyArrow.x += Note.swagWidth * 3;
 							babyArrow.animation.add('static', [3]);
 							babyArrow.animation.add('pressed', [7, 11], 12, false);
-							babyArrow.animation.add('confirm', [15, 19], 24, false);
+							babyArrow.animation.add('confirm', [15, 19], 8, false);
 					}
 
 				default:
