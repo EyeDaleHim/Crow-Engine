@@ -2030,7 +2030,7 @@ class PlayState extends MusicBeatState
 							var swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
 							swagRect.height = (center - daNote.y) / daNote.scale.y;
 							swagRect.y = daNote.frameHeight - swagRect.height;
-							
+
 							daNote.clipRect = swagRect;
 						}
 					}
@@ -2894,11 +2894,17 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		iconP1.scale.set(1.2, 1.2);
-		iconP2.scale.set(1.2, 1.2);
+		if (iconP1.attributes['icon-beat'])
+		{
+			iconP1.scale.set(1.2, 1.2);
+			iconP1.updateHitbox();
+		}
 
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+		if (iconP2.attributes['icon-beat'])
+		{
+			iconP2.scale.set(1.2, 1.2);
+			iconP2.updateHitbox();
+		}
 
 		if (curBeat % gfSpeed == 0)
 		{

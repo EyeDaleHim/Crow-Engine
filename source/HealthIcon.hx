@@ -22,6 +22,8 @@ class HealthIcon extends FlxSprite
 		changeIcon(char);
 		antialiasing = true;
 		scrollFactor.set();
+
+		attributes.set('icon-beat', true);
 	}
 
 	public function swapOldIcon()

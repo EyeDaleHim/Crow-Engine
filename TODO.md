@@ -10,7 +10,7 @@ Usually game editors, systems will appear here.
 * Do not allow imports to various classes due to security concerns
 * Allow an option to turn off, warn player first, or turn on possible malicious scripts
 
-### Script Library System (0.1.1)
+### Script Library System (0.1.1?, 0.2.0)
 
 * Allow global runnable scripts for helpful use for mods
 * Explanation: What this basically is, is to serve helpful functions to mods, without the need of putting the same script every-time

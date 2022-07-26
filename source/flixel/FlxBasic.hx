@@ -25,7 +25,7 @@ class FlxBasic implements IFlxDestroyable
 	 */
 	public var ID:Int = idEnumerator++;
 
-    public var attributes:Map<String, Dynamic> = [];
+    public var attributes(default, never):Map<String, Dynamic> = [];
 
 	@:noCompletion
 	static var idEnumerator:Int = 0;

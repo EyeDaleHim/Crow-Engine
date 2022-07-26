@@ -44,6 +44,7 @@ class PreferencesMenu extends Page
 
 		descriptionTxt = new FlxText(0, FlxG.height * 0.85, 0, "", 32);
 		descriptionTxt.setFormat(Paths.defaultFont, 32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		descriptionTxt.borderSize = 2;
 		descriptionTxt.scrollFactor.set();
 		descriptionTxt.text = items.members[items.selectedIndex].description;
 
@@ -162,28 +163,26 @@ class PreferencesMenu extends Page
 				item.x = 120;
 		});
 		changeDescTxt(items.members[items.selectedIndex].description);
-		
+
 		descriptionTxt.screenCenter(X);
 
 		descriptionBG.setPosition(
-			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 8, 0.35), 
-			CoolUtil.coolLerp(descriptionBG.y, descriptionTxt.y - 4, 0.35)
+			CoolUtil.coolLerp(descriptionBG.x, descriptionTxt.x - 8, elapsed * 10.65), 
+			CoolUtil.coolLerp(descriptionBG.y, descriptionTxt.y - 4, elapsed * 10.65)
 		);
 		descriptionBG.setGraphicSize(
-			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 16, 0.35)), 
-			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, 0.35))
+			Math.floor(CoolUtil.coolLerp(descriptionBG.width, descriptionTxt.width + 16, elapsed * 10.65)), 
+			Math.floor(CoolUtil.coolLerp(descriptionBG.height, descriptionTxt.height + 8, elapsed * 10.65))
 		);
 		descriptionBG.updateHitbox();
 		descriptionBG.x = descriptionTxt.getGraphicMidpoint().x - (descriptionBG.width / 2);
-
-		descriptionTxt.clipRect = new flixel.math.FlxRect(-4, -4, descriptionBG.width, descriptionBG.height);
 	}
 
 	function changeDescTxt(text:String)
 	{
 		descriptionTxt.fieldWidth = 0;
 		descriptionTxt.text = text;
-		descriptionTxt.fieldWidth = descriptionTxt.width;
+		descriptionTxt.fieldWidth = Math.min(descriptionTxt.width, FlxG.width / 1.5);
 		descriptionTxt.updateHitbox();
 	}
 }

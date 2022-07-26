@@ -12,7 +12,7 @@ class OptionsMenu extends Page
 		add(items = new TextMenuList());
 		createItem('preferences', function()
 		{
-			onSwitch.dispatch(PageName.Preferences);
+			onSwitch.dispatch(PageName.Category);
 		});
 		createItem('controls', function()
 		{
