@@ -44,7 +44,7 @@ class Stage
 			// case 'yourstagename': replace this with your stage name if you wanna hardcode stuff, but make sure to do target.add() instead of add()
 			default:
 				{
-					if (Assets.exists(Paths.getPath('images/stages/$file.json', IMAGE, null)))
+					if (Assets.exists(Paths.getPath('images/stages/$file.json', TEXT, null)))
 					{
 						// for characters we'll not be manually placing them here
 						parsedStage = cast Json.parse(Assets.getText(Paths.getPath('images/stages/$file.json', IMAGE, null)));
