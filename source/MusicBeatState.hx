@@ -1,20 +1,17 @@
 package;
 
-import Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 
 class MusicBeatState extends FlxUIState
 {
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
-	private var controls(get, never):Controls;
-
-	inline function get_controls():Controls
-		return PlayerSettings.player1.controls;
 
 	override function create()
 	{
@@ -26,7 +23,7 @@ class MusicBeatState extends FlxUIState
 
 	override function update(elapsed:Float)
 	{
-		//everyStep();
+		// everyStep();
 		var oldStep:Int = curStep;
 
 		if (FlxG.keys.justPressed.F2 && FlxG.keys.pressed.CONTROL)
@@ -42,6 +39,11 @@ class MusicBeatState extends FlxUIState
 
 		super.update(elapsed);
 	}
+
+    public function load():Void // doesn't do anything really, you just have to override it
+    {
+        
+    }
 
 	private function updateBeat():Void
 	{
@@ -72,6 +74,32 @@ class MusicBeatState extends FlxUIState
 
 	public function beatHit():Void
 	{
-		//do literally nothing dumbass
+		// do literally nothing dumbass
 	}
+
+    override public function onFocusLost():Void
+    {
+        super.onFocusLost();
+        
+        if (FlxG.autoPause)
+            return;
+
+        if (FlxG.sound.music != null)
+        {
+            FlxTween.tween(FlxG.sound.music, {volume: 0.2}, 1.5);
+        }
+    }
+
+    override public function onFocus():Void
+    {
+        super.onFocus();
+        
+        if (FlxG.autoPause)
+            return;
+
+        if (FlxG.sound.music != null)
+        {
+            FlxTween.tween(FlxG.sound.music, {volume: 1}, 1.5);
+        }
+    }
 }
