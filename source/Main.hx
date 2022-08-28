@@ -14,7 +14,7 @@ class Main extends Sprite
 		width: 1280, // Game Width
 		height: 720, // Game Height
 		zoom: -1.0, // Zoom automatically calculates if -1
-		initialState: states.PlayState, // The State when the game starts
+		initialState: states.TitleState, // The State when the game starts
 		framerate: 120, // Default Framerate of the Game
 		skipSplash: true, // Skipping Flixel's Splash Screen
 		startFullscreen: false // If the game should start fullscreen
@@ -76,6 +76,7 @@ class Main extends Sprite
 		addChild(game);
 
 		FlxG.console.registerClass(utils.Paths);
+		FlxG.console.registerClass(utils.Tools);
 
 		#if !mobile
 		// addChild(new FPS(10, 3, 0xFFFFFF));

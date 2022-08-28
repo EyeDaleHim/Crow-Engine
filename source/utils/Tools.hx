@@ -25,6 +25,22 @@ class Tools
 		return formatSize + " " + dataTexts[data];
 	}
 
+	public static function numberArray(min:Int, max:Int, ?exclude:Array<Int>):Array<Int>
+	{
+		var numArray:Array<Int> = [];
+
+		if (exclude == null)
+			exclude = [];
+
+		for (i in min...max)
+		{
+			if (exclude.indexOf(i) == -1)
+				numArray.push(i);
+		}
+
+		return numArray;
+	}
+
 	public static function formatAccuracy(value:Float)
 	{
 		var conversion:Map<String, String> = [
