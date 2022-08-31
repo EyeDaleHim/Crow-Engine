@@ -15,7 +15,7 @@ class Main extends Sprite
 		height: 720, // Game Height
 		zoom: -1.0, // Zoom automatically calculates if -1
 		initialState: states.TitleState, // The State when the game starts
-		framerate: 120, // Default Framerate of the Game
+		framerate: 60, // Default Framerate of the Game
 		skipSplash: true, // Skipping Flixel's Splash Screen
 		startFullscreen: false // If the game should start fullscreen
 	};
