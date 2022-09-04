@@ -14,7 +14,7 @@ class Main extends Sprite
 		width: 1280, // Game Width
 		height: 720, // Game Height
 		zoom: -1.0, // Zoom automatically calculates if -1
-		initialState: states.TitleState, // The State when the game starts
+		initialState: states.menus.TitleState, // The State when the game starts
 		framerate: 60, // Default Framerate of the Game
 		skipSplash: true, // Skipping Flixel's Splash Screen
 		startFullscreen: false // If the game should start fullscreen
@@ -72,11 +72,22 @@ class Main extends Sprite
 
 		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, game.zoom, game.framerate, game.framerate, game.skipSplash,
 			game.startFullscreen);
-
+	
 		addChild(game);
+
+		if (FlxG.save.data.settings != null)
+			FlxG.save.data.settings = new Map<String, Dynamic>();
 
 		FlxG.console.registerClass(utils.Paths);
 		FlxG.console.registerClass(utils.Tools);
+		FlxG.console.registerClass(backend.Settings);
+
+		Application.current.window.onClose.add(function()
+		{
+			FlxG.save.data.settings = Settings.prefs;
+
+			FlxG.save.flush();
+		});
 
 		#if !mobile
 		// addChild(new FPS(10, 3, 0xFFFFFF));

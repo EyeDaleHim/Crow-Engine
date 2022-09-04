@@ -8,6 +8,8 @@ import openfl.display.BitmapData;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 
+using StringTools;
+
 class Paths {
 	inline static public var SOUND_EXT:String = #if web 'mp3' #else 'ogg' #end;
 
@@ -124,6 +126,11 @@ class Paths {
         return getPath('images/${file}.png', library);
     }
 
+    public static function sound(file:String, ?library:String = null):String
+    {
+        return getPath('sounds/${file}.$SOUND_EXT', library);
+    }
+
     public static function inst(song:String, ?library:String = null):String
     {
         return getPath('data/${song}/Inst.$SOUND_EXT', library);
@@ -137,6 +144,11 @@ class Paths {
     public static function music(song:String):String
     {
         return getPreloadPath('music/${song}.$SOUND_EXT');
+    }
+
+    public static function font(file:String):String
+    {
+        return getPath('fonts/${file}');
     }
 
     public static function data(file:String):String

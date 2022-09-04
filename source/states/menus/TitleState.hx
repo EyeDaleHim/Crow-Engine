@@ -1,4 +1,4 @@
-package states;
+package states.menus;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -100,6 +100,11 @@ class TitleState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (FlxG.keys.justPressed.R)
+		{
+			FlxG.switchState(new MainMenuState());
+		}
 
 		if (FlxG.sound.music != null)
 		{

@@ -29,9 +29,24 @@
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
-	<set name="BUILD_DIR" value="export" />
+	<set name="BUILD_DIR" value="export/debug" if="debug" />
+	<set name="BUILD_DIR" value="export/release" unless="debug" />
+	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
+
 	<source path="source" />
-	<assets path="assets" />
+	
+	<library name="images"		  preload="false" />
+	<library name="sounds"		  preload="true"  />
+	<library name="music"		  preload="true"  />
+	<library name="data"		  preload="true"  />
+
+	<assets path="assets/images" 								/>
+	<assets path="assets/music"   exclude="*.ogg" if="web"		/>
+	<assets path="assets/music"   exclude="*.mp3" unless="web"	/>
+	<assets path="assets/sounds"  exclude="*.ogg" if="web"		/>
+	<assets path="assets/sounds"  exclude="*.mp3" unless="web"	/>
+	<assets path="assets/data"   								/>
+	<assets path="assets/fonts" embed="true"					/>
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
