@@ -15,10 +15,14 @@ class MainMenuState extends MusicBeatState
 	public static var menuList:Array<MenuCallback> = [
 		{name: 'story_mode', callback: () -> {}, skipAnimBG: false},
 		{name: 'freeplay', callback: () -> {}, skipAnimBG: false},
-		{name: 'donate', callback: function()
 		{
-			FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
-		}, skipAnimBG: true},
+			name: 'donate',
+			callback: function()
+			{
+				FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
+			},
+			skipAnimBG: true
+		},
 		{name: 'options', callback: () -> {}, skipAnimBG: false},
 	];
 
@@ -56,7 +60,7 @@ class MainMenuState extends MusicBeatState
 		menuGroup = new FlxTypedGroup<FlxSprite>();
 		add(menuGroup);
 
-		versionText = new FlxText(0, 0, 0, "Friday Night Funkin' 0.2.7.1 // Crow Engine 0.1.0");
+		versionText = new FlxText(0, 0, 0, "Friday Night Funkin' " + Main.gameVersion + " // Crow Engine " + Main.engineVersion);
 		versionText.scrollFactor.set();
 		versionText.antialiasing = Settings.getPref('antialiasing', true);
 		versionText.setFormat(Paths.font('vcr.ttf'), 14, 0xFFFFFFFF, LEFT, OUTLINE, 0xFF000000);
@@ -129,7 +133,7 @@ class MainMenuState extends MusicBeatState
 	}
 
 	private function acceptSelection()
-	{		
+	{
 		if (menuList[curSelected].skipAnimBG)
 			menuList[curSelected].callback();
 		else

@@ -20,6 +20,9 @@ class Main extends Sprite
 		startFullscreen: false // If the game should start fullscreen
 	};
 
+	public static var gameVersion:String = "0.2.7.1"; // Version Of The Base Game (Friday Night Funkin')
+	public static var engineVersion:String = Application.current.meta.get("version"); // Version Of The Engine (Crow Engine)
+
 	public static function main():Void
 	{
 		Lib.current.addChild(new Main());
@@ -72,7 +75,7 @@ class Main extends Sprite
 
 		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, game.zoom, game.framerate, game.framerate, game.skipSplash,
 			game.startFullscreen);
-	
+
 		addChild(game);
 
 		if (FlxG.save.data.settings != null)
