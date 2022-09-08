@@ -21,7 +21,7 @@ class Main extends Sprite
 	};
 
 	public static var gameVersion:String = "0.2.7.1"; // Version Of The Base Game (Friday Night Funkin')
-	public static var engineVersion:String = Application.current.meta.get("version"); // Version Of The Engine (Crow Engine)
+	public static var engineVersion:String = "0.1.0"; // Version Of The Engine (Crow Engine)
 
 	public static function main():Void
 	{
