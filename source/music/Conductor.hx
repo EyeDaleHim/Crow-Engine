@@ -1,6 +1,6 @@
-package song;
+package music;
 
-import song.Song.SwagSong;
+import music.Song.SongInfo;
 
 typedef BPMChangeEvent =
 {
@@ -25,7 +25,7 @@ class Conductor
 
 	public function new() {}
 
-	public static function mapBPMChanges(song:SwagSong)
+	public static function mapBPMChanges(song:SongInfo)
 	{
 		bpmChangeMap = [];
 

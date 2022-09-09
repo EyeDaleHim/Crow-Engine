@@ -1,6 +1,6 @@
-package song;
+package music;
 
-typedef SwagSection =
+typedef SectionInfo =
 {
 	var sectionNotes:Array<Dynamic>;
 	var lengthInSteps:Int;

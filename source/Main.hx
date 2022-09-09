@@ -20,8 +20,9 @@ class Main extends Sprite
 		startFullscreen: false // If the game should start fullscreen
 	};
 
-	public static var gameVersion:String = "0.2.7.1"; // Version Of The Base Game (Friday Night Funkin')
-	public static var engineVersion:String = Application.current.meta.get("version"); // Version Of The Engine (Crow Engine)
+	// game version's number is 7 because of week 6
+	public static var gameVersion:VersionScheme = {display: "0.2.7.1", number: 7}; // Version Of The Base Game (Friday Night Funkin')
+	public static var engineVersion:VersionScheme = {display: "0.1.0", number: 1}; // Version Of The Engine (Crow Engine)
 
 	public static function main():Void
 	{
@@ -96,4 +97,16 @@ class Main extends Sprite
 		// addChild(new FPS(10, 3, 0xFFFFFF));
 		#end
 	}
+}
+
+/* Helper class to classify versions.
+ * 
+ * `display`: Display version
+ * `number`: Number version
+ * @return {display: '', number: 0}
+*/
+typedef VersionScheme = 
+{
+	var display:String;
+	var number:Int;
 }

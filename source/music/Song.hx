@@ -1,16 +1,16 @@
-package song;
+package music;
 
-import song.Section.SwagSection;
+import music.Section.SectionInfo;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
 
 using StringTools;
 
-typedef SwagSong =
+typedef SongInfo =
 {
 	var song:String;
-	var notes:Array<SwagSection>;
+	var notes:Array<SectionInfo>;
 	var bpm:Float;
 	var needsVoices:Bool;
 	var speed:Float;
@@ -23,7 +23,7 @@ typedef SwagSong =
 class Song
 {
 	public var song:String;
-	public var notes:Array<SwagSection>;
+	public var notes:Array<SectionInfo>;
 	public var bpm:Float;
 	public var needsVoices:Bool = true;
 	public var speed:Float = 1;

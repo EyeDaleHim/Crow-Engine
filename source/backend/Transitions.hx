@@ -59,7 +59,7 @@ class Transitions
 				case 'Pixel_Slider_Left':
 					return Pixel_Slider_Left;
 				case 'Pixel_Slider_Right':
-					return Pixel_Slider_Left;
+					return Pixel_Slider_Right;
 				default:
 					return Pixel_Fade;
 			}

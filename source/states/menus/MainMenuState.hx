@@ -14,7 +14,10 @@ class MainMenuState extends MusicBeatState
 {
 	public static var menuList:Array<MenuCallback> = [
 		{name: 'story_mode', callback: () -> {}, skipAnimBG: false},
-		{name: 'freeplay', callback: () -> {}, skipAnimBG: false},
+		{name: 'freeplay', callback: function() 
+		{
+			FlxG.switchState(new FreeplayState());
+		}, skipAnimBG: false},
 		{
 			name: 'donate',
 			callback: function()
@@ -60,7 +63,7 @@ class MainMenuState extends MusicBeatState
 		menuGroup = new FlxTypedGroup<FlxSprite>();
 		add(menuGroup);
 
-		versionText = new FlxText(0, 0, 0, "Friday Night Funkin' " + Main.gameVersion + " // Crow Engine " + Main.engineVersion);
+		versionText = new FlxText(0, 0, 0, "Friday Night Funkin' " + Main.gameVersion.display + " // Crow Engine " + Main.engineVersion.display);
 		versionText.scrollFactor.set();
 		versionText.antialiasing = Settings.getPref('antialiasing', true);
 		versionText.setFormat(Paths.font('vcr.ttf'), 14, 0xFFFFFFFF, LEFT, OUTLINE, 0xFF000000);
@@ -146,6 +149,10 @@ class MainMenuState extends MusicBeatState
 			{
 				if (spr.ID != curSelected)
 					FlxTween.tween(spr, {alpha: 0.0}, 0.5, {ease: FlxEase.quadOut});
+				else
+				{
+					FlxFlicker.flicker(spr, 1.1, 0.06);
+				}
 			});
 
 			if (Settings.getPref('flashing-lights', true))
