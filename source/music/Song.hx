@@ -38,7 +38,7 @@ class Song
 		this.bpm = bpm;
 	}
 
-	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
+	public static function loadFromJson(jsonInput:String, ?folder:String):SongInfo
 	{
 		var rawJson = Assets.getText(Paths.data(folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
 
@@ -67,9 +67,9 @@ class Song
 		return parseJSONshit(rawJson);
 	}
 
-	public static function parseJSONshit(rawJson:String):SwagSong
+	public static function parseJSONshit(rawJson:String):SongInfo
 	{
-		var swagShit:SwagSong = cast Json.parse(rawJson).song;
+		var swagShit:SongInfo = cast Json.parse(rawJson).song;
 		swagShit.validScore = true;
 		return swagShit;
 	}
