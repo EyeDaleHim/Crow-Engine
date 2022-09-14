@@ -75,7 +75,7 @@ class Transitions
 				case 'Slider_Left':
 					return Slider_Left;
 				case 'Slider_Right':
-					return Slider_Left;
+					return Slider_Right;
 				default:
 					return Fade;
 			}
