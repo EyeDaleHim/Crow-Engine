@@ -1,6 +1,7 @@
 package states.menus;
 
 import flixel.FlxG;
+import flixel.FlxSprite;
 import states.menus.MainMenuState;
 
 class FreeplayState extends MusicBeatState
