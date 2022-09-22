@@ -1,3 +1,4 @@
+import objects.Alphabet;
 import utils.Paths;
 import utils.Tools;
 import music.Conductor;

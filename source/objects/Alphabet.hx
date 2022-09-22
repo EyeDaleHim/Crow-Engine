@@ -208,7 +208,9 @@ class Alphabet extends FlxSpriteGroup
 	{
 		if (isMenuItem)
 		{
-			y = Tools.lerpBound(y, ((targetY * 1.3) * 120) + (FlxG.height * 0.48), elapsed * 9.6);
+			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
+
+			y = Tools.lerpBound(y, (scaledY * 120) + (FlxG.height - height) / 2, elapsed * 9.6);
 			x = Tools.lerpBound(x, (targetY * 20) + 90, elapsed * 9.6);
 		}
 
@@ -237,7 +239,7 @@ class AlphaCharacter extends FlxSprite
 
 	public function createBold(letter:String)
 	{
-		animation.addByPrefix(letter, letter.toUpperCase() + " bold", 24);
+		animation.addByPrefix(letter, letter.toUpperCase() + " bold", 12);
 		animation.play(letter);
 		updateHitbox();
 	}
@@ -250,7 +252,7 @@ class AlphaCharacter extends FlxSprite
 			letterCase = 'capital';
 		}
 
-		animation.addByPrefix(letter, letter + " " + letterCase, 24);
+		animation.addByPrefix(letter, letter + " " + letterCase, 12);
 		animation.play(letter);
 		updateHitbox();
 
@@ -260,7 +262,7 @@ class AlphaCharacter extends FlxSprite
 
 	public function createNumber(letter:String):Void
 	{
-		animation.addByPrefix(letter, letter, 24);
+		animation.addByPrefix(letter, letter, 12);
 		animation.play(letter);
 
 		updateHitbox();
