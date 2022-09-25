@@ -13,7 +13,7 @@ class Tools
 	{
 		var size:Float = num;
 		var data = 0;
-		var dataTexts = ["B", "KB", "MB", "GB"];
+		var dataTexts = ["B", "KB", "MB", "GB", "TB", "PB"];
 		while (size > 1024 && data < dataTexts.length - 1)
 		{
 			data++;
