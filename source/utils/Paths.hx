@@ -10,159 +10,168 @@ import openfl.utils.Assets as OpenFlAssets;
 
 using StringTools;
 
-class Paths {
+class Paths
+{
 	inline static public var SOUND_EXT:String = #if web 'mp3' #else 'ogg' #end;
 
-    // Helper variable for getting files
-    public static var manifest:Map<String, {file:String, library:String}> = [];
+	// Helper variable for getting files
+	public static var manifest:Map<String, {file:String, library:String}> = [];
 
-    // List of libraries
+	// List of libraries
 	public static var libraries:Array<String> = ['shared', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7'];
 
-    private static var hasInit:Bool = false;
+	private static var hasInit:Bool = false;
 
-    // Initalizes saving the manifest for performance
-    public static function init()
-    {
-        if (hasInit)
-            return;
+	// Initalizes saving the manifest for performance
+	public static function init()
+	{
+		if (hasInit)
+			return;
 
-        hasInit = true;
+		hasInit = true;
 
-        try
-        {
-            var manifestSave:FlxSave = new FlxSave();
-            manifestSave.bind('manifest', 'crow-engine');
-            if (manifestSave.data.manifest != null)
-                manifest = manifestSave.data.manifest;
-        }
-        catch (e)
-        {
-            // Assume the manifest savefile is broken
-            manifest = [];
-        }
-        
-        FlxG.stage.application.onExit.add(function(_)
-        {
-            var manifestSave:FlxSave = new FlxSave();
-            manifestSave.bind('manifest', 'crow-engine');
-            manifestSave.data.manifest = manifest;
+		try
+		{
+			var manifestSave:FlxSave = new FlxSave();
+			manifestSave.bind('manifest', 'crow-engine');
+			if (manifestSave.data.manifest != null)
+				manifest = manifestSave.data.manifest;
+		}
+		catch (e)
+		{
+			// Assume the manifest savefile is broken
+			manifest = [];
+		}
 
-            manifestSave.close();
-        });
-    }
+		FlxG.stage.application.onExit.add(function(_)
+		{
+			var manifestSave:FlxSave = new FlxSave();
+			manifestSave.bind('manifest', 'crow-engine');
+			manifestSave.data.manifest = manifest;
 
-    // format manifesting
-    private static function resolveManifest(file:String = '', ?library:String = null):String
-    {
-        var middle:String = '-';
+			manifestSave.close();
+		});
+	}
 
-        if (library == null || (library != null && library == ''))
-        {
-            library = '';
-            middle = '';
-        }
+	// format manifesting
+	private static function resolveManifest(file:String = '', ?library:String = null):String
+	{
+		var middle:String = '-';
 
-        if (file == null)
-            file = '';
+		if (library == null || (library != null && library == ''))
+		{
+			library = '';
+			middle = '';
+		}
 
-        return library + middle + file;
-    }
+		if (file == null)
+			file = '';
 
-    // format paths
-    private static function formatPath(info:{file:String, library:String})
-    {
-        if (info.library != null && info.library != '')
-            return 'assets/libraries/${info.library}/${info.file}';
-        return 'assets/${info.file}';
-    }
+		return library + middle + file;
+	}
 
-    /*
-    * The getPath() function is relatively simple.
-    * It checks if the file exists assuming `library = null`,
-    * If so, then it scans every library it can to locate which.
-    * After finding the file, it starts a process of putting the path into a manifest state,
-    * Which will then be used as reference to prevent scanning the library again.
-    */
-    public static function getPath(file:String = '', ?library:String = null):String
-    {
-        var preload:String = getPreloadPath(file);
+	// format paths
+	private static function formatPath(info:{file:String, library:String})
+	{
+		if (info.library != null && info.library != '')
+			return 'assets/libraries/${info.library}/${info.file}';
+		return 'assets/${info.file}';
+	}
 
-        if (library == null)
-        {
-            if (OpenFlAssets.exists(preload, IMAGE))
-            {
-                return formatPath(manifest.get(resolveManifest(file, '')));
-            }
-            else
-            {
-                for (libFolder in libraries)
-                {
-                    var folder:String = getPath(file, libFolder);
-                    if (OpenFlAssets.exists(folder))
-                    {
-                        return formatPath(manifest.get(resolveManifest(file, library)));
-                    }
-                }
-            }
-        }
+	private static function extensionHelper(name:String)
+	{
+		if (name.split('.')[2] != null)
+			return name.split('.')[0] + '.' + name.split('.')[1];
 
-        if (!manifest.exists(resolveManifest(file, library)))
-            manifest.set(resolveManifest(file, library), {file: file, library: library});
+		return name;
+	}
 
-        return formatPath(manifest.get(resolveManifest(file, library)));
-    }
+	/*
+	 * The getPath() function is relatively simple.
+	 * It checks if the file exists assuming `library = null`,
+	 * If so, then it scans every library it can to locate which.
+	 * After finding the file, it starts a process of putting the path into a manifest state,
+	 * Which will then be used as reference to prevent scanning the library again.
+	 */
+	public static function getPath(file:String = '', ?library:String = null):String
+	{
+		var preload:String = getPreloadPath(file);
 
-    public static function getPreloadPath(file:String = ''):String
-    {
-        if (!manifest.exists(resolveManifest(file, '')))
-            manifest.set(resolveManifest(file, ''), {file: file, library: ''});
-        
-        return formatPath(manifest.get(resolveManifest(file, '')));
-    }
+		if (library == null)
+		{
+			if (OpenFlAssets.exists(preload, IMAGE))
+			{
+				return formatPath(manifest.get(resolveManifest(file, '')));
+			}
+			else
+			{
+				for (libFolder in libraries)
+				{
+					var folder:String = getPath(file, libFolder);
+					if (OpenFlAssets.exists(folder))
+					{
+						return formatPath(manifest.get(resolveManifest(file, library)));
+					}
+				}
+			}
+		}
 
-    public static function image(file:String, ?library:String = null):String
-    {
-        return getPath('images/${file}.png', library);
-    }
+		if (!manifest.exists(resolveManifest(file, library)))
+			manifest.set(resolveManifest(file, library), {file: file, library: library});
 
-    public static function sound(file:String, ?library:String = null):String
-    {
-        return getPath('sounds/${file}.$SOUND_EXT', library);
-    }
+		return formatPath(manifest.get(resolveManifest(file, library)));
+	}
 
-    public static function inst(song:String, ?library:String = null):String
-    {
-        return getPath('data/${song}/Inst.$SOUND_EXT', library);
-    }
-    
-    public static function vocals(song:String, ?library:String = null):String
-    {
-        return getPath('data/${song}/Voice.$SOUND_EXT', library);
-    }
+	public static function getPreloadPath(file:String = ''):String
+	{
+		if (!manifest.exists(resolveManifest(file, '')))
+			manifest.set(resolveManifest(file, ''), {file: file, library: ''});
 
-    public static function music(song:String):String
-    {
-        return getPreloadPath('music/${song}.$SOUND_EXT');
-    }
+		return formatPath(manifest.get(resolveManifest(file, '')));
+	}
 
-    public static function font(file:String):String
-    {
-        return getPath('fonts/${file}');
-    }
+	public static function image(file:String, ?library:String = null):String
+	{
+		return getPath(extensionHelper('images/${file}.png'), library);
+	}
 
-    public static function data(file:String):String
-    {
-        return getPreloadPath('data/${file}.json');
-    }
+	public static function sound(file:String, ?library:String = null):String
+	{
+		return getPath(extensionHelper('sounds/${file}.$SOUND_EXT'), library);
+	}
 
-    public static function file(file:String, end:String, ?library:String = null):String
-    {
-        return getPath('$file.$end', library);
-    }
+	public static function inst(song:String, ?library:String = null):String
+	{
+		return getPath(extensionHelper('data/${song}/Inst.$SOUND_EXT'), library);
+	}
 
-    public static function getSparrowAtlas(file:String, ?library:String = null):FlxAtlasFrames
-    {
-        return FlxAtlasFrames.fromSparrow(image(file), OpenFlAssets.getText(Paths.file('images/$file', 'xml', library)));
-    }
+	public static function vocals(song:String, ?library:String = null):String
+	{
+		return getPath(extensionHelper('data/${song}/Voice.$SOUND_EXT'), library);
+	}
+
+	public static function music(song:String):String
+	{
+		return getPreloadPath(extensionHelper('music/${song}.$SOUND_EXT'));
+	}
+
+	public static function font(file:String):String
+	{
+		return getPath(extensionHelper('fonts/${file}.ttf'));
+	}
+
+	public static function data(file:String):String
+	{
+		return getPreloadPath(extensionHelper('data/${file}.json'));
+	}
+
+	public static function file(file:String, end:String, ?library:String = null):String
+	{
+		return getPath('$file.$end', library);
+	}
+
+	public static function getSparrowAtlas(file:String, ?library:String = null):FlxAtlasFrames
+	{
+		return FlxAtlasFrames.fromSparrow(image(file), OpenFlAssets.getText(Paths.file('images/$file', 'xml', library)));
+	}
 }

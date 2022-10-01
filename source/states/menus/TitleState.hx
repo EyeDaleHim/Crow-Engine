@@ -103,7 +103,7 @@ class TitleState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.R)
 		{
-			FlxG.switchState(new MainMenuState());
+			MusicBeatState.switchState(new FreeplayState());
 		}
 
 		if (FlxG.sound.music != null)

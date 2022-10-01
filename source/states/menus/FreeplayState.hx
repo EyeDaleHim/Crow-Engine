@@ -74,7 +74,7 @@ class FreeplayState extends MusicBeatState
 	override public function update(elapsed:Float)
 	{
 		if (FlxG.keys.justPressed.ESCAPE || FlxG.keys.justPressed.BACKSPACE)
-			FlxG.switchState(new MainMenuState());
+			MusicBeatState.switchState(new MainMenuState());
 
 		if (FlxG.keys.justPressed.UP)
 			changeSelection(-1);
@@ -91,7 +91,7 @@ class FreeplayState extends MusicBeatState
 
 		curSelected = FlxMath.wrap(curSelected + change, 0, songList.length - 1);
 
-		var range:Int = 0; 
+		var range:Int = 0;
 
 		for (song in songList)
 		{
@@ -101,7 +101,6 @@ class FreeplayState extends MusicBeatState
 			if (song.targetY == 0)
 			{
 				song.alpha = 1.0;
-
 			}
 			else
 			{

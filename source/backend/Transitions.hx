@@ -12,15 +12,16 @@ using StringTools;
 
 class Transitions
 {
-	public static function transition(duration:Float, fade:Easing, type:TransitionType, callbacks:Callbacks)
+	public static function transition(duration:Null<Float>, fade:Easing, type:TransitionType, callbacks:Callbacks)
 	{
 		if (duration == null)
-            duration = 1.0;
-        if (fade == null)
-            throw "backend.Transitions.transition()'s \"fade\" parameter cannot be null.";
-        
-        var camera:FlxCamera = new FlxCamera();
-		FlxG.cameras.add(camera);
+			duration = 0.5;
+		if (fade == null)
+			throw "Transition \"Easing\" parameter cannot be null.";
+
+		var camera:FlxCamera = new FlxCamera();
+		camera.bgColor = 0;
+		FlxG.cameras.add(camera, false);
 
 		var group:FlxTypedGroup<FlxSprite> = new FlxTypedGroup<FlxSprite>();
 		group.cameras = [camera];
@@ -30,19 +31,36 @@ class Transitions
 		{
 			case Fade:
 				{
-                    var black:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
-                    black.alpha = (fade == In ? 0.0 : 1.0);
-                    group.add(black);
+					var black:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
+					black.alpha = (fade == In ? 0.0 : 1.0);
+					group.add(black);
 
-                    FlxTween.tween(black, {alpha: (fade == In ? 1.0 : 0.0)}, duration, {ease: FlxEase.quadOut});
-                }
+					FlxTween.tween(black, {alpha: (fade == In ? 1.0 : 0.0)}, duration, {
+						ease: FlxEase.quadOut,
+						onStart: function(twn:FlxTween)
+						{
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
+						},
+						onUpdate: function(twn:FlxTween)
+						{
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
+						},
+						onComplete: function(twn:FlxTween)
+						{
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
+						}
+					});
+				}
 			default: // null
 				{
-                    if (callbacks.startCallback != null)
-                        callbacks.startCallback();
-                    if (callbacks.endCallback != null)
-                        callbacks.endCallback();
-                }
+					if (callbacks.startCallback != null)
+						callbacks.startCallback();
+					if (callbacks.endCallback != null)
+						callbacks.endCallback();
+				}
 		}
 	}
 

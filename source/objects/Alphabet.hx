@@ -239,7 +239,7 @@ class AlphaCharacter extends FlxSprite
 
 	public function createBold(letter:String)
 	{
-		animation.addByPrefix(letter, letter.toUpperCase() + " bold", 12);
+		animation.addByPrefix(letter, letter.toUpperCase() + " bold", 24);
 		animation.play(letter);
 		updateHitbox();
 	}
@@ -252,7 +252,7 @@ class AlphaCharacter extends FlxSprite
 			letterCase = 'capital';
 		}
 
-		animation.addByPrefix(letter, letter + " " + letterCase, 12);
+		animation.addByPrefix(letter, letter + " " + letterCase, 24);
 		animation.play(letter);
 		updateHitbox();
 
@@ -262,7 +262,7 @@ class AlphaCharacter extends FlxSprite
 
 	public function createNumber(letter:String):Void
 	{
-		animation.addByPrefix(letter, letter, 12);
+		animation.addByPrefix(letter, letter, 24);
 		animation.play(letter);
 
 		updateHitbox();

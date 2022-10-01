@@ -14,10 +14,14 @@ class MainMenuState extends MusicBeatState
 {
 	public static var menuList:Array<MenuCallback> = [
 		{name: 'story_mode', callback: () -> {}, skipAnimBG: false},
-		{name: 'freeplay', callback: function() 
 		{
-			FlxG.switchState(new FreeplayState());
-		}, skipAnimBG: false},
+			name: 'freeplay',
+			callback: function()
+			{
+				MusicBeatState.switchState(new FreeplayState());
+			},
+			skipAnimBG: false
+		},
 		{
 			name: 'donate',
 			callback: function()
@@ -119,7 +123,7 @@ class MainMenuState extends MusicBeatState
 	{
 		FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
 
-		curSelected = FlxMath.wrap(curSelected + change, 0, menuList.length);
+		curSelected = FlxMath.wrap(curSelected + change, 0, menuList.length - 1);
 
 		menuGroup.forEach(function(spr:FlxSprite)
 		{
@@ -137,6 +141,12 @@ class MainMenuState extends MusicBeatState
 
 	private function acceptSelection()
 	{
+		if (menuList[curSelected] == null)
+		{
+			trace('Unknown selection: $curSelected'); // for scripts shit
+			return;
+		}
+
 		if (menuList[curSelected].skipAnimBG)
 			menuList[curSelected].callback();
 		else
