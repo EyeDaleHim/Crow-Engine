@@ -1,5 +1,6 @@
 package;
 
+import backend.DebugInfo;
 import flixel.FlxG;
 import flixel.FlxGame;
 import openfl.Lib;
@@ -94,18 +95,18 @@ class Main extends Sprite
 		});
 
 		#if !mobile
-		// addChild(new FPS(10, 3, 0xFFFFFF));
+		addChild(new DebugInfo(10, 5));
 		#end
 	}
 }
 
-/* Helper class to classify versions.
+/*Helper class to classify versions.
  * 
  * `display`: Display version
  * `number`: Number version
  * @return {display: '', number: 0}
-*/
-typedef VersionScheme = 
+ */
+typedef VersionScheme =
 {
 	var display:String;
 	var number:Int;
