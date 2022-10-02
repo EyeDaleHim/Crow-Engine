@@ -78,6 +78,8 @@ class Main extends Sprite
 		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, game.zoom, game.framerate, game.framerate, game.skipSplash,
 			game.startFullscreen);
 
+		FlxG.stage.quality = openfl.display.StageQuality.BEST;
+
 		addChild(game);
 
 		if (FlxG.save.data.settings != null)
