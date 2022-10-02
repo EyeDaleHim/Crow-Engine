@@ -59,10 +59,12 @@ class DebugInfo extends TextField
 				text += "FPS: " + times.length + "\n";
 
 			if (Settings.getPref("showMemory", true))
-				text += "Memory: " + Tools.formatMemory(memory) + "\n";
+				text += "Memory: " + Tools.formatMemory(memory);
 
 			if (Settings.getPref("showMemoryPeak", true))
-				text += "Memory Peak: " + Tools.formatMemory(memoryPeak) + "\n";
+				text += " / " + Tools.formatMemory(memoryPeak) + "\n";
+			else
+				text += '\n';
 		}
 	}
 }
