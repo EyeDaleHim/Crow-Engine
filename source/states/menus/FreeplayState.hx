@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.util.FlxSort;
 import states.menus.MainMenuState;
 import weeks.SongHandler;
@@ -61,8 +62,13 @@ class FreeplayState extends MusicBeatState
 				songObject.isMenuItem = true;
 				songObject.targetY = i + j;
 				songObject.ID = Std.int(i + j);
-
 				songList.add(songObject);
+
+				var iconObject:HealthIcon = new HealthIcon(0, 0, SongHandler.songs['Base_Game'][week.week].icons[songsList.indexOf(song)]);
+				iconObject.ID = songObject.ID;
+				iconObject.sprTracker = songObject;
+				iconArray.push(iconObject);
+				add(iconObject);
 			}
 		}
 
@@ -107,6 +113,13 @@ class FreeplayState extends MusicBeatState
 				song.alpha = 0.6;
 			}
 		}
+
+		for (i in 0...iconArray.length)
+		{
+			iconArray[i].alpha = 0.6;
+		}
+
+		iconArray[curSelected].alpha = 1;
 	}
 }
 
