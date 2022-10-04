@@ -55,16 +55,35 @@ class DebugInfo extends TextField
 		{
 			text = "";
 
-			if (Settings.getPref("showFPS", true))
-				text += "FPS: " + times.length + "\n";
+			switch (Settings.getPref("fpsInfo", "default"))
+			{
+				case 'minimized':
+					{
+						if (Settings.getPref("showFPS"), true)
+							text += times.length + '\n';
 
-			if (Settings.getPref("showMemory", true))
-				text += "Memory: " + Tools.formatMemory(memory);
+						if (Settings.getPref("showMemory", true))
+							text += Tools.formatMemory(memory);
 
-			if (Settings.getPref("showMemoryPeak", true))
-				text += " / " + Tools.formatMemory(memoryPeak) + "\n";
-			else
-				text += '\n';
+						if (Settings.getPref("showMemoryPeak", true))
+							text += " / " + Tools.formatMemory(memoryPeak) + "\n";
+						else
+							text += '\n';
+					}
+				case 'default':
+					{
+						if (Settings.getPref("showFPS", true))
+							text += "FPS: " + times.length + "\n";
+
+						if (Settings.getPref("showMemory", true))
+							text += "Memory: " + Tools.formatMemory(memory);
+
+						if (Settings.getPref("showMemoryPeak", true))
+							text += " / " + Tools.formatMemory(memoryPeak) + "\n";
+						else
+							text += '\n';
+					}
+			}
 		}
 	}
 }

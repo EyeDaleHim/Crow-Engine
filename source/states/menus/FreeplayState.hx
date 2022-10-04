@@ -6,6 +6,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import states.menus.MainMenuState;
 import weeks.SongHandler;
@@ -13,6 +14,8 @@ import objects.HealthIcon;
 
 class FreeplayState extends MusicBeatState
 {
+	private var songs:Array<SongMetadata> = [];
+
 	public var background:FlxSprite;
 
 	public var scoreBG:FlxSprite;
@@ -54,6 +57,9 @@ class FreeplayState extends MusicBeatState
 			var i:Int = songList.length;
 
 			var songsList:Array<String> = SongHandler.songs['Base_Game'][week.week].songs;
+
+			if (i == 0)
+				background.color = currentColor = SongHandler.songs['Base_Game'][week.week].color;
 			for (song in songsList)
 			{
 				var j:Int = weekHolder.indexOf(week) + songsList.indexOf(song);
@@ -69,6 +75,8 @@ class FreeplayState extends MusicBeatState
 				iconObject.sprTracker = songObject;
 				iconArray.push(iconObject);
 				add(iconObject);
+
+				songs.push(new SongMetadata(song, Std.int(i + 1), SongHandler.songs['Base_Game'][week.week].color));
 			}
 		}
 
@@ -76,6 +84,8 @@ class FreeplayState extends MusicBeatState
 
 		super.create();
 	}
+
+	private var currentColor:Int = 0;
 
 	override public function update(elapsed:Float)
 	{
@@ -86,6 +96,8 @@ class FreeplayState extends MusicBeatState
 			changeSelection(-1);
 		else if (FlxG.keys.justPressed.DOWN)
 			changeSelection(1);
+
+		background.color = FlxColor.interpolate(background.color, currentColor, FlxMath.bound(elapsed * 1.75, 0, 1));
 
 		super.update(elapsed);
 	}
@@ -120,6 +132,8 @@ class FreeplayState extends MusicBeatState
 		}
 
 		iconArray[curSelected].alpha = 1;
+
+		currentColor = songs[curSelected].color;
 	}
 }
 
@@ -128,15 +142,11 @@ class SongMetadata
 	public var name:String;
 	public var week:Int;
 	public var color:Int;
-	public var bpm:Float;
-	public var folder:String;
 
-	public function new(name:String, week:Int, color:Int, bpm:Int, folder:String)
+	public function new(name:String, week:Int, color:Int)
 	{
 		this.name = name;
 		this.week = week;
 		this.color = color;
-		this.bpm = bpm;
-		this.folder = folder;
 	}
 }
