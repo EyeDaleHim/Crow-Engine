@@ -1,76 +1,21 @@
 package music;
 
 import music.Section.SectionInfo;
-import haxe.Json;
-import haxe.format.JsonParser;
-import lime.utils.Assets;
-
-using StringTools;
-
-typedef SongInfo =
-{
-	var song:String;
-	var notes:Array<SectionInfo>;
-	var bpm:Float;
-	var needsVoices:Bool;
-	var speed:Float;
-
-	var player1:String;
-	var player2:String;
-	var validScore:Bool;
-}
 
 class Song
 {
 	public var song:String;
-	public var notes:Array<SectionInfo>;
 	public var bpm:Float;
-	public var needsVoices:Bool = true;
-	public var speed:Float = 1;
+}
 
-	public var player1:String = 'bf';
-	public var player2:String = 'dad';
+typedef SongInfo =
+{
+	var song:String;
+	var notes:SectionInfo;
+	var mustHitSections:Array<Bool>;
+	var bpm:Float;
 
-	public function new(song, notes, bpm)
-	{
-		this.song = song;
-		this.notes = notes;
-		this.bpm = bpm;
-	}
-
-	public static function loadFromJson(jsonInput:String, ?folder:String):SongInfo
-	{
-		var rawJson = Assets.getText(Paths.data(folder.toLowerCase() + '/' + jsonInput.toLowerCase())).trim();
-
-		while (!rawJson.endsWith("}"))
-		{
-			rawJson = rawJson.substr(0, rawJson.length - 1);
-			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
-		}
-
-		// FIX THE CASTING ON WINDOWS/NATIVE
-		// Windows???
-		// trace(songData);
-
-		// trace('LOADED FROM JSON: ' + songData.notes);
-		/* 
-			for (i in 0...songData.notes.length)
-			{
-				trace('LOADED FROM JSON: ' + songData.notes[i].sectionNotes);
-				// songData.notes[i].sectionNotes = songData.notes[i].sectionNotes
-			}
-
-				daNotes = songData.notes;
-				daSong = songData.song;
-				daBpm = songData.bpm; */
-
-		return parseJSONshit(rawJson);
-	}
-
-	public static function parseJSONshit(rawJson:String):SongInfo
-	{
-		var swagShit:SongInfo = cast Json.parse(rawJson).song;
-		swagShit.validScore = true;
-		return swagShit;
-	}
+	var player:String;
+	var opponent:String;
+	var spectator:String; // fancy term for gf
 }
