@@ -16,5 +16,5 @@ typedef Animation =
 	var prefix:String;
 	var fps:Int;
 	var looped:Bool;
-	var offset:Array<{x:Int, y:Int}>;
+	var offset:{x:Int, y:Int};
 }

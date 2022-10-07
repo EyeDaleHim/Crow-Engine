@@ -28,7 +28,7 @@ class DebugInfo extends TextField
 
 		selectable = false;
 
-		defaultTextFormat = new TextFormat(Assets.getFont(Paths.font("vcr")).fontName, 16, 0xFFFFFFFF);
+		defaultTextFormat = new TextFormat(Assets.getFont(Paths.font("vcr")).fontName, 12, 0xFFFFFFFF);
 
 		text = "";
 
@@ -59,7 +59,7 @@ class DebugInfo extends TextField
 			{
 				case 'minimized':
 					{
-						if (Settings.getPref("showFPS"), true)
+						if (Settings.getPref("showFPS", true))
 							text += times.length + '\n';
 
 						if (Settings.getPref("showMemory", true))
