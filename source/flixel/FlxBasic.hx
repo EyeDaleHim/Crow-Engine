@@ -61,11 +61,11 @@ class FlxBasic implements IFlxDestroyable
 	 */
 	public var cameras(get, set):Array<FlxCamera>;
 
-    /**
-     * A list of script variables to allow full control of an object, easier for identification, 
-     * easier to make "class-like" objects with pure HScript.
-     */
-    public var attributes:Map<String, Dynamic> = [];
+	/**
+	 * A list of script variables to allow full control of an object, easier for identification, 
+	 * easier to make "class-like" objects with pure HScript.
+	 */
+	public var attributes:Map<String, Dynamic> = [];
 
 	/**
 	 * Enum that informs the collision system which type of object this is (to avoid expensive type casting).

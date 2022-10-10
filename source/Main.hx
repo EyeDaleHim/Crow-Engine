@@ -82,9 +82,6 @@ class Main extends Sprite
 
 		addChild(game);
 
-		if (FlxG.save.data.settings != null)
-			FlxG.save.data.settings = new Map<String, Dynamic>();
-
 		FlxG.console.registerClass(utils.Paths);
 		FlxG.console.registerClass(utils.Tools);
 		FlxG.console.registerClass(backend.Settings);
