@@ -12,6 +12,8 @@ import states.menus.MainMenuState;
 import weeks.SongHandler;
 import objects.HealthIcon;
 
+using utils.Tools;
+
 class FreeplayState extends MusicBeatState
 {
 	private var songs:Array<SongMetadata> = [];
@@ -35,6 +37,19 @@ class FreeplayState extends MusicBeatState
 		background.scrollFactor.set();
 		background.antialiasing = Settings.getPref('antialiasing', true);
 		add(background);
+
+		scoreBG = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.35), 99, FlxColor.BLACK);
+		scoreBG.alpha = 0.6;
+		scoreBG.setPosition(FlxG.width - scoreBG.width, 0);
+		scoreBG.antialiasing = Settings.getPref('antialiasing', true);
+		add(scoreBG);
+
+		scoreText = new FlxText(0, 5, 0, "", 32);
+		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE);
+		scoreText.setBorderStyle(OUTLINE, FlxColor.BLACK);
+		scoreText.centerOverlay(scoreBG, X);
+		scoreText.antialiasing = Settings.getPref('antialiasing', true);
+		add(scoreText);
 
 		// bro using them map.keys() is unordered i have to manually sort them AAAAA
 		var weekHolder:Array<{index:Int, week:String}> = [];
