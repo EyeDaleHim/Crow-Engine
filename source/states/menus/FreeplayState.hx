@@ -9,6 +9,7 @@ import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import states.menus.MainMenuState;
+import weeks.ScoreContainer;
 import weeks.SongHandler;
 import objects.HealthIcon;
 
@@ -22,12 +23,17 @@ class FreeplayState extends MusicBeatState
 
 	public var scoreBG:FlxSprite;
 	public var scoreText:FlxText;
+	public var diffText:FlxText;
 
 	public var songList:FlxTypedGroup<Alphabet>;
 	public var iconArray:Array<HealthIcon> = [];
 
 	private static var curSelected:Int = 0;
 	private static var curDifficulty:Int = 1;
+
+	private static var score:LerpConstant = {current: 0.0, lerp: 0.0};
+	private static var miss:LerpConstant = {current: 0.0, lerp: 0.0};
+	private static var accuracy:LerpConstant = {current: 0.0, lerp: 0.0};
 
 	override public function create()
 	{
@@ -42,14 +48,14 @@ class FreeplayState extends MusicBeatState
 		scoreBG.alpha = 0.6;
 		scoreBG.setPosition(FlxG.width - scoreBG.width, 0);
 		scoreBG.antialiasing = Settings.getPref('antialiasing', true);
-		add(scoreBG);
 
 		scoreText = new FlxText(0, 5, 0, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE);
-		scoreText.setBorderStyle(OUTLINE, FlxColor.BLACK);
-		scoreText.centerOverlay(scoreBG, X);
+		scoreText.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
+		scoreText.text = 'PERSONAL BEST: ${Math.floor(score.current)} (${Tools.formatAccuracy(accuracy.current)}%)';
+		scoreText.x = FlxG.width - scoreText.width - 8;
+		// scoreText.centerOverlay(scoreBG, X); might come in handy
 		scoreText.antialiasing = Settings.getPref('antialiasing', true);
-		add(scoreText);
 
 		// bro using them map.keys() is unordered i have to manually sort them AAAAA
 		var weekHolder:Array<{index:Int, week:String}> = [];
@@ -91,9 +97,13 @@ class FreeplayState extends MusicBeatState
 				iconArray.push(iconObject);
 				add(iconObject);
 
-				songs.push(new SongMetadata(song, Std.int(i + 1), SongHandler.songs['Base_Game'][week.week].color));
+				songs.push(new SongMetadata(song, Std.int(i + 1), SongHandler.songs['Base_Game'][week.week].diffs,
+					SongHandler.songs['Base_Game'][week.week].color));
 			}
 		}
+
+		add(scoreBG);
+		add(scoreText);
 
 		changeSelection();
 
@@ -104,13 +114,33 @@ class FreeplayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		if (FlxG.keys.justPressed.ESCAPE || FlxG.keys.justPressed.BACKSPACE)
+		if (controls.getKey('BACK', JUST_PRESSED))
 			MusicBeatState.switchState(new MainMenuState());
 
-		if (FlxG.keys.justPressed.UP)
+		if (controls.getKey('UI_UP', JUST_PRESSED))
 			changeSelection(-1);
-		else if (FlxG.keys.justPressed.DOWN)
+		else if (controls.getKey('UI_DOWN', JUST_PRESSED))
 			changeSelection(1);
+
+		if (controls.getKey('UI_LEFT', JUST_PRESSED))
+			changeDiff(-1);
+		else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
+			changeDiff(1);
+
+		var scoreString:String = 'PERSONAL BEST: ';
+
+		score.current = FlxMath.bound(FlxMath.lerp(score.current, score.lerp, FlxMath.bound(elapsed * 4.775, 0, 1)), 0, score.lerp);
+		scoreString += Math.floor(score.current);
+
+		accuracy.current = FlxMath.bound(FlxMath.lerp(score.current, score.lerp, FlxMath.bound(elapsed * 4.775, 0, 1)), 0, score.lerp);
+		scoreString += ' (${Tools.formatAccuracy(accuracy.current)}%)';
+
+		scoreText.text = scoreString;
+		scoreText.x = FlxMath.lerp(scoreText.x, FlxG.width - scoreText.width - 8, FlxMath.bound(elapsed * 6.775, 0, 1));
+
+		scoreBG.x = scoreText.x - 8;
+		scoreBG.setGraphicSize(Std.int(scoreText.width + 16), Std.int(scoreBG.height));
+		scoreBG.updateHitbox();
 
 		background.color = FlxColor.interpolate(background.color, currentColor, FlxMath.bound(elapsed * 1.75, 0, 1));
 
@@ -149,6 +179,22 @@ class FreeplayState extends MusicBeatState
 		iconArray[curSelected].alpha = 1;
 
 		currentColor = songs[curSelected].color;
+
+		var songResult = ScoreContainer.getSong(songs[curSelected].name, curDifficulty);
+
+		score.lerp = songResult.score;
+		miss.lerp = songResult.misses;
+		accuracy.lerp = songResult.accuracy;
+	}
+
+	public function changeDiff(change:Int = 0)
+	{
+		if (change != 0)
+			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.50);
+
+		curDifficulty = FlxMath.wrap(curDifficulty + change, 0, 2);
+
+		changeSelection();
 	}
 }
 
@@ -156,12 +202,19 @@ class SongMetadata
 {
 	public var name:String;
 	public var week:Int;
+	public var diffs:Array<String>;
 	public var color:Int;
 
-	public function new(name:String, week:Int, color:Int)
+	public function new(name:String, week:Int, diffs:Array<String>, color:Int)
 	{
 		this.name = name;
 		this.week = week;
 		this.color = color;
 	}
+}
+
+typedef LerpConstant =
+{
+	var current:Float;
+	var lerp:Float;
 }

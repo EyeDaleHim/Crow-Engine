@@ -1,5 +1,6 @@
 package;
 
+import backend.Controls;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
@@ -15,11 +16,10 @@ class MusicBeatState extends FlxUIState
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 
+	public var controls(default, null):Controls = new Controls();
+
 	override function create()
 	{
-		if (transIn != null)
-			trace('reg ' + transIn.region);
-
 		if (_finishedFade)
 		{
 			_finishedFade = false;

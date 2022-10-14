@@ -105,11 +105,11 @@ class MainMenuState extends MusicBeatState
 	{
 		if (allowControl)
 		{
-			if (FlxG.keys.justPressed.UP)
+			if (controls.getKey('UI_UP', JUST_PRESSED))
 				changeSelection(-1);
-			if (FlxG.keys.justPressed.DOWN)
+			if (controls.getKey('UI_DOWN', JUST_PRESSED))
 				changeSelection(1);
-			if (FlxG.keys.justPressed.ENTER)
+			if (controls.getKey('ACCEPT', JUST_PRESSED))
 				acceptSelection();
 		}
 

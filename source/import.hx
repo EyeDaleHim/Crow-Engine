@@ -1,4 +1,5 @@
 import backend.Settings;
+import backend.Controls;
 import objects.Alphabet;
 import utils.Paths;
 import utils.Tools;

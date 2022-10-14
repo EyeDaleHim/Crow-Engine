@@ -112,7 +112,7 @@ class TitleState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (FlxG.keys.justPressed.ENTER)
+		if (controls.getKey('ACCEPT', JUST_PRESSED))
 		{
 			enterText.animation.play('pressed');
 
