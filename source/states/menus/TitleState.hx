@@ -23,6 +23,7 @@ class TitleState extends MusicBeatState
 
 	public var gfSprite:FlxSprite;
 	public var fnfLogo:FlxSprite;
+	public var enterText:FlxSprite;
 
 	override function create()
 	{
@@ -67,8 +68,18 @@ class TitleState extends MusicBeatState
 		gfSprite.animation.addByIndices('danceRight', 'gfDance', Tools.numberArray(15, 29), "", 24, false);
 		gfSprite.animation.play('danceLeft', true);
 
+		enterText = new FlxSprite(100, FlxG.height * 0.8);
+		enterText.antialiasing = Settings.getPref('antialiasing', true);
+
+		enterText.frames = Paths.getSparrowAtlas('title/titleEnter');
+		enterText.animation.addByPrefix('idle', 'Press Enter to Begin', 24);
+		enterText.animation.addByPrefix('pressed', 'ENTER PRESSED', 24);
+		enterText.animation.play('idle');
+		enterText.updateHitbox();
+
 		idleGroup.add(gfSprite);
 		idleGroup.add(fnfLogo);
+		idleGroup.add(enterText);
 
 		startGroup.add(blackBG);
 
@@ -101,9 +112,17 @@ class TitleState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (FlxG.keys.justPressed.R)
+		if (FlxG.keys.justPressed.ENTER)
 		{
-			MusicBeatState.switchState(new FreeplayState());
+			enterText.animation.play('pressed');
+
+			FlxG.camera.flash(0xFFFFFFFF, 1);
+			FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.7);
+
+			new FlxTimer().start(2, function(timer:FlxTimer)
+			{
+				MusicBeatState.switchState(new FreeplayState());
+			});
 		}
 
 		if (FlxG.sound.music != null)
