@@ -127,24 +127,29 @@ class FreeplayState extends MusicBeatState
 		else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
 			changeDiff(1);
 
-		var scoreString:String = 'PERSONAL BEST: ';
-
-		score.current = FlxMath.bound(FlxMath.lerp(score.current, score.lerp, FlxMath.bound(elapsed * 4.775, 0, 1)), 0, score.lerp);
-		scoreString += Math.floor(score.current);
-
-		accuracy.current = FlxMath.bound(FlxMath.lerp(score.current, score.lerp, FlxMath.bound(elapsed * 4.775, 0, 1)), 0, score.lerp);
-		scoreString += ' (${Tools.formatAccuracy(accuracy.current)}%)';
-
-		scoreText.text = scoreString;
-		scoreText.x = FlxMath.lerp(scoreText.x, FlxG.width - scoreText.width - 8, FlxMath.bound(elapsed * 6.775, 0, 1));
-
-		scoreBG.x = scoreText.x - 8;
-		scoreBG.setGraphicSize(Std.int(scoreText.width + 16), Std.int(scoreBG.height));
-		scoreBG.updateHitbox();
+		updateScore();
 
 		background.color = FlxColor.interpolate(background.color, currentColor, FlxMath.bound(elapsed * 1.75, 0, 1));
 
 		super.update(elapsed);
+	}
+
+	private function updateScore():Void
+	{
+		var scoreString:String = 'PERSONAL BEST: ';
+
+		score.current = FlxMath.bound(FlxMath.lerp(score.current, score.lerp, FlxMath.bound(FlxG.elapsed * 4.775, 0, 1)), 0, score.lerp);
+		scoreString += Math.floor(score.current);
+
+		accuracy.current = FlxMath.bound(FlxMath.lerp(score.current, score.lerp, FlxMath.bound(FlxG.elapsed * 4.775, 0, 1)), 0, score.lerp);
+		scoreString += ' (${Tools.formatAccuracy(accuracy.current)}%)';
+
+		scoreText.text = scoreString;
+		scoreText.x = FlxMath.lerp(scoreText.x, FlxG.width - scoreText.width - 8, FlxMath.bound(FlxG.elapsed * 6.775, 0, 1));
+
+		scoreBG.x = scoreText.x - 8;
+		scoreBG.setGraphicSize(Std.int(scoreText.width + 16), Std.int(scoreBG.height));
+		scoreBG.updateHitbox();
 	}
 
 	public function changeSelection(change:Int = 0)

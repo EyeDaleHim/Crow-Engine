@@ -7,7 +7,6 @@ typedef SectionInfo =
 	var notes:Array<NoteInfo>;
 	var lengthInSteps:Int;
 	var bpm:Float;
-	var changeBPM:Bool;
 }
 
 typedef NoteInfo =

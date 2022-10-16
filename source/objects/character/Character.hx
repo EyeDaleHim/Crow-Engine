@@ -3,6 +3,7 @@ package objects.character;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.math.FlxMath;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxStringUtil;
 import haxe.Json;
@@ -17,10 +18,13 @@ class Character extends FlxSprite
 	// basic info
 	public var name:String = 'bf';
 	public var isPlayer:Bool = true;
-	public var healthColor:Int;
+	public var healthColor:Int = 0;
 
 	// simple controls for your character
 	public var controlIdle:Bool = true; // Whether or not your character should keep playing the idle when it finishes an animation.
+	public var singAnimsUsesMulti:Bool = false; // If this is enabled, the sing animation will hold for (Conductor.crochet / 1000) * idleDuration, else, it'll just be idleDuration
+	public var idleDuration:Float = 0.65; // The amount of seconds (or multiplication) on when the idle animation should be played after the sing animation
+	public var overridePlayer:Bool = false; // If you set this to true, the enemy will be treated as a player
 
 	// animation stuff
 	public var animOffsets:Map<String, FlxPoint> = [];
@@ -68,6 +72,57 @@ class Character extends FlxSprite
 
 			animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
 		}
+	}
+
+	override function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		if (animation.curAnim != null)
+		{
+			if (!isPlayer)
+			{
+				if (singList.contains(animation.curAnim.name))
+				{
+					_animationTimer += elapsed;
+				}
+
+				var isAbove:Bool = false;
+
+				if (singAnimsUsesMulti)
+					isAbove = _animationTimer >= (Conductor.stepCrochet / 1000) * idleDuration;
+				else
+					isAbove = _animationTimer >= idleDuration;
+
+				if (isAbove)
+				{
+					dance();
+					_animationTimer = 0.0;
+				}
+			}
+		}
+	}
+
+	public function dance():Void
+	{
+		if (idleList.length != 0) // what animations we playing today?
+		{
+			if (controlIdle)
+			{
+				_idleIndex = FlxMath.wrap(++_idleIndex, 0, idleList.length - 1);
+
+				playAnim(idleList[_idleIndex]);
+			}
+		}
+	}
+
+	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
+	{
+		animation.play(AnimName, Force, Reversed, Frame);
+
+		var offsetAnim:FlxPoint = FlxPoint.get();
+		if (animOffsets.exists(AnimName))
+			offsetAnim.set(animOffsets[AnimName].x, animOffsets[AnimName].y);
 	}
 
 	override function destroy()

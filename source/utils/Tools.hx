@@ -4,6 +4,8 @@ import flixel.FlxObject;
 import flixel.util.FlxAxes;
 import flixel.math.FlxMath;
 
+using StringTools;
+
 class Tools
 {
 	public static function lerpBound(a:Float, b:Float, ratio:Float):Float
@@ -91,5 +93,11 @@ class Tools
 			object1.y = object2.y + (object2.height / 2) - (object1.height / 2);
 
 		return object1;
+	}
+
+	public static function formatToReadable(string:String)
+	{
+		string.replace(' ', '-');
+		string.toLowerCase();
 	}
 }
