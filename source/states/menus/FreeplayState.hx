@@ -57,6 +57,11 @@ class FreeplayState extends MusicBeatState
 		// scoreText.centerOverlay(scoreBG, X); might come in handy
 		scoreText.antialiasing = Settings.getPref('antialiasing', true);
 
+		diffText = new FlxText(scoreText.x, scoreText.y + 35, FlxG.width - scoreText.x, "", 26);
+		diffText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, CENTER);
+		diffText.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
+		diffText.antialiasing = Settings.getPref('antialiasing', true);
+
 		// bro using them map.keys() is unordered i have to manually sort them AAAAA
 		var weekHolder:Array<{index:Int, week:String}> = [];
 
@@ -104,6 +109,7 @@ class FreeplayState extends MusicBeatState
 
 		add(scoreBG);
 		add(scoreText);
+		add(diffText);
 
 		changeSelection();
 
