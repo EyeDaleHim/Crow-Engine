@@ -61,6 +61,7 @@ class FreeplayState extends MusicBeatState
 		diffText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, CENTER);
 		diffText.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		diffText.antialiasing = Settings.getPref('antialiasing', true);
+		diffText.centerOverlay(scoreBG, X);
 
 		// bro using them map.keys() is unordered i have to manually sort them AAAAA
 		var weekHolder:Array<{index:Int, week:String}> = [];
@@ -112,6 +113,7 @@ class FreeplayState extends MusicBeatState
 		add(diffText);
 
 		changeSelection();
+		changeDiff();
 
 		super.create();
 	}
@@ -204,6 +206,9 @@ class FreeplayState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.50);
 
 		curDifficulty = FlxMath.wrap(curDifficulty + change, 0, 2);
+		diffText.text = '< ' + SongHandler.PLACEHOLDER_DIFF[curDifficulty].toUpperCase() + ' >';
+
+		diffText.centerOverlay(scoreBG, X);
 
 		changeSelection();
 	}

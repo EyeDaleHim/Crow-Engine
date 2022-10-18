@@ -95,9 +95,11 @@ class Tools
 		return object1;
 	}
 
-	public static function formatToReadable(string:String)
+	public static function formatToReadable(string:String):String
 	{
 		string.replace(' ', '-');
 		string.toLowerCase();
+
+		return string;
 	}
 }

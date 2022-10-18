@@ -16,7 +16,7 @@ class Stage
 
 		switch (stage)
 		{
-			case 'stage':
+			default:
 				{
 					var background:BGSprite = new BGSprite('stageback', {x: -600, y: -200}, {x: 0.9, y: 0.9});
 					group.add(background);

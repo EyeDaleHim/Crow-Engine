@@ -26,12 +26,12 @@ class HealthIcon extends FlxSprite
 			addByPrefix(anim, '$char-$anim', 24, true);
 		}
 
-		updateHitbox();
-		centerOffsets();
-
 		antialiasing = Settings.getPref('antialiasing', true);
 
 		changeState('neutral');
+
+		updateHitbox();
+		centerOffsets();
 	}
 
 	public var updateScale:Bool = false;

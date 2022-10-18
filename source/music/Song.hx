@@ -1,6 +1,10 @@
 package music;
 
+import flixel.math.FlxMath;
+import openfl.utils.Assets;
+import haxe.Json;
 import music.Section.SectionInfo;
+import weeks.SongHandler;
 
 using StringTools;
 using utils.Tools;
@@ -9,8 +13,29 @@ class Song
 {
 	public static var currentSong:SongInfo;
 
-	public static function loadSong(song:String):SongInfo
+	public static function loadSong(song:String, diff:Int = 2):SongInfo
 	{
+		var diffString:String = SongHandler.PLACEHOLDER_DIFF[Std.int(FlxMath.bound(diff, 0, 2))];
+
+		try
+		{
+			var fixData:String->String = function(str:String)
+			{
+				while (!str.endsWith("}"))
+				{
+					str = str.substr(0, str.length - 1);
+				}
+
+				return str;
+			};
+
+			currentSong = Json.parse(fixData(Assets.getText(Paths.data(song + '/' + song + '-' + diffString))));
+		}
+		catch (e)
+		{
+			throw 'Couldn\'t load song $song with difficulty $diffString';
+		}
+
 		return {
 			song: song,
 			sectionList: {
