@@ -84,15 +84,15 @@ class Tools
 		return convertedValue;
 	}
 
-	public static function centerOverlay(object1:FlxObject, object2:FlxObject, axes:FlxAxes = XY):FlxObject
+	public static function centerOverlay(object:FlxObject, base:FlxObject, axes:FlxAxes = XY):FlxObject
 	{
 		if (axes.match(X | XY))
-			object1.x = object2.x + (object2.width / 2) - (object1.width / 2);
+			object.x = base.x + (base.width / 2) - (object.width / 2);
 
 		if (axes.match(Y | XY))
-			object1.y = object2.y + (object2.height / 2) - (object1.height / 2);
+			object.y = base.y + (base.height / 2) - (object.height / 2);
 
-		return object1;
+		return object;
 	}
 
 	public static function formatToReadable(string:String):String

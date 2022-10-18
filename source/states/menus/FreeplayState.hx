@@ -44,9 +44,9 @@ class FreeplayState extends MusicBeatState
 		background.antialiasing = Settings.getPref('antialiasing', true);
 		add(background);
 
-		scoreBG = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.35), 99, FlxColor.BLACK);
+		scoreBG = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.35), 75, FlxColor.BLACK);
 		scoreBG.alpha = 0.6;
-		scoreBG.setPosition(FlxG.width - scoreBG.width, 0);
+		scoreBG.x = FlxG.width - scoreBG.width;
 		scoreBG.antialiasing = Settings.getPref('antialiasing', true);
 
 		scoreText = new FlxText(0, 5, 0, "", 32);
@@ -57,7 +57,7 @@ class FreeplayState extends MusicBeatState
 		// scoreText.centerOverlay(scoreBG, X); might come in handy
 		scoreText.antialiasing = Settings.getPref('antialiasing', true);
 
-		diffText = new FlxText(scoreText.x, scoreText.y + 35, FlxG.width - scoreText.x, "", 26);
+		diffText = new FlxText(0, scoreText.y + 35, FlxG.width - scoreText.x, "", 26);
 		diffText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, CENTER);
 		diffText.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		diffText.antialiasing = Settings.getPref('antialiasing', true);
@@ -206,7 +206,16 @@ class FreeplayState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.50);
 
 		curDifficulty = FlxMath.wrap(curDifficulty + change, 0, 2);
-		diffText.text = '< ' + SongHandler.PLACEHOLDER_DIFF[curDifficulty].toUpperCase() + ' >';
+
+		diffText.text = switch (SongHandler.PLACEHOLDER_DIFF.length)
+		{
+			case 0:
+				"";
+			case 1:
+				SongHandler.PLACEHOLDER_DIFF[0].toUpperCase();
+			case _:
+				'< ' + SongHandler.PLACEHOLDER_DIFF[curDifficulty].toUpperCase() + ' >';
+		}
 
 		diffText.centerOverlay(scoreBG, X);
 
