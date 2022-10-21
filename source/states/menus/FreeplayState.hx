@@ -1,5 +1,6 @@
 package states.menus;
 
+import music.Song;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -124,16 +125,23 @@ class FreeplayState extends MusicBeatState
 	{
 		if (controls.getKey('BACK', JUST_PRESSED))
 			MusicBeatState.switchState(new MainMenuState());
+		else if (controls.getKey('ACCEPT', JUST_PRESSED))
+		{
+			// Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
+			MusicBeatState.switchState(new PlayState());
+		}
+		else
+		{
+			if (controls.getKey('UI_UP', JUST_PRESSED))
+				changeSelection(-1);
+			else if (controls.getKey('UI_DOWN', JUST_PRESSED))
+				changeSelection(1);
 
-		if (controls.getKey('UI_UP', JUST_PRESSED))
-			changeSelection(-1);
-		else if (controls.getKey('UI_DOWN', JUST_PRESSED))
-			changeSelection(1);
-
-		if (controls.getKey('UI_LEFT', JUST_PRESSED))
-			changeDiff(-1);
-		else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
-			changeDiff(1);
+			if (controls.getKey('UI_LEFT', JUST_PRESSED))
+				changeDiff(-1);
+			else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
+				changeDiff(1);
+		}
 
 		updateScore();
 

@@ -14,43 +14,17 @@ class Paths
 {
 	inline static public var SOUND_EXT:String = #if web 'mp3' #else 'ogg' #end;
 
-	// Helper variable for getting files
-	public static var manifest:Map<String, {file:String, library:String}> = [];
-
 	// List of libraries
 	public static var libraries:Array<String> = ['shared', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7'];
 
 	private static var hasInit:Bool = false;
 
-	// Initalizes saving the manifest for performance
 	public static function init()
 	{
 		if (hasInit)
 			return;
 
 		hasInit = true;
-
-		try
-		{
-			var manifestSave:FlxSave = new FlxSave();
-			manifestSave.bind('manifest', 'crow-engine');
-			if (manifestSave.data.manifest != null)
-				manifest = manifestSave.data.manifest;
-		}
-		catch (e)
-		{
-			// Assume the manifest savefile is broken
-			manifest = [];
-		}
-
-		FlxG.stage.application.onExit.add(function(_)
-		{
-			var manifestSave:FlxSave = new FlxSave();
-			manifestSave.bind('manifest', 'crow-engine');
-			manifestSave.data.manifest = manifest;
-
-			manifestSave.close();
-		});
 	}
 
 	// format manifesting
@@ -86,13 +60,6 @@ class Paths
 		return name;
 	}
 
-	/*
-	 * The getPath() function is relatively simple.
-	 * It checks if the file exists assuming `library = null`,
-	 * If so, then it scans every library it can to locate which.
-	 * After finding the file, it starts a process of putting the path into a manifest state,
-	 * Which will then be used as reference to prevent scanning the library again.
-	 */
 	public static function getPath(file:String = '', ?library:String = null):String
 	{
 		var preload:String = getPreloadPath(file);
@@ -101,7 +68,7 @@ class Paths
 		{
 			if (OpenFlAssets.exists(preload, IMAGE))
 			{
-				return formatPath(manifest.get(resolveManifest(file, '')));
+				return preload;
 			}
 			else
 			{
@@ -110,16 +77,16 @@ class Paths
 					var folder:String = getPath(file, libFolder);
 					if (OpenFlAssets.exists(folder))
 					{
+						if (!manifest.exists(resolveManifest(file, library)))
+							manifest.set(resolveManifest(file, library), {file: file, library: library});
 						return formatPath(manifest.get(resolveManifest(file, library)));
 					}
+					trace('couldn\'t find $folder');
 				}
 			}
 		}
 
-		if (!manifest.exists(resolveManifest(file, library)))
-			manifest.set(resolveManifest(file, library), {file: file, library: library});
-
-		return formatPath(manifest.get(resolveManifest(file, library)));
+		return 'library:$file';
 	}
 
 	public static function getPreloadPath(file:String = ''):String

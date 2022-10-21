@@ -11,17 +11,22 @@ class InputSystem
 	public static var safeZoneOffset:Float = (safeFrames / 60) * 1000.0;
 
 	// note: use getStoredNotes() because tradition
-	public static var storedNotes:Map<Bool, Map<Int, FlxTypedGroup<Note>>> = [false => [], true => []];
+	public static var storedNotes:Map<Int, Map<Int, FlxTypedGroup<Note>>> = [0 => [], 1 => []];
 
 	// doing this because i like making it robust
 	public static function getStoredNotes(sustain:Bool = false, direction:Int = -1):FlxTypedGroup<Note>
 	{
+		var sustainValue:Int = 0;
+
+		if (sustain)
+			sustainValue = 1;
+
 		if (direction == -1)
 			return new FlxTypedGroup<Note>();
 
-		if (storedNotes[sustain][direction] == null)
-			storedNotes[sustain].set(direction, new FlxTypedGroup<Note>());
+		if (storedNotes[sustainValue][direction] == null)
+			storedNotes[sustainValue].set(direction, new FlxTypedGroup<Note>());
 
-		return storedNotes[sustain][direction];
+		return storedNotes[sustainValue][direction];
 	}
 }

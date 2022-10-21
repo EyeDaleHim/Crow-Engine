@@ -29,7 +29,7 @@ class Song
 				return str;
 			};
 
-			currentSong = Json.parse(fixData(Assets.getText(Paths.data(song + '/' + song + '-' + diffString))));
+			currentSong = Json.parse(fixData(Assets.getText(Paths.data('charts/' + song + '/' + song + '-' + diffString))));
 		}
 		catch (e)
 		{
