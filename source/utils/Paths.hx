@@ -15,9 +15,11 @@ class Paths
 	inline static public var SOUND_EXT:String = #if web 'mp3' #else 'ogg' #end;
 
 	// List of libraries
-	public static var libraries:Array<String> = ['shared', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7'];
+	public static var libraries:Array<String> = ['week1', 'week2', 'week3', 'week4', 'week5', 'week6'];
 
 	private static var hasInit:Bool = false;
+
+	public static var currentLibrary:String = '';
 
 	public static function init()
 	{
@@ -45,11 +47,11 @@ class Paths
 	}
 
 	// format paths
-	private static function formatPath(info:{file:String, library:String})
+	private static function formatPath(file:String, library:Null<String>)
 	{
-		if (info.library != null && info.library != '')
-			return 'assets/libraries/${info.library}/${info.file}';
-		return 'assets/${info.file}';
+		if (library != null && library != '')
+			return '${library}:assets/${library}/${file}';
+		return 'assets/${file}';
 	}
 
 	private static function extensionHelper(name:String)
@@ -60,13 +62,13 @@ class Paths
 		return name;
 	}
 
-	public static function getPath(file:String = '', ?library:String = null):String
+	public static function getPath(file:String = '', type:AssetType, ?library:String = null):String
 	{
 		var preload:String = getPreloadPath(file);
 
 		if (library == null)
 		{
-			if (OpenFlAssets.exists(preload, IMAGE))
+			if (OpenFlAssets.exists(preload, type))
 			{
 				return preload;
 			}
@@ -74,47 +76,45 @@ class Paths
 			{
 				for (libFolder in libraries)
 				{
-					var folder:String = getPath(file, libFolder);
-					if (OpenFlAssets.exists(folder))
+					var folder:String = getPath(file, type, libFolder);
+					if (OpenFlAssets.exists(folder, type))
 					{
-						if (!manifest.exists(resolveManifest(file, library)))
-							manifest.set(resolveManifest(file, library), {file: file, library: library});
-						return formatPath(manifest.get(resolveManifest(file, library)));
+						return formatPath(file, libFolder);
 					}
 					trace('couldn\'t find $folder');
 				}
 			}
 		}
 
-		return 'library:$file';
+		if (currentLibrary != null)
+			return getPath(file, type, currentLibrary);
+		else
+			return getPreloadPath(file);
 	}
 
 	public static function getPreloadPath(file:String = ''):String
 	{
-		if (!manifest.exists(resolveManifest(file, '')))
-			manifest.set(resolveManifest(file, ''), {file: file, library: ''});
-
-		return formatPath(manifest.get(resolveManifest(file, '')));
+		return formatPath(file, '');
 	}
 
 	public static function image(file:String, ?library:String = null):String
 	{
-		return getPath(extensionHelper('images/${file}.png'), library);
+		return getPath(extensionHelper('images/${file}.png'), IMAGE, library);
 	}
 
 	public static function sound(file:String, ?library:String = null):String
 	{
-		return getPath(extensionHelper('sounds/${file}.$SOUND_EXT'), library);
+		return getPath(extensionHelper('sounds/${file}.$SOUND_EXT'), SOUND, library);
 	}
 
 	public static function inst(song:String, ?library:String = null):String
 	{
-		return getPath(extensionHelper('data/${song}/Inst.$SOUND_EXT'), library);
+		return getPath(extensionHelper('data/${song}/Inst.$SOUND_EXT'), SOUND, library);
 	}
 
 	public static function vocals(song:String, ?library:String = null):String
 	{
-		return getPath(extensionHelper('data/${song}/Voice.$SOUND_EXT'), library);
+		return getPath(extensionHelper('data/${song}/Voice.$SOUND_EXT'), SOUND, library);
 	}
 
 	public static function music(song:String):String
@@ -124,7 +124,7 @@ class Paths
 
 	public static function font(file:String):String
 	{
-		return getPath(extensionHelper('fonts/${file}.ttf'));
+		return getPath(extensionHelper('fonts/${file}.ttf'), FONT);
 	}
 
 	public static function data(file:String):String
@@ -132,13 +132,13 @@ class Paths
 		return getPreloadPath(extensionHelper('data/${file}.json'));
 	}
 
-	public static function file(file:String, end:String, ?library:String = null):String
+	public static function file(file:String, end:String, type:AssetType, ?library:String = null):String
 	{
-		return getPath('$file.$end', library);
+		return getPath('$file.$end', type, library);
 	}
 
 	public static function getSparrowAtlas(file:String, ?library:String = null):FlxAtlasFrames
 	{
-		return FlxAtlasFrames.fromSparrow(image(file), OpenFlAssets.getText(Paths.file('images/$file', 'xml', library)));
+		return FlxAtlasFrames.fromSparrow(image(file), OpenFlAssets.getText(Paths.file('images/$file', 'xml', TEXT, library)));
 	}
 }

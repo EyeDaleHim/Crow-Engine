@@ -23,15 +23,15 @@ class Stage
 		{
 			default:
 				{
-					var background:BGSprite = new BGSprite('stageback', {x: -600, y: -200}, {x: 0.9, y: 0.9});
+					var background:BGSprite = new BGSprite({path: 'stageback', library: 'week1'}, {x: -600, y: -200}, {x: 0.9, y: 0.9});
 					group.push(background);
 
-					var front:BGSprite = new BGSprite('stagefront', {x: -650, y: 600}, {x: 0.9, y: 0.9});
+					var front:BGSprite = new BGSprite({path: 'stagefront', library: 'week1'}, {x: -650, y: 600}, {x: 0.9, y: 0.9});
 					front.scale.set(1.1, 1.1);
 					front.updateHitbox();
 					group.push(front);
 
-					var curtains:BGSprite = new BGSprite('stagecurtains', {x: -500, y: -300}, {x: 1.3, y: 1.3});
+					var curtains:BGSprite = new BGSprite({path: 'stagecurtains', library: 'week1'}, {x: -500, y: -300}, {x: 1.3, y: 1.3});
 					curtains.scale.set(0.9, 0.9);
 					curtains.updateHitbox();
 					curtains.renderPriority = 0x01;
@@ -50,7 +50,7 @@ class BGSprite extends FlxSprite
 	public var graphicName:String = '';
 	public var renderPriority:Int = 0x00; // this is literally just to tell you if this sprite wants to be rendered before or after the characters
 
-	public function new(image:String, ?position:SimplePoint, ?scroll:SimplePoint, ?animArray:Array<Animation> = null)
+	public function new(image:ImagePath, ?position:SimplePoint, ?scroll:SimplePoint, ?animArray:Array<Animation> = null)
 	{
 		if (position == null)
 			position = {x: 0.0, y: 0.0};
@@ -61,16 +61,16 @@ class BGSprite extends FlxSprite
 		scrollFactor.set(scroll.x, scroll.y);
 		antialiasing = Settings.getPref('antialiasing', true);
 
-		this.graphicName = image;
+		this.graphicName = image.library;
 
-		image = Stage.currentStage + '/' + image;
+		image.path = Stage.currentStage + '/' + image.path;
 
 		if (animArray != null)
 		{
 			// add null to those because we're telling it to look for it in the libraries
-			if (FileSystem.exists(Paths.image(image + '.xml')))
+			if (FileSystem.exists(Paths.image(image.path + '.xml', image.library)))
 			{
-				frames = Paths.getSparrowAtlas(image);
+				frames = Paths.getSparrowAtlas(image.path, image.library);
 
 				for (anim in animArray)
 				{
@@ -79,15 +79,20 @@ class BGSprite extends FlxSprite
 			}
 			else
 			{
-				FlxG.log.error('The path ${Paths.image(image + '.xml')} doesn\'t exist!');
 				destroy();
 			}
 		}
 		else
 		{
-			loadGraphic(Paths.image(image));
+			loadGraphic(Paths.image(image.path, image.library));
 		}
 	}
+}
+
+typedef ImagePath =
+{
+	var path:String;
+	var library:Null<String>;
 }
 
 typedef SimplePoint =

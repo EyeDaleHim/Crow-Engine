@@ -128,6 +128,7 @@ class FreeplayState extends MusicBeatState
 		else if (controls.getKey('ACCEPT', JUST_PRESSED))
 		{
 			// Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
+
 			MusicBeatState.switchState(new PlayState());
 		}
 		else
