@@ -2,7 +2,7 @@ package objects.notes;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import backend.InputSystem;
+import backend.NoteStorageFunction;
 
 class Note extends FlxSprite
 {
@@ -24,18 +24,18 @@ class Note extends FlxSprite
 
 	private function get_canBeHit():Bool
 	{
-		return (strumTime > Conductor.songPosition - InputSystem.safeZoneOffset
-			&& strumTime < Conductor.songPosition + (InputSystem.safeZoneOffset * earlyMult));
+		return (strumTime > Conductor.songPosition - NoteStorageFunction.safeZoneOffset
+			&& strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult));
 	}
 
 	private function get_tooLate():Bool
 	{
-		return (strumTime < Conductor.songPosition - InputSystem.safeZoneOffset && !wasGoodHit);
+		return (strumTime < Conductor.songPosition - NoteStorageFunction.safeZoneOffset && !wasGoodHit);
 	}
 
 	private function get_wasGoodHit():Bool
 	{
-		return ((strumTime < Conductor.songPosition + (InputSystem.safeZoneOffset * earlyMult))
+		return ((strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult))
 			&& (/*(isSustainNote && prevNote.wasGoodHit) ||*/ strumTime <= Conductor.songPosition));
 	}
 }

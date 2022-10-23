@@ -4,8 +4,8 @@ import flixel.FlxG;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import objects.notes.Note;
 
-// cant tell if i should really call this an input system if it just stores note stufs
-class InputSystem
+// Fixed the name for you Dale -LeX
+class NoteStorageFunction
 {
 	public static var safeFrames:Float = 10.0;
 	public static var safeZoneOffset:Float = (safeFrames / 60) * 1000.0;
