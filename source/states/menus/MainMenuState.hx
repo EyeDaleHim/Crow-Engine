@@ -103,6 +103,9 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		if (controls.getKey('BACK', JUST_PRESSED))
+			MusicBeatState.switchState(new TitleState());
+
 		if (allowControl)
 		{
 			if (controls.getKey('UI_UP', JUST_PRESSED))

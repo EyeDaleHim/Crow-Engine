@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxTimer;
 import objects.Alphabet;
+import openfl.Assets as OpenFlAssets;
 
 class TitleState extends MusicBeatState
 {
@@ -21,12 +22,18 @@ class TitleState extends MusicBeatState
 	// text in the group
 	public var textGroup:FlxTypedGroup<FlxSprite>;
 
+	public var newgroundsLogo:FlxSprite;
+
 	public var gfSprite:FlxSprite;
 	public var fnfLogo:FlxSprite;
 	public var enterText:FlxSprite;
 
+	public var introText:Array<String> = [];
+
 	override function create()
 	{
+		introText = FlxG.random.getObject(getIntroText());
+
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{
 			if (!initialized)
@@ -48,6 +55,14 @@ class TitleState extends MusicBeatState
 
 		textGroup = new FlxTypedGroup<FlxSprite>();
 		add(textGroup);
+
+		newgroundsLogo = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('title/newgrounds_logo'));
+		newgroundsLogo.antialiasing = Settings.getPref('antialiasing', true);
+
+		newgroundsLogo.scale.set(0.8, 0.8);
+		newgroundsLogo.updateHitbox();
+		newgroundsLogo.screenCenter(X);
+		newgroundsLogo.visible = false;
 
 		fnfLogo = new FlxSprite(-150, -100);
 		fnfLogo.antialiasing = Settings.getPref('antialiasing', true);
@@ -82,8 +97,22 @@ class TitleState extends MusicBeatState
 		idleGroup.add(enterText);
 
 		startGroup.add(blackBG);
+		startGroup.add(newgroundsLogo);
 
 		super.create();
+	}
+
+	private function getIntroText():Array<Array<String>>
+	{
+		var fullText:String = OpenFlAssets.getText(Paths.file("data/introText", "txt", TEXT));
+
+		var baseArray:Array<String> = fullText.split('\n');
+		var mainArray:Array<Array<String>> = [];
+
+		for (i in baseArray)
+			mainArray.push(i.split('--'));
+
+		return mainArray;
 	}
 
 	private function skipIntro():Void
@@ -166,49 +195,30 @@ class TitleState extends MusicBeatState
 					{
 						case 1:
 							createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
-						// credTextShit.visible = true;
 						case 3:
 							addMoreText('present');
-						// credTextShit.text += '\npresent...';
-						// credTextShit.addText();
 						case 4:
 							deleteCoolText();
-						// credTextShit.visible = false;
-						// credTextShit.text = 'In association \nwith';
-						// credTextShit.screenCenter();
 						case 5:
 							createCoolText(['In association', 'with']);
 						case 7:
 							addMoreText('newgrounds');
-						// ngSpr.visible = true;
-						// credTextShit.text += '\nNewgrounds';
+							newgroundsLogo.visible = true;
 						case 8:
 							deleteCoolText();
-						// ngSpr.visible = false;
-						// credTextShit.visible = false;
-
-						// credTextShit.text = 'Shoutouts Tom Fulp';
-						// credTextShit.screenCenter();
+							newgroundsLogo.visible = false;
 						case 9:
-						// createCoolText([curWacky[0]]);
-						// credTextShit.visible = true;
+							createCoolText([introText[0]]);
 						case 11:
-						// addMoreText(curWacky[1]);
-						// credTextShit.text += '\nlmao';
+							addMoreText(introText[1]);
 						case 12:
 							deleteCoolText();
-						// credTextShit.visible = false;
-						// credTextShit.text = "Friday";
-						// credTextShit.screenCenter();
 						case 13:
 							addMoreText('Friday');
-						// credTextShit.visible = true;
 						case 14:
 							addMoreText('Night');
-						// credTextShit.text += '\nNight';
 						case 15:
-							addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
-
+							addMoreText('Funkin');
 						case 16:
 							skipIntro();
 					}
