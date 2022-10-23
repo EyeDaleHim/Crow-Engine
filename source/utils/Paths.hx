@@ -15,8 +15,6 @@ class Paths
 	inline static public var SOUND_EXT:String = #if web 'mp3' #else 'ogg' #end;
 
 	// List of libraries
-	public static var libraries:Array<String> = ['week1', 'week2', 'week3', 'week4', 'week5', 'week6'];
-
 	private static var hasInit:Bool = false;
 
 	public static var currentLibrary:String = '';
@@ -62,39 +60,38 @@ class Paths
 		return name;
 	}
 
-	public static function getPath(file:String = '', type:AssetType, ?library:String = null):String
+	public static function getPath(file:String, type:AssetType, library:Null<String>)
 	{
-		var preload:String = getPreloadPath(file);
-
-		if (library == null)
-		{
-			if (OpenFlAssets.exists(preload, type))
-			{
-				return preload;
-			}
-			else
-			{
-				for (libFolder in libraries)
-				{
-					var folder:String = getPath(file, type, libFolder);
-					if (OpenFlAssets.exists(folder, type))
-					{
-						return formatPath(file, libFolder);
-					}
-					trace('couldn\'t find $folder');
-				}
-			}
-		}
+		if (library != null)
+			return getLibraryPath(file, library);
 
 		if (currentLibrary != null)
-			return getPath(file, type, currentLibrary);
-		else
-			return getPreloadPath(file);
+		{
+			var levelPath = getLibraryPathForce(file, currentLibrary);
+			if (OpenFlAssets.exists(levelPath, type))
+				return levelPath;
+
+			levelPath = getLibraryPathForce(file, "shared");
+			if (OpenFlAssets.exists(levelPath, type))
+				return levelPath;
+		}
+
+		return getPreloadPath(file);
 	}
 
-	public static function getPreloadPath(file:String = ''):String
+	static public function getLibraryPath(file:String, library = "preload")
 	{
-		return formatPath(file, '');
+		return if (library == "preload" || library == "default") getPreloadPath(file); else getLibraryPathForce(file, library);
+	}
+
+	inline static function getLibraryPathForce(file:String, library:String)
+	{
+		return '$library:assets/$library/$file';
+	}
+
+	inline static function getPreloadPath(file:String)
+	{
+		return 'assets/$file';
 	}
 
 	public static function image(file:String, ?library:String = null):String
@@ -124,7 +121,7 @@ class Paths
 
 	public static function font(file:String):String
 	{
-		return getPath(extensionHelper('fonts/${file}.ttf'), FONT);
+		return getPath(extensionHelper('fonts/${file}.ttf'), FONT, null);
 	}
 
 	public static function data(file:String):String
