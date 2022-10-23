@@ -41,19 +41,22 @@
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
 	
+<!--<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
+	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/> -->  <!--I recommend keeping this here just incase. I'd also add it for the titlescreen and main menu-->
+	
 	<section if="PRELOAD_ALL">
-		<library name="tutorial" preload="true" />
+<!-- <library name="tutorial" preload="true" />  -->
 		<library name="week1"    preload="true" />
-		<library name="week2"    preload="true" />
+	    <library name="week2"    preload="true" />
 		<library name="week3"    preload="true" />
 		<library name="week4"    preload="true" />
 		<library name="week5"    preload="true" />
-		<library name="week6"    preload="true" />
+		<library name="week6"    preload="true" /> 
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
-		<library name="tutorial" preload="false" />
-		<library name="week1"    preload="false" />
+<!--    <library name="tutorial" preload="false" /> -->
+		<library name="week1"    preload="false" /> 
 		<library name="week2"    preload="false" />
 		<library name="week3"    preload="false" />
 		<library name="week4"    preload="false" />
@@ -61,12 +64,12 @@
 		<library name="week6"    preload="false" />
 	</section>
 	
-	<assets path="assets/tutorial" library="tutorial" exclude="*.ogg" if="web"/>
-	<assets path="assets/tutorial" library="tutorial" exclude="*.mp3" unless="web"/>
+<!-- <assets path="assets/tutorial" library="tutorial" exclude="*.ogg" if="web"/> 
+	 <assets path="assets/tutorial" library="tutorial" exclude="*.mp3" unless="web"/> def not needed especially because of week 1 -->
 	<assets path="assets/week1"    library="week1"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week1"    library="week1"    exclude="*.mp3" unless="web"/>
+	<assets path="assets/week1"    library="week1"    exclude="*.mp3" unless="web"/>      
 	<assets path="assets/week2"    library="week2"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week2"    library="week2"    exclude="*.mp3" unless="web"/>
+	<assets path="assets/week2"    library="week2"    exclude="*.mp3" unless="web"/>  
 	<assets path="assets/week3"    library="week3"    exclude="*.ogg" if="web"/>
 	<assets path="assets/week3"    library="week3"    exclude="*.mp3" unless="web"/>
 	<assets path="assets/week4"    library="week4"    exclude="*.ogg" if="web"/>
@@ -79,6 +82,9 @@
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
+
+	<!--Incase you wanna use adobe spritemaps with 2019+-->
+	<haxelib name="flxAnimate" />
 
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
