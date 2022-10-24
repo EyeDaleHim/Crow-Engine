@@ -11,9 +11,10 @@ Please always format your haxe `.hx` files (Right Click -> Format Document)
 ## Variable Naming
 Variable names should follow as is:
 
-All non-class variables must be **pascalCased** `var myCoolVar:Bool;`, any static variables should be upper **SNAKE_CASED** `static var AWESOME_HOLDER:Dynamic;` and class variables must be **CamelCased** `public var SomeThing:Sprite;`
+**SNAKE_CASED** `var MIN_TIME:Float = .5;` is made in a way to differentiate importance. Name variables this way for important variables, usually after static variables.
+**pascalCased** `var defaultZoom:Float = .9;` is commonly used, you are free to use this in some cases you find necessary.
 
-Please ensure your variable names are not something like `var shitThing:Int;` or `var myCoolPepsi:Bool;`
+Please name a variable properly that defines their actual functionality or variable.
 
 ## Long Functions / Important Variables
 

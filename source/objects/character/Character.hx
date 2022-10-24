@@ -40,6 +40,72 @@ class Character extends FlxSprite
 	{
 		super(x, y);
 
+		trace(Json.stringify({
+			name: 'bf',
+			healthColor: 0xFF79AEDA,
+			animationList: [
+				{
+					name: 'idle',
+					prefix: 'BF idle dance',
+					indices: [],
+					fps: 24,
+					looped: false,
+					offset: {x: -5, y: 0}
+				},
+				{
+					name: 'singLEFT',
+					prefix: 'BF NOTE LEFT0',
+					indices: [],
+					fps: 24,
+					looped: false,
+					offset: {x: 12, y: -6}
+				},
+				{
+					name: 'singDOWN',
+					prefix: 'BF NOTE DOWN0',
+					indices: [],
+					fps: 24,
+					looped: false,
+					offset: {x: -10, y: -50}
+				},
+				{
+					name: 'singUP',
+					prefix: 'BF NOTE UP0',
+					indices: [],
+					fps: 24,
+					looped: false,
+					offset: {x: -29, y: 27}
+				},
+				{
+					name: 'singRIGHT',
+					prefix: 'BF NOTE RIGHT0',
+					indices: [],
+					fps: 24,
+					looped: false,
+					offset: {x: -38, y: -7}
+				},
+				{
+					name: 'hey',
+					prefix: 'BF HEY',
+					indices: [],
+					fps: 24,
+					looped: false,
+					offset: {x: -7, y: 4}
+				},
+				{
+					name: 'scared',
+					prefix: 'BF idle shaking',
+					indices: [],
+					fps: 24,
+					looped: false,
+					offset: {x: -4, y: 0}
+				},
+			],
+			idleList: ['idle'],
+			singList: ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'],
+			scale: {x: 1.0, y: 1.0}
+		}, "\t"));
+
 		this.name = name;
 		this.isPlayer = isPlayer;
 
@@ -62,7 +128,10 @@ class Character extends FlxSprite
 
 		for (animData in _characterData.animationList)
 		{
-			animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
+			if (animData.indices != null && animData.indices.length > 0)
+				animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
+			else
+				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 
 			if (_characterData.singList.contains(animData.name) && !singList.contains(animData.name)) // do not allow the same animation
 				singList[_characterData.singList.indexOf(animData.name)] = animData.name;
@@ -72,6 +141,11 @@ class Character extends FlxSprite
 
 			animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
 		}
+
+		antialiasing = Settings.getPref('antialiasing', true);
+
+		if (idleList.length > 0)
+			playAnim(idleList[0]);
 	}
 
 	override function update(elapsed:Float)
@@ -80,7 +154,7 @@ class Character extends FlxSprite
 
 		if (animation.curAnim != null)
 		{
-			if (!isPlayer)
+			if (overridePlayer || !isPlayer)
 			{
 				if (singList.contains(animation.curAnim.name))
 				{

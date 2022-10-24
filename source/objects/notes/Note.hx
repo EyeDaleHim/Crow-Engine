@@ -10,17 +10,12 @@ class Note extends FlxSprite
 
 	public var direction:Int = 0;
 	public var strumTime:Float = 0;
-	public var ownerInfo:Owner = NONE;
+	public var strumOwner:Int = 0; // enemy = 0, player = 1, useful if you wanna make a pasta night / bonedoggle gimmick thing
 
-	public var mustPress(get, null):Bool;
+	public var mustPress:Bool = false;
 	public var canBeHit(get, null):Bool;
 	public var tooLate(get, null):Bool;
 	public var wasGoodHit(get, null):Bool;
-
-	private function get_mustPress():Bool
-	{
-		return ownerInfo == PLAYER;
-	}
 
 	private function get_canBeHit():Bool
 	{
@@ -38,11 +33,4 @@ class Note extends FlxSprite
 		return ((strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult))
 			&& (/*(isSustainNote && prevNote.wasGoodHit) ||*/ strumTime <= Conductor.songPosition));
 	}
-}
-
-enum abstract Owner(Int)
-{
-	var PLAYER = 0;
-	var ENEMY = 1;
-	var NONE = 2;
 }

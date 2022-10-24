@@ -13,16 +13,38 @@ class Stage
 	// don't really try to change this, this is just meant as a ref to the sprites
 	public static var currentStage:String = '';
 
-	public static function getStage(stage:String):Array<BGSprite>
+	public var defaultZoom:Float = 1.0;
+	public var name:String = '';
+	public var spriteGroup:Array<BGSprite> = [];
+	public var charPosList:CharPositions;
+	public var camPosList:CharCamPositions;
+
+	public function new() {}
+
+	public static function getStage(stage:String):Stage
 	{
 		var group:Array<BGSprite> = [];
 
 		currentStage = stage;
 
+		var stageInstance:Stage = new Stage();
+
+		stageInstance.charPosList = {
+			playerPositions: [],
+			spectatorPositions: [],
+			opponentPositions: []
+		}
+
 		switch (stage)
 		{
 			default:
 				{
+					stageInstance.defaultZoom = 0.90;
+
+					stageInstance.charPosList.playerPositions = [{x: 770, y: 100}];
+					stageInstance.charPosList.spectatorPositions = [{x: 400, y: 130}];
+					stageInstance.charPosList.opponentPositions = [{x: 100, y: 100}];
+
 					var background:BGSprite = new BGSprite({path: 'stageback', library: 'week1'}, {x: -600, y: -200}, {x: 0.9, y: 0.9});
 					group.push(background);
 
@@ -41,7 +63,10 @@ class Stage
 
 		currentStage = '';
 
-		return group;
+		stageInstance.name = stage;
+		stageInstance.spriteGroup = group;
+
+		return stageInstance;
 	}
 }
 
@@ -87,6 +112,20 @@ class BGSprite extends FlxSprite
 			loadGraphic(Paths.image(image.path, image.library));
 		}
 	}
+}
+
+typedef CharPositions =
+{
+	var playerPositions:Array<SimplePoint>;
+	var spectatorPositions:Array<SimplePoint>;
+	var opponentPositions:Array<SimplePoint>;
+}
+
+typedef CharCamPositions =
+{
+	var playerPositions:Array<SimplePoint>;
+	var spectatorPositions:Array<SimplePoint>;
+	var opponentPositions:Array<SimplePoint>;
 }
 
 typedef ImagePath =

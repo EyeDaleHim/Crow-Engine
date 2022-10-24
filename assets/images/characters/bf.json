@@ -1,0 +1,96 @@
+{
+    "healthColor": -8802598,
+    "animationList": [
+        {
+            "prefix": "BF idle dance",
+            "indices": [],
+            "fps": 24,
+            "name": "idle",
+            "offset": {
+                "x": -5,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF NOTE LEFT0",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFT",
+            "offset": {
+                "x": 12,
+                "y": -6
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF NOTE DOWN0",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN",
+            "offset": {
+                "x": -10,
+                "y": -50
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF NOTE UP0",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP",
+            "offset": {
+                "x": -29,
+                "y": 27
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF NOTE RIGHT0",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHT",
+            "offset": {
+                "x": -38,
+                "y": -7
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF HEY",
+            "indices": [],
+            "fps": 24,
+            "name": "hey",
+            "offset": {
+                "x": -7,
+                "y": 4
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF idle shaking",
+            "indices": [],
+            "fps": 24,
+            "name": "scared",
+            "offset": {
+                "x": -4,
+                "y": 0
+            },
+            "looped": false
+        }
+    ],
+    "singList": [
+        "singLEFT",
+        "singDOWN",
+        "singUP",
+        "singRIGHT"
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "name": "bf",
+    "scale": {
+        "x": 1,
+        "y": 1
+    }
+}

@@ -28,9 +28,24 @@ class CurrentGame
 
 	public var accuracy(get, never):Float;
 
+	public var health(default, set):Float = 2.0;
+	public var maxHealth(default, set):Float = 2.0;
+
 	function get_accuracy():Float
 	{
 		return Math.isNaN(playerHits / playerHitMods) ? 0.0 : playerHits / playerHitMods;
+	}
+
+	function set_health(v:Float):Float
+	{
+		return health = Math.min(health, maxHealth);
+	}
+
+	function set_maxHealth(v:Float):Float
+	{
+		health = Math.max(health, v);
+
+		return maxHealth = v;
 	}
 }
 
@@ -59,9 +74,9 @@ class PlayState extends MusicBeatState
 	public var spectatorList:Array<Character> = [];
 
 	// all of them just refer to the first index in the list
-	public var player(get, default):Character;
-	public var opponent(get, default):Character;
-	public var spectator(get, default):Character;
+	public var player(get, set):Character;
+	public var opponent(get, set):Character;
+	public var spectator(get, set):Character;
 
 	function get_player():Character
 	{
@@ -78,7 +93,24 @@ class PlayState extends MusicBeatState
 		return spectatorList[0];
 	}
 
+	function set_player(char:Character):Character
+	{
+		return (playerList[0] = char);
+	}
+
+	function set_opponent(char:Character):Character
+	{
+		return (opponentList[0] = char);
+	}
+
+	function set_spectator(char:Character):Character
+	{
+		return (spectatorList[0] = char);
+	}
+
 	// stage stuff, will change because this is overly simple
+	public var stageData:Stage;
+
 	public var preStageRender:FlxTypedGroup<BGSprite>;
 	public var postStageRender:FlxTypedGroup<BGSprite>;
 
@@ -103,19 +135,15 @@ class PlayState extends MusicBeatState
 		FlxG.cameras.reset(gameCamera);
 		FlxG.cameras.add(hudCamera);
 
-		FlxG.cameras.setDefaultDrawTarget(gameCamera, true);
+		FlxCamera.defaultCameras = [gameCamera];
+
+		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
 		persistentDraw = true;
 		persistentUpdate = true;
 
 		/*if (Song.currentSong == null)
 			Song.loadSong('tutorial', 2); */
-
-		if (_cameraPos != null)
-			_cameraPos.copyTo(camFollow);
-		else
-			camFollow = new FlxPoint();
-		_cameraPos = null;
 
 		if (Song.currentSong != null)
 		{
@@ -146,10 +174,12 @@ class PlayState extends MusicBeatState
 
 		var stageName:String = 'stage';
 
+		stageData = Stage.getStage(stageName);
+
 		preStageRender = new FlxTypedGroup<BGSprite>();
 		postStageRender = new FlxTypedGroup<BGSprite>();
 
-		for (spriteList in Stage.getStage(stageName))
+		for (spriteList in stageData.spriteGroup)
 		{
 			switch (spriteList.renderPriority)
 			{
@@ -160,7 +190,25 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		FlxG.camera.zoom = stageData.defaultZoom;
+
 		add(preStageRender);
+
+		var playerPos = stageData.charPosList.playerPositions;
+		var specPos = stageData.charPosList.spectatorPositions;
+		var oppPos = stageData.charPosList.opponentPositions;
+
+		player = new Character(playerPos[0].x, playerPos[0].y, 'bf', true);
+		player.scrollFactor.set(0.95, 0.95);
+		add(player);
+
+		add(postStageRender);
+
+		if (_cameraPos != null)
+			_cameraPos.copyTo(camFollow);
+		else
+			camFollow = new FlxPoint();
+		_cameraPos = null;
 
 		super.create();
 	}
