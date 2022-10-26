@@ -11,6 +11,8 @@ class TitleState extends MusicBeatState
 {
 	public static var initialized:Bool = false;
 
+	private var control:Bool = false;
+
 	public var blackBG:FlxSprite;
 
 	// group before idle state
@@ -43,7 +45,11 @@ class TitleState extends MusicBeatState
 			}
 			else
 				skipIntro();
+
+			control = true;
 		});
+
+		FlxSprite.defaultAntialiasing = Settings.getPref('antialiasing', true);
 
 		blackBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 
@@ -143,21 +149,24 @@ class TitleState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (controls.getKey('ACCEPT', JUST_PRESSED))
+		if (control)
 		{
-			if (!TitleState.initialized)
-				skipIntro();
-			else
+			if (controls.getKey('ACCEPT', JUST_PRESSED))
 			{
-				enterText.animation.play('pressed');
-
-				FlxG.camera.flash(0xFFFFFFFF, 1);
-				FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.7);
-
-				new FlxTimer().start(2, function(timer:FlxTimer)
+				if (!TitleState.initialized)
+					skipIntro();
+				else
 				{
-					MusicBeatState.switchState(new MainMenuState());
-				});
+					enterText.animation.play('pressed');
+
+					FlxG.camera.flash(0xFFFFFFFF, 1);
+					FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.7);
+
+					new FlxTimer().start(2, function(timer:FlxTimer)
+					{
+						MusicBeatState.switchState(new MainMenuState());
+					});
+				}
 			}
 		}
 

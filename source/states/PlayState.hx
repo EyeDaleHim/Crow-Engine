@@ -7,6 +7,12 @@ import flixel.FlxCamera;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
+import flixel.util.FlxTimer;
+import flixel.util.FlxTimer.FlxTimerManager;
+import flixel.util.FlxSort;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.system.FlxSound;
 import openfl.events.KeyboardEvent;
 import music.Song;
 import objects.Stage;
@@ -120,7 +126,14 @@ class PlayState extends MusicBeatState
 	public var gameEnded:Bool = false;
 	public var paused:Bool = false;
 
-	// public var strumNoteGroup:FlxTypedGroup<
+	// various internal things
+	private var ___trackedSoundObjects:Array<GameSoundObject> = [];
+	private var ___trackedTimerObjects:FlxTimerManager = new FlxTimerManager();
+	private var ___trackedTweenObjects:Array<FlxTween> = [];
+
+	// used for weeks, load all the songs beforehand instead of loading one individually, limit is 3
+	private var __internalSongCache:Map<String, {music:FlxSound, vocal:FlxSound}> = [];
+
 	private static var _cameraPos:FlxPoint;
 
 	override public function create()
@@ -179,7 +192,23 @@ class PlayState extends MusicBeatState
 		preStageRender = new FlxTypedGroup<BGSprite>();
 		postStageRender = new FlxTypedGroup<BGSprite>();
 
-		for (spriteList in stageData.spriteGroup)
+		var sortedGroup:Array<BGSprite> = [];
+
+		// maps can get unoredred sometimes
+		for (bg in stageData.spriteGroup)
+		{
+			sortedGroup.push(bg);
+		}
+
+		if (sortedGroup.length > 1)
+		{
+			sortedGroup.sort(function(f1, f2)
+			{
+				return FlxSort.byValues(FlxSort.ASCENDING, f1.ID, f2.ID);
+			});
+		}
+
+		for (spriteList in sortedGroup)
 		{
 			switch (spriteList.renderPriority)
 			{
@@ -210,6 +239,8 @@ class PlayState extends MusicBeatState
 			camFollow = new FlxPoint();
 		_cameraPos = null;
 
+		initCountdown();
+
 		super.create();
 	}
 
@@ -232,6 +263,8 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		___trackedTimerObjects.update(elapsed);
 
 		if (countdownState != 0)
 		{
@@ -256,4 +289,83 @@ class PlayState extends MusicBeatState
 			}
 		}
 	}
+
+	public function initCountdown(?list:Array<String> = null, ?sound:Array<String> = null, ?diff:Int = 1000, ?onProgress:Int->Void = null)
+	{
+		if (list == null)
+			list = ['', 'ready', 'set', 'go'];
+		if (sound == null)
+			sound = ['3', '2', '1', 'Go'];
+
+		countdownState = 1;
+
+		if (list.length == 0) // ok??? just assume the person wants to start instantly
+		{
+			Conductor.songPosition = -500;
+			if (onProgress != null)
+				onProgress(0);
+		}
+		else
+		{
+			Conductor.songPosition = (list.length + 1) * -diff;
+
+			for (i in 0...list.length)
+			{
+				var countdownSpr:FlxSprite = new FlxSprite();
+				countdownSpr.visible = false;
+
+				if (list[i] != '')
+				{
+					countdownSpr = new FlxSprite().loadGraphic(Paths.image('game/countdown/${list[i]}'));
+					countdownSpr.visible = true;
+					countdownSpr.alpha = 0.0;
+					countdownSpr.scrollFactor.set();
+					countdownSpr.screenCenter();
+					countdownSpr.cameras = [hudCamera];
+
+					add(countdownSpr);
+				}
+
+				var countdownSound:GameSoundObject = new GameSoundObject();
+
+				if (sound[i] != '')
+				{
+					countdownSound.loadEmbedded(Paths.sound('game/countdown/intro-${sound[i]}'));
+					countdownSound.onComplete = function()
+					{
+						FlxG.sound.list.remove(countdownSound);
+						___trackedSoundObjects.remove(countdownSound);
+					};
+					FlxG.sound.list.add(countdownSound);
+					___trackedSoundObjects.push(countdownSound);
+				}
+
+				new FlxTimer(___trackedTimerObjects).start(Conductor.crochet * (1 + i) / diff, function(tmr:FlxTimer)
+				{
+					countdownSpr.alpha = 1.0;
+
+					___trackedTweenObjects.push(FlxTween.tween(countdownSpr, {alpha: 0.0}, Conductor.crochet / diff, {
+						ease: FlxEase.cubeInOut,
+						onComplete: function(twn:FlxTween)
+						{
+							if (members.indexOf(countdownSpr) >= 0)
+								remove(countdownSpr);
+							countdownSpr.destroy();
+						}
+					}));
+
+					if (sound[i] != '')
+						countdownSound.play();
+
+					if (onProgress != null)
+						onProgress(list.length - i);
+				});
+			}
+		}
+	}
+}
+
+class GameSoundObject extends FlxSound
+{
+	public var persistentFromPause:Bool = false;
 }

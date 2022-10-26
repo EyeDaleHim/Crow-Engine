@@ -15,7 +15,7 @@ class Stage
 
 	public var defaultZoom:Float = 1.0;
 	public var name:String = '';
-	public var spriteGroup:Array<BGSprite> = [];
+	public var spriteGroup:Map<String, BGSprite> = [];
 	public var charPosList:CharPositions;
 	public var camPosList:CharCamPositions;
 
@@ -23,7 +23,7 @@ class Stage
 
 	public static function getStage(stage:String):Stage
 	{
-		var group:Array<BGSprite> = [];
+		var group:Map<String, BGSprite> = [];
 
 		currentStage = stage;
 
@@ -41,23 +41,26 @@ class Stage
 				{
 					stageInstance.defaultZoom = 0.90;
 
-					stageInstance.charPosList.playerPositions = [{x: 770, y: 100}];
-					stageInstance.charPosList.spectatorPositions = [{x: 400, y: 130}];
-					stageInstance.charPosList.opponentPositions = [{x: 100, y: 100}];
+					stageInstance.charPosList.playerPositions = [{x: 770, y: 400}];
+					stageInstance.charPosList.spectatorPositions = [{x: 400, y: 430}];
+					stageInstance.charPosList.opponentPositions = [{x: 100, y: 400}];
 
 					var background:BGSprite = new BGSprite({path: 'stageback', library: 'week1'}, {x: -600, y: -200}, {x: 0.9, y: 0.9});
-					group.push(background);
+					background.ID = 0;
+					group.set('back', background);
 
 					var front:BGSprite = new BGSprite({path: 'stagefront', library: 'week1'}, {x: -650, y: 600}, {x: 0.9, y: 0.9});
 					front.scale.set(1.1, 1.1);
 					front.updateHitbox();
-					group.push(front);
+					front.ID = 1;
+					group.set('front', front);
 
 					var curtains:BGSprite = new BGSprite({path: 'stagecurtains', library: 'week1'}, {x: -500, y: -300}, {x: 1.3, y: 1.3});
 					curtains.scale.set(0.9, 0.9);
 					curtains.updateHitbox();
 					curtains.renderPriority = 0x01;
-					group.push(curtains);
+					curtains.ID = 2;
+					group.set('curtain', curtains);
 				}
 		}
 
@@ -68,6 +71,10 @@ class Stage
 
 		return stageInstance;
 	}
+
+	public function beatHit(stage:Stage, beat:Int) {}
+
+	public function countdownTick(stage:Stage) {}
 }
 
 class BGSprite extends FlxSprite
