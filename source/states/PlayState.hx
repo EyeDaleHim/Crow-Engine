@@ -7,6 +7,9 @@ import flixel.FlxCamera;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.ui.FlxBar;
+import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import flixel.util.FlxTimer.FlxTimerManager;
 import flixel.util.FlxSort;
@@ -15,6 +18,7 @@ import flixel.tweens.FlxEase;
 import flixel.system.FlxSound;
 import openfl.events.KeyboardEvent;
 import music.Song;
+import objects.HealthIcon;
 import objects.Stage;
 import objects.Stage.BGSprite;
 import objects.character.Character;
@@ -34,8 +38,10 @@ class CurrentGame
 
 	public var accuracy(get, never):Float;
 
-	public var health(default, set):Float = 2.0;
 	public var maxHealth(default, set):Float = 2.0;
+	public var health(default, set):Float = 1.0;
+
+	public function new() {}
 
 	function get_accuracy():Float
 	{
@@ -83,6 +89,17 @@ class PlayState extends MusicBeatState
 	public var player(get, set):Character;
 	public var opponent(get, set):Character;
 	public var spectator(get, set):Character;
+
+	// hud stuff
+	public var scoreText:FlxText;
+
+	public var healthBar:FlxBar;
+	public var healthBarBG:FlxSprite;
+
+	public var iconP1:HealthIcon;
+	public var iconP2:HealthIcon;
+
+	public var engineText:FlxText;
 
 	function get_player():Character
 	{
@@ -151,6 +168,8 @@ class PlayState extends MusicBeatState
 		FlxCamera.defaultCameras = [gameCamera];
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
+
+		gameInfo = new CurrentGame();
 
 		persistentDraw = true;
 		persistentUpdate = true;
@@ -239,9 +258,36 @@ class PlayState extends MusicBeatState
 			camFollow = new FlxPoint();
 		_cameraPos = null;
 
+		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Paths.image('game/ui/healthBar'));
+		healthBarBG.screenCenter(X);
+		healthBarBG.scrollFactor.set();
+		addToHUD(healthBarBG);
+
+		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), gameInfo,
+			'health', 0, 2);
+		healthBar.scrollFactor.set();
+		healthBar.createFilledBar(0xFFFF0000, player.healthColor);
+		addToHUD(healthBar);
+
+		scoreText = new FlxText(0, 0, 0, "[Score] 0 ~ [Misses] 0 ~ [Rank] (0.00% // N/A)");
+		scoreText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		scoreText.borderSize = 1.50;
+		scoreText.screenCenter(X);
+		scoreText.y = healthBarBG.y + 30;
+		addToHUD(scoreText);
+
 		initCountdown();
 
 		super.create();
+	}
+
+	private function addToHUD(obj:FlxObject)
+	{
+		if (obj != null)
+		{
+			obj.cameras = [hudCamera];
+			add(obj);
+		}
 	}
 
 	private var _lastFrameTime:Int = 0;
@@ -263,6 +309,8 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, ($curBeat, $curStep)');
 
 		___trackedTimerObjects.update(elapsed);
 
@@ -307,7 +355,7 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
-			Conductor.songPosition = (list.length + 1) * -diff;
+			Conductor.songPosition = -(Conductor.crochet * list.length);
 
 			for (i in 0...list.length)
 			{
@@ -340,7 +388,7 @@ class PlayState extends MusicBeatState
 					___trackedSoundObjects.push(countdownSound);
 				}
 
-				new FlxTimer(___trackedTimerObjects).start(Conductor.crochet * (1 + i) / diff, function(tmr:FlxTimer)
+				new FlxTimer(___trackedTimerObjects).start(Conductor.crochet * i / diff, function(tmr:FlxTimer)
 				{
 					countdownSpr.alpha = 1.0;
 
