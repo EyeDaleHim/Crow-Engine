@@ -106,12 +106,12 @@ class Paths
 
 	public static function inst(song:String, ?library:String = null):String
 	{
-		return getPath(extensionHelper('data/${song}/Inst.$SOUND_EXT'), SOUND, library);
+		return getPreloadPath(extensionHelper('music/songs/${song}/Inst.$SOUND_EXT'));
 	}
 
 	public static function vocals(song:String, ?library:String = null):String
 	{
-		return getPath(extensionHelper('data/${song}/Voice.$SOUND_EXT'), SOUND, library);
+		return getPreloadPath(extensionHelper('music/songs/${song}/Voice.$SOUND_EXT'));
 	}
 
 	public static function music(song:String):String

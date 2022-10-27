@@ -5,8 +5,8 @@ class Section {}
 typedef SectionInfo =
 {
 	var notes:Array<NoteInfo>;
-	var lengthInSteps:Int;
-	var bpm:Float;
+	var lengthInSteps:Array<Int>;
+	var bpm:Array<Float>;
 }
 
 typedef NoteInfo =

@@ -1,9 +1,11 @@
 package states;
 
 import flixel.FlxG;
+import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
+import flixel.FlxSubState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
@@ -17,6 +19,8 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.system.FlxSound;
 import openfl.events.KeyboardEvent;
+import states.substates.GameOverSubState;
+import states.substates.PauseSubState;
 import music.Song;
 import objects.HealthIcon;
 import objects.Stage;
@@ -66,12 +70,15 @@ class PlayState extends MusicBeatState
 	// important variables
 	public static var current:PlayState;
 
+	public static var isStoryMode:Bool = false;
+	public static var storyPlaylist:Array<String> = [];
+
 	public var gameInfo:CurrentGame;
 
 	// Camera Stuff
 	public var gameCamera:FlxCamera;
 	public var hudCamera:FlxCamera;
-	public var otherCameras:Map<String, FlxCamera> = new Map();
+	public var pauseCamera:FlxCamera;
 
 	public var camFollowObject:FlxObject;
 	public var camFollow:FlxPoint;
@@ -149,7 +156,7 @@ class PlayState extends MusicBeatState
 	private var ___trackedTweenObjects:Array<FlxTween> = [];
 
 	// used for weeks, load all the songs beforehand instead of loading one individually, limit is 3
-	private var __internalSongCache:Map<String, {music:FlxSound, vocal:FlxSound}> = [];
+	private static var __internalSongCache:Map<String, {music:FlxSound, vocal:FlxSound}> = [];
 
 	private static var _cameraPos:FlxPoint;
 
@@ -158,12 +165,17 @@ class PlayState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
+		current = this;
+
 		gameCamera = new FlxCamera();
 		hudCamera = new FlxCamera();
 		hudCamera.bgColor.alpha = 0;
+		pauseCamera = new FlxCamera();
+		pauseCamera.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(gameCamera);
 		FlxG.cameras.add(hudCamera);
+		FlxG.cameras.add(pauseCamera);
 
 		FlxCamera.defaultCameras = [gameCamera];
 
@@ -171,15 +183,28 @@ class PlayState extends MusicBeatState
 
 		gameInfo = new CurrentGame();
 
+		FlxG.mouse.visible = false;
+
 		persistentDraw = true;
 		persistentUpdate = true;
 
-		/*if (Song.currentSong == null)
-			Song.loadSong('tutorial', 2); */
+		if (Song.currentSong == null)
+			Song.loadSong('tutorial', 2);
+
+		if (!PlayState.isStoryMode)
+		{
+			if (!__internalSongCache.exists(Song.currentSong.song))
+			{
+				__internalSongCache.set(Song.currentSong.song,
+					{music: FlxG.sound.load(Paths.inst(Song.currentSong.song)), vocal: FlxG.sound.load(Paths.vocals(Song.currentSong.song))});
+			}
+		}
+
+		var stageName:String = 'stage';
 
 		if (Song.currentSong != null)
 		{
-			var stageName:String = switch (Song.currentSong.song.formatToReadable())
+			stageName = switch (Song.currentSong.song.formatToReadable())
 			{
 				case 'bopeebo' | 'fresh' | 'dad-battle':
 					'stage';
@@ -203,8 +228,6 @@ class PlayState extends MusicBeatState
 					'stage';
 			};
 		}
-
-		var stageName:String = 'stage';
 
 		stageData = Stage.getStage(stageName);
 
@@ -269,7 +292,7 @@ class PlayState extends MusicBeatState
 		healthBar.createFilledBar(0xFFFF0000, player.healthColor);
 		addToHUD(healthBar);
 
-		scoreText = new FlxText(0, 0, 0, "[Score] 0 ~ [Misses] 0 ~ [Rank] (0.00% // N/A)");
+		scoreText = new FlxText(0, 0, 0, "[Score] 0 // [Misses] 0 // [Rank] (0.00% - N/A)");
 		scoreText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		scoreText.borderSize = 1.50;
 		scoreText.screenCenter(X);
@@ -281,12 +304,12 @@ class PlayState extends MusicBeatState
 		super.create();
 	}
 
-	private function addToHUD(obj:FlxObject)
+	private function addToHUD(obj:FlxObject, ?group:FlxTypedGroup<FlxBasic> = null)
 	{
 		if (obj != null)
 		{
 			obj.cameras = [hudCamera];
-			add(obj);
+			(group == null ? this : group).add(obj);
 		}
 	}
 
@@ -312,16 +335,23 @@ class PlayState extends MusicBeatState
 
 		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, ($curBeat, $curStep)');
 
-		___trackedTimerObjects.update(elapsed);
+		if (___trackedTimerObjects.active)
+			___trackedTimerObjects.update(elapsed);
 
 		if (countdownState != 0)
 		{
+			if (controls.getKey('PAUSE', JUST_PRESSED))
+				openSubState(new PauseSubState());
+
 			Conductor.songPosition += FlxG.elapsed * 1000;
 
 			if (countdownState == 1)
 			{
-				// if (Conductor.songPosition > 0)
-				// startSong();
+				if (Conductor.songPosition > 0)
+				{
+					startSong();
+					countdownState = 2;
+				}
 			}
 
 			if (!paused)
@@ -355,7 +385,7 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
-			Conductor.songPosition = -(Conductor.crochet * list.length);
+			Conductor.songPosition = -(Conductor.crochet * list.length); // -5000 if the list has 4 things
 
 			for (i in 0...list.length)
 			{
@@ -410,6 +440,64 @@ class PlayState extends MusicBeatState
 				});
 			}
 		}
+	}
+
+	public function startSong():Void
+	{
+		if (!songStarted)
+		{
+			songStarted = true;
+
+			@:privateAccess
+			{
+				FlxG.sound.playMusic(__internalSongCache.get(Song.currentSong.song).music._sound);
+			}
+		}
+	}
+
+	override function openSubState(state:FlxSubState)
+	{
+		if (Std.isOfType(state, PauseSubState))
+		{
+			for (sound in ___trackedSoundObjects)
+			{
+				if (!sound.persistentFromPause)
+					sound.pause();
+			}
+
+			for (tween in ___trackedTweenObjects)
+			{
+				if (tween != null)
+					tween.active = false;
+			}
+
+			___trackedTimerObjects.active = false;
+
+			persistentUpdate = false;
+		}
+
+		super.openSubState(state);
+	}
+
+	override function closeSubState()
+	{
+		for (sound in ___trackedSoundObjects)
+		{
+			if (!sound.persistentFromPause)
+				sound.resume();
+		}
+
+		for (tween in ___trackedTweenObjects)
+		{
+			if (tween != null)
+				tween.active = true;
+		}
+
+		persistentUpdate = true;
+
+		___trackedTimerObjects.active = true;
+
+		super.closeSubState();
 	}
 }
 

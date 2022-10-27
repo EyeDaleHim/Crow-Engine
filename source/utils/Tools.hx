@@ -1,5 +1,6 @@
 package utils;
 
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxAxes;
 import flixel.math.FlxMath;
@@ -84,6 +85,16 @@ class Tools
 		return convertedValue;
 	}
 
+	public static function translateToMargin(object:FlxObject, margin:ScreenMargin, axes:FlxAxes = XY):FlxObject
+	{
+		if (axes.match(X | XY))
+			object.x = FlxMath.remapToRange(object.x, 0, FlxG.width, margin.x, margin.width);
+		if (axes.match(Y | XY))
+			object.y = FlxMath.remapToRange(object.y, 0, FlxG.height, margin.y, margin.height);
+
+		return object;
+	}
+
 	public static function centerOverlay(object:FlxObject, base:FlxObject, axes:FlxAxes = XY):FlxObject
 	{
 		if (axes.match(X | XY))
@@ -102,4 +113,12 @@ class Tools
 
 		return string;
 	}
+}
+
+typedef ScreenMargin =
+{
+	var x:Float;
+	var y:Float;
+	var width:Float;
+	var height:Float;
 }

@@ -17,6 +17,9 @@ class Song
 	{
 		var diffString:String = SongHandler.PLACEHOLDER_DIFF[Std.int(FlxMath.bound(diff, 0, 2))];
 
+		song = song.toLowerCase();
+		song = song.replace(' ', '-');
+
 		try
 		{
 			var fixData:String->String = function(str:String)
@@ -29,20 +32,22 @@ class Song
 				return str;
 			};
 
-			currentSong = Json.parse(fixData(Assets.getText(Paths.data('charts/' + song + '/' + song + '-' + diffString))));
+			currentSong = backend.compat.ChartConvert.convertType('base',
+				Assets.getText(Paths.data('charts/' + song + '/' + song + '-' + diffString.toLowerCase())));
 		}
 		catch (e)
 		{
-			throw 'Couldn\'t load song $song with difficulty $diffString';
+			throw 'Couldn\'t load song $song with difficulty $diffString (${Paths.data('charts/' + song + '/' + song + '-' + diffString.toLowerCase())})';
 		}
 
 		return {
 			song: song,
 			sectionList: {
 				notes: [],
-				lengthInSteps: 16,
-				bpm: 100
+				lengthInSteps: [],
+				bpm: []
 			},
+			speed: 1.0,
 			mustHitSections: [],
 			bpm: 100,
 			player: 'bf',
@@ -58,6 +63,7 @@ typedef SongInfo =
 	var sectionList:SectionInfo;
 	var mustHitSections:Array<Bool>;
 	var bpm:Float;
+	var speed:Float;
 
 	var player:String;
 	var opponent:String;
