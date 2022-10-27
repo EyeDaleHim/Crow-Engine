@@ -83,6 +83,9 @@ class PlayState extends MusicBeatState
 	public var camFollowObject:FlxObject;
 	public var camFollow:FlxPoint;
 
+	// music
+	public var vocals:FlxSound;
+
 	// notes
 	public var renderedNotes:FlxTypedGroup<Note>;
 	public var pendingNotes:Array<Note> = [];
@@ -200,6 +203,9 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		vocals = new FlxSound();
+		FlxG.sound.list.add(vocals);
+
 		var stageName:String = 'stage';
 
 		if (Song.currentSong != null)
@@ -287,7 +293,7 @@ class PlayState extends MusicBeatState
 		addToHUD(healthBarBG);
 
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), gameInfo,
-			'health', 0, 2);
+			'health', 0, gameInfo.maxHealth);
 		healthBar.scrollFactor.set();
 		healthBar.createFilledBar(0xFFFF0000, player.healthColor);
 		addToHUD(healthBar);
@@ -451,6 +457,8 @@ class PlayState extends MusicBeatState
 			@:privateAccess
 			{
 				FlxG.sound.playMusic(__internalSongCache.get(Song.currentSong.song).music._sound);
+				vocals.loadEmbedded(__internalSongCache.get(Song.currentSong.song).vocal._sound);
+				vocals.play();
 			}
 		}
 	}

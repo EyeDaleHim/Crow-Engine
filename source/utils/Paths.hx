@@ -9,6 +9,7 @@ import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 
 using StringTools;
+using utils.Tools;
 
 class Paths
 {
@@ -106,17 +107,17 @@ class Paths
 
 	public static function inst(song:String, ?library:String = null):String
 	{
-		return getPreloadPath(extensionHelper('music/songs/${song}/Inst.$SOUND_EXT'));
+		return getPreloadPath(extensionHelper('music/songs/${song.toLowerCase().replace(' ', '-')}/Inst.$SOUND_EXT'));
 	}
 
 	public static function vocals(song:String, ?library:String = null):String
 	{
-		return getPreloadPath(extensionHelper('music/songs/${song}/Voice.$SOUND_EXT'));
+		return getPreloadPath(extensionHelper('music/songs/${song.toLowerCase().replace(' ', '-')}/Voices.$SOUND_EXT'));
 	}
 
 	public static function music(song:String):String
 	{
-		return getPreloadPath(extensionHelper('music/${song}.$SOUND_EXT'));
+		return getPreloadPath(extensionHelper('music/${song.formatToReadable()}.$SOUND_EXT'));
 	}
 
 	public static function font(file:String):String

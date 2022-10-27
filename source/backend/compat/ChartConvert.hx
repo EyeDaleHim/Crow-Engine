@@ -28,39 +28,43 @@ class ChartConvert
 				{
 					var baseJSON:
 						{
-							song:String,
-							notes:Array<{
-								sectionNotes:Array<Dynamic>,
-								lengthInSteps:Int,
-								typeOfSection:Int,
-								mustHitSection:Bool,
-								bpm:Int,
-								changeBPM:Bool,
-								altAnim:Bool,
-							}>,
-							bpm:Int,
-							needsVoices:Bool,
-							speed:Float,
+							song:
+								{
+									song:String,
+									notes:Array<{
+										sectionNotes:Array<Dynamic>,
+										lengthInSteps:Int,
+										typeOfSection:Int,
+										mustHitSection:Bool,
+										bpm:Int,
+										changeBPM:Bool,
+										altAnim:Bool,
+									}>,
+									bpm:Int,
+									needsVoices:Bool,
+									speed:Float,
 
-							player1:String,
-							player2:String,
-							validScore:Bool,
+									player1:String,
+									player2:String,
+									validScore:Bool,
+								}
 						} = Json.parse(fixData(chart));
+					trace(baseJSON);
 
 					var convertedData:SongInfo = {
-						song: baseJSON.song,
+						song: baseJSON.song.song,
 						sectionList: {notes: [], bpm: [], lengthInSteps: []},
 						mustHitSections: [],
-						bpm: baseJSON.bpm,
-						speed: baseJSON.speed,
-						player: baseJSON.player1,
-						opponent: baseJSON.player2,
+						bpm: baseJSON.song.bpm,
+						speed: baseJSON.song.speed,
+						player: baseJSON.song.player1,
+						opponent: baseJSON.song.player2,
 						spectator: 'gf'
 					}
 
-					for (section in baseJSON.notes)
+					for (section in baseJSON.song.notes)
 					{
-						var index:Int = baseJSON.notes.indexOf(section);
+						var index:Int = baseJSON.song.notes.indexOf(section);
 
 						convertedData.sectionList.bpm[index] = section.bpm;
 						convertedData.sectionList.lengthInSteps[index] = section.lengthInSteps;

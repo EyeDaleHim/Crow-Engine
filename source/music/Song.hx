@@ -17,9 +17,6 @@ class Song
 	{
 		var diffString:String = SongHandler.PLACEHOLDER_DIFF[Std.int(FlxMath.bound(diff, 0, 2))];
 
-		song = song.toLowerCase();
-		song = song.replace(' ', '-');
-
 		try
 		{
 			var fixData:String->String = function(str:String)
@@ -32,12 +29,17 @@ class Song
 				return str;
 			};
 
-			currentSong = backend.compat.ChartConvert.convertType('base',
-				Assets.getText(Paths.data('charts/' + song + '/' + song + '-' + diffString.toLowerCase())));
+			var path = Paths.data('charts/' + song.toLowerCase().replace(' ', '-') + '/' + song.toLowerCase().replace(' ', '-') + '-'
+				+ diffString.toLowerCase());
+			trace(path);
+
+			currentSong = backend.compat.ChartConvert.convertType('base', Assets.getText(path));
+
+			return currentSong;
 		}
 		catch (e)
 		{
-			throw 'Couldn\'t load song $song with difficulty $diffString (${Paths.data('charts/' + song + '/' + song + '-' + diffString.toLowerCase())})';
+			throw 'Couldn\'t load song $song with difficulty $diffString (${Paths.data('charts/' + song.toLowerCase().replace(' ', '-') + '/' + song.toLowerCase().replace(' ', '-') + '-' + diffString.toLowerCase())})';
 		}
 
 		return {
