@@ -48,7 +48,8 @@ class StrumNote extends FlxSprite
 			else
 				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 
-			animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
+			if (animData.offset.x != 0 || animData.offset.y != 0)
+				animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
 			animForces.set(animData.name, animData.looped);
 		}
 
@@ -60,5 +61,17 @@ class StrumNote extends FlxSprite
 
 		scale.set(0.7, 0.7);
 		updateHitbox();
+	}
+
+	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
+	{
+		animation.play(AnimName, Force, Reversed, Frame);
+
+		var offsetAnim:FlxPoint = FlxPoint.get();
+		if (animOffsets.exists(AnimName))
+			offsetAnim.set(animOffsets[AnimName].x, animOffsets[AnimName].y);
+		else
+			centerOffsets();
+		centerOrigin();
 	}
 }

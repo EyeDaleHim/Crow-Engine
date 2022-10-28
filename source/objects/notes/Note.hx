@@ -14,7 +14,7 @@ using StringTools;
 @:allow(states.PlayState)
 class Note extends FlxSprite
 {
-	public static var earlyMult:Float = 0.5;
+	public var earlyMult:Float = 0.5;
 
 	public static var currentSkin:String = 'NOTE_assets';
 
@@ -52,13 +52,17 @@ class Note extends FlxSprite
 			else
 				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 
-			animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
+			if (animData.offset.x != 0 || animData.offset.y != 0)
+				animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
 			animForces.set(animData.name, animData.looped);
 		}
 
 		var animPlay:String = _noteFile.animDirections[direction];
+
 		if (isSustainNote)
 		{
+			earlyMult = 1.0;
+
 			if (sustainIndex == sustainLength)
 			{
 				animPlay = _noteFile.sustainAnimDirections[direction].end;
@@ -82,6 +86,7 @@ class Note extends FlxSprite
 	public var isSustainNote:Bool = false;
 	public var isEndNote:Bool = false;
 
+	private var _lastNote:Note;
 	private var _lockedScaleY:Bool = true;
 	private var _lockedToStrumX:Bool = true;
 	private var _lockedToStrumY:Bool = true; // if you disable this, the notes won't ever go, if you want a modchart controlling notes, here u go
@@ -92,9 +97,29 @@ class Note extends FlxSprite
 	private static var _noteFile:NoteFile;
 
 	// public var strumOwner:Int = 0; // enemy = 0, player = 1, useful if you wanna make a pasta night / bonedoggle gimmick thing
-	public var canBeHit(get, null):Bool;
-	public var tooLate(get, null):Bool;
-	public var wasGoodHit(get, null):Bool;
+	public var canBeHit:Bool;
+	public var tooLate:Bool;
+	public var wasGoodHit:Bool;
+
+	override public function update(elapsed:Float)
+	{
+		if (mustPress)
+		{
+			canBeHit = (strumTime > Conductor.songPosition - NoteStorageFunction.safeZoneOffset
+				&& strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult));
+
+			tooLate = (strumTime < Conductor.songPosition - NoteStorageFunction.safeZoneOffset && !wasGoodHit);
+		}
+		else
+		{
+			canBeHit = false;
+
+			wasGoodHit = ((strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult))
+				&& ((isSustainNote && _lastNote != null && _lastNote.wasGoodHit) || strumTime <= Conductor.songPosition));
+		}
+
+		super.update(elapsed);
+	}
 
 	private function get_canBeHit():Bool
 	{
@@ -110,6 +135,6 @@ class Note extends FlxSprite
 	private function get_wasGoodHit():Bool
 	{
 		return ((strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult))
-			&& (/*(isSustainNote && prevNote.wasGoodHit) ||*/ strumTime <= Conductor.songPosition));
+			&& ((isSustainNote && (_lastNote != null && _lastNote.wasGoodHit)) || strumTime <= Conductor.songPosition));
 	}
 }

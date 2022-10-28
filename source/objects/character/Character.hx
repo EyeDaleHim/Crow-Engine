@@ -130,7 +130,7 @@ class Character extends FlxSprite
 		for (animData in _characterData.animationList)
 		{
 			if (animData.indices != null && animData.indices.length > 0)
-				animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
+				animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.forced);
 			else
 				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 
@@ -140,8 +140,9 @@ class Character extends FlxSprite
 			if (_characterData.idleList.contains(animData.name))
 				idleList[_characterData.idleList.indexOf(animData.name)] = animData.name;
 
-			animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
-			animForces.set(animData.name, animData.looped);
+			if (animData.offset.x != 0 || animData.offset.y != 0)
+				animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
+			animForces.set(animData.name, animData.forced);
 		}
 
 		antialiasing = Settings.getPref('antialiasing', true);
@@ -202,6 +203,8 @@ class Character extends FlxSprite
 		var offsetAnim:FlxPoint = FlxPoint.get();
 		if (animOffsets.exists(AnimName))
 			offsetAnim.set(animOffsets[AnimName].x, animOffsets[AnimName].y);
+
+		offset.set(offsetAnim.x, offsetAnim.y);
 	}
 
 	override function destroy()

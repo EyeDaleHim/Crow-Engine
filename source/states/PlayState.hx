@@ -15,6 +15,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import flixel.util.FlxTimer.FlxTimerManager;
 import flixel.util.FlxSort;
+import flixel.input.keyboard.FlxKey;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.system.FlxSound;
@@ -75,10 +76,32 @@ class CurrentGame
 	public var playerHits:Float = 0.0;
 	public var playerHitMods:Float = 0.0;
 
+	public var combo:Int = 0;
+
 	public var accuracy(get, never):Float;
 
 	public var maxHealth(default, set):Float = 2.0;
 	public var health(default, set):Float = 1.0;
+
+	public var judgements:Array<{judge:String, diff:Float}> = [
+		{judge: 'sick', diff: 45},
+		{judge: 'good', diff: 90},
+		{judge: 'bad', diff: 135},
+		{judge: 'shit', diff: 166}
+	];
+
+	public var judgementList:Map<String, Int> = ['sick' => 0, 'good' => 0, 'bad' => 0, 'shit' => 0];
+
+	public function judgeNote(rate:Float = 0):{judge:String, diff:Float}
+	{
+		for (i in 0...judgements.length)
+		{
+			if (FlxMath.roundDecimal(Math.abs(rate), 2) <= judgements[i].diff)
+				return judgements[i];
+		}
+
+		return {judge: 'miss', diff: FlxMath.MAX_VALUE_FLOAT}; // a miss??? this shouldn't be really possible btw
+	}
 
 	public function new() {}
 
@@ -370,15 +393,21 @@ class PlayState extends MusicBeatState
 
 		initCountdown();
 
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
+
 		super.create();
 	}
 
-	private function addToHUD(obj:FlxBasic, ?group:FlxTypedGroup<FlxBasic> = null)
+	private function addToHUD(obj:FlxBasic, index:Int = null, ?group:FlxTypedGroup<FlxBasic> = null)
 	{
+		if (index == null)
+			index = members.length + 1;
+
 		if (obj != null)
 		{
 			obj.cameras = [hudCamera];
-			(group == null ? this : group).add(obj);
+			(group == null ? this : group).insert(index, obj);
 		}
 	}
 
@@ -394,6 +423,14 @@ class PlayState extends MusicBeatState
 				if (note.strumTime - Conductor.songPosition > 1500)
 				{
 					break;
+				}
+
+				if (note.mustPress)
+				{
+					if (note.isSustainNote)
+						_isolatedNotes.sustains[note.direction].push(note);
+					else
+						_isolatedNotes.note[note.direction].push(note);
 				}
 
 				renderedNotes.add(pendingNotes.shift());
@@ -472,13 +509,18 @@ class PlayState extends MusicBeatState
 		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 20
 			|| (Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 20))
 		{
-			vocals.pause();
-
-			FlxG.sound.music.play();
-			Conductor.songPosition = FlxG.sound.music.time;
-			vocals.time = Conductor.songPosition;
-			vocals.play();
+			resyncVocals();
 		}
+	}
+
+	private function resyncVocals():Void
+	{
+		vocals.pause();
+
+		FlxG.sound.music.play();
+		Conductor.songPosition = FlxG.sound.music.time;
+		vocals.time = Conductor.songPosition;
+		vocals.play();
 	}
 
 	public function generateSong():Void
@@ -496,8 +538,14 @@ class PlayState extends MusicBeatState
 		{
 			for (note in sections.notes)
 			{
+				var oldNote:Note = null;
+				if (pendingNotes.length > 0)
+					oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
+
 				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
+				newNote._lastNote = oldNote;
 				newNote.scrollFactor.set();
+				newNote.singAnim = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][newNote.direction];
 
 				if (note.sustain > 0)
 				{
@@ -508,13 +556,21 @@ class PlayState extends MusicBeatState
 
 					for (i in 0...sustainAmounts)
 					{
+						oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
+
 						var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
 							note.noteAnim);
 						sustainNote.scrollFactor.set();
+						sustainNote._lastNote = oldNote;
 						sustainNote.alpha = 0.6;
+						sustainNote.singAnim = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][newNote.direction];
+
 						pendingNotes.push(sustainNote);
 					}
 				}
+
+				// mf this fix helps the check for input system
+				newNote.isSustainNote = false;
 
 				pendingNotes.push(newNote);
 			}
@@ -665,7 +721,101 @@ class PlayState extends MusicBeatState
 
 		___trackedTimerObjects.active = true;
 
+		paused = false;
+
+		if (songStarted && !gameEnded)
+			resyncVocals();
+
 		super.closeSubState();
+	}
+
+	private var _isolatedNotes:{sustains:Map<Int, Array<Note>>, note:Map<Int, Array<Note>>} = {
+		note: [0 => [], 1 => [], 2 => [], 3 => []],
+		sustains: [0 => [], 1 => [], 2 => [], 3 => []]
+	};
+
+	private var currentKeys:Array<Bool> = [];
+
+	public function keyPress(e:KeyboardEvent)
+	{
+		var direction:Int = getKeyDirection(e.keyCode);
+
+		if (!paused && generatedMusic && !gameEnded)
+		{
+			if (direction != -1 && FlxG.keys.checkStatus(e.keyCode, JUST_PRESSED))
+			{
+				var lastTime:Float = Conductor.songPosition;
+				Conductor.songPosition = FlxG.sound.music.time;
+
+				var allowGhost:Bool = false;
+
+				for (note in _isolatedNotes.note[direction])
+				{
+					if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
+					{
+						hitNote(note);
+						allowGhost = true;
+					}
+				}
+
+				if (!Settings.getPref('ghost_tap', true) && allowGhost)
+				{
+					// note miss stuff
+				}
+
+				Conductor.songPosition = lastTime;
+			}
+
+			currentKeys[direction] = true;
+
+			var strum:StrumNote = playerStrums.members[direction];
+			if (strum != null && strum.animation.curAnim.name != strum.confirmAnim)
+			{
+				strum.playAnim(strum.pressAnim);
+			}
+		}
+	}
+
+	public function keyRelease(e:KeyboardEvent)
+	{
+		var direction:Int = getKeyDirection(e.keyCode);
+		if (!paused && direction != -1)
+		{
+			var strum:StrumNote = playerStrums.members[direction];
+			if (strum != null)
+			{
+				strum.playAnim(strum.staticAnim);
+			}
+			currentKeys[direction] = false;
+		}
+	}
+
+	private function getKeyDirection(key:Int)
+	{
+		var controlList:Array<Array<FlxKey>> = [];
+		@:privateAccess
+		{
+			controlList = [
+				controls.LIST_CONTROLS['NOTE_LEFT'].__keys,
+				controls.LIST_CONTROLS['NOTE_DOWN'].__keys,
+				controls.LIST_CONTROLS['NOTE_UP'].__keys,
+				controls.LIST_CONTROLS['NOTE_RIGHT'].__keys,
+			];
+		}
+
+		if (key != FlxKey.NONE)
+		{
+			for (i in 0...controlList.length)
+			{
+				for (j in 0...controlList[i].length)
+				{
+					if (controlList[i][j] == key)
+						return i;
+				}
+			}
+		}
+
+		return -1;
 	}
 
 	public var strumRange:Float = FlxG.width / 2;
@@ -687,50 +837,197 @@ class PlayState extends MusicBeatState
 		_totalPlayers++;
 	}
 
-	private var controlScale:Float = 1.05;
-
 	public function manageNotes():Void
 	{
-		renderedNotes.forEachAlive(function(note:Note)
+		if (generatedMusic)
 		{
-			var strumGroup:FlxTypedGroup<StrumNote> = note.mustPress ? playerStrums : opponentStrums;
-
-			var strumX:Float = strumGroup.members[note.direction].x;
-			var strumY:Float = strumGroup.members[note.direction].y;
-
-			var distance:Float = (0.45 * (Conductor.songPosition - note.strumTime) * songSpeed);
-			if (!Settings.getPref('downscroll', true))
-				distance *= -1;
-
-			if (note._lockedToStrumX)
+			var fakeCrochet:Float = (60 / Song.currentSong.bpm) * 1000;
+			renderedNotes.forEachAlive(function(note:Note)
 			{
-				note.x = strumX;
-				if (note.isSustainNote)
-					note.centerOverlay(strumGroup.members[note.direction], X);
-			}
+				var strumGroup:FlxTypedGroup<StrumNote> = note.mustPress ? playerStrums : opponentStrums;
 
-			if (note.isSustainNote)
-			{
-				if (note._lockedScaleY)
+				var strumX:Float = strumGroup.members[note.direction].x;
+				var strumY:Float = strumGroup.members[note.direction].y;
+
+				var distance:Float = (0.45 * (Conductor.songPosition - note.strumTime) * songSpeed);
+				if (!Settings.getPref('downscroll', true))
+					distance *= -1;
+
+				if (note._lockedToStrumX)
 				{
-					if (!note.isEndNote)
+					note.x = strumX;
+					if (note.isSustainNote)
+						note.centerOverlay(strumGroup.members[note.direction], X);
+				}
+
+				if (note.isSustainNote)
+				{
+					if (note._lockedScaleY)
 					{
-						note.scale.y = Conductor.stepCrochet / 100 * controlScale * songSpeed;
-						note.updateHitbox();
+						if (!note.isEndNote)
+						{
+							note.scale.y = 1 * Conductor.stepCrochet / 100 * 1.05;
+							note.scale.y *= songSpeed;
+							note.updateHitbox();
+						}
 					}
 				}
-			}
 
-			if (note._lockedToStrumY)
-				note.y = strumY - distance;
+				if (note._lockedToStrumY)
+				{
+					note.y = strumY - distance;
+					if (Settings.getPref('downscroll', false))
+					{
+						if (note.isEndNote)
+						{
+							note.y += 10.5 * (fakeCrochet / 400) * 1.5 * songSpeed + (46 * (songSpeed - 1));
+							note.y -= 46 * (1 - (fakeCrochet / 600)) * songSpeed;
+							note.y -= 19;
+						}
+						note.y += (Note.transformedWidth / 2) - (60.5 * (songSpeed - 1));
+						note.y += 27.5 * ((Song.currentSong.bpm / 100) - 1) * (songSpeed - 1);
+					}
+				}
 
-			if (note.strumTime - Conductor.songPosition < -280)
+				if (note.strumTime - Conductor.songPosition < -300)
+				{
+					killNote(note);
+				}
+
+				if (currentKeys.contains(true))
+				{
+					if (currentKeys[note.direction] && note.mustPress && note.isSustainNote)
+					{
+						if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
+							hitNote(note);
+					}
+				}
+			});
+		}
+	}
+
+	public function hitNote(note:Note)
+	{
+		var judgement = gameInfo.judgeNote(note.strumTime - Conductor.songPosition);
+		var rate:Map<String, Float> = ['good' => 0.75, 'bad' => 0.50, 'shit' => 0.25];
+
+		switch (judgement.judge)
+		{
+			case 'sick':
+				{}
+			case 'good' | 'bad' | 'shit':
+				{}
+		}
+
+		if (player != null)
+			player.playAnim(note.singAnim, true);
+
+		var strum:StrumNote = playerStrums.members[note.direction];
+		if (strum != null)
+		{
+			strum.playAnim(strum.confirmAnim, true);
+		}
+
+		if (!note.isSustainNote)
+		{
+			gameInfo.playerHits += rate[judgement.judge];
+			gameInfo.playerHitMods += 1.0;
+
+			if (gameInfo.judgementList.exists(judgement.judge))
+				gameInfo.judgementList[judgement.judge]++;
+
+			gameInfo.combo++;
+
+			popCombo(judgement.judge);
+
+			killNote(note);
+		}
+	}
+
+	public var showCombo:Bool = true;
+	public var showNumbers:Bool = true;
+
+	public function popCombo(rating:String = 'sick')
+	{
+		var xPos:Float = FlxG.width * 0.35;
+
+		if (showCombo)
+		{
+			var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('game/combo/ratings/' + rating));
+			comboSpr.scale.set(0.7, 0.7);
+			comboSpr.updateHitbox();
+			comboSpr.screenCenter();
+			comboSpr.setPosition(xPos - 40, comboSpr.y - 60);
+
+			comboSpr.acceleration.y = 550;
+			comboSpr.velocity.y -= FlxG.random.int(140, 175);
+			comboSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
+
+			addToHUD(comboSpr, members.indexOf(globalStrums));
+
+			___trackedTweenObjects.push(FlxTween.tween(comboSpr, {alpha: 0}, 0.2, {
+				onComplete: function(tween:FlxTween)
+				{
+					remove(comboSpr);
+					comboSpr.destroy();
+				},
+				startDelay: Conductor.crochet * 0.001
+			}));
+		}
+
+		if (showNumbers)
+		{
+			var comboString:String = Std.string(gameInfo.combo);
+
+			while (comboString.length < Math.min(3, comboString.length))
+				comboString = '0' + comboString;
+
+			var loop:Int = 0;
+
+			for (i in 0...comboString.length)
 			{
-				note.kill();
-				renderedNotes.remove(note, true);
-				note.destroy();
+				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('game/combo/numbers/num' + comboString.charAt(i)));
+				numScore.scale.set(0.5, 0.5);
+				numScore.updateHitbox();
+				numScore.screenCenter();
+				numScore.setPosition(xPos + (43 * loop) - 90, numScore.y + 80);
+
+				numScore.acceleration.y = FlxG.random.int(200, 300);
+				numScore.velocity.y -= FlxG.random.int(140, 160);
+				numScore.velocity.x = FlxG.random.float(-5, 5);
+
+				addToHUD(numScore, members.indexOf(globalStrums));
+
+				___trackedTweenObjects.push(FlxTween.tween(numScore, {alpha: 0}, 0.2, {
+					onComplete: function(tween:FlxTween)
+					{
+						remove(numScore);
+						numScore.destroy();
+					},
+					startDelay: Conductor.crochet * 0.002
+				}));
+
+				loop++;
 			}
-		});
+		}
+	}
+
+	private function killNote(note:Note)
+	{
+		if (_isolatedNotes.note[note.direction].contains(note))
+			_isolatedNotes.note[note.direction].splice(_isolatedNotes.note[note.direction].indexOf(note), 1);
+
+		note.kill();
+		renderedNotes.remove(note, true);
+		note.destroy();
+	}
+
+	override function destroy()
+	{
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPress);
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, keyRelease);
+
+		super.destroy();
 	}
 }
 
