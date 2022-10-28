@@ -47,8 +47,7 @@ class Song
 			sectionList: [
 				{
 					notes: [],
-					lengthInSteps: 16,
-					bpm: 100
+					length: 16,
 				}
 			],
 			speed: 1.0,

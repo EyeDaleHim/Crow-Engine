@@ -569,9 +569,6 @@ class PlayState extends MusicBeatState
 					}
 				}
 
-				// mf this fix helps the check for input system
-				newNote.isSustainNote = false;
-
 				pendingNotes.push(newNote);
 			}
 		}

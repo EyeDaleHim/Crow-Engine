@@ -66,10 +66,8 @@ class ChartConvert
 					{
 						var index:Int = baseJSON.song.notes.indexOf(section);
 
-						convertedData.sectionList[index] = {notes: [], bpm: 100, lengthInSteps: 16};
-
-						convertedData.sectionList[index].bpm = section.bpm;
-						convertedData.sectionList[index].lengthInSteps = section.lengthInSteps;
+						convertedData.sectionList[index] = {notes: [], length: 16};
+						convertedData.sectionList[index].length = section.lengthInSteps;
 
 						for (notes in section.sectionNotes)
 						{

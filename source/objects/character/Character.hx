@@ -204,6 +204,11 @@ class Character extends FlxSprite
 			offsetAnim.set(animOffsets[AnimName].x, animOffsets[AnimName].y);
 
 		offset.set(offsetAnim.x, offsetAnim.y);
+
+		if (singList.contains(animation.curAnim.name))
+		{
+			_animationTimer = 0.0;
+		}
 	}
 
 	override function destroy()
