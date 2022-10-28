@@ -1,0 +1,142 @@
+{
+    "pressAnim": [
+        "pressLEFT",
+        "pressDOWN",
+        "pressUP",
+        "pressRIGHT"
+    ],
+    "confirmAnim": [
+        "confirmLEFT",
+        "confirmDOWN",
+        "confirmUP",
+        "confirmRIGHT"
+    ],
+    "staticAnim": [
+        "staticLEFT",
+        "staticDOWN",
+        "staticUP",
+        "staticRIGHT"
+    ],
+    "animationData": [
+        {
+            "name": "staticLEFT",
+            "prefix": "arrowLEFT",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "staticDOWN",
+            "prefix": "arrowDOWN",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "staticUP",
+            "prefix": "arrowUP",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "staticRIGHT",
+            "prefix": "arrowRIGHT",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "pressLEFT",
+            "prefix": "left press",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "pressDOWN",
+            "prefix": "down press",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "pressUP",
+            "prefix": "up press",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "pressRIGHT",
+            "prefix": "right press",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirmLEFT",
+            "prefix": "left confirm",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirmDOWN",
+            "prefix": "down confirm",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirmUP",
+            "prefix": "up confirm",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirmRIGHT",
+            "prefix": "right confirm",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ]
+}

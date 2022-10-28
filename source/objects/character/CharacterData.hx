@@ -9,13 +9,3 @@ typedef CharacterData =
 	var singList:Array<String>; // occasionally singLEFT, singDOWN and stuff
 	var scale:{x:Float, y:Float};
 }
-
-typedef Animation =
-{
-	var name:String;
-	var prefix:String;
-	var indices:Array<Int>;
-	var fps:Int;
-	var looped:Bool;
-	var offset:{x:Int, y:Int};
-}

@@ -78,8 +78,6 @@ class Main extends Sprite
 		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, game.zoom, game.framerate, game.framerate, game.skipSplash,
 			game.startFullscreen);
 
-		FlxG.stage.quality = openfl.display.StageQuality.BEST;
-
 		addChild(game);
 
 		FlxG.console.registerClass(utils.Paths);
@@ -96,6 +94,8 @@ class Main extends Sprite
 		#if !mobile
 		addChild(new DebugInfo(10, 5));
 		#end
+
+		FlxG.game.stage.quality = openfl.display.StageQuality.LOW; // try and remove openfl's smoothing??
 	}
 }
 

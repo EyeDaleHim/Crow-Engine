@@ -44,11 +44,13 @@ class Song
 
 		return {
 			song: song,
-			sectionList: {
-				notes: [],
-				lengthInSteps: [],
-				bpm: []
-			},
+			sectionList: [
+				{
+					notes: [],
+					lengthInSteps: 16,
+					bpm: 100
+				}
+			],
 			speed: 1.0,
 			mustHitSections: [],
 			bpm: 100,
@@ -62,7 +64,7 @@ class Song
 typedef SongInfo =
 {
 	var song:String;
-	var sectionList:SectionInfo;
+	var sectionList:Array<SectionInfo>;
 	var mustHitSections:Array<Bool>;
 	var bpm:Float;
 	var speed:Float;

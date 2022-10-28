@@ -34,6 +34,41 @@ using utils.Tools;
 
 class CurrentGame
 {
+	public static var RANK_LIST:Array<{accuracy:Float, rank:String}> = [
+		{accuracy: 1, rank: 'S'},
+		{accuracy: 0.98, rank: 'A+'},
+		{accuracy: 0.97, rank: 'A'},
+		{accuracy: 0.945, rank: 'B+'},
+		{accuracy: 0.9, rank: 'B'},
+		{accuracy: 0.875, rank: 'C'},
+		{accuracy: 0.665, rank: 'D'},
+		{accuracy: 0.5, rank: 'F'}
+	];
+
+	public var rank(get, never):String;
+
+	function get_rank():String
+	{
+		if (accuracy == 0)
+			return 'N/A';
+		else if (accuracy == 1)
+			return 'S+';
+		else
+		{
+			var savedAcc:Float = get_accuracy();
+
+			for (ranking in RANK_LIST)
+			{
+				if (savedAcc < ranking.accuracy)
+				{
+					return ranking.rank;
+				}
+			}
+		}
+
+		return 'N/A';
+	}
+
 	public var score:Int = 0;
 	public var misses:Int = 0;
 
@@ -89,6 +124,12 @@ class PlayState extends MusicBeatState
 	// notes
 	public var renderedNotes:FlxTypedGroup<Note>;
 	public var pendingNotes:Array<Note> = [];
+
+	// strums
+	public var globalStrums:FlxTypedGroup<StrumNote>;
+	public var playerStrums:FlxTypedGroup<StrumNote>;
+	public var opponentStrums:FlxTypedGroup<StrumNote>;
+	public var strumLine:FlxPoint = FlxPoint.get();
 
 	// characters
 	public var playerList:Array<Character> = [];
@@ -147,11 +188,13 @@ class PlayState extends MusicBeatState
 	public var preStageRender:FlxTypedGroup<BGSprite>;
 	public var postStageRender:FlxTypedGroup<BGSprite>;
 
-	// simple values to control the game
+	// simple values
 	public var songStarted:Bool = false;
+	public var generatedMusic:Bool = false;
 	public var countdownState:Int = 0; // 0 = countdown not started, 1 = countdown started, 2 = countdown finished
 	public var gameEnded:Bool = false;
 	public var paused:Bool = false;
+	public var songSpeed:Float = 1.0; // no support for changing speed yet
 
 	// various internal things
 	private var ___trackedSoundObjects:Array<GameSoundObject> = [];
@@ -287,6 +330,26 @@ class PlayState extends MusicBeatState
 			camFollow = new FlxPoint();
 		_cameraPos = null;
 
+		strumLine.y = 50;
+
+		if (Settings.getPref('downscroll', false))
+			strumLine.y = FlxG.height - 150;
+
+		globalStrums = new FlxTypedGroup<StrumNote>();
+		addToHUD(globalStrums);
+
+		// no reason to add them, globalStrums is the renderer for strum notes
+		playerStrums = new FlxTypedGroup<StrumNote>();
+		opponentStrums = new FlxTypedGroup<StrumNote>();
+
+		addToHUD(playerStrums);
+		addToHUD(opponentStrums);
+
+		addPlayer(opponentStrums);
+		addPlayer(playerStrums);
+
+		generateSong();
+
 		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Paths.image('game/ui/healthBar'));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
@@ -300,7 +363,7 @@ class PlayState extends MusicBeatState
 
 		scoreText = new FlxText(0, 0, 0, "[Score] 0 // [Misses] 0 // [Rank] (0.00% - N/A)");
 		scoreText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
-		scoreText.borderSize = 1.50;
+		scoreText.borderSize = 1.25;
 		scoreText.screenCenter(X);
 		scoreText.y = healthBarBG.y + 30;
 		addToHUD(scoreText);
@@ -310,7 +373,7 @@ class PlayState extends MusicBeatState
 		super.create();
 	}
 
-	private function addToHUD(obj:FlxObject, ?group:FlxTypedGroup<FlxBasic> = null)
+	private function addToHUD(obj:FlxBasic, ?group:FlxTypedGroup<FlxBasic> = null)
 	{
 		if (obj != null)
 		{
@@ -347,7 +410,16 @@ class PlayState extends MusicBeatState
 		if (countdownState != 0)
 		{
 			if (controls.getKey('PAUSE', JUST_PRESSED))
+			{
+				if (songStarted)
+				{
+					FlxG.sound.music.play();
+					vocals.play();
+				}
+
+				paused = true;
 				openSubState(new PauseSubState());
+			}
 
 			Conductor.songPosition += FlxG.elapsed * 1000;
 
@@ -371,7 +443,89 @@ class PlayState extends MusicBeatState
 					Conductor.lastSongPos = Conductor.songPosition;
 				}
 			}
+
+			manageNotes();
 		}
+	}
+
+	override function beatHit():Void
+	{
+		super.beatHit();
+
+		for (charList in [playerList, opponentList, spectatorList])
+		{
+			if (charList != null)
+			{
+				for (char in charList)
+				{
+					if (char != null)
+						char.dance();
+				}
+			}
+		}
+	}
+
+	override function stepHit():Void
+	{
+		super.stepHit();
+
+		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 20
+			|| (Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 20))
+		{
+			vocals.pause();
+
+			FlxG.sound.music.play();
+			Conductor.songPosition = FlxG.sound.music.time;
+			vocals.time = Conductor.songPosition;
+			vocals.play();
+		}
+	}
+
+	public function generateSong():Void
+	{
+		renderedNotes = new FlxTypedGroup<Note>();
+		addToHUD(renderedNotes);
+
+		if (Song.currentSong == null)
+			return;
+
+		Conductor.changeBPM(Song.currentSong.bpm);
+		songSpeed = FlxMath.roundDecimal(Song.currentSong.speed, 2);
+
+		for (sections in Song.currentSong.sectionList)
+		{
+			for (note in sections.notes)
+			{
+				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
+				newNote.scrollFactor.set();
+
+				if (note.sustain > 0)
+				{
+					var sustainAmounts:Int = Math.floor(note.sustain / Conductor.stepCrochet);
+
+					if (sustainAmounts > 0)
+						sustainAmounts = Math.floor(Math.max(sustainAmounts, 2));
+
+					for (i in 0...sustainAmounts)
+					{
+						var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
+							note.noteAnim);
+						sustainNote.scrollFactor.set();
+						sustainNote.alpha = 0.6;
+						pendingNotes.push(sustainNote);
+					}
+				}
+
+				pendingNotes.push(newNote);
+			}
+		}
+
+		pendingNotes.sort(function(note1:Note, note2:Note)
+		{
+			return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
+		});
+
+		generatedMusic = true;
 	}
 
 	public function initCountdown(?list:Array<String> = null, ?sound:Array<String> = null, ?diff:Int = 1000, ?onProgress:Int->Void = null)
@@ -484,6 +638,12 @@ class PlayState extends MusicBeatState
 			persistentUpdate = false;
 		}
 
+		if (songStarted)
+		{
+			FlxG.sound.music.pause();
+			vocals.pause();
+		}
+
 		super.openSubState(state);
 	}
 
@@ -506,6 +666,71 @@ class PlayState extends MusicBeatState
 		___trackedTimerObjects.active = true;
 
 		super.closeSubState();
+	}
+
+	public var strumRange:Float = FlxG.width / 2;
+
+	private var _totalPlayers:Int = 0;
+
+	public function addPlayer(strum:FlxTypedGroup<StrumNote>)
+	{
+		for (i in 0...4)
+		{
+			var strumNote:StrumNote = new StrumNote(i);
+			strumNote.ID = i;
+			strumNote.x = 50 + Note.transformedWidth * i + (strumRange * _totalPlayers);
+			strumNote.y = strumLine.y;
+
+			strum.add(strumNote);
+		}
+
+		_totalPlayers++;
+	}
+
+	private var controlScale:Float = 1.05;
+
+	public function manageNotes():Void
+	{
+		renderedNotes.forEachAlive(function(note:Note)
+		{
+			var strumGroup:FlxTypedGroup<StrumNote> = note.mustPress ? playerStrums : opponentStrums;
+
+			var strumX:Float = strumGroup.members[note.direction].x;
+			var strumY:Float = strumGroup.members[note.direction].y;
+
+			var distance:Float = (0.45 * (Conductor.songPosition - note.strumTime) * songSpeed);
+			if (!Settings.getPref('downscroll', true))
+				distance *= -1;
+
+			if (note._lockedToStrumX)
+			{
+				note.x = strumX;
+				if (note.isSustainNote)
+					note.centerOverlay(strumGroup.members[note.direction], X);
+			}
+
+			if (note.isSustainNote)
+			{
+				if (note._lockedScaleY)
+				{
+					if (!note.isEndNote)
+					{
+						note.scale.y = Conductor.stepCrochet / 100 * controlScale * songSpeed;
+						note.updateHitbox();
+					}
+				}
+			}
+
+			if (note._lockedToStrumY)
+				note.y = strumY - distance;
+
+			if (note.strumTime - Conductor.songPosition < -280)
+			{
+				note.kill();
+				renderedNotes.remove(note, true);
+				note.destroy();
+			}
+		});
 	}
 }
 

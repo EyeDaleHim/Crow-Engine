@@ -53,7 +53,7 @@ class ChartConvert
 
 					var convertedData:SongInfo = {
 						song: baseJSON.song.song,
-						sectionList: {notes: [], bpm: [], lengthInSteps: []},
+						sectionList: [],
 						mustHitSections: [],
 						bpm: baseJSON.song.bpm,
 						speed: baseJSON.song.speed,
@@ -66,16 +66,22 @@ class ChartConvert
 					{
 						var index:Int = baseJSON.song.notes.indexOf(section);
 
-						convertedData.sectionList.bpm[index] = section.bpm;
-						convertedData.sectionList.lengthInSteps[index] = section.lengthInSteps;
+						convertedData.sectionList[index] = {notes: [], bpm: 100, lengthInSteps: 16};
+
+						convertedData.sectionList[index].bpm = section.bpm;
+						convertedData.sectionList[index].lengthInSteps = section.lengthInSteps;
 
 						for (notes in section.sectionNotes)
 						{
 							var noteIndex:Int = section.sectionNotes.indexOf(notes);
+							var gottaHitNote:Bool = section.mustHitSection;
+							if (notes[1] > 3)
+								gottaHitNote = !gottaHitNote;
 
-							convertedData.sectionList.notes[noteIndex] = {
+							convertedData.sectionList[index].notes[noteIndex] = {
 								strumTime: notes[0],
 								direction: Std.int(notes[1] % 4),
+								mustPress: gottaHitNote,
 								sustain: notes[2],
 								noteAnim: ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(notes[1] % 4)],
 								noteType: '',

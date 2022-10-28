@@ -6,7 +6,7 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import sys.FileSystem;
-import objects.character.CharacterData.Animation;
+import objects.handlers.Animation;
 
 class Stage
 {

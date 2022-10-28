@@ -12,6 +12,13 @@ class Conductor
 	public static var offset:Float = 0;
 
 	public static var songPosition:Float = 0;
+
+	public static function changeBPM(newBPM:Float = 100.0)
+	{
+		bpm = newBPM;
+		crochet = ((60 / bpm) * 1000);
+		stepCrochet = crochet / 4;
+	}
 }
 
 typedef BPMChangeEvent =

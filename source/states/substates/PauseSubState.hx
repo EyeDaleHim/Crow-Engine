@@ -36,6 +36,15 @@ class PauseSubState extends MusicBeatSubState
 			return;
 		}
 
+		@:privateAccess
+		{
+			if (controls.getKey('UI_UP', JUST_PRESSED))
+				PlayState.current.controlScale += 0.01;
+			if (controls.getKey('UI_DOWN', JUST_PRESSED))
+				PlayState.current.controlScale -= 0.01;
+			PlayState.current.manageNotes();
+		}
+
 		if (controls.getKey('PAUSE', JUST_PRESSED))
 			close();
 

@@ -28,6 +28,7 @@ class Character extends FlxSprite
 
 	// animation stuff
 	public var animOffsets:Map<String, FlxPoint> = [];
+	public var animForces:Map<String, Bool> = [];
 	public var idleList:Array<String> = []; // automatically defaults to the character data idle list
 	public var singList:Array<String> = [];
 
@@ -57,7 +58,7 @@ class Character extends FlxSprite
 					prefix: 'BF NOTE LEFT0',
 					indices: [],
 					fps: 24,
-					looped: false,
+					looped: true,
 					offset: {x: 12, y: -6}
 				},
 				{
@@ -65,7 +66,7 @@ class Character extends FlxSprite
 					prefix: 'BF NOTE DOWN0',
 					indices: [],
 					fps: 24,
-					looped: false,
+					looped: true,
 					offset: {x: -10, y: -50}
 				},
 				{
@@ -73,7 +74,7 @@ class Character extends FlxSprite
 					prefix: 'BF NOTE UP0',
 					indices: [],
 					fps: 24,
-					looped: false,
+					looped: true,
 					offset: {x: -29, y: 27}
 				},
 				{
@@ -81,7 +82,7 @@ class Character extends FlxSprite
 					prefix: 'BF NOTE RIGHT0',
 					indices: [],
 					fps: 24,
-					looped: false,
+					looped: true,
 					offset: {x: -38, y: -7}
 				},
 				{
@@ -133,13 +134,14 @@ class Character extends FlxSprite
 			else
 				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 
-			if (_characterData.singList.contains(animData.name) && !singList.contains(animData.name)) // do not allow the same animation
+			if (_characterData.singList.contains(animData.name))
 				singList[_characterData.singList.indexOf(animData.name)] = animData.name;
 
-			if (_characterData.idleList.contains(animData.name) && !idleList.contains(animData.name))
+			if (_characterData.idleList.contains(animData.name))
 				idleList[_characterData.idleList.indexOf(animData.name)] = animData.name;
 
 			animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
+			animForces.set(animData.name, animData.looped);
 		}
 
 		antialiasing = Settings.getPref('antialiasing', true);
@@ -183,9 +185,12 @@ class Character extends FlxSprite
 		{
 			if (controlIdle)
 			{
-				_idleIndex = FlxMath.wrap(++_idleIndex, 0, idleList.length - 1);
+				_idleIndex++;
+				_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);
 
-				playAnim(idleList[_idleIndex]);
+				var animToPlay:String = idleList[_idleIndex];
+
+				playAnim(animToPlay, (animForces.exists(animToPlay) ? animForces.get(animToPlay) : false));
 			}
 		}
 	}
