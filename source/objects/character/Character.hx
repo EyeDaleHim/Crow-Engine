@@ -22,13 +22,13 @@ class Character extends FlxSprite
 
 	// simple controls for your character
 	public var controlIdle:Bool = true; // Whether or not your character should keep playing the idle when it finishes an animation.
+	public var forceIdle:Bool = false;
 	public var singAnimsUsesMulti:Bool = false; // If this is enabled, the sing animation will hold for (Conductor.crochet / 1000) * idleDuration, else, it'll just be idleDuration
 	public var idleDuration:Float = 0.65; // The amount of seconds (or multiplication) on when the idle animation should be played after the sing animation
 	public var overridePlayer:Bool = false; // If you set this to true, the enemy will be treated as a player
 
 	// animation stuff
 	public var animOffsets:Map<String, FlxPoint> = [];
-	public var animForces:Map<String, Bool> = [];
 	public var idleList:Array<String> = []; // automatically defaults to the character data idle list
 	public var singList:Array<String> = [];
 
@@ -130,7 +130,7 @@ class Character extends FlxSprite
 		for (animData in _characterData.animationList)
 		{
 			if (animData.indices != null && animData.indices.length > 0)
-				animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.forced);
+				animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
 			else
 				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 
@@ -142,7 +142,6 @@ class Character extends FlxSprite
 
 			if (animData.offset.x != 0 || animData.offset.y != 0)
 				animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
-			animForces.set(animData.name, animData.forced);
 		}
 
 		antialiasing = Settings.getPref('antialiasing', true);
@@ -191,7 +190,7 @@ class Character extends FlxSprite
 
 				var animToPlay:String = idleList[_idleIndex];
 
-				playAnim(animToPlay, (animForces.exists(animToPlay) ? animForces.get(animToPlay) : false));
+				playAnim(animToPlay, forceIdle);
 			}
 		}
 	}

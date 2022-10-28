@@ -7,6 +7,5 @@ typedef Animation =
 	var indices:Array<Int>;
 	var fps:Int;
 	var looped:Bool;
-	var forced:Bool;
 	var offset:{x:Int, y:Int};
 }
