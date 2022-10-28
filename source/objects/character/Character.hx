@@ -13,6 +13,7 @@ import objects.character.CharacterData;
 
 using StringTools;
 
+@:allow(states.PlayState)
 class Character extends FlxSprite
 {
 	// basic info
@@ -204,11 +205,6 @@ class Character extends FlxSprite
 			offsetAnim.set(animOffsets[AnimName].x, animOffsets[AnimName].y);
 
 		offset.set(offsetAnim.x, offsetAnim.y);
-
-		if (singList.contains(animation.curAnim.name))
-		{
-			_animationTimer = 0.0;
-		}
 	}
 
 	override function destroy()

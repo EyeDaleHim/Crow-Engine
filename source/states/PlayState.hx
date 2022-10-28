@@ -8,6 +8,7 @@ import flixel.FlxCamera;
 import flixel.FlxSubState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.ui.FlxBar;
@@ -80,8 +81,8 @@ class CurrentGame
 
 	public var accuracy(get, never):Float;
 
-	public var maxHealth(default, set):Float = 2.0;
-	public var health(default, set):Float = 1.0;
+	public var maxHealth:Float = 2.0;
+	public var health:Float = 1.0;
 
 	public var judgements:Array<{judge:String, diff:Float}> = [
 		{judge: 'sick', diff: 45},
@@ -108,18 +109,6 @@ class CurrentGame
 	function get_accuracy():Float
 	{
 		return Math.isNaN(playerHits / playerHitMods) ? 0.0 : playerHits / playerHitMods;
-	}
-
-	function set_health(v:Float):Float
-	{
-		return health = Math.min(health, maxHealth);
-	}
-
-	function set_maxHealth(v:Float):Float
-	{
-		health = Math.max(health, v);
-
-		return maxHealth = v;
 	}
 }
 
@@ -381,6 +370,7 @@ class PlayState extends MusicBeatState
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), gameInfo,
 			'health', 0, gameInfo.maxHealth);
 		healthBar.scrollFactor.set();
+		healthBar.numDivisions = healthBar.frameWidth;
 		healthBar.createFilledBar(0xFFFF0000, player.healthColor);
 		addToHUD(healthBar);
 
@@ -390,6 +380,13 @@ class PlayState extends MusicBeatState
 		scoreText.screenCenter(X);
 		scoreText.y = healthBarBG.y + 30;
 		addToHUD(scoreText);
+
+		iconP1 = new HealthIcon(0, 0, player.name);
+		iconP1.y = healthBar.y - (iconP1.height / 2);
+		iconP1.scrollFactor.set();
+		iconP1.updateScale = true;
+		iconP1.flipX = true;
+		addToHUD(iconP1);
 
 		initCountdown();
 
@@ -438,6 +435,10 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		var iconOffset:Int = 26;
+		if (iconP1 != null)
+			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
 
 		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, ($curBeat, $curStep)');
 
@@ -488,6 +489,8 @@ class PlayState extends MusicBeatState
 	override function beatHit():Void
 	{
 		super.beatHit();
+
+		iconP1.beatHit();
 
 		for (charList in [playerList, opponentList, spectatorList])
 		{
@@ -562,6 +565,7 @@ class PlayState extends MusicBeatState
 							note.noteAnim);
 						sustainNote.scrollFactor.set();
 						sustainNote._lastNote = oldNote;
+						sustainNote.sustainLength = sustainAmounts - 1;
 						sustainNote.alpha = 0.6;
 						sustainNote.singAnim = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][newNote.direction];
 
@@ -744,14 +748,14 @@ class PlayState extends MusicBeatState
 				var lastTime:Float = Conductor.songPosition;
 				Conductor.songPosition = FlxG.sound.music.time;
 
-				var allowGhost:Bool = false;
+				var allowGhost:Bool = true;
 
 				for (note in _isolatedNotes.note[direction])
 				{
 					if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
 					{
 						hitNote(note);
-						allowGhost = true;
+						allowGhost = false;
 					}
 				}
 
@@ -825,7 +829,7 @@ class PlayState extends MusicBeatState
 		{
 			var strumNote:StrumNote = new StrumNote(i);
 			strumNote.ID = i;
-			strumNote.x = 50 + Note.transformedWidth * i + (strumRange * _totalPlayers);
+			strumNote.x = 75 + (Note.transformedWidth * i) + (strumRange * _totalPlayers);
 			strumNote.y = strumLine.y;
 
 			strum.add(strumNote);
@@ -838,6 +842,7 @@ class PlayState extends MusicBeatState
 	{
 		if (generatedMusic)
 		{
+			var center = strumLine.y + (Note.transformedWidth / 2);
 			var fakeCrochet:Float = (60 / Song.currentSong.bpm) * 1000;
 			renderedNotes.forEachAlive(function(note:Note)
 			{
@@ -846,8 +851,8 @@ class PlayState extends MusicBeatState
 				var strumX:Float = strumGroup.members[note.direction].x;
 				var strumY:Float = strumGroup.members[note.direction].y;
 
-				var distance:Float = (0.45 * (Conductor.songPosition - note.strumTime) * songSpeed);
-				if (!Settings.getPref('downscroll', true))
+				var distance:Float = (-0.45 * (Conductor.songPosition - note.strumTime) * songSpeed);
+				if (!Settings.getPref('downscroll', false))
 					distance *= -1;
 
 				if (note._lockedToStrumX)
@@ -886,6 +891,37 @@ class PlayState extends MusicBeatState
 					}
 				}
 
+				if (note.isSustainNote)
+				{
+					if (Settings.getPref('downscroll', false))
+					{
+						if (note.y - note.offset.y * note.scale.y + note.height >= center
+							&& (!note.mustPress || (note.wasGoodHit || (note._lastNote.wasGoodHit && !note.canBeHit))))
+						{
+							var swagRect = new FlxRect(0, 0, note.frameWidth, note.frameHeight);
+							swagRect.height = (center - note.y) / note.scale.y;
+							swagRect.y = note.frameHeight - swagRect.height;
+
+							note.clipRect = swagRect;
+						}
+					}
+					else
+					{
+						if (note.y + note.offset.y * note.scale.y <= center
+							&& (!note.mustPress || (note.wasGoodHit || (note._lastNote.wasGoodHit && !note.canBeHit))))
+						{
+							var swagRect = new FlxRect(0, 0, note.width / note.scale.x, note.height / note.scale.y);
+							swagRect.y = (center - note.y) / note.scale.y;
+							swagRect.height -= swagRect.y;
+
+							note.clipRect = swagRect;
+						}
+					}
+				}
+
+				if (!note.mustPress && note.wasGoodHit)
+					hitNote(note, true);
+
 				if (note.strumTime - Conductor.songPosition < -300)
 				{
 					killNote(note);
@@ -893,51 +929,82 @@ class PlayState extends MusicBeatState
 
 				if (currentKeys.contains(true))
 				{
-					if (currentKeys[note.direction] && note.mustPress && note.isSustainNote)
-					{
-						if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
-							hitNote(note);
-					}
+					if (currentKeys[note.direction] && note.mustPress && note.isSustainNote && note.canBeHit)
+						hitNote(note);
 				}
 			});
+
+			for (strum in opponentStrums)
+			{
+				if (strum != null)
+				{
+					if (strum.animation.curAnim.name == strum.confirmAnim && strum.animation.curAnim.finished)
+						strum.playAnim(strum.staticAnim);
+				}
+			}
 		}
 	}
 
-	public function hitNote(note:Note)
+	public function hitNote(note:Note, isOpponent:Bool = false)
 	{
-		var judgement = gameInfo.judgeNote(note.strumTime - Conductor.songPosition);
-		var rate:Map<String, Float> = ['good' => 0.75, 'bad' => 0.50, 'shit' => 0.25];
-
-		switch (judgement.judge)
+		if (!isOpponent)
 		{
-			case 'sick':
-				{}
-			case 'good' | 'bad' | 'shit':
-				{}
+			var judgement = gameInfo.judgeNote(note.strumTime - Conductor.songPosition);
+			var rate:Map<String, Float> = ['good' => 0.75, 'bad' => 0.50, 'shit' => 0.25];
+
+			switch (judgement.judge)
+			{
+				case 'sick':
+					{}
+				case 'good' | 'bad' | 'shit':
+					{}
+			}
+
+			if (player != null)
+			{
+				player.playAnim(note.singAnim);
+				player._animationTimer = 0.0;
+			}
+
+			var strum:StrumNote = playerStrums.members[note.direction];
+			if (strum != null)
+			{
+				strum.playAnim(strum.confirmAnim);
+			}
+
+			if (!note.isSustainNote)
+			{
+				gameInfo.playerHits += rate[judgement.judge];
+				gameInfo.playerHitMods += 1.0;
+
+				gameInfo.health += FlxMath.remapToRange(0.35, 0, 100, 0, 2) * rate[judgement.judge];
+
+				if (gameInfo.judgementList.exists(judgement.judge))
+					gameInfo.judgementList[judgement.judge]++;
+
+				gameInfo.combo++;
+
+				popCombo(judgement.judge);
+
+				killNote(note);
+			}
+			else
+				gameInfo.health += (FlxMath.remapToRange(0.35, 0, 100, 0, 2) / note.sustainLength);
 		}
-
-		if (player != null)
-			player.playAnim(note.singAnim, true);
-
-		var strum:StrumNote = playerStrums.members[note.direction];
-		if (strum != null)
+		else
 		{
-			strum.playAnim(strum.confirmAnim, true);
-		}
-
-		if (!note.isSustainNote)
-		{
-			gameInfo.playerHits += rate[judgement.judge];
-			gameInfo.playerHitMods += 1.0;
-
-			if (gameInfo.judgementList.exists(judgement.judge))
-				gameInfo.judgementList[judgement.judge]++;
-
-			gameInfo.combo++;
-
-			popCombo(judgement.judge);
-
 			killNote(note);
+			if (opponent != null)
+			{
+				opponent.playAnim(note.singAnim);
+				opponent._animationTimer = 0.0;
+			}
+
+			var strum:StrumNote = opponentStrums.members[note.direction];
+			if (strum != null)
+			{
+				strum.playAnim(strum.confirmAnim);
+			}
 		}
 	}
 

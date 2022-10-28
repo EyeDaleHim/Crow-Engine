@@ -82,6 +82,7 @@ class Note extends FlxSprite
 
 	public var direction:Int = 0;
 	public var strumTime:Float = 0;
+	public var sustainLength:Float = 0;
 	public var mustPress:Bool = false;
 	public var isSustainNote:Bool = false;
 	public var isEndNote:Bool = false;
@@ -115,26 +116,9 @@ class Note extends FlxSprite
 			canBeHit = false;
 
 			wasGoodHit = ((strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult))
-				&& ((isSustainNote && _lastNote != null && _lastNote.wasGoodHit) || strumTime <= Conductor.songPosition));
+				&& ((isSustainNote && _lastNote.wasGoodHit) || strumTime <= Conductor.songPosition));
 		}
 
 		super.update(elapsed);
-	}
-
-	private function get_canBeHit():Bool
-	{
-		return (strumTime > Conductor.songPosition - NoteStorageFunction.safeZoneOffset
-			&& strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult));
-	}
-
-	private function get_tooLate():Bool
-	{
-		return (strumTime < Conductor.songPosition - NoteStorageFunction.safeZoneOffset && !wasGoodHit);
-	}
-
-	private function get_wasGoodHit():Bool
-	{
-		return ((strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult))
-			&& ((isSustainNote && (_lastNote != null && _lastNote.wasGoodHit)) || strumTime <= Conductor.songPosition));
 	}
 }
