@@ -232,10 +232,8 @@ class PlayState extends MusicBeatState
 		pauseCamera.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(gameCamera);
-		FlxG.cameras.add(hudCamera);
-		FlxG.cameras.add(pauseCamera);
-
-		FlxCamera.defaultCameras = [gameCamera];
+		FlxG.cameras.add(hudCamera, false);
+		FlxG.cameras.add(pauseCamera, false);
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
