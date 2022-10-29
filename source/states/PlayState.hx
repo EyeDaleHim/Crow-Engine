@@ -1041,7 +1041,7 @@ class PlayState extends MusicBeatState
 		{
 			var comboString:String = Std.string(gameInfo.combo);
 
-			while (comboString.length < Math.min(3, comboString.length))
+			while (comboString.length < Math.max(3, comboString.length))
 				comboString = '0' + comboString;
 
 			var loop:Int = 0;
