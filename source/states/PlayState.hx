@@ -372,19 +372,19 @@ class PlayState extends MusicBeatState
 		healthBar.createFilledBar(0xFFFF0000, player.healthColor);
 		addToHUD(healthBar);
 
-		scoreText = new FlxText(0, 0, 0, "[Score] 0 // [Misses] 0 // [Rank] (0.00% - N/A)");
-		scoreText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
-		scoreText.borderSize = 1.25;
-		scoreText.screenCenter(X);
-		scoreText.y = healthBarBG.y + 30;
-		addToHUD(scoreText);
-
 		iconP1 = new HealthIcon(0, 0, player.name);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		iconP1.scrollFactor.set();
 		iconP1.updateScale = true;
 		iconP1.flipX = true;
 		addToHUD(iconP1);
+
+		scoreText = new FlxText(0, 0, 0, "[Score] 0 // [Misses] 0 // [Rank] (0.00% - N/A)");
+		scoreText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		scoreText.borderSize = 1.25;
+		scoreText.screenCenter(X);
+		scoreText.y = healthBarBG.y + 30;
+		addToHUD(scoreText);
 
 		initCountdown();
 
@@ -436,7 +436,9 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 		if (iconP1 != null)
+		{
 			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		}
 
 		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, ($curBeat, $curStep)');
 
@@ -947,51 +949,60 @@ class PlayState extends MusicBeatState
 	{
 		if (!isOpponent)
 		{
-			var judgement = gameInfo.judgeNote(note.strumTime - Conductor.songPosition);
-			var rate:Map<String, Float> = ['good' => 0.75, 'bad' => 0.50, 'shit' => 0.25];
-
-			switch (judgement.judge)
+			if (!note.wasGoodHit)
 			{
-				case 'sick':
-					{}
-				case 'good' | 'bad' | 'shit':
-					{}
+				var judgement = gameInfo.judgeNote(note.strumTime - Conductor.songPosition);
+				var rate:Map<String, Float> = ['sick' => 1.0, 'good' => 0.75, 'bad' => 0.50, 'shit' => 0.25];
+				var scoreRate:Map<String, Int> = ['sick' => 350, 'good' => 200, 'bad' => 75, 'shit' => 0];
+
+				switch (judgement.judge)
+				{
+					case 'sick':
+						{}
+					case 'good' | 'bad' | 'shit':
+						{}
+				}
+
+				if (player != null)
+				{
+					player.playAnim(note.singAnim);
+					player._animationTimer = 0.0;
+				}
+
+				var strum:StrumNote = playerStrums.members[note.direction];
+				if (strum != null)
+				{
+					strum.playAnim(strum.confirmAnim);
+				}
+
+				note.wasGoodHit = true;
+
+				if (!note.isSustainNote)
+				{
+					gameInfo.playerHits += rate[judgement.judge];
+					gameInfo.playerHitMods += 1.0;
+
+					if (gameInfo.judgementList.exists(judgement.judge))
+						gameInfo.judgementList[judgement.judge]++;
+
+					gameInfo.score += scoreRate[judgement.judge];
+
+					gameInfo.combo++;
+
+					killNote(note);
+					popCombo(judgement.judge);
+				}
+
+				gameInfo.health += FlxMath.remapToRange(0.45, 0, 100, 0, 2) * rate[judgement.judge];
+
+				scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
+				scoreText.screenCenter(X);
 			}
-
-			if (player != null)
-			{
-				player.playAnim(note.singAnim);
-				player._animationTimer = 0.0;
-			}
-
-			var strum:StrumNote = playerStrums.members[note.direction];
-			if (strum != null)
-			{
-				strum.playAnim(strum.confirmAnim);
-			}
-
-			if (!note.isSustainNote)
-			{
-				gameInfo.playerHits += rate[judgement.judge];
-				gameInfo.playerHitMods += 1.0;
-
-				gameInfo.health += FlxMath.remapToRange(0.35, 0, 100, 0, 2) * rate[judgement.judge];
-
-				if (gameInfo.judgementList.exists(judgement.judge))
-					gameInfo.judgementList[judgement.judge]++;
-
-				gameInfo.combo++;
-
-				popCombo(judgement.judge);
-
-				killNote(note);
-			}
-			else
-				gameInfo.health += (FlxMath.remapToRange(0.35, 0, 100, 0, 2) / note.sustainLength);
 		}
 		else
 		{
-			killNote(note);
+			if (!note.isSustainNote)
+				killNote(note);
 			if (opponent != null)
 			{
 				opponent.playAnim(note.singAnim);
