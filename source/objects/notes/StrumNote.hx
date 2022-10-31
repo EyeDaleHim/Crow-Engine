@@ -57,10 +57,29 @@ class StrumNote extends FlxSprite
 		pressAnim = _strumFile.pressAnim[direction];
 		staticAnim = _strumFile.staticAnim[direction];
 
-		animation.play(staticAnim);
+		playAnim(staticAnim);
 
 		scale.set(0.7, 0.7);
 		updateHitbox();
+	}
+
+	private var _resetAnim:Bool = true;
+
+	public var resetTimer:Float = 0.0;
+
+	override function update(elapsed:Float)
+	{
+		if (_resetAnim)
+		{
+			resetTimer -= elapsed;
+			if (resetTimer <= 0)
+			{
+				playAnim(staticAnim);
+				resetTimer = 0;
+			}
+		}
+
+		super.update(elapsed);
 	}
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)

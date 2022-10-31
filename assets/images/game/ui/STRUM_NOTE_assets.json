@@ -22,7 +22,7 @@
             "name": "staticLEFT",
             "prefix": "arrowLEFT",
             "indices": [],
-            "looped": false,
+            "looped": true,
             "offset": {
                 "x": 0,
                 "y": 0
@@ -32,7 +32,7 @@
             "name": "staticDOWN",
             "prefix": "arrowDOWN",
             "indices": [],
-            "looped": false,
+            "looped": true,
             "offset": {
                 "x": 0,
                 "y": 0
@@ -42,7 +42,7 @@
             "name": "staticUP",
             "prefix": "arrowUP",
             "indices": [],
-            "looped": false,
+            "looped": true,
             "offset": {
                 "x": 0,
                 "y": 0
@@ -52,7 +52,7 @@
             "name": "staticRIGHT",
             "prefix": "arrowRIGHT",
             "indices": [],
-            "looped": false,
+            "looped": true,
             "offset": {
                 "x": 0,
                 "y": 0

@@ -72,6 +72,8 @@ class Stage
 		return stageInstance;
 	}
 
+	public function update(elapsed:Float) {}
+
 	public function beatHit(stage:Stage, beat:Int) {}
 
 	public function countdownTick(stage:Stage) {}

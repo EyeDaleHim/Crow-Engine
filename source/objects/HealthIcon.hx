@@ -23,7 +23,7 @@ class HealthIcon extends FlxSprite
 
 		for (anim in ['lose', 'neutral', 'win'])
 		{
-			addByPrefix(anim, '$char-$anim', 24, true);
+			animation.addByPrefix(anim, '$char-$anim', 24, true);
 		}
 
 		antialiasing = Settings.getPref('antialiasing', true);
@@ -75,35 +75,7 @@ class HealthIcon extends FlxSprite
 
 	public function changeState(suffix:String)
 	{
-		if (existingName.contains(suffix))
+		if (animation.getByName(suffix) != null)
 			animation.play(suffix, true);
-	}
-
-	public var existingName:Array<String> = []; // i dont want any flixel errors ty
-
-	private function addByPrefix(Name:String, Prefix:String, FrameRate:Int = 30, Looped:Bool = true, FlipX:Bool = false, FlipY:Bool = false):Void
-	{
-		@:privateAccess
-		{
-			if (frames != null)
-			{
-				var animFrames:Array<FlxFrame> = new Array<FlxFrame>();
-				animation.findByPrefix(animFrames, Prefix); // adds valid frames to animFrames
-
-				if (animFrames.length > 0)
-				{
-					var frameIndices:Array<Int> = new Array<Int>();
-					animation.byPrefixHelper(frameIndices, animFrames, Prefix); // finds frames and appends them to the blank array
-
-					if (frameIndices.length > 0)
-					{
-						var anim:FlxAnimation = new FlxAnimation(animation, Name, frameIndices, FrameRate, Looped, FlipX, FlipY);
-						animation._animations.set(Name, anim);
-					}
-
-					existingName.push(Name);
-				}
-			}
-		}
 	}
 }

@@ -61,6 +61,8 @@ class Note extends FlxSprite
 
 		if (isSustainNote)
 		{
+			flipY = Settings.getPref('downscroll', false);
+
 			earlyMult = 1.0;
 
 			if (sustainIndex == sustainLength)
@@ -79,6 +81,7 @@ class Note extends FlxSprite
 
 	public var noteType:String = '';
 	public var singAnim:String = '';
+	public var missAnim:String = '';
 
 	public var direction:Int = 0;
 	public var strumTime:Float = 0;

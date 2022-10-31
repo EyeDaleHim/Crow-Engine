@@ -49,7 +49,6 @@ class ChartConvert
 									validScore:Bool,
 								}
 						} = Json.parse(fixData(chart));
-					trace(baseJSON);
 
 					var convertedData:SongInfo = {
 						song: baseJSON.song.song,
