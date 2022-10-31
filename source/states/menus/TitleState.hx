@@ -38,10 +38,15 @@ class TitleState extends MusicBeatState
 
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{
+			// dumb but quick shortcut for restarting a game through code
+			initialized = !(FlxG.sound.music == null);
+
 			if (!initialized)
 			{
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				FlxG.sound.music.fadeIn(4, 0, 0.7);
+
+				Conductor.changeBPM(102);
 			}
 			else
 				skipIntro();

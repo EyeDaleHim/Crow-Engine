@@ -137,6 +137,8 @@ class Paths
 
 	public static function getSparrowAtlas(file:String, ?library:String = null):FlxAtlasFrames
 	{
-		return FlxAtlasFrames.fromSparrow(image(file), OpenFlAssets.getText(Paths.file('images/$file', 'xml', TEXT, library)));
+		var imagePath:String = Paths.image(file);
+		var xmlPath:String = Paths.image(file).replace('png', 'xml');
+		return FlxAtlasFrames.fromSparrow(imagePath, OpenFlAssets.getText(xmlPath));
 	}
 }

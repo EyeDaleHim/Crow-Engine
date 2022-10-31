@@ -263,7 +263,7 @@ class PlayState extends MusicBeatState
 
 		if (Song.currentSong != null)
 		{
-			stageName = switch (Song.currentSong.song.formatToReadable())
+			stageName = switch (Song.currentSong.song.toLowerCase().replace(' ', '-'))
 			{
 				case 'bopeebo' | 'fresh' | 'dad-battle':
 					'stage';
@@ -286,6 +286,8 @@ class PlayState extends MusicBeatState
 				default:
 					'stage';
 			};
+
+			trace(Song.currentSong.song.formatToReadable());
 		}
 
 		stageData = Stage.getStage(stageName);
@@ -358,12 +360,6 @@ class PlayState extends MusicBeatState
 
 		addPlayer(opponentStrums);
 		addPlayer(playerStrums);
-
-		playerStrums.forEach(function(strum:StrumNote)
-		{
-			@:privateAccess
-			strum._resetAnim = false;
-		});
 
 		generateSong();
 
@@ -513,6 +509,8 @@ class PlayState extends MusicBeatState
 				}
 			}
 		}
+
+		stageData.beatHit(curBeat);
 	}
 
 	override function stepHit():Void
@@ -813,7 +811,6 @@ class PlayState extends MusicBeatState
 			if (strum != null && strum.animation.curAnim.name != strum.confirmAnim)
 			{
 				strum.playAnim(strum.pressAnim);
-				strum.resetTimer = 0.0;
 			}
 		}
 	}
@@ -827,7 +824,6 @@ class PlayState extends MusicBeatState
 			if (strum != null)
 			{
 				strum.playAnim(strum.staticAnim);
-				strum.resetTimer = 0.0;
 			}
 			currentKeys[direction] = false;
 		}
@@ -977,6 +973,12 @@ class PlayState extends MusicBeatState
 				}
 			});
 		}
+
+		opponentStrums.forEach(function(strum:StrumNote)
+		{
+			if (strum != null && strum.animation.finished)
+				strum.playAnim(strum.staticAnim);
+		});
 	}
 
 	public function hitNote(note:Note, isOpponent:Bool = false)
@@ -1047,7 +1049,6 @@ class PlayState extends MusicBeatState
 			if (strum != null)
 			{
 				strum.playAnim(strum.confirmAnim);
-				strum.resetTimer = 0.15 + (note.isEndNote ? 0.15 : 0);
 			}
 
 			if (!note.isSustainNote)

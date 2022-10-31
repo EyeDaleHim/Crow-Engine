@@ -8,6 +8,8 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import sys.FileSystem;
 import objects.handlers.Animation;
 
+using StringTools;
+
 class Stage
 {
 	// don't really try to change this, this is just meant as a ref to the sprites
@@ -18,6 +20,8 @@ class Stage
 	public var spriteGroup:Map<String, BGSprite> = [];
 	public var charPosList:CharPositions;
 	public var camPosList:CharCamPositions;
+
+	public var attributes:Map<String, Dynamic> = [];
 
 	public function new() {}
 
@@ -37,6 +41,38 @@ class Stage
 
 		switch (stage)
 		{
+			case 'spooky':
+				{
+					stageInstance.charPosList.playerPositions = [{x: 770, y: 400}];
+					stageInstance.charPosList.spectatorPositions = [{x: 400, y: 430}];
+					stageInstance.charPosList.opponentPositions = [{x: 100, y: 400}];
+
+					var halloween:BGSprite = new BGSprite({path: 'halloween_bg', library: 'week2'}, {x: -200, y: -100}, {x: 0.95, y: 0.95}, [
+						{
+							name: 'idle',
+							prefix: 'halloweem bg0',
+							indices: [],
+							fps: 24,
+							looped: true,
+							offset: {x: 0, y: 0}
+						},
+						{
+							name: 'lightning',
+							prefix: 'halloweem bg lightning strike',
+							indices: [],
+							fps: 24,
+							looped: false,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					halloween.ID = 0;
+					halloween.animation.play('idle');
+
+					group.set('halloween', halloween);
+
+					stageInstance.attributes.set('strikeBeat', 0);
+					stageInstance.attributes.set('lightningOffset', 8);
+				}
 			default:
 				{
 					stageInstance.defaultZoom = 0.90;
@@ -72,9 +108,24 @@ class Stage
 		return stageInstance;
 	}
 
-	public function update(elapsed:Float) {}
+	public function update(stage:Stage, elapsed:Float) {}
 
-	public function beatHit(stage:Stage, beat:Int) {}
+	public function beatHit(beat:Int)
+	{
+		switch (name)
+		{
+			case 'spooky':
+				{
+					if (FlxG.random.bool(10) && beat > attributes['strikeBeat'] + attributes['lightningOffset'])
+					{
+						spriteGroup['halloween'].animation.play('lightning');
+
+						attributes['strikeBeat'] = beat;
+						attributes['lightningOffset'] = FlxG.random.int(8, 24);
+					}
+				}
+		}
+	}
 
 	public function countdownTick(stage:Stage) {}
 }
@@ -101,19 +152,11 @@ class BGSprite extends FlxSprite
 
 		if (animArray != null)
 		{
-			// add null to those because we're telling it to look for it in the libraries
-			if (FileSystem.exists(Paths.image(image.path + '.xml', image.library)))
-			{
-				frames = Paths.getSparrowAtlas(image.path, image.library);
+			frames = Paths.getSparrowAtlas(image.path, image.library);
 
-				for (anim in animArray)
-				{
-					animation.addByPrefix(anim.name, anim.prefix, anim.fps, anim.looped);
-				}
-			}
-			else
+			for (anim in animArray)
 			{
-				destroy();
+				animation.addByPrefix(anim.name, anim.prefix, anim.fps, anim.looped);
 			}
 		}
 		else
