@@ -409,6 +409,9 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	private var _iconP1Offset:Float = 0.0;
+	private var _iconP2Offset:Float = 0.0;
+
 	private var _lastFrameTime:Int = 0;
 	private var _songTime:Float = 0.0;
 
@@ -437,10 +440,9 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		var iconOffset:Int = 26;
 		if (iconP1 != null)
 		{
-			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01));
 
 			if (iconP1.animation.curAnim.frames.length == 0 || iconP1.animation.curAnim.finished) // in case some bozos have animated icons
 				iconP1.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');

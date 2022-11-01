@@ -146,7 +146,7 @@ class BGSprite extends FlxSprite
 		scrollFactor.set(scroll.x, scroll.y);
 		antialiasing = Settings.getPref('antialiasing', true);
 
-		this.graphicName = image.library;
+		this.graphicName = image.library + '/' + image.path;
 
 		image.path = Stage.currentStage + '/' + image.path;
 

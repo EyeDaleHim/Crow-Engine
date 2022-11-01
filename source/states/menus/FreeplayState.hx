@@ -104,8 +104,12 @@ class FreeplayState extends MusicBeatState
 				iconArray.push(iconObject);
 				add(iconObject);
 
-				songs.push(new SongMetadata(song, Std.int(i + 1), SongHandler.songs['Base_Game'][week.week].diffs,
-					SongHandler.songs['Base_Game'][week.week].color));
+				var metaData:SongMetadata = new SongMetadata(song, Std.int(i + 1), SongHandler.songs['Base_Game'][week.week].diffs,
+					SongHandler.songs['Base_Game'][week.week].color);
+				// metaData.
+				metaData.weekName = week.week;
+
+				songs.push(metaData);
 			}
 		}
 
@@ -127,6 +131,8 @@ class FreeplayState extends MusicBeatState
 			MusicBeatState.switchState(new MainMenuState());
 		else if (controls.getKey('ACCEPT', JUST_PRESSED))
 		{
+			Paths.currentLibrary = songs[curSelected].weekName;
+
 			Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
 			MusicBeatState.switchState(new PlayState());
 		}
@@ -234,6 +240,7 @@ class FreeplayState extends MusicBeatState
 class SongMetadata
 {
 	public var name:String;
+	public var weekName:String;
 	public var week:Int;
 	public var diffs:Array<String>;
 	public var color:Int;
@@ -242,6 +249,7 @@ class SongMetadata
 	{
 		this.name = name;
 		this.week = week;
+		this.diffs = diffs;
 		this.color = color;
 	}
 }
