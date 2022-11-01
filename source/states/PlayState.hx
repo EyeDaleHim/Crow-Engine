@@ -442,7 +442,7 @@ class PlayState extends MusicBeatState
 
 		if (iconP1 != null)
 		{
-			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01));
+			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + _iconP1Offset;
 
 			if (iconP1.animation.curAnim.frames.length == 0 || iconP1.animation.curAnim.finished) // in case some bozos have animated icons
 				iconP1.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');
@@ -569,6 +569,9 @@ class PlayState extends MusicBeatState
 					for (i in 0...sustainAmounts)
 					{
 						oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
+
+						if (i == 0)
+							continue;
 
 						var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
 							note.noteAnim);

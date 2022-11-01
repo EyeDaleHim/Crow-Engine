@@ -7,6 +7,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import sys.FileSystem;
 import objects.handlers.Animation;
+import states.PlayState.GameSoundObject;
 
 using StringTools;
 
@@ -118,6 +119,22 @@ class Stage
 				{
 					if (FlxG.random.bool(10) && beat > attributes['strikeBeat'] + attributes['lightningOffset'])
 					{
+						var thunder:GameSoundObject = new GameSoundObject();
+						thunder.loadEmbedded(Paths.sound('thunder_' + FlxG.random.int(1, 2), 'week2'));
+
+						thunder.onComplete = function()
+						{
+							@:privateAccess
+							states.PlayState.current.___trackedSoundObjects.splice(states.PlayState.current.___trackedSoundObjects.indexOf(thunder), 1);
+							FlxG.sound.list.remove(thunder);
+						}
+						thunder.play();
+
+						@:privateAccess
+						states.PlayState.current.___trackedSoundObjects.push(thunder);
+
+						FlxG.sound.list.add(thunder);
+
 						spriteGroup['halloween'].animation.play('lightning');
 
 						attributes['strikeBeat'] = beat;
