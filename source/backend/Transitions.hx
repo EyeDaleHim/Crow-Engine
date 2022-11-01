@@ -6,18 +6,22 @@ import flixel.FlxSprite;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
+import flixel.tweens.FlxEase.EaseFunction;
 import flixel.group.FlxGroup.FlxTypedGroup;
 
 using StringTools;
 
 class Transitions
 {
-	public static function transition(duration:Null<Float>, fade:Easing, type:TransitionType, callbacks:Callbacks)
+	public static function transition(duration:Null<Float>, fade:Easing, ease:Null<EaseFunction>, type:TransitionType, callbacks:Callbacks)
 	{
 		if (duration == null)
 			duration = 0.5;
 		if (fade == null)
 			throw "Transition \"Easing\" parameter cannot be null.";
+
+		if (ease == null)
+			ease = FlxEase.quadOut;
 
 		var camera:FlxCamera = new FlxCamera();
 		camera.bgColor = 0;
@@ -36,7 +40,7 @@ class Transitions
 					group.add(black);
 
 					FlxTween.tween(black, {alpha: (fade == In ? 1.0 : 0.0)}, duration, {
-						ease: FlxEase.quadOut,
+						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
 							if (callbacks.startCallback != null)

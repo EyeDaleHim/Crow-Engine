@@ -31,6 +31,7 @@ class Character extends FlxSprite
 	// animation stuff
 	public var animOffsets:Map<String, FlxPoint> = [];
 	public var idleList:Array<String> = []; // automatically defaults to the character data idle list
+	public var missList:Array<String> = [];
 	public var singList:Array<String> = [];
 
 	// handled by this class
@@ -141,6 +142,9 @@ class Character extends FlxSprite
 			if (_characterData.idleList.contains(animData.name))
 				idleList[_characterData.idleList.indexOf(animData.name)] = animData.name;
 
+			if (_characterData.missList.contains(animData.name))
+				missList[_characterData.idleList.indexOf(animData.name)] = animData.name;
+
 			if (animData.offset.x != 0 || animData.offset.y != 0)
 				animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
 		}
@@ -180,11 +184,11 @@ class Character extends FlxSprite
 		}
 	}
 
-	public function dance():Void
+	public function dance(?forcePlay:Bool = false):Void
 	{
 		if (idleList.length != 0) // what animations we playing today?
 		{
-			if (controlIdle)
+			if (forcePlay || controlIdle)
 			{
 				_idleIndex++;
 				_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);

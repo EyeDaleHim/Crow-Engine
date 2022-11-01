@@ -12,4 +12,9 @@ class Script
 	// this just means if this variable's class is blacklisted but this variable is whitelisted
 	// the script will pass through
 	public static final whitelistedVariables:Array<String> = [];
+
+	// compatibility
+	public var definedVersion:Int = Main.engineVersion.number;
+
+	public function new(path:String) {}
 }

@@ -88,6 +88,12 @@
     "idleList": [
         "idle"
     ],
+    "missList": [
+        "singLEFTmiss",
+        "singDOWNmiss",
+        "singUPmiss",
+        "singRIGHTmiss"
+    ],
     "name": "bf",
     "scale": {
         "x": 1,

@@ -6,6 +6,7 @@ typedef CharacterData =
 	var healthColor:Int; // healthbar color
 	var animationList:Array<Animation>; // list of animations, seriously
 	var idleList:Array<String>; // if there's 2 of this, similar case to danceLEFT until danceRIGHT
+	var missList:Array<String>; // misses, obviously
 	var singList:Array<String>; // occasionally singLEFT, singDOWN and stuff
 	var scale:{x:Float, y:Float};
 }

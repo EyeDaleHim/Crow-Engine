@@ -51,19 +51,19 @@ class CurrentGame
 
 	function get_rank():String
 	{
-		if (accuracy == 0)
+		var savedAcc:Float = get_accuracy();
+
+		if (savedAcc == 0)
 			return 'N/A';
-		else if (accuracy == 1)
+		else if (savedAcc == 1)
 			return 'S+';
 		else
 		{
-			var savedAcc:Float = get_accuracy();
-
-			for (ranking in RANK_LIST)
+			for (i in 0...RANK_LIST.length)
 			{
-				if (savedAcc < ranking.accuracy)
+				if (savedAcc >= RANK_LIST[i].accuracy)
 				{
-					return ranking.rank;
+					return RANK_LIST[i].rank;
 				}
 			}
 		}
@@ -491,6 +491,17 @@ class PlayState extends MusicBeatState
 			}
 
 			manageNotes();
+
+			for (player in playerList)
+			{
+				if (player != null)
+				{
+					if ((player._animationTimer > (player.singAnimsUsesMulti ? (Conductor.stepCrochet * 0.001) / player.idleDuration : player.idleDuration))
+						&& player.singList.contains(player.animation.curAnim.name)
+						&& !player.missList.contains(player.animation.curAnim.name))
+						player.dance(true);
+				}
+			}
 		}
 	}
 
@@ -500,7 +511,7 @@ class PlayState extends MusicBeatState
 
 		iconP1.beatHit();
 
-		for (charList in [playerList, opponentList, spectatorList])
+		for (charList in [opponentList, spectatorList])
 		{
 			if (charList != null)
 			{
@@ -1006,7 +1017,7 @@ class PlayState extends MusicBeatState
 
 				if (player != null)
 				{
-					player.playAnim(note.singAnim);
+					player.playAnim(note.singAnim, true);
 					player._animationTimer = 0.0;
 				}
 
@@ -1053,7 +1064,8 @@ class PlayState extends MusicBeatState
 			var strum:StrumNote = opponentStrums.members[note.direction];
 			if (strum != null)
 			{
-				strum.playAnim(strum.confirmAnim);
+				// until someone fixes the bug on this thing, im disabling it i dont wanna fix it
+				// strum.playAnim(strum.confirmAnim);
 			}
 
 			if (!note.isSustainNote)
@@ -1097,7 +1109,16 @@ class PlayState extends MusicBeatState
 
 	public function ghostMiss(direction:Int = -1)
 	{
-		if (direction != -1) {}
+		if (direction != -1)
+		{
+			gameInfo.misses++;
+			gameInfo.health -= FlxMath.remapToRange(1.75, 0, 100, 0, 2);
+
+			if (player != null)
+			{
+				player.playAnim(player.missList[direction], true);
+			}
+		}
 
 		scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);

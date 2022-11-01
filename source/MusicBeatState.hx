@@ -23,7 +23,7 @@ class MusicBeatState extends FlxUIState
 		if (_finishedFade)
 		{
 			_finishedFade = false;
-			Transitions.transition(0.5, Out, Fade, {
+			Transitions.transition(0.5, Out, FlxEase.quadOut, Fade, {
 				startCallback: null,
 				updateCallback: null,
 				endCallback: null
@@ -80,7 +80,7 @@ class MusicBeatState extends FlxUIState
 
 	public static function switchState(state:FlxState)
 	{
-		Transitions.transition(0.5, In, Fade, {
+		Transitions.transition(0.5, In, FlxEase.quadOut, Fade, {
 			// in case you wanna do something, these two aren't useful for now
 			startCallback: null,
 			updateCallback: null,
