@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.tweens.FlxTween;
 import sys.FileSystem;
 import objects.handlers.Animation;
 import states.PlayState.GameSoundObject;
@@ -71,6 +72,12 @@ class Stage
 
 					group.set('halloween', halloween);
 
+					var vignetteFlash:BGSprite = new BGSprite({path: 'vignette', library: 'week2'}, {x: 0, y: 0}, {x: 0, y: 0});
+					vignetteFlash.alpha = 0;
+					vignetteFlash.screenCenter();
+					vignetteFlash.ID = 1;
+					group.set('vignette', vignetteFlash);
+
 					stageInstance.attributes.set('strikeBeat', 0);
 					stageInstance.attributes.set('lightningOffset', 8);
 				}
@@ -136,6 +143,12 @@ class Stage
 						FlxG.sound.list.add(thunder);
 
 						spriteGroup['halloween'].animation.play('lightning');
+
+						if (Settings.getPref('flashing-lights', true))
+						{
+							spriteGroup['vignette'].alpha = 1;
+							FlxTween.tween(spriteGroup['vignette'], {alpha: 0}, 0.6);
+						}
 
 						attributes['strikeBeat'] = beat;
 						attributes['lightningOffset'] = FlxG.random.int(8, 24);
