@@ -8,6 +8,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.tweens.FlxTween;
 import sys.FileSystem;
 import objects.handlers.Animation;
+import states.PlayState;
 import states.PlayState.GameSoundObject;
 
 using StringTools;
@@ -75,6 +76,7 @@ class Stage
 					var vignetteFlash:BGSprite = new BGSprite({path: 'vignette', library: 'week2'}, {x: 0, y: 0}, {x: 0, y: 0});
 					vignetteFlash.alpha = 0;
 					vignetteFlash.setGraphicSize(FlxG.width, FlxG.height);
+					vignetteFlash.updateHitbox();
 					vignetteFlash.screenCenter();
 
 					vignetteFlash.cameras = [PlayState.current.hudCamera];
