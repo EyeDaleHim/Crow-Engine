@@ -74,7 +74,11 @@ class Stage
 
 					var vignetteFlash:BGSprite = new BGSprite({path: 'vignette', library: 'week2'}, {x: 0, y: 0}, {x: 0, y: 0});
 					vignetteFlash.alpha = 0;
+					vignetteFlash.setGraphicSize(FlxG.width, FlxG.height);
 					vignetteFlash.screenCenter();
+
+					vignetteFlash.cameras = [PlayState.current.hudCamera];
+
 					vignetteFlash.ID = 1;
 					group.set('vignette', vignetteFlash);
 
