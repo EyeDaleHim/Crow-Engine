@@ -338,8 +338,11 @@ class PlayState extends MusicBeatState
 
 		player = new Character(playerPos[0].x, playerPos[0].y, 'bf', true);
 		player.scrollFactor.set(0.95, 0.95);
-		player.singAnimsUsesMulti = true;
 		add(player);
+
+		opponent = new Character(oppPos[0].x, oppPos[0].y, 'dad', false);
+		opponent.scrollFactor.set(0.95, 0.95);
+		add(opponent);
 
 		add(postStageRender);
 
@@ -498,16 +501,14 @@ class PlayState extends MusicBeatState
 
 			manageNotes();
 
-			for (player in playerList)
+			var playerAnim = player.animation.curAnim;
+
+			if (player._animationTimer > 0.004 * Conductor.stepCrochet
+				&& !currentKeys.contains(true)
+				&& player.idleList.contains(playerAnim.name)
+				&& !player.missList.contains(playerAnim.name))
 			{
-				if (player != null)
-				{
-					if ((player._animationTimer > (player.singAnimsUsesMulti ? (Conductor.stepCrochet * 0.001) * (4 +
-						player.idleDuration) : player.idleDuration))
-						&& player.singList.contains(player.animation.curAnim.name)
-						&& !player.missList.contains(player.animation.curAnim.name))
-						player.dance(true);
-				}
+				player.dance();
 			}
 		}
 	}
@@ -518,14 +519,23 @@ class PlayState extends MusicBeatState
 
 		iconP1.beatHit();
 
-		for (charList in [opponentList, spectatorList])
+		for (charList in [playerList, opponentList, spectatorList])
 		{
 			if (charList != null)
 			{
 				for (char in charList)
 				{
 					if (char != null)
-						char.dance();
+					{
+						// god i hate nesting if statements
+						if (char.overridePlayer || char.isPlayer)
+						{
+							if (char.idleList.contains(char.animation.curAnim.name))
+								char.dance();
+						}
+						else
+							char.dance();
+					}
 				}
 			}
 		}
@@ -1003,6 +1013,8 @@ class PlayState extends MusicBeatState
 
 				if (currentKeys.contains(true))
 				{
+					player._animationTimer = 0.0;
+
 					if (currentKeys[note.direction] && note.mustPress && note.isSustainNote && note.canBeHit)
 						hitNote(note);
 				}

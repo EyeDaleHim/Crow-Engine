@@ -21,10 +21,11 @@ class Character extends FlxSprite
 	public var isPlayer:Bool = true;
 	public var healthColor:Int = 0;
 
+	// ok i removed some of the variables because i got lazier over time
 	// simple controls for your character
 	public var controlIdle:Bool = true; // Whether or not your character should keep playing the idle when it finishes an animation.
 	public var forceIdle:Bool = false;
-	public var singAnimsUsesMulti:Bool = false; // If this is enabled, the sing animation will hold for (Conductor.crochet / 1000) * idleDuration, else, it'll just be idleDuration
+	// public var singAnimsUsesMulti:Bool = false; // If this is enabled, the sing animation will hold for (Conductor.crochet / 1000) * idleDuration, else, it'll just be idleDuration
 	public var idleDuration:Float = 0.65; // The amount of seconds (or multiplication) on when the idle animation should be played after the sing animation
 	public var overridePlayer:Bool = false; // If you set this to true, the enemy will be treated as a player
 
@@ -43,71 +44,7 @@ class Character extends FlxSprite
 	{
 		super(x, y);
 
-		trace(Json.stringify({
-			name: 'bf',
-			healthColor: 0xFF79AEDA,
-			animationList: [
-				{
-					name: 'idle',
-					prefix: 'BF idle dance',
-					indices: [],
-					fps: 24,
-					looped: false,
-					offset: {x: -5, y: 0}
-				},
-				{
-					name: 'singLEFT',
-					prefix: 'BF NOTE LEFT0',
-					indices: [],
-					fps: 24,
-					looped: true,
-					offset: {x: 12, y: -6}
-				},
-				{
-					name: 'singDOWN',
-					prefix: 'BF NOTE DOWN0',
-					indices: [],
-					fps: 24,
-					looped: true,
-					offset: {x: -10, y: -50}
-				},
-				{
-					name: 'singUP',
-					prefix: 'BF NOTE UP0',
-					indices: [],
-					fps: 24,
-					looped: true,
-					offset: {x: -29, y: 27}
-				},
-				{
-					name: 'singRIGHT',
-					prefix: 'BF NOTE RIGHT0',
-					indices: [],
-					fps: 24,
-					looped: true,
-					offset: {x: -38, y: -7}
-				},
-				{
-					name: 'hey',
-					prefix: 'BF HEY',
-					indices: [],
-					fps: 24,
-					looped: false,
-					offset: {x: -7, y: 4}
-				},
-				{
-					name: 'scared',
-					prefix: 'BF idle shaking',
-					indices: [],
-					fps: 24,
-					looped: false,
-					offset: {x: -4, y: 0}
-				},
-			],
-			idleList: ['idle'],
-			singList: ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'],
-			scale: {x: 1.0, y: 1.0}
-		}, "\t"));
+		quickCharacterMaker();
 
 		this.name = name;
 		this.isPlayer = isPlayer;
@@ -161,24 +98,17 @@ class Character extends FlxSprite
 
 		if (animation.curAnim != null)
 		{
-			if (overridePlayer || !isPlayer)
+			if (!overridePlayer || !isPlayer)
 			{
 				if (singList.contains(animation.curAnim.name))
-				{
 					_animationTimer += elapsed;
-				}
 
-				var isAbove:Bool = false;
+				var dadVar:Float = name == 'dad' ? 6.1 : 4.0;
 
-				if (singAnimsUsesMulti)
-					isAbove = _animationTimer >= (Conductor.stepCrochet / 1000) * idleDuration;
-				else
-					isAbove = _animationTimer >= idleDuration;
-
-				if (isAbove)
+				if (_animationTimer >= Conductor.stepCrochet * dadVar * 0.001)
 				{
 					dance();
-					_animationTimer = 0.0;
+					_animationTimer = 0;
 				}
 			}
 		}
@@ -217,5 +147,47 @@ class Character extends FlxSprite
 
 		animOffsets = null;
 		idleList = null;
+	}
+
+	private function quickCharacterMaker()
+	{
+		var data:CharacterData;
+
+		var idleList:Array<String> = ['idle'];
+		var missList:Array<String> = ['singLEFTmiss', 'singDOWNmiss', 'singUPmiss', 'singRIGHTmiss'];
+		var singList:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
+
+		var animationList:Array<Animation> = [];
+		var quickAnimAdd:(String, String, Array<Int>, Int, Bool,
+			{x:Int, y:Int}) -> Void = function(name:String, prefix:String, indices:Array<Int>, fps:Int, looped:Bool, offset:{x:Int, y:Int})
+			{
+				animationList.push({
+					name: name,
+					prefix: prefix,
+					indices: indices,
+					fps: fps,
+					looped: looped,
+					offset: offset
+				});
+			};
+
+		quickAnimAdd('idle', 'Dad idle dance', [], 24, false, {x: 0, y: 0});
+
+		quickAnimAdd('singLEFT', 'Dad LEFT dance', [], 24, false, {x: -10, y: 10});
+		quickAnimAdd('singDOWN', 'Dad DOWN dance', [], 24, false, {x: 0, y: -30});
+		quickAnimAdd('singUP', 'Dad UP dance', [], 24, false, {x: -6, y: 50});
+		quickAnimAdd('singRIGHT', 'Dad RIGHT dance', [], 24, false, {x: 0, y: 27});
+
+		data = {
+			name: 'bf',
+			healthColor: 0xFFAF66CE,
+			animationList: animationList,
+			idleList: idleList,
+			missList: missList,
+			singList: singList,
+			scale: {x: 1.0, y: 1.0}
+		}
+
+		trace(Json.stringify(data, "\t"));
 	}
 }

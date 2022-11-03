@@ -141,13 +141,8 @@ class Alphabet extends FlxSpriteGroup
 				lastWasSpace = true;
 			}
 
-			#if (haxe >= "4.0.0")
 			var isNumber:Bool = AlphaCharacter.numbers.contains(splitWords[i]);
 			var isSymbol:Bool = AlphaCharacter.symbols.contains(splitWords[i]);
-			#else
-			var isNumber:Bool = AlphaCharacter.numbers.indexOf(splitWords[i]) != -1;
-			var isSymbol:Bool = AlphaCharacter.symbols.indexOf(splitWords[i]) != -1;
-			#end
 
 			if (AlphaCharacter.alphabet.indexOf(splitWords[i].toLowerCase()) != -1 || isNumber || isSymbol)
 				// if (AlphaCharacter.alphabet.contains(splitWords[loopNum].toLowerCase()) || isNumber || isSymbol)

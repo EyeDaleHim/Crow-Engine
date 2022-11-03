@@ -3,6 +3,7 @@ package backend;
 import flixel.FlxG;
 import flixel.FlxCamera;
 import flixel.FlxSprite;
+import flixel.util.FlxGradient;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -57,6 +58,38 @@ class Transitions
 								callbacks.endCallback();
 						}
 					});
+				}
+			case Slider_Down:
+				{}
+			case Pixel_Fade:
+				{
+					var black:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
+					black.alpha = (fade == In ? 0.0 : 1.0);
+					group.add(black);
+
+					// dumbest way to make use of callbacks
+					FlxTween.num(0, 1, duration, {
+						onStart: function(twn:FlxTween)
+						{
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
+						},
+						onUpdate: function(twn:FlxTween)
+						{
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
+						},
+						onComplete: function(twn:FlxTween)
+						{
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
+						}
+					});
+
+					new FlxTimer().start(duration / 12, function(tmr:FlxTimer)
+					{
+						black.alpha = (black.alpha + ((1 / 12) * (fade == Out ? -1.0 : 1.0)));
+					}, 12);
 				}
 			default: // null
 				{

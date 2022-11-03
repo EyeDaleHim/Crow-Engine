@@ -1,0 +1,80 @@
+{
+    "healthColor": -5282098,
+    "missList": [
+        "singLEFTmiss",
+        "singDOWNmiss",
+        "singUPmiss",
+        "singRIGHTmiss"
+    ],
+    "animationList": [
+        {
+            "prefix": "Dad idle dance",
+            "indices": [],
+            "fps": 24,
+            "name": "idle",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Dad Sing Note LEFT",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFT",
+            "offset": {
+                "x": -10,
+                "y": 10
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Dad Sing Note DOWN",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN",
+            "offset": {
+                "x": 0,
+                "y": -30
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Dad Sing Note UP",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP",
+            "offset": {
+                "x": -6,
+                "y": 50
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Dad Sing Note RIGHT",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHT",
+            "offset": {
+                "x": 0,
+                "y": 27
+            },
+            "looped": false
+        }
+    ],
+    "singList": [
+        "singLEFT",
+        "singDOWN",
+        "singUP",
+        "singRIGHT"
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "name": "dad",
+    "scale": {
+        "x": 1,
+        "y": 1
+    }
+}

@@ -134,6 +134,7 @@ class FreeplayState extends MusicBeatState
 			Paths.currentLibrary = songs[curSelected].weekName;
 
 			Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
+			PlayState.songDiff = curDifficulty;
 			MusicBeatState.switchState(new PlayState());
 		}
 		else
