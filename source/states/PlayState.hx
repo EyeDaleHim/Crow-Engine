@@ -1003,7 +1003,17 @@ class PlayState extends MusicBeatState
 				}
 
 				if (!note.mustPress && note.wasGoodHit)
-					hitNote(note, true);
+				{
+					if (!note.isSustainNote || (note.isSustainNote && !note._hitSustain))
+						hitNote(note, true);
+
+					if (note.isSustainNote)
+					{
+						if ((Settings.getPref('downscroll', false) && note.y > FlxG.height)
+							|| (Settings.getPref('downscroll', false) && note.y < -note.height))
+							killNote(note);
+					}
+				}
 
 				if (note.strumTime - Conductor.songPosition < -300)
 				{
@@ -1088,19 +1098,20 @@ class PlayState extends MusicBeatState
 		{
 			if (opponent != null)
 			{
-				opponent.playAnim(note.singAnim);
+				opponent.playAnim(note.singAnim, true);
 				opponent._animationTimer = 0.0;
 			}
 
 			var strum:StrumNote = opponentStrums.members[note.direction];
 			if (strum != null)
 			{
-				// until someone fixes the bug on this thing, im disabling it i dont wanna fix it
-				// strum.playAnim(strum.confirmAnim);
+				strum.playAnim(strum.confirmAnim);
 			}
 
 			if (!note.isSustainNote)
 				killNote(note);
+			else
+				note._hitSustain = true;
 
 			vocals.volume = 1.0;
 		}
@@ -1225,8 +1236,19 @@ class PlayState extends MusicBeatState
 
 	private function killNote(note:Note)
 	{
-		if (_isolatedNotes.note[note.direction].contains(note))
-			_isolatedNotes.note[note.direction].splice(_isolatedNotes.note[note.direction].indexOf(note), 1);
+		if (note.mustPress)
+		{
+			if (note.isSustainNote)
+			{
+				if (_isolatedNotes.sustains[note.direction].contains(note))
+					_isolatedNotes.sustains[note.direction].splice(_isolatedNotes.sustains[note.direction].indexOf(note), 1);
+			}
+			else
+			{
+				if (_isolatedNotes.note[note.direction].contains(note))
+					_isolatedNotes.note[note.direction].splice(_isolatedNotes.note[note.direction].indexOf(note), 1);
+			}
+		}
 
 		note.kill();
 		renderedNotes.remove(note, true);

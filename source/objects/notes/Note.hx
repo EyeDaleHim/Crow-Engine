@@ -91,6 +91,7 @@ class Note extends FlxSprite
 	public var isEndNote:Bool = false;
 
 	private var _lastNote:Note;
+	private var _hitSustain:Bool = false; // FOR GOD'S SAKE
 	private var _lockedScaleY:Bool = true;
 	private var _lockedToStrumX:Bool = true;
 	private var _lockedToStrumY:Bool = true; // if you disable this, the notes won't ever go, if you want a modchart controlling notes, here u go
