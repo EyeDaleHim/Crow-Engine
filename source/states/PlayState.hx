@@ -1,5 +1,6 @@
 package states;
 
+import weeks.SongHandler;
 import flixel.FlxG;
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -119,6 +120,7 @@ class PlayState extends MusicBeatState
 
 	public static var isStoryMode:Bool = false;
 	public static var storyPlaylist:Array<String> = [];
+	public static var songDiff:Int = 1;
 
 	public var gameInfo:CurrentGame;
 
@@ -199,6 +201,10 @@ class PlayState extends MusicBeatState
 
 	public var preStageRender:FlxTypedGroup<BGSprite>;
 	public var postStageRender:FlxTypedGroup<BGSprite>;
+
+	// information
+	public var songName:String = '';
+	public var songDiffText:String = ''; // ok fine, its a text too
 
 	// simple values
 	public var songStarted:Bool = false;
@@ -496,7 +502,8 @@ class PlayState extends MusicBeatState
 			{
 				if (player != null)
 				{
-					if ((player._animationTimer > (player.singAnimsUsesMulti ? (Conductor.stepCrochet * 0.001) / player.idleDuration : player.idleDuration))
+					if ((player._animationTimer > (player.singAnimsUsesMulti ? (Conductor.stepCrochet * 0.001) * (4 +
+						player.idleDuration) : player.idleDuration))
 						&& player.singList.contains(player.animation.curAnim.name)
 						&& !player.missList.contains(player.animation.curAnim.name))
 						player.dance(true);
@@ -554,6 +561,9 @@ class PlayState extends MusicBeatState
 
 		if (Song.currentSong == null)
 			return;
+
+		songName = Song.currentSong.song;
+		songDiffText = SongHandler.PLACEHOLDER_DIFF[PlayState.songDiff];
 
 		Conductor.changeBPM(Song.currentSong.bpm);
 		songSpeed = FlxMath.roundDecimal(Song.currentSong.speed, 2);
@@ -692,7 +702,16 @@ class PlayState extends MusicBeatState
 
 			@:privateAccess
 			{
-				FlxG.sound.playMusic(__internalSongCache.get(Song.currentSong.song).music._sound);
+				if (__internalSongCache.exists(Song.currentSong.song))
+					FlxG.sound.playMusic(__internalSongCache.get(Song.currentSong.song).music._sound);
+				else
+				{
+					songStarted = false;
+
+					__internalSongCache.set(Song.currentSong.song,
+						{music: FlxG.sound.load(Paths.inst(Song.currentSong.song)), vocal: FlxG.sound.load(Paths.vocals(Song.currentSong.song))});
+					startSong();
+				}
 				vocals.loadEmbedded(__internalSongCache.get(Song.currentSong.song).vocal._sound);
 				vocals.play();
 			}
