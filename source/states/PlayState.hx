@@ -402,7 +402,7 @@ class PlayState extends MusicBeatState
 			'health', 0, gameInfo.maxHealth);
 		healthBar.scrollFactor.set();
 		healthBar.numDivisions = healthBar.frameWidth;
-		healthBar.createFilledBar(0xFFFF0000, player.healthColor);
+		healthBar.createFilledBar(opponent.healthColor, player.healthColor);
 		addToHUD(healthBar);
 
 		iconP1 = new HealthIcon(0, 0, player.name);
@@ -411,6 +411,12 @@ class PlayState extends MusicBeatState
 		iconP1.updateScale = true;
 		iconP1.flipX = true;
 		addToHUD(iconP1);
+
+		iconP2 = new HealthIcon(0, 0, opponent.name);
+		iconP2.y = healthBar.y - (iconP2.height / 2);
+		iconP2.scrollFactor.set();
+		iconP2.updateScale = true;
+		addToHUD(iconP2);
 
 		scoreText = new FlxText(0, 0, 0, "[Score] 0 // [Misses] 0 // [Rank] (0.00% - N/A)");
 		scoreText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
@@ -479,10 +485,18 @@ class PlayState extends MusicBeatState
 
 		if (iconP1 != null)
 		{
-			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) + _iconP1Offset;
+			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - _iconP1Offset;
 
 			if (iconP1.animation.curAnim.frames.length == 0 || iconP1.animation.curAnim.finished) // in case some bozos have animated icons
 				iconP1.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');
+		}
+
+		if (iconP2 != null)
+		{
+			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - _iconP2Offset);
+
+			if (iconP2.animation.curAnim.frames.length == 0 || iconP2.animation.curAnim.finished) // in case some bozos have animated icons
+				iconP2.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');
 		}
 
 		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, ($curBeat, $curStep)');
@@ -546,6 +560,7 @@ class PlayState extends MusicBeatState
 		super.beatHit();
 
 		iconP1.beatHit();
+		iconP2.beatHit();
 
 		for (charList in [playerList, opponentList, spectatorList])
 		{

@@ -179,7 +179,7 @@ class Character extends FlxSprite
 		quickAnimAdd('singRIGHT', 'Pico Note Right0', [], 24, false, {x: -68, y: -7});
 
 		data = {
-			name: 'spooky_kids',
+			name: 'spooky',
 			healthColor: 0xFFD57E00,
 			animationList: animationList,
 			idleList: idleList,

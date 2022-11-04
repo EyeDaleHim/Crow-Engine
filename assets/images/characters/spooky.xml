@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas imagePath="spooky_kids.png">
+<TextureAtlas imagePath="spooky.png">
 	<!-- Created with Adobe Animate version 20.0.0.17400 -->
 	<!-- http://www.adobe.com/products/animate.html -->
 	<SubTexture name="note sing left0000" x="0" y="0" width="556" height="527" frameX="0" frameY="-2" frameWidth="564" frameHeight="531"/>

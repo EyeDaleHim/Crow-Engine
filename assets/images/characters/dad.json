@@ -6,8 +6,7 @@
         "singUPmiss",
         "singRIGHTmiss"
     ],
-    "animationList": [
-        {
+    "animationList": [{
             "prefix": "Dad idle dance",
             "indices": [],
             "fps": 24,
