@@ -3,6 +3,7 @@ package backend;
 import flixel.FlxG;
 import flixel.FlxCamera;
 import flixel.FlxSprite;
+import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
@@ -60,7 +61,41 @@ class Transitions
 					});
 				}
 			case Slider_Down:
-				{}
+				{
+					var gradient:FlxSprite = FlxGradient.createGradientFlxSprite(FlxG.width, 200, [FlxColor.BLACK, 0x0]);
+					gradient.flipY = (fade == Out);
+					group.add(gradient);
+
+					var black:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, Std.int(FlxG.height * 1.2), FlxColor.BLACK);
+					group.add(black);
+
+					gradient.y = -gradient.height;
+					black.y = (gradient.y - black.height) + 50;
+
+					FlxTween.tween(gradient, {y: FlxG.height}, duration, {
+						ease: ease,
+						onStart: function(twn:FlxTween)
+						{
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
+						},
+						onUpdate: function(twn:FlxTween)
+						{
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
+
+							if (fade == In)
+								black.y = (gradient.y - black.height) + 50;
+							else
+								black.y = gradient.y + gradient.height;
+						},
+						onComplete: function(twn:FlxTween)
+						{
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
+						}
+					});
+				}
 			case Pixel_Fade:
 				{
 					var black:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);

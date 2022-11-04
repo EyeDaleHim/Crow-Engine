@@ -64,7 +64,7 @@ typedef SongInfo =
 {
 	var song:String;
 	var sectionList:Array<SectionInfo>;
-	var mustHitSections:Array<Bool>;
+	var mustHitSections:Array<Null<Bool>>;
 	var bpm:Float;
 	var speed:Float;
 

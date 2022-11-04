@@ -1,8 +1,10 @@
 package utils;
 
+import objects.Stage.SimplePoint;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxAxes;
+import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 
 using StringTools;
@@ -112,6 +114,11 @@ class Tools
 		string.toLowerCase();
 
 		return string;
+	}
+
+	public static function transformSimplePoint(fromPoint:FlxPoint, toPoint:SimplePoint):FlxPoint
+	{
+		return fromPoint.set(toPoint.x, toPoint.y);
 	}
 }
 

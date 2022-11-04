@@ -336,12 +336,15 @@ class PlayState extends MusicBeatState
 		var specPos = stageData.charPosList.spectatorPositions;
 		var oppPos = stageData.charPosList.opponentPositions;
 
-		player = new Character(playerPos[0].x, playerPos[0].y, 'bf', true);
+		// spectator =
+
+		player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
 		player.scrollFactor.set(0.95, 0.95);
 		add(player);
 
-		opponent = new Character(oppPos[0].x, oppPos[0].y, 'dad', false);
+		opponent = new Character(oppPos[0].x, oppPos[0].y, Song.currentSong.opponent, false);
 		opponent.scrollFactor.set(0.95, 0.95);
+		opponent.overridePlayer = true;
 		add(opponent);
 
 		add(postStageRender);
@@ -349,8 +352,26 @@ class PlayState extends MusicBeatState
 		if (_cameraPos != null)
 			_cameraPos.copyTo(camFollow);
 		else
+		{
 			camFollow = new FlxPoint();
+
+			if (Song.currentSong.mustHitSections[0] != null)
+			{
+				var newPos:FlxPoint = FlxPoint.get();
+				Tools.transformSimplePoint(newPos,
+					(Song.currentSong.mustHitSections[0] ? stageData.camPosList.playerPositions[0] : stageData.camPosList.opponentPositions[0]));
+
+				var midPoint:FlxPoint = (Song.currentSong.mustHitSections[0] ? player : opponent).getMidpoint();
+
+				camFollow.set(midPoint.x + newPos.x, midPoint.y - newPos.y);
+			}
+		}
 		_cameraPos = null;
+
+		camFollowObject = new FlxObject(camFollow.x, camFollow.y, 1, 1);
+		add(camFollowObject);
+
+		FlxG.camera.follow(camFollowObject, null, 1);
 
 		strumLine.y = 50;
 
@@ -447,6 +468,13 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		if (camFollow != null && !camFollowObject.alive)
+		{
+			var lerpVal:Float = elapsed * 3.125;
+
+			camFollowObject.setPosition(Tools.lerpBound(camFollowObject.x, camFollow.x, lerpVal), Tools.lerpBound(camFollowObject.y, camFollow.y, lerpVal));
+		}
+
 		super.update(elapsed);
 
 		if (iconP1 != null)
@@ -537,6 +565,22 @@ class PlayState extends MusicBeatState
 							char.dance();
 					}
 				}
+			}
+		}
+
+		var sect:Int = Math.floor(curBeat / 4);
+
+		if (curBeat % Math.floor(Song.currentSong.sectionList[sect].length / 4) == 0)
+		{
+			if (Song.currentSong.mustHitSections[sect] != null)
+			{
+				var newPos:FlxPoint = FlxPoint.get();
+				Tools.transformSimplePoint(newPos,
+					(Song.currentSong.mustHitSections[sect] ? stageData.camPosList.playerPositions[0] : stageData.camPosList.opponentPositions[0]));
+
+				var midPoint:FlxPoint = (Song.currentSong.mustHitSections[sect] ? player : opponent).getMidpoint();
+
+				camFollow.set(midPoint.x + newPos.x, midPoint.y - newPos.y);
 			}
 		}
 
@@ -709,6 +753,8 @@ class PlayState extends MusicBeatState
 		if (!songStarted)
 		{
 			songStarted = true;
+
+			_lastFrameTime = FlxG.game.ticks;
 
 			@:privateAccess
 			{

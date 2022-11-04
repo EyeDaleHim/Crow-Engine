@@ -154,7 +154,7 @@ class Character extends FlxSprite
 		var data:CharacterData;
 
 		var idleList:Array<String> = ['idle'];
-		var missList:Array<String> = ['singLEFTmiss', 'singDOWNmiss', 'singUPmiss', 'singRIGHTmiss'];
+		var missList:Array<String> = [];
 		var singList:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 
 		var animationList:Array<Animation> = [];
@@ -171,16 +171,16 @@ class Character extends FlxSprite
 				});
 			};
 
-		quickAnimAdd('idle', 'Dad idle dance', [], 24, false, {x: 0, y: 0});
+		quickAnimAdd('idle', 'Pico Idle Dance', [], 24, false, {x: 0, y: 0});
 
-		quickAnimAdd('singLEFT', 'Dad LEFT dance', [], 24, false, {x: -10, y: 10});
-		quickAnimAdd('singDOWN', 'Dad DOWN dance', [], 24, false, {x: 0, y: -30});
-		quickAnimAdd('singUP', 'Dad UP dance', [], 24, false, {x: -6, y: 50});
-		quickAnimAdd('singRIGHT', 'Dad RIGHT dance', [], 24, false, {x: 0, y: 27});
+		quickAnimAdd('singLEFT', 'Pico NOTE LEFT0', [], 24, false, {x: 65, y: 9});
+		quickAnimAdd('singDOWN', 'Pico Down Note0', [], 24, false, {x: 200, y: -70});
+		quickAnimAdd('singUP', 'Pico Up Note0', [], 24, false, {x: -29, y: 27});
+		quickAnimAdd('singRIGHT', 'Pico Note Right0', [], 24, false, {x: -68, y: -7});
 
 		data = {
-			name: 'bf',
-			healthColor: 0xFFAF66CE,
+			name: 'spooky_kids',
+			healthColor: 0xFFD57E00,
 			animationList: animationList,
 			idleList: idleList,
 			missList: missList,

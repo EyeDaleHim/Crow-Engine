@@ -83,6 +83,7 @@ class Main extends Sprite
 		FlxG.console.registerClass(utils.Paths);
 		FlxG.console.registerClass(utils.Tools);
 		FlxG.console.registerClass(backend.Settings);
+		FlxG.console.registerClass(music.Song);
 
 		Application.current.window.onClose.add(function()
 		{

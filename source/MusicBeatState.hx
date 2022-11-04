@@ -15,6 +15,7 @@ class MusicBeatState extends FlxUIState
 {
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
+	private var curSection:Int = 0;
 
 	public var controls(default, null):Controls = new Controls();
 
@@ -23,7 +24,7 @@ class MusicBeatState extends FlxUIState
 		if (_finishedFade)
 		{
 			_finishedFade = false;
-			Transitions.transition(0.5, Out, FlxEase.quadOut, Fade, {
+			Transitions.transition(0.5, Out, FlxEase.linear, Slider_Down, {
 				startCallback: null,
 				updateCallback: null,
 				endCallback: null
@@ -45,6 +46,7 @@ class MusicBeatState extends FlxUIState
 
 		updateCurStep();
 		updateBeat();
+		updateSection();
 
 		if (oldStep != curStep && curStep >= 0)
 			stepHit();
@@ -58,6 +60,11 @@ class MusicBeatState extends FlxUIState
 	private function updateBeat():Void
 	{
 		curBeat = Math.floor(curStep / 4);
+	}
+
+	private function updateSection():Void
+	{
+		curSection = Math.floor(curBeat / 4);
 	}
 
 	private function updateCurStep():Void
@@ -80,7 +87,7 @@ class MusicBeatState extends FlxUIState
 
 	public static function switchState(state:FlxState)
 	{
-		Transitions.transition(0.5, In, FlxEase.quadOut, Fade, {
+		Transitions.transition(0.5, In, FlxEase.linear, Slider_Down, {
 			// in case you wanna do something, these two aren't useful for now
 			startCallback: null,
 			updateCallback: null,
@@ -100,8 +107,11 @@ class MusicBeatState extends FlxUIState
 
 	public function beatHit():Void
 	{
-		// do literally nothing dumbass
+		if (curBeat % 4 == 0)
+			sectionHit();
 	}
+
+	public function sectionHit():Void {}
 
 	override public function onFocusLost():Void
 	{

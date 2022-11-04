@@ -10,6 +10,7 @@ import sys.FileSystem;
 import objects.handlers.Animation;
 import states.PlayState;
 import states.PlayState.GameSoundObject;
+import music.Song;
 
 using StringTools;
 
@@ -42,13 +43,29 @@ class Stage
 			opponentPositions: []
 		}
 
+		stageInstance.camPosList = {
+			playerPositions: [],
+			spectatorPositions: [],
+			opponentPositions: []
+		}
+
+		stageInstance.charPosList.playerPositions = [{x: 770, y: 400}];
+		stageInstance.charPosList.spectatorPositions = [{x: 400, y: 430}];
+		stageInstance.charPosList.opponentPositions = [{x: 50, y: 0}];
+
+		stageInstance.camPosList.playerPositions = [{x: -100, y: -100}];
+		stageInstance.camPosList.spectatorPositions = [{x: 0, y: 50}];
+		stageInstance.camPosList.opponentPositions = [{x: 150, y: 150}];
+
 		switch (stage)
 		{
 			case 'spooky':
 				{
-					stageInstance.charPosList.playerPositions = [{x: 770, y: 400}];
-					stageInstance.charPosList.spectatorPositions = [{x: 400, y: 430}];
-					stageInstance.charPosList.opponentPositions = [{x: 100, y: 400}];
+					stageInstance.charPosList.opponentPositions = [{x: 40, y: 420}];
+					stageInstance.charPosList.playerPositions = [{x: 780, y: 420}];
+					// if (Song.currentSong.opponent == 'monster')
+
+					stageInstance.camPosList.opponentPositions = [{x: 100, y: -100}];
 
 					var halloween:BGSprite = new BGSprite({path: 'halloween_bg', library: 'week2'}, {x: -200, y: -100}, {x: 0.95, y: 0.95}, [
 						{
@@ -90,10 +107,6 @@ class Stage
 			default:
 				{
 					stageInstance.defaultZoom = 0.90;
-
-					stageInstance.charPosList.playerPositions = [{x: 770, y: 400}];
-					stageInstance.charPosList.spectatorPositions = [{x: 400, y: 430}];
-					stageInstance.charPosList.opponentPositions = [{x: 100, y: 400}];
 
 					var background:BGSprite = new BGSprite({path: 'stageback', library: 'week1'}, {x: -600, y: -200}, {x: 0.9, y: 0.9});
 					background.ID = 0;

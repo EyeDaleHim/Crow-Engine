@@ -67,6 +67,7 @@ class ChartConvert
 
 						convertedData.sectionList[index] = {notes: [], length: 16};
 						convertedData.sectionList[index].length = section.lengthInSteps;
+						convertedData.mustHitSections[index] = section.mustHitSection;
 
 						for (notes in section.sectionNotes)
 						{
