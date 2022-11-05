@@ -61,7 +61,7 @@ class Character extends FlxSprite
 
 		frames = Paths.getSparrowAtlas('characters/${this.name}');
 
-		_characterData = Json.parse(Assets.getText(Paths.image('characters/$name').replace('png', 'json')));
+		_characterData = Json.parse(Assets.getText(Paths.image('characters/${this.name}').replace('png', 'json')));
 
 		this.healthColor = _characterData.healthColor;
 		scale.set(_characterData.scale.x, _characterData.scale.y);
