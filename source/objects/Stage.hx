@@ -55,7 +55,7 @@ class Stage
 
 		stageInstance.camPosList.playerPositions = [{x: -100, y: -100}];
 		stageInstance.camPosList.spectatorPositions = [{x: 0, y: 50}];
-		stageInstance.camPosList.opponentPositions = [{x: 150, y: 150}];
+		stageInstance.camPosList.opponentPositions = [{x: 100, y: 100}];
 
 		switch (stage)
 		{
@@ -107,6 +107,8 @@ class Stage
 			default:
 				{
 					stageInstance.defaultZoom = 0.90;
+
+					stageInstance.camPosList.opponentPositions = [{x: 100, y: -100}];
 
 					var background:BGSprite = new BGSprite({path: 'stageback', library: 'week1'}, {x: -600, y: -200}, {x: 0.9, y: 0.9});
 					background.ID = 0;

@@ -336,7 +336,9 @@ class PlayState extends MusicBeatState
 		var specPos = stageData.charPosList.spectatorPositions;
 		var oppPos = stageData.charPosList.opponentPositions;
 
-		// spectator =
+		// spectator = new Character(specPos[0].x, specPos[0].y, Song.currentSong.spectator, true);
+		// spectator.scrollFactor.set(0.95, 0.95);
+		// add(spectator);
 
 		player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
 		player.scrollFactor.set(0.95, 0.95);
@@ -363,7 +365,7 @@ class PlayState extends MusicBeatState
 
 				var midPoint:FlxPoint = (Song.currentSong.mustHitSections[0] ? player : opponent).getMidpoint();
 
-				camFollow.set(midPoint.x + newPos.x, midPoint.y - newPos.y);
+				camFollow.set(midPoint.x + newPos.x, midPoint.y + newPos.y);
 			}
 		}
 		_cameraPos = null;
@@ -474,7 +476,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (camFollow != null && !camFollowObject.alive)
+		if (camFollow != null)
 		{
 			var lerpVal:Float = elapsed * 3.125;
 
@@ -595,7 +597,7 @@ class PlayState extends MusicBeatState
 
 				var midPoint:FlxPoint = (Song.currentSong.mustHitSections[sect] ? player : opponent).getMidpoint();
 
-				camFollow.set(midPoint.x + newPos.x, midPoint.y - newPos.y);
+				camFollow.set(midPoint.x + newPos.x, midPoint.y + newPos.y);
 			}
 		}
 
