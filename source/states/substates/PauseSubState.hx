@@ -113,6 +113,8 @@ class PauseSubState extends MusicBeatSubState
 
 		if (controls.getKey('ACCEPT', JUST_PRESSED))
 		{
+			persistentUpdate = false;
+
 			if (selectionList[curSelected].callback != null)
 				selectionList[curSelected].callback();
 		}

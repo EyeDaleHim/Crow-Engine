@@ -162,9 +162,10 @@ class TitleState extends MusicBeatState
 					skipIntro();
 				else
 				{
+					control = false;
 					enterText.animation.play('pressed');
 
-					FlxG.camera.flash(0xFFFFFFFF, 1);
+					FlxG.camera.flash((Settings.getPref('flashing-lights', true) ? 0xFFFFFFFF : 0xFF000000), 1);
 					FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.7);
 
 					new FlxTimer().start(2, function(timer:FlxTimer)

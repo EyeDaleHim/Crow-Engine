@@ -1,6 +1,5 @@
 package states;
 
-import weeks.SongHandler;
 import flixel.FlxG;
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -25,12 +24,15 @@ import openfl.events.KeyboardEvent;
 import states.substates.GameOverSubState;
 import states.substates.PauseSubState;
 import music.Song;
+import music.EventManager;
 import objects.HealthIcon;
 import objects.Stage;
 import objects.Stage.BGSprite;
 import objects.character.Character;
 import objects.notes.Note;
 import objects.notes.StrumNote;
+import weeks.ScoreContainer;
+import weeks.SongHandler;
 
 using StringTools;
 using utils.Tools;
@@ -206,6 +208,8 @@ class PlayState extends MusicBeatState
 	public var songName:String = '';
 	public var songDiffText:String = ''; // ok fine, its a text too
 
+	public var events:EventManager;
+
 	// simple values
 	public var songStarted:Bool = false;
 	public var generatedMusic:Bool = false;
@@ -329,6 +333,7 @@ class PlayState extends MusicBeatState
 		}
 
 		FlxG.camera.zoom = stageData.defaultZoom;
+		FlxG.camera.attributes.set('zoomLerpValue', stageData.defaultZoom);
 
 		add(preStageRender);
 
@@ -478,9 +483,14 @@ class PlayState extends MusicBeatState
 
 		if (camFollow != null)
 		{
-			var lerpVal:Float = elapsed * 3.125;
-
+			var lerpVal:Float = elapsed * 2.4;
 			camFollowObject.setPosition(Tools.lerpBound(camFollowObject.x, camFollow.x, lerpVal), Tools.lerpBound(camFollowObject.y, camFollow.y, lerpVal));
+		}
+
+		for (camera in FlxG.cameras.list)
+		{
+			if (camera.attributes.exists('zoomLerping') && camera.attributes.exists('zoomLerpValue'))
+				camera.zoom = Tools.lerpBound(camera.zoom, camera.attributes['zoomLerpValue'], elapsed * 3.125);
 		}
 
 		super.update(elapsed);
@@ -555,6 +565,17 @@ class PlayState extends MusicBeatState
 				player.dance();
 			}
 		}
+
+		if (events.spawnedEvents[0] != null)
+		{
+			for (event in events.eventList)
+			{
+				if (Conductor.songPosition > event.strumTime)
+					events.triggerEvent(event);
+				else
+					break;
+			}
+		}
 	}
 
 	override function beatHit():Void
@@ -583,6 +604,17 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
+		}
+
+		// meh, hard-coded, i don't have an actual event system yet thing
+		if (curBeat % 4 == 0)
+			events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Camera Beat', arguments: ['world&spl-0.03', 'hud&spl-0.015']});
+
+		switch (songName.replace(' ', '-').toLowerCase())
+		{
+			case 'bopeebo':
+				if (curBeat % 8 == 7)
+					events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Play Animation', arguments: ['player', 'hey', '0']});
 		}
 
 		var sect:Int = Math.floor(curBeat / 4);
@@ -638,6 +670,8 @@ class PlayState extends MusicBeatState
 
 		Conductor.changeBPM(Song.currentSong.bpm);
 		songSpeed = FlxMath.roundDecimal(Song.currentSong.speed, 2);
+
+		events = new EventManager();
 
 		for (sections in Song.currentSong.sectionList)
 		{
@@ -788,7 +822,22 @@ class PlayState extends MusicBeatState
 				vocals.loadEmbedded(__internalSongCache.get(Song.currentSong.song).vocal._sound);
 				vocals.play();
 			}
+
+			FlxG.sound.music.onComplete = endSong;
 		}
+	}
+
+	public function endSong()
+	{
+		ScoreContainer.setSong(songName.replace(' ', '-').toLowerCase(), songDiff,
+			{score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
+
+		persistentUpdate = false;
+
+		MusicBeatState.switchState(new states.menus.FreeplayState());
+
+		FlxG.sound.playMusic(Paths.music('freakyMenu'));
+		Conductor.changeBPM(102);
 	}
 
 	override function openSubState(state:FlxSubState)
