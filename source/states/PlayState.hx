@@ -432,6 +432,13 @@ class PlayState extends MusicBeatState
 		scoreText.y = healthBarBG.y + 30;
 		addToHUD(scoreText);
 
+		engineText = new FlxText(0, 0, 0, 'Crow Engine ${Main.engineVersion.display}');
+		engineText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		engineText.borderSize = 1.25;
+		engineText.x = FlxG.width - engineText.width - 40;
+		engineText.y = healthBarBG.y + 30;
+		addToHUD(engineText);
+
 		initCountdown();
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
