@@ -341,9 +341,9 @@ class PlayState extends MusicBeatState
 		var specPos = stageData.charPosList.spectatorPositions;
 		var oppPos = stageData.charPosList.opponentPositions;
 
-		// spectator = new Character(specPos[0].x, specPos[0].y, Song.currentSong.spectator, true);
-		// spectator.scrollFactor.set(0.95, 0.95);
-		// add(spectator);
+		spectator = new Character(specPos[0].x, specPos[0].y, Song.currentSong.spectator, true);
+		spectator.scrollFactor.set(0.95, 0.95);
+		add(spectator);
 
 		player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
 		player.scrollFactor.set(0.95, 0.95);
