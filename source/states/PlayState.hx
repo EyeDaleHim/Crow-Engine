@@ -29,6 +29,7 @@ import objects.HealthIcon;
 import objects.Stage;
 import objects.Stage.BGSprite;
 import objects.character.Character;
+import objects.character.Player;
 import objects.notes.Note;
 import objects.notes.StrumNote;
 import weeks.ScoreContainer;
@@ -345,7 +346,7 @@ class PlayState extends MusicBeatState
 		spectator.scrollFactor.set(0.95, 0.95);
 		add(spectator);
 
-		player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
+		player = new Player(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
 		player.scrollFactor.set(0.95, 0.95);
 		add(player);
 
@@ -564,7 +565,7 @@ class PlayState extends MusicBeatState
 
 			var playerAnim = player.animation.curAnim;
 
-			if (player._animationTimer > 0.004 * Conductor.stepCrochet
+			if ((player._animationTimer > 0.004 * Conductor.stepCrochet)
 				&& !currentKeys.contains(true)
 				&& player.idleList.contains(playerAnim.name)
 				&& !player.missList.contains(playerAnim.name))
@@ -603,7 +604,7 @@ class PlayState extends MusicBeatState
 						// god i hate nesting if statements
 						if (char.overridePlayer || char.isPlayer)
 						{
-							if (char.idleList.contains(char.animation.curAnim.name))
+							if (char.forceIdle || char.idleList.contains(char.animation.curAnim.name))
 								char.dance();
 						}
 						else
@@ -697,7 +698,7 @@ class PlayState extends MusicBeatState
 
 				if (note.sustain > 0)
 				{
-					var sustainAmounts:Int = Math.floor(note.sustain / Conductor.stepCrochet);
+					var sustainAmounts:Int = Math.floor((note.sustain + 1) / Conductor.stepCrochet);
 
 					for (i in 0...sustainAmounts)
 					{
@@ -814,21 +815,10 @@ class PlayState extends MusicBeatState
 
 			_lastFrameTime = FlxG.game.ticks;
 
-			@:privateAccess
-			{
-				if (__internalSongCache.exists(Song.currentSong.song))
-					FlxG.sound.playMusic(__internalSongCache.get(Song.currentSong.song).music._sound);
-				else
-				{
-					songStarted = false;
+			FlxG.sound.playMusic(Paths.inst(Song.currentSong.song));
 
-					__internalSongCache.set(Song.currentSong.song,
-						{music: FlxG.sound.load(Paths.inst(Song.currentSong.song)), vocal: FlxG.sound.load(Paths.vocals(Song.currentSong.song))});
-					startSong();
-				}
-				vocals.loadEmbedded(__internalSongCache.get(Song.currentSong.song).vocal._sound);
-				vocals.play();
-			}
+			vocals.loadEmbedded(Paths.vocals(Song.currentSong.song));
+			vocals.play();
 
 			FlxG.sound.music.onComplete = endSong;
 		}

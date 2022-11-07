@@ -10,6 +10,7 @@ import haxe.Json;
 import openfl.Assets;
 import sys.FileSystem;
 import objects.character.CharacterData;
+import backend.Script;
 
 using StringTools;
 
@@ -20,6 +21,7 @@ class Character extends FlxSprite
 	public var name:String = 'bf';
 	public var isPlayer:Bool = true;
 	public var healthColor:Int = 0;
+	public var scripts:Array<Script> = [];
 
 	// ok i removed some of the variables because i got lazier over time
 	// simple controls for your character
@@ -44,14 +46,16 @@ class Character extends FlxSprite
 	{
 		super(x, y);
 
-		quickCharacterMaker();
+		// quickCharacterMaker();
 
 		this.name = name;
 		this.isPlayer = isPlayer;
 
-		var imageExists:Bool = FileSystem.exists(Paths.image('characters/$name'));
-		var xmlExists:Bool = FileSystem.exists(Paths.image('characters/$name').replace('png', 'xml'));
-		var jsonExists:Bool = FileSystem.exists(Paths.image('characters/$name').replace('png', 'json'));
+		var charPath:String = 'characters/${this.name}/${this.name}';
+
+		var imageExists:Bool = FileSystem.exists(Paths.image(charPath));
+		var xmlExists:Bool = FileSystem.exists(Paths.image(charPath).replace('png', 'xml'));
+		var jsonExists:Bool = FileSystem.exists(Paths.image(charPath).replace('png', 'json'));
 
 		if (!imageExists || !xmlExists || !jsonExists)
 		{
@@ -59,9 +63,9 @@ class Character extends FlxSprite
 			this.name = 'bf';
 		}
 
-		frames = Paths.getSparrowAtlas('characters/${this.name}');
+		frames = Paths.getSparrowAtlas(charPath);
 
-		_characterData = Json.parse(Assets.getText(Paths.image('characters/${this.name}').replace('png', 'json')));
+		_characterData = Json.parse(Assets.getText(Paths.image(charPath).replace('png', 'json')));
 
 		this.healthColor = _characterData.healthColor;
 		scale.set(_characterData.scale.x, _characterData.scale.y);
@@ -90,10 +94,20 @@ class Character extends FlxSprite
 
 		if (idleList.length > 0)
 			playAnim(idleList[0]);
+
+		for (script in scripts)
+		{
+			script.executeFunction("create", [false]);
+		}
 	}
 
 	override function update(elapsed:Float)
 	{
+		for (script in scripts)
+		{
+			script.executeFunction("update", [false]);
+		}
+
 		super.update(elapsed);
 
 		if (animation.curAnim != null)
@@ -112,6 +126,11 @@ class Character extends FlxSprite
 				}
 			}
 		}
+
+		for (script in scripts)
+		{
+			script.executeFunction("update", [true]);
+		}
 	}
 
 	public function dance(?forcePlay:Bool = false):Void
@@ -127,6 +146,11 @@ class Character extends FlxSprite
 
 				playAnim(animToPlay, forceIdle);
 			}
+		}
+
+		for (script in scripts)
+		{
+			script.executeFunction("dance", []);
 		}
 	}
 

@@ -50,19 +50,19 @@ class Stage
 		}
 
 		stageInstance.charPosList.playerPositions = [{x: 770, y: 400}];
-		stageInstance.charPosList.spectatorPositions = [{x: 400, y: 430}];
-		stageInstance.charPosList.opponentPositions = [{x: 50, y: 0}];
+		stageInstance.charPosList.spectatorPositions = [{x: 400, y: 130}];
+		stageInstance.charPosList.opponentPositions = [{x: 100, y: 0}];
 
 		stageInstance.camPosList.playerPositions = [{x: -100, y: -100}];
-		stageInstance.camPosList.spectatorPositions = [{x: 0, y: 50}];
+		stageInstance.camPosList.spectatorPositions = [{x: 0, y: -50}];
 		stageInstance.camPosList.opponentPositions = [{x: 100, y: 100}];
 
 		switch (stage)
 		{
 			case 'spooky':
 				{
-					stageInstance.charPosList.opponentPositions = [{x: 40, y: 420}];
-					stageInstance.charPosList.playerPositions = [{x: 780, y: 420}];
+					stageInstance.charPosList.opponentPositions = [{x: 80, y: 320}];
+					stageInstance.charPosList.playerPositions = [{x: 780, y: 440}];
 					// if (Song.currentSong.opponent == 'monster')
 
 					stageInstance.camPosList.opponentPositions = [{x: 100, y: -100}];
