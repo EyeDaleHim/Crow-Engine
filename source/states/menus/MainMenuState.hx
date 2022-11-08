@@ -30,7 +30,14 @@ class MainMenuState extends MusicBeatState
 			},
 			skipAnimBG: true
 		},
-		{name: 'options', callback: () -> {}, skipAnimBG: false},
+		{
+			name: 'options',
+			callback: function()
+			{
+				MusicBeatState.switchState(new states.options.OptionsMenu());
+			},
+			skipAnimBG: false
+		},
 	];
 
 	public var menuGroup:FlxTypedGroup<FlxSprite>;

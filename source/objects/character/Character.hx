@@ -105,7 +105,7 @@ class Character extends FlxSprite
 	{
 		for (script in scripts)
 		{
-			script.executeFunction("update", [false]);
+			script.executeFunction("update", [elapsed, false]);
 		}
 
 		super.update(elapsed);
@@ -129,7 +129,7 @@ class Character extends FlxSprite
 
 		for (script in scripts)
 		{
-			script.executeFunction("update", [true]);
+			script.executeFunction("update", [elapsed, true]);
 		}
 	}
 
