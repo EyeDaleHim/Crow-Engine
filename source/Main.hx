@@ -23,7 +23,7 @@ class Main extends Sprite
 
 	// game version's number is 7 because of week 6
 	public static final gameVersion:VersionScheme = {display: "0.2.7.1", number: 7}; // Version Of The Base Game (Friday Night Funkin')
-	public static final engineVersion:VersionScheme = {display: "0.1.0", number: 1}; // Version Of The Engine (Crow Engine)
+	public static final engineVersion:VersionScheme = {display: "0.1.0A", number: 1}; // Version Of The Engine (Crow Engine)
 
 	public static function main():Void
 	{
