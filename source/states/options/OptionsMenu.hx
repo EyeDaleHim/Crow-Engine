@@ -141,6 +141,7 @@ class OptionsMenu extends MusicBeatState
 		else if (controls.getKey('ACCEPT', JUST_PRESSED))
 		{
 			if (categoryID == -1)
+				trace("Pressed Enter"); // I Put This Here To Prevent Errors.
 		}
 		else
 		{
