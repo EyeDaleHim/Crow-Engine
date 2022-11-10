@@ -1,41 +1,47 @@
 {
-    "healthColor": -13520687,
+    "healthColor": -4728747,
+    "missList": [
+        "singLEFTmiss",
+        "singDOWNmiss",
+        "singUPmiss",
+        "singRIGHTmiss"
+    ],
     "animationList": [
         {
-            "prefix": "BF idle dance",
+            "prefix": "Pico Idle Dance",
             "indices": [],
             "fps": 24,
             "name": "idle",
             "offset": {
-                "x": -5,
+                "x": 0,
                 "y": 0
             },
             "looped": false
         },
         {
-            "prefix": "BF NOTE LEFT0",
+            "prefix": "Pico NOTE LEFT0",
             "indices": [],
             "fps": 24,
             "name": "singLEFT",
             "offset": {
-                "x": 12,
-                "y": -6
+                "x": 65,
+                "y": 9
             },
             "looped": false
         },
         {
-            "prefix": "BF NOTE DOWN0",
+            "prefix": "Pico Down Note0",
             "indices": [],
             "fps": 24,
             "name": "singDOWN",
             "offset": {
-                "x": -10,
-                "y": -50
+                "x": 200,
+                "y": -70
             },
             "looped": false
         },
         {
-            "prefix": "BF NOTE UP0",
+            "prefix": "pico Up note0",
             "indices": [],
             "fps": 24,
             "name": "singUP",
@@ -46,79 +52,57 @@
             "looped": false
         },
         {
-            "prefix": "BF NOTE RIGHT0",
+            "prefix": "Pico Note Right0",
             "indices": [],
             "fps": 24,
             "name": "singRIGHT",
             "offset": {
-                "x": -38,
+                "x": -68,
                 "y": -7
             },
             "looped": false
         },
         {
-            "prefix": "BF NOTE LEFT MISS",
+            "prefix": "Pico NOTE LEFT miss",
             "indices": [],
             "fps": 24,
             "name": "singLEFTmiss",
             "offset": {
-                "x": 12,
-                "y": 24
+                "x": 62,
+                "y": 64
             },
             "looped": false
         },
         {
-            "prefix": "BF NOTE DOWN MISS",
+            "prefix": "Pico Down Note MISS",
             "indices": [],
             "fps": 24,
             "name": "singDOWNmiss",
             "offset": {
-                "x": -11,
-                "y": -19
+                "x": 210,
+                "y": -28
             },
             "looped": false
         },
         {
-            "prefix": "BF NOTE UP MISS",
+            "prefix": "pico Up Note miss",
             "indices": [],
             "fps": 24,
             "name": "singUPmiss",
             "offset": {
-                "x": -29,
-                "y": 27
+                "x": -19,
+                "y": 67
             },
             "looped": false
         },
         {
-            "prefix": "BF NOTE RIGHT MISS",
+            "prefix": "Pico Note Right Miss",
             "indices": [],
             "fps": 24,
             "name": "singRIGHTmiss",
             "offset": {
-                "x": -30,
-                "y": 21
-            },
-            "looped": false
-        },
-        {
-            "prefix": "BF HEY",
-            "indices": [],
-            "fps": 24,
-            "name": "hey",
-            "offset": {
-                "x": -7,
-                "y": 4
-            },
-            "looped": false
-        },
-        {
-            "prefix": "BF idle shaking",
-            "indices": [],
-            "fps": 24,
-            "name": "scared",
-            "offset": {
-                "x": -4,
-                "y": 0
+                "x": -60,
+                "y": 41
             },
             "looped": false
         }
@@ -132,15 +116,9 @@
     "idleList": [
         "idle"
     ],
-    "missList": [
-        "singLEFTmiss",
-        "singDOWNmiss",
-        "singUPmiss",
-        "singRIGHTmiss"
-    ],
-    "name": "bf",
+    "name": "pico",
     "flip": {
-        "x": false,
+        "x": true,
         "y": false
     },
     "scale": {

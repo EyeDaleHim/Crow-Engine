@@ -99,6 +99,9 @@ class Character extends FlxSprite
 		{
 			script.executeFunction("create", [false]);
 		}
+
+		flipX = _characterData.flip.x;
+		flipY = _characterData.flip.y;
 	}
 
 	override function update(elapsed:Float)
@@ -204,13 +207,19 @@ class Character extends FlxSprite
 		quickAnimAdd('singUP', 'Pico Up Note0', [], 24, false, {x: -29, y: 27});
 		quickAnimAdd('singRIGHT', 'Pico Note Right0', [], 24, false, {x: -68, y: -7});
 
+		quickAnimAdd('singLEFTmiss', 'Pico NOTE LEFT miss', [], 24, false, {x: 62, y: 64});
+		quickAnimAdd('singDOWNmiss', 'Pico Down Note MISS', [], 24, false, {x: 210, y: -28});
+		quickAnimAdd('singUPmiss', 'pico Up Note miss', [], 24, false, {x: -19, y: 67});
+		quickAnimAdd('singRIGHTmiss', 'Pico Note Right Miss', [], 24, false, {x: -60, y: 41});
+
 		data = {
-			name: 'spooky',
-			healthColor: 0xFFD57E00,
+			name: 'pico',
+			healthColor: 0xFFB7D855,
 			animationList: animationList,
 			idleList: idleList,
 			missList: missList,
 			singList: singList,
+			flip: {x: true, y: false},
 			scale: {x: 1.0, y: 1.0}
 		}
 

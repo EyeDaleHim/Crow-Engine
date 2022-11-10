@@ -6,7 +6,8 @@
         "singUPmiss",
         "singRIGHTmiss"
     ],
-    "animationList": [{
+    "animationList": [
+        {
             "prefix": "Dad idle dance",
             "indices": [],
             "fps": 24,
@@ -72,6 +73,10 @@
         "idle"
     ],
     "name": "dad",
+    "flip": {
+        "x": false,
+        "y": false
+    },
     "scale": {
         "x": 1,
         "y": 1

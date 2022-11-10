@@ -1,6 +1,7 @@
 {
     "healthColor": -786578,
-    "animationList": [{
+    "animationList": [
+        {
             "prefix": "monster idle",
             "indices": [],
             "fps": 24,
@@ -67,6 +68,10 @@
     ],
     "missList": [],
     "name": "monster",
+    "flip": {
+        "x": false,
+        "y": false
+    },
     "scale": {
         "x": 1,
         "y": 1
