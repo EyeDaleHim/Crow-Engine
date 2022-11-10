@@ -1214,6 +1214,9 @@ class PlayState extends MusicBeatState
 
 				scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 				scoreText.screenCenter(X);
+
+				reductionRate = Math.max(1, reductionRate - FlxG.elapsed * 0.05);
+				trace(reductionRate);
 			}
 		}
 		else
@@ -1240,6 +1243,8 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	public var reductionRate:Float = 1.0;
+
 	public function noteMiss(note:Note)
 	{
 		if (!note.wasGoodHit)
@@ -1254,7 +1259,7 @@ class PlayState extends MusicBeatState
 			gameInfo.misses++;
 			gameInfo.playerHitMods++;
 
-			gameInfo.health -= FlxMath.remapToRange(2, 0, 100, 0, 2);
+			gameInfo.health -= FlxMath.remapToRange(2, 0, 100, 0, 2) * reductionRate;
 
 			var lastCombo = gameInfo.combo;
 
@@ -1266,6 +1271,9 @@ class PlayState extends MusicBeatState
 			gameInfo.score -= 25;
 
 			killNote(note);
+
+			reductionRate += reductionRate * 0.1;
+			trace(reductionRate);
 		}
 
 		scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
