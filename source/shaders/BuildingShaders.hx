@@ -113,7 +113,7 @@ class BuildingShader extends FlxGraphicsShader
 				sum -= alphaShit;
 			}
             
-            gl_FragColor = (sum * 0.85) + color;
+            gl_FragColor = color + (sum * 0.85);
 		}')
 	@:glVertexSource('
 		attribute float openfl_Alpha;
