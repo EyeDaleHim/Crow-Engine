@@ -15,9 +15,10 @@ class Player extends objects.character.Character
 			else
 				_animationTimer = 0;
 
-			if (missList.contains(animation.curAnim.name) && animation.curAnim.finished)
+			if (missList.contains(animation.curAnim.name))
 			{
-				playAnim(idleList[_idleIndex], true, false, 10);
+				if (_animationTimer >= 0.35)
+					playAnim(idleList[_idleIndex], true, false, 10);
 			}
 		}
 

@@ -509,6 +509,8 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
+		stageData.update(elapsed);
+
 		if (iconP1 != null)
 		{
 			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - _iconP1Offset;
@@ -636,17 +638,20 @@ class PlayState extends MusicBeatState
 
 		var sect:Int = Math.floor(curBeat / 4);
 
-		if (curBeat % Math.floor(Song.currentSong.sectionList[sect].length / 4) == 0)
+		if (Song.currentSong.sectionList[sect] != null)
 		{
-			if (Song.currentSong.mustHitSections[sect] != null)
+			if (curBeat % Math.floor(Song.currentSong.sectionList[sect].length / 4) == 0)
 			{
-				var newPos:FlxPoint = FlxPoint.get();
-				Tools.transformSimplePoint(newPos,
-					(Song.currentSong.mustHitSections[sect] ? stageData.camPosList.playerPositions[0] : stageData.camPosList.opponentPositions[0]));
+				if (Song.currentSong.mustHitSections[sect] != null)
+				{
+					var newPos:FlxPoint = FlxPoint.get();
+					Tools.transformSimplePoint(newPos,
+						(Song.currentSong.mustHitSections[sect] ? stageData.camPosList.playerPositions[0] : stageData.camPosList.opponentPositions[0]));
 
-				var midPoint:FlxPoint = (Song.currentSong.mustHitSections[sect] ? player : opponent).getMidpoint();
+					var midPoint:FlxPoint = (Song.currentSong.mustHitSections[sect] ? player : opponent).getMidpoint();
 
-				camFollow.set(midPoint.x + newPos.x, midPoint.y + newPos.y);
+					camFollow.set(midPoint.x + newPos.x, midPoint.y + newPos.y);
+				}
 			}
 		}
 
@@ -1276,7 +1281,7 @@ class PlayState extends MusicBeatState
 
 			killNote(note);
 
-			reductionRate += FlxMath.roundDecimal(Math.min(reductionRate * 0.1, 0.5), 2);
+			reductionRate += FlxMath.roundDecimal(Math.min(reductionRate * 0.1, 0.5), 2) * (note.isSustainNote ? 0.25 : 1.0);
 		}
 
 		scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';

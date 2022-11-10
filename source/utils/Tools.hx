@@ -88,6 +88,26 @@ class Tools
 		return convertedValue;
 	}
 
+	public static function utcToDate(time:Int, format:String):String
+	{
+		var date:Date = (time == 0 ? Date.now() : Date.fromTime(time));
+
+		var dateMapping:Map<String, Int> = [
+			'yyyy' => date.getFullYear(),
+			'mm' => date.getMonth() + 1,
+			'dd' => date.getDay() + 1
+		];
+
+		var returnedFormat:String = format;
+
+		for (dateMap in dateMapping.keys())
+		{
+			returnedFormat = returnedFormat.replace(dateMap, Std.string(dateMapping[dateMap]));
+		}
+
+		return returnedFormat;
+	}
+
 	public static function translateToMargin(object:FlxObject, margin:ScreenMargin, axes:FlxAxes = XY):FlxObject
 	{
 		if (axes.match(X | XY))

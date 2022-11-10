@@ -1,6 +1,7 @@
 package objects;
 
 // temporary file to easily create stages
+import shaders.BuildingShaders;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -104,6 +105,46 @@ class Stage
 					stageInstance.attributes.set('strikeBeat', 0);
 					stageInstance.attributes.set('lightningOffset', 8);
 				}
+			case 'philly':
+				{
+					stageInstance.charPosList.playerPositions = [{x: 770, y: 480}];
+					stageInstance.charPosList.spectatorPositions = [{x: 430, y: 150}];
+					stageInstance.charPosList.opponentPositions = [{x: 100, y: 420}];
+
+					stageInstance.camPosList.opponentPositions = [{x: 230, y: -100}];
+					stageInstance.camPosList.playerPositions = [{x: -150, y: -100}];
+
+					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week3'}, {x: -100, y: -90}, {x: 0.1, y: 0.1});
+					sky.ID = 0;
+					group.set('sky', sky);
+
+					var city:BGSprite = new BGSprite({path: 'city', library: 'week3'}, {x: -10, y: 0}, {x: 0.3, y: 0.3});
+					city.scale.set(0.85, 0.85);
+					city.updateHitbox();
+					city.ID = 1;
+					group.set('city', city);
+
+					var window:BGSprite = new BGSprite({path: 'window', library: 'week3'}, {x: -10, y: 0}, {x: 0.3, y: 0.3});
+					window.scale.set(0.85, 0.85);
+					window.updateHitbox();
+					window.ID = 2;
+					group.set('window', window);
+
+					var shader:shaders.BuildingShaders = new shaders.BuildingShaders();
+					window.shader = shader.shader;
+					stageInstance.attributes.set('lightShader', shader);
+
+					var trainPole:BGSprite = new BGSprite({path: 'behindTrain', library: 'week3'}, {x: -40, y: 50}, {x: 0.95, y: 0.95});
+					trainPole.ID = 3;
+					group.set('trainPole', trainPole);
+
+					var street:BGSprite = new BGSprite({path: 'street', library: 'week3'}, {x: -40, y: 50}, {x: 0.95, y: 0.95});
+					street.ID = 4;
+					group.set('street', street);
+
+					stageInstance.attributes.set('windowLights', [0xFF31A2FD, 0xFF31FD8C, 0xFFFB33F5, 0xFFFD4531, 0xFFFBA633]);
+					group['window'].color = FlxG.random.getObject(stageInstance.attributes['windowLights']);
+				}
 			default:
 				{
 					stageInstance.defaultZoom = 0.90;
@@ -142,7 +183,9 @@ class Stage
 		switch (name)
 		{
 			case 'philly':
-				{}
+				{
+					attributes['lightShader'].update(1.5 * (Conductor.crochet / 1000) * elapsed);
+				}
 		}
 	}
 
@@ -180,6 +223,14 @@ class Stage
 
 						attributes['strikeBeat'] = beat;
 						attributes['lightningOffset'] = FlxG.random.int(8, 24);
+					}
+				}
+			case 'philly':
+				{
+					if (beat % 4 == 0)
+					{
+						attributes['lightShader'].reset();
+						spriteGroup['window'].color = FlxG.random.getObject(attributes['windowLights']);
 					}
 				}
 		}
