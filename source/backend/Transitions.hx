@@ -60,6 +60,42 @@ class Transitions
 						}
 					});
 				}
+			case Slider_Up:
+				{
+					var gradient:FlxSprite = FlxGradient.createGradientFlxSprite(FlxG.width, 200, [FlxColor.BLACK, 0x0]);
+					gradient.flipY = (fade == In);
+					group.add(gradient);
+
+					var black:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, Std.int(FlxG.height * 1.2), FlxColor.BLACK);
+					group.add(black);
+
+					gradient.y = FlxG.height;
+					black.y = (gradient.y + gradient.height) - 50;
+
+					FlxTween.tween(gradient, {y: -gradient.height - 50}, duration, {
+						ease: ease,
+						onStart: function(twn:FlxTween)
+						{
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
+						},
+						onUpdate: function(twn:FlxTween)
+						{
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
+
+							if (fade == Out)
+								black.y = gradient.y - black.height;
+							else
+								black.y = (gradient.y + gradient.height) - 50;
+						},
+						onComplete: function(twn:FlxTween)
+						{
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
+						}
+					});
+				}
 			case Slider_Down:
 				{
 					var gradient:FlxSprite = FlxGradient.createGradientFlxSprite(FlxG.width, 200, [FlxColor.BLACK, 0x0]);
