@@ -86,7 +86,7 @@ class CurrentGame
 	public var accuracy(get, never):Float;
 
 	public var maxHealth:Float = 2.0;
-	public var health:Float = 1.0;
+	public var health(default, set):Float = 1.0;
 
 	public var judgements:Array<{judge:String, diff:Float}> = [
 		{judge: 'sick', diff: 45},
@@ -113,6 +113,11 @@ class CurrentGame
 	function get_accuracy():Float
 	{
 		return Math.isNaN(playerHits / playerHitMods) ? 0.0 : playerHits / playerHitMods;
+	}
+
+	function set_health(v:Float):Float
+	{
+		return Math.isNaN(v) ? (health = 1) : health = FlxMath.bound(v, 0, maxHealth);
 	}
 }
 
@@ -1215,8 +1220,7 @@ class PlayState extends MusicBeatState
 				scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 				scoreText.screenCenter(X);
 
-				reductionRate = Math.max(1, reductionRate - FlxG.elapsed * 0.05);
-				trace(reductionRate);
+				reductionRate = Math.max(1, reductionRate - (0.75 * FlxMath.bound(gameInfo.combo / 10, 0.1, 80)));
 			}
 		}
 		else
@@ -1272,8 +1276,7 @@ class PlayState extends MusicBeatState
 
 			killNote(note);
 
-			reductionRate += reductionRate * 0.1;
-			trace(reductionRate);
+			reductionRate += FlxMath.roundDecimal(Math.min(reductionRate * 0.1, 0.5), 2);
 		}
 
 		scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
