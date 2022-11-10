@@ -54,12 +54,15 @@ class ChartConvert
 						song: baseJSON.song.song,
 						sectionList: [],
 						mustHitSections: [],
+						bpmMapping: [],
 						bpm: baseJSON.song.bpm,
 						speed: baseJSON.song.speed,
 						player: baseJSON.song.player1,
 						opponent: baseJSON.song.player2,
 						spectator: 'gf'
 					}
+
+					var totalSteps:Int = 0;
 
 					for (section in baseJSON.song.notes)
 					{
@@ -68,6 +71,14 @@ class ChartConvert
 						convertedData.sectionList[index] = {notes: [], length: 16};
 						convertedData.sectionList[index].length = section.lengthInSteps;
 						convertedData.mustHitSections[index] = section.mustHitSection;
+
+						var deltaSteps:Int = section.lengthInSteps;
+						totalSteps += deltaSteps;
+
+						if (section.changeBPM && section.bpm != convertedData.bpm)
+						{
+							convertedData.bpmMapping.push({step: totalSteps, bpm: section.bpm});
+						}
 
 						for (notes in section.sectionNotes)
 						{

@@ -74,13 +74,13 @@ class MusicBeatState extends FlxUIState
 			songTime: 0,
 			bpm: 0
 		}
-		/*for (i in 0...Conductor.bpmChangeMap.length)
-			{
-				if (Conductor.songPosition >= Conductor.bpmChangeMap[i].songTime)
-					lastChange = Conductor.bpmChangeMap[i];
-		}*/
+		for (i in 0...Conductor.bpmChangeMap.length)
+		{
+			if (Conductor.songPosition >= Conductor.bpmChangeMap[i].songTime)
+				lastChange = Conductor.bpmChangeMap[i];
+		}
 
-		curStep = /*lastChange.stepTime +*/ Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
+		curStep = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
 	}
 
 	private static var _finishedFade:Bool = false;

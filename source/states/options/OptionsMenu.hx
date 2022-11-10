@@ -15,13 +15,14 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.input.keyboard.FlxKey;
 import states.options.DescriptionHolder;
-import states.options.OptionsCategoryType;
 import objects.Alphabet;
 
+using StringTools;
+using utils.Tools;
+
+// god this code is so horrible
 class OptionsMenu extends MusicBeatState
 {
-	public var onSwitch:FlxTypedSignal<OptionsCategoryType->Void> = new FlxTypedSignal<OptionsCategoryType->Void>();
-
 	private var mainCategory:Array<CategoryInfo> = [
 		{name: 'gameplay', description: 'Change the overall gameplay of your game.'},
 		{name: 'graphics', description: 'Change the game\'s appearance.'},
@@ -40,7 +41,6 @@ class OptionsMenu extends MusicBeatState
 
 	public var globalGroupManager:FlxTypedGroup<FlxObject>;
 
-	public var category:OptionsCategoryType;
 	public var categoryID:Int = -1;
 
 	public var curSelected:Array<Null<Int>> = [];
@@ -51,12 +51,28 @@ class OptionsMenu extends MusicBeatState
 		background.scrollFactor.set();
 		add(background);
 
+		dimmer = new FlxSprite().makeGraphic(FlxG.width, Std.int(FlxG.height * 0.9), FlxColor.BLACK);
+		dimmer.scrollFactor.set();
+		dimmer.screenCenter();
+		dimmer.alpha = 0.3;
+		add(dimmer);
+
 		description = new DescriptionHolder();
 		description.text = 'test test boogie boogie';
 
 		globalGroupManager = new FlxTypedGroup<FlxObject>();
 
+		categoryTitle = new FlxSprite(0, 100);
+		categoryTitle.frames = Paths.getSparrowAtlas('menus/mainmenu/menu_options');
+
+		categoryTitle.animation.addByPrefix('selected', 'options white', 12);
+		categoryTitle.animation.play('selected');
+		categoryTitle.scale.set(0.8, 0.8);
+		categoryTitle.updateHitbox();
+		categoryTitle.screenCenter(X);
+
 		add(globalGroupManager);
+		add(categoryTitle);
 		add(description);
 
 		createCategory();
@@ -67,6 +83,7 @@ class OptionsMenu extends MusicBeatState
 
 	public function createCategory(id:Int = -1)
 	{
+		categoryID = id;
 		globalGroupManager.clear();
 
 		if (id == -1)
@@ -76,12 +93,81 @@ class OptionsMenu extends MusicBeatState
 				var category = mainCategory[i];
 
 				var categoryText:Alphabet = new Alphabet(0, 0, category.name, true);
-				categoryText.y = 350 + ((categoryText.height + 20) * i);
+				categoryText.y = 250 + ((categoryText.height + 20) * i);
 				categoryText.screenCenter(X);
 				categoryText.scrollFactor.set();
 				categoryText.attributes.set('description', category.description);
 				categoryText.ID = i;
 				globalGroupManager.add(categoryText);
+			}
+		}
+		else
+		{
+			switch (categoryID)
+			{
+				case 0 | 1:
+					{
+						var listedGroup:Array<
+							{
+								name:String,
+								description:String,
+								saveHolder:String,
+								type:Int
+							}> = [];
+
+						if (id == 0)
+						{
+							listedGroup.push({
+								name: 'Downscroll',
+								description: 'Where should the notes go vertically',
+								saveHolder: 'downscroll',
+								type: 0
+							});
+							listedGroup.push({
+								name: 'Ghost Tap',
+								description: 'Allow making inputs that is not called for while playing a song',
+								saveHolder: 'ghost_tap',
+								type: 0
+							});
+							listedGroup.push({
+								name: 'Camera Zooming',
+								description: 'If the camera should zoom in a little every four section',
+								saveHolder: 'camZoom',
+								type: 0
+							});
+						}
+						else
+						{
+							listedGroup.push({
+								name: 'Frame Rate',
+								description: 'How many frames should the game run at',
+								saveHolder: 'frameRate',
+								type: 1
+							});
+							listedGroup.push({
+								name: 'Antialiasing',
+								description: 'Removes jagged edges of the game for an improved quality',
+								saveHolder: 'antialiasing',
+								type: 0
+							});
+							listedGroup.push({
+								name: 'Flashing Lights',
+								description: 'Whether flashing lights should be on or off for photosensitive players',
+								saveHolder: 'flashing_lights',
+								type: 0
+							});
+						}
+
+						for (member in listedGroup)
+						{
+							var i:Int = listedGroup.indexOf(member);
+
+							var spriteMember:OptionsSprite = new OptionsSprite(member.name, member.saveHolder, member.description, member.type);
+							spriteMember.ID = i;
+							spriteMember.setPosition(40, dimmer.y + 80 + ((spriteMember.height + 10) * i));
+							globalGroupManager.add(spriteMember);
+						}
+					}
 			}
 		}
 	}
@@ -116,11 +202,11 @@ class OptionsMenu extends MusicBeatState
 
 			switch (categoryID)
 			{
-				case -1:
+				case -1 | 0 | 1:
 					{
 						for (category in globalGroupManager.members)
 						{
-							if (category.ID != curSelected[0])
+							if (category.ID != curSelected[categoryID + 1])
 							{
 								if (FlxG.mouse.overlaps(category))
 								{
@@ -129,21 +215,31 @@ class OptionsMenu extends MusicBeatState
 								}
 							}
 						}
+
+						if (categoryID == 0 || categoryID == 1)
+						{
+							if (!FlxG.mouse.overlaps(globalGroupManager.members[curSelected[categoryID + 1]]))
+								cast(globalGroupManager.members[curSelected[categoryID + 1]], OptionsSprite).isSelected = false;
+						}
 					}
 			}
 		}
+
+		var currentObj:FlxObject = globalGroupManager.members[curSelected[categoryID + 1]];
 
 		if (controls.getKey('BACK', JUST_PRESSED))
 		{
 			if (categoryID == -1)
 				MusicBeatState.switchState(new states.menus.MainMenuState());
+			else
+			{
+				createCategory(-1);
+				changeSelection(0, [], false);
+
+				categoryTitle.visible = true;
+			}
 		}
-		else if (controls.getKey('ACCEPT', JUST_PRESSED))
-		{
-			if (categoryID == -1)
-				trace("Pressed Enter"); // I Put This Here To Prevent Errors.
-		}
-		else
+		else if (controls.getKey('ACCEPT', JUST_PRESSED) || (FlxG.mouse.justPressed && FlxG.mouse.overlaps(currentObj)))
 		{
 			@:privateAccess
 			{
@@ -151,15 +247,44 @@ class OptionsMenu extends MusicBeatState
 				{
 					case -1:
 						{
-							if (controls.getKey('UI_UP', JUST_PRESSED))
+							categoryTitle.visible = false;
+							createCategory(curSelected[0]);
+
+							description._controlledAlpha = 0.0;
+							description.targetAlpha = 0.0;
+						}
+					case 0 | 1:
+						{
+							var optionsSprite:OptionsSprite = cast(currentObj, OptionsSprite);
+
+							switch (optionsSprite.__type)
 							{
-								changeSelection(-1, controls.LIST_CONTROLS['UI_DOWN'].__keys);
-							}
-							else if (controls.getKey('UI_DOWN', JUST_PRESSED))
-							{
-								changeSelection(1, controls.LIST_CONTROLS['UI_DOWN'].__keys);
+								case 0:
+									{
+										optionsSprite.onChange(!optionsSprite._isAccepted);
+									}
 							}
 						}
+				}
+			}
+		}
+		else
+		{
+			@:privateAccess
+			{
+				if (controls.getKey('UI_UP', JUST_PRESSED))
+				{
+					changeSelection(-1, controls.LIST_CONTROLS['UI_DOWN'].__keys);
+				}
+				else if (controls.getKey('UI_DOWN', JUST_PRESSED))
+				{
+					changeSelection(1, controls.LIST_CONTROLS['UI_DOWN'].__keys);
+				}
+
+				switch (categoryID)
+				{
+					case 2:
+						{}
 				}
 			}
 		}
@@ -222,7 +347,23 @@ class OptionsMenu extends MusicBeatState
 					}
 				}
 			case 0 | 1:
-				{}
+				{
+					for (text in globalGroupManager.members)
+					{
+						var textObj:OptionsSprite = cast(text, OptionsSprite);
+
+						if (textObj.isSelected = ((mouse && FlxG.mouse.overlaps(textObj)) || (!mouse && textObj.ID == curSelection)))
+						{
+							description.text = textObj.description;
+
+							if (!mouse)
+							{
+								manualLerpPoint.set(textObj.x + 100, textObj.y + textObj.height + 10);
+								_lerpTarget = 1;
+							}
+						}
+					}
+				}
 			case 2:
 				{}
 			case 3:
@@ -266,7 +407,10 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	public var saveHolder:String = '';
 	public var description:String = '';
 
+	public var isSelected:Bool = false;
+
 	private var _background:FlxSprite;
+	private var _selectionBG:FlxSprite;
 	private var _nameSprite:FlxText;
 
 	// bool
@@ -280,9 +424,86 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 
 	private var __type:Int = -1;
 
-	override function new(name:String, saveHolder:String, description:String)
+	override function new(name:String, saveHolder:String, description:String, type:Int = -1)
 	{
 		super();
+
+		this.name = name;
+		this.saveHolder = saveHolder;
+		this.description = description;
+		__type = type;
+
+		_background = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.6), 90, FlxColor.BLACK);
+		_background.scrollFactor.set();
+		_background.alpha = 0.3;
+
+		_selectionBG = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.6), 90, FlxColor.WHITE);
+		_selectionBG.scrollFactor.set();
+		_selectionBG.alpha = 0.0;
+
+		_nameSprite = new FlxText(20, 0, 0, name, 26);
+		_nameSprite.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+		_nameSprite.borderSize = 1.75;
+		_nameSprite.centerOverlay(_background, Y);
+
+		add(_background);
+		add(_selectionBG);
+		add(_nameSprite);
+
+		switch (__type)
+		{
+			case 0:
+				{
+					_isAccepted = Settings.getPref(saveHolder, false);
+
+					_statsText = new FlxText(0, 0, 0, (_isAccepted ? 'ON' : 'OFF'), 20);
+					_statsText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+					_statsText.centerOverlay(_background, Y);
+					_statsText.x = _background.x + _background.width - _statsText.width - 20;
+					add(_statsText);
+				}
+		}
+	}
+
+	private var _offsetReset:Float = 0.0;
+
+	override function update(elapsed:Float)
+	{
+		if ((_offsetReset += elapsed) > 1 / 6)
+			offset.set(0, 0);
+
+		if (isSelected)
+			_selectionBG.alpha = 0.2;
+		else
+			_selectionBG.alpha = 0.0;
+	}
+
+	public function onChange(Value:Dynamic)
+	{
+		var acceptedOffset:Bool = false;
+
+		switch (__type)
+		{
+			case 0:
+				{
+					_isAccepted = Value;
+
+					_statsText.text = _isAccepted ? 'ON' : 'OFF';
+					_statsText.x = _background.x + _background.width - _statsText.width - 20;
+
+					Settings.setPref(saveHolder, _isAccepted);
+
+					acceptedOffset = true;
+				}
+			case 1:
+				{}
+		}
+
+		if (acceptedOffset)
+		{
+			_offsetReset = 0.0;
+			offset.set(0, -8);
+		}
 	}
 }
 

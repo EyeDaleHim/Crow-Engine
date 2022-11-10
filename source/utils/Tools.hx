@@ -6,6 +6,7 @@ import flixel.FlxObject;
 import flixel.util.FlxAxes;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
+import sys.FileSystem;
 
 using StringTools;
 

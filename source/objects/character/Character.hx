@@ -148,6 +148,8 @@ class Character extends FlxSprite
 			}
 		}
 
+		forceIdle = false;
+
 		for (script in scripts)
 		{
 			script.executeFunction("dance", []);

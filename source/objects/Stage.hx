@@ -50,8 +50,8 @@ class Stage
 		}
 
 		stageInstance.charPosList.playerPositions = [{x: 770, y: 400}];
-		stageInstance.charPosList.spectatorPositions = [{x: 400, y: 130}];
-		stageInstance.charPosList.opponentPositions = [{x: 100, y: 0}];
+		stageInstance.charPosList.spectatorPositions = [{x: 400, y: 100}];
+		stageInstance.charPosList.opponentPositions = [{x: 100, y: 20}];
 
 		stageInstance.camPosList.playerPositions = [{x: -100, y: -100}];
 		stageInstance.camPosList.spectatorPositions = [{x: 0, y: -50}];
@@ -137,7 +137,14 @@ class Stage
 		return stageInstance;
 	}
 
-	public function update(stage:Stage, elapsed:Float) {}
+	public function update(elapsed:Float)
+	{
+		switch (name)
+		{
+			case 'philly':
+				{}
+		}
+	}
 
 	public function beatHit(beat:Int)
 	{
@@ -178,7 +185,14 @@ class Stage
 		}
 	}
 
-	public function countdownTick(stage:Stage) {}
+	public function countdownTick()
+	{
+		switch (name)
+		{
+			case 'mall':
+				{}
+		}
+	}
 }
 
 class BGSprite extends FlxSprite

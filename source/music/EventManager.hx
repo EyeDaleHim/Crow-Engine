@@ -65,8 +65,7 @@ class EventManager
 					if (character != null)
 					{
 						character.playAnim(event.arguments[1], true);
-						@:privateAccess
-						character._animationTimer = 0.0;
+						character.forceIdle = true;
 					}
 				}
 			case 'Change Stage':

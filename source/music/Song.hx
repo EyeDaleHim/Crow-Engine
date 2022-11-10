@@ -52,6 +52,7 @@ class Song
 			],
 			speed: 1.0,
 			mustHitSections: [],
+			bpmMapping: [],
 			bpm: 100,
 			player: 'bf',
 			opponent: 'dad',
@@ -65,6 +66,7 @@ typedef SongInfo =
 	var song:String;
 	var sectionList:Array<SectionInfo>;
 	var mustHitSections:Array<Null<Bool>>;
+	var bpmMapping:Array<{step:Int, bpm:Float}>;
 	var bpm:Float;
 	var speed:Float;
 

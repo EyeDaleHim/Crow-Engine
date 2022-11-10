@@ -1,5 +1,6 @@
 package states.options;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.math.FlxMath;
@@ -34,17 +35,8 @@ class DescriptionHolder extends FlxTypedSpriteGroup<FlxSprite>
 
 	override function update(elapsed:Float)
 	{
-		var lerpValue:Float = elapsed * 1.375;
-
-		if (Math.abs(targetAlpha - _controlledAlpha) > 1 / 90)
-		{
-			if (targetAlpha > _controlledAlpha)
-				_controlledAlpha = FlxMath.bound(_controlledAlpha + lerpValue, 0, targetAlpha);
-			else
-				_controlledAlpha = FlxMath.bound(_controlledAlpha - lerpValue, 0, targetAlpha);
-		}
-		else
-			targetAlpha = _controlledAlpha;
+		_controlledAlpha += (elapsed * 1.175) * (targetAlpha > _controlledAlpha ? 1 : -1);
+		_controlledAlpha = FlxMath.bound(_controlledAlpha, 0, 1);
 
 		if (_background != null)
 			_background.alpha = FlxEase.quadOut(_controlledAlpha);

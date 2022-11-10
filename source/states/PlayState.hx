@@ -268,6 +268,7 @@ class PlayState extends MusicBeatState
 		}
 
 		vocals = new FlxSound();
+		vocals.looped = false;
 		FlxG.sound.list.add(vocals);
 
 		var stageName:String = 'stage';
@@ -565,7 +566,7 @@ class PlayState extends MusicBeatState
 
 			var playerAnim = player.animation.curAnim;
 
-			if ((player._animationTimer > 0.004 * Conductor.stepCrochet)
+			if ((player._animationTimer > 0.011 * (2.5 * Conductor.stepCrochet))
 				&& !currentKeys.contains(true)
 				&& player.idleList.contains(playerAnim.name)
 				&& !player.missList.contains(playerAnim.name))
@@ -615,8 +616,11 @@ class PlayState extends MusicBeatState
 		}
 
 		// meh, hard-coded, i don't have an actual event system yet thing
-		if (curBeat % 4 == 0)
-			events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Camera Beat', arguments: ['world&spl-0.03', 'hud&spl-0.015']});
+		if (Settings.getPref('camZoom', true))
+		{
+			if (curBeat % 4 == 0)
+				events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Camera Beat', arguments: ['world&spl-0.03', 'hud&spl-0.015']});
+		}
 
 		switch (songName.replace(' ', '-').toLowerCase())
 		{
@@ -677,6 +681,11 @@ class PlayState extends MusicBeatState
 		songDiffText = SongHandler.PLACEHOLDER_DIFF[PlayState.songDiff];
 
 		Conductor.changeBPM(Song.currentSong.bpm);
+
+		attributes.set('startedCrochet', Conductor.stepCrochet);
+
+		Conductor.mapBPMChanges(Song.currentSong);
+
 		songSpeed = FlxMath.roundDecimal(Song.currentSong.speed, 2);
 
 		events = new EventManager();
@@ -826,6 +835,8 @@ class PlayState extends MusicBeatState
 
 	public function endSong()
 	{
+		gameEnded = true;
+
 		ScoreContainer.setSong(songName.replace(' ', '-').toLowerCase(), songDiff,
 			{score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
 
@@ -965,6 +976,7 @@ class PlayState extends MusicBeatState
 			if (strum != null && strum.animation.curAnim.name != strum.confirmAnim)
 			{
 				strum.playAnim(strum.pressAnim);
+				strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
 			}
 		}
 	}
@@ -978,6 +990,7 @@ class PlayState extends MusicBeatState
 			if (strum != null)
 			{
 				strum.playAnim(strum.staticAnim);
+				strum.animationTime = 0.0;
 			}
 			currentKeys[direction] = false;
 		}
@@ -1060,7 +1073,7 @@ class PlayState extends MusicBeatState
 					{
 						if (!note.isEndNote)
 						{
-							note.scale.y = 1 * Conductor.stepCrochet / 100 * 1.05;
+							note.scale.y = 1 * attributes['startedCrochet'] / 100 * 1.05;
 							note.scale.y *= songSpeed;
 							note.updateHitbox();
 						}
@@ -1085,10 +1098,15 @@ class PlayState extends MusicBeatState
 
 				if (note.isSustainNote)
 				{
+					// temporary fix because monster dies
+					var _lastNote:Note = note._lastNote;
+					if (_lastNote == null)
+						_lastNote = note;
+
 					if (Settings.getPref('downscroll', false))
 					{
 						if (note.y - note.offset.y * note.scale.y + note.height >= center
-							&& (!note.mustPress || (note.wasGoodHit || (note._lastNote.wasGoodHit && !note.canBeHit))))
+							&& (!note.mustPress || (note.wasGoodHit || (_lastNote.wasGoodHit && !note.canBeHit))))
 						{
 							var swagRect = new FlxRect(0, 0, note.frameWidth, note.frameHeight);
 							swagRect.height = (center - note.y) / note.scale.y;
@@ -1100,7 +1118,7 @@ class PlayState extends MusicBeatState
 					else
 					{
 						if (note.y + note.offset.y * note.scale.y <= center
-							&& (!note.mustPress || (note.wasGoodHit || (note._lastNote.wasGoodHit && !note.canBeHit))))
+							&& (!note.mustPress || (note.wasGoodHit || (_lastNote.wasGoodHit && !note.canBeHit))))
 						{
 							var swagRect = new FlxRect(0, 0, note.width / note.scale.x, note.height / note.scale.y);
 							swagRect.y = (center - note.y) / note.scale.y;
@@ -1139,12 +1157,6 @@ class PlayState extends MusicBeatState
 				}
 			});
 		}
-
-		opponentStrums.forEach(function(strum:StrumNote)
-		{
-			if (strum != null && strum.animation.finished)
-				strum.playAnim(strum.staticAnim);
-		});
 	}
 
 	public function hitNote(note:Note, isOpponent:Bool = false)
@@ -1174,7 +1186,8 @@ class PlayState extends MusicBeatState
 				var strum:StrumNote = playerStrums.members[note.direction];
 				if (strum != null)
 				{
-					strum.playAnim(strum.confirmAnim);
+					strum.playAnim(strum.confirmAnim, true);
+					strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
 				}
 
 				note.wasGoodHit = true;
@@ -1215,6 +1228,7 @@ class PlayState extends MusicBeatState
 			if (strum != null)
 			{
 				strum.playAnim(strum.confirmAnim);
+				strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
 			}
 
 			if (!note.isSustainNote)
