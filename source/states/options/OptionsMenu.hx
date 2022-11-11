@@ -119,19 +119,19 @@ class OptionsMenu extends MusicBeatState
 						{
 							listedGroup.push({
 								name: 'Downscroll',
-								description: 'Where should the notes go vertically',
+								description: 'If enabled, the notes will scroll downwards.',
 								saveHolder: 'downscroll',
 								type: 0
 							});
 							listedGroup.push({
 								name: 'Ghost Tap',
-								description: 'Allow making inputs that is not called for while playing a song',
+								description: 'Allows you to make inputs that are not called for while playing a song.',
 								saveHolder: 'ghost_tap',
 								type: 0
 							});
 							listedGroup.push({
 								name: 'Camera Zooming',
-								description: 'If the camera should zoom in a little every four section',
+								description: 'If the camera should zoom in a little every four sections.',
 								saveHolder: 'camZoom',
 								type: 0
 							});
@@ -140,19 +140,19 @@ class OptionsMenu extends MusicBeatState
 						{
 							listedGroup.push({
 								name: 'Frame Rate',
-								description: 'How many frames should the game run at',
+								description: 'How many frames should the game run at.',
 								saveHolder: 'frameRate',
 								type: 1
 							});
 							listedGroup.push({
 								name: 'Antialiasing',
-								description: 'Removes jagged edges of the game for an improved quality',
+								description: 'Removes jagged edges of the game for an improved quality.',
 								saveHolder: 'antialiasing',
 								type: 0
 							});
 							listedGroup.push({
 								name: 'Flashing Lights',
-								description: 'Whether flashing lights should be on or off for photosensitive players',
+								description: 'Whether flashing lights should be on or off for photosensitive players.',
 								saveHolder: 'flashing_lights',
 								type: 0
 							});
