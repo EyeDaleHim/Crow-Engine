@@ -112,6 +112,7 @@ class OptionsMenu extends MusicBeatState
 								name:String,
 								description:String,
 								saveHolder:String,
+								defaultValue:Dynamic,
 								type:Int
 							}> = [];
 
@@ -121,18 +122,21 @@ class OptionsMenu extends MusicBeatState
 								name: 'Downscroll',
 								description: 'If enabled, the notes will scroll downwards.',
 								saveHolder: 'downscroll',
+								defaultValue: false,
 								type: 0
 							});
 							listedGroup.push({
 								name: 'Ghost Tap',
 								description: 'Allows you to make inputs that are not called for while playing a song.',
 								saveHolder: 'ghost_tap',
+								defaultValue: true,
 								type: 0
 							});
 							listedGroup.push({
 								name: 'Camera Zooming',
 								description: 'If the camera should zoom in a little every four sections.',
 								saveHolder: 'camZoom',
+								defaultValue: true,
 								type: 0
 							});
 						}
@@ -142,18 +146,21 @@ class OptionsMenu extends MusicBeatState
 								name: 'Frame Rate',
 								description: 'How many frames should the game run at.',
 								saveHolder: 'frameRate',
+								defaultValue: 60,
 								type: 1
 							});
 							listedGroup.push({
 								name: 'Antialiasing',
 								description: 'Removes jagged edges of the game for an improved quality.',
 								saveHolder: 'antialiasing',
+								defaultValue: true,
 								type: 0
 							});
 							listedGroup.push({
 								name: 'Flashing Lights',
 								description: 'Whether flashing lights should be on or off for photosensitive players.',
 								saveHolder: 'flashing_lights',
+								defaultValue: false,
 								type: 0
 							});
 						}
@@ -162,7 +169,8 @@ class OptionsMenu extends MusicBeatState
 						{
 							var i:Int = listedGroup.indexOf(member);
 
-							var spriteMember:OptionsSprite = new OptionsSprite(member.name, member.saveHolder, member.description, member.type);
+							var spriteMember:OptionsSprite = new OptionsSprite(member.name, member.saveHolder, member.description, member.defaultValue,
+								member.type);
 							spriteMember.ID = i;
 							spriteMember.setPosition(40, dimmer.y + 80 + ((spriteMember.height + 10) * i));
 							globalGroupManager.add(spriteMember);
@@ -424,7 +432,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 
 	private var __type:Int = -1;
 
-	override function new(name:String, saveHolder:String, description:String, type:Int = -1)
+	override function new(name:String, saveHolder:String, description:String, defaultValue:Dynamic, type:Int = -1)
 	{
 		super();
 
@@ -454,7 +462,9 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		{
 			case 0:
 				{
-					_isAccepted = Settings.getPref(saveHolder, false);
+					_isAccepted = Settings.getPref(saveHolder, null);
+					if (!Settings.prefExists(saveHolder))
+						_isAccepted = defaultValue;
 
 					_statsText = new FlxText(0, 0, 0, (_isAccepted ? 'ON' : 'OFF'), 20);
 					_statsText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);

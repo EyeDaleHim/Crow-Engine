@@ -4,6 +4,8 @@ using StringTools;
 
 class Player extends objects.character.Character
 {
+	public var stunnedTimer:Float = 0.0;
+
 	override function update(elapsed:Float)
 	{
 		if (animation.curAnim != null)
@@ -21,6 +23,11 @@ class Player extends objects.character.Character
 					playAnim(idleList[_idleIndex], true, false, 10);
 			}
 		}
+
+		if (stunnedTimer >= 0.0)
+			stunnedTimer -= elapsed;
+		else
+			stunnedTimer = 0.0;
 
 		super.update(elapsed);
 	}

@@ -111,19 +111,23 @@ class PauseSubState extends MusicBeatSubState
 			return;
 		}
 
-		if (controls.getKey('ACCEPT', JUST_PRESSED))
-		{
-			persistentUpdate = false;
-
-			if (selectionList[curSelected].callback != null)
-				selectionList[curSelected].callback();
-		}
+		if (FlxG.keys.justPressed.SEVEN) {}
 		else
 		{
-			if (controls.getKey('UI_UP', JUST_PRESSED))
-				changeSelection(-1);
-			else if (controls.getKey('UI_DOWN', JUST_PRESSED))
-				changeSelection(1);
+			if (controls.getKey('ACCEPT', JUST_PRESSED))
+			{
+				persistentUpdate = false;
+
+				if (selectionList[curSelected].callback != null)
+					selectionList[curSelected].callback();
+			}
+			else
+			{
+				if (controls.getKey('UI_UP', JUST_PRESSED))
+					changeSelection(-1);
+				else if (controls.getKey('UI_DOWN', JUST_PRESSED))
+					changeSelection(1);
+			}
 		}
 
 		// leave debug key editors in here, not playstate
