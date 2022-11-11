@@ -31,6 +31,11 @@ class Settings
 		return !prefs.exists(name) ? defaultPref : prefs.get(name);
 	}
 
+	public static function prefExists(name:String):Bool
+	{
+		return prefs.exists(name);
+	}
+
 	public static function setPref(name:String, value:Dynamic):Dynamic
 	{
 		prefs.set(name, value);

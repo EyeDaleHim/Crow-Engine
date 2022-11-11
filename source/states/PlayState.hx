@@ -407,7 +407,8 @@ class PlayState extends MusicBeatState
 
 		generateSong();
 
-		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Paths.image('game/ui/healthBar'));
+		healthBarBG = new FlxSprite(0,
+			Settings.getPref('downscroll', false) ? FlxG.height * 0.1 : FlxG.height * 0.9).loadGraphic(Paths.image('game/ui/healthBar'));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		addToHUD(healthBarBG);
@@ -974,7 +975,8 @@ class PlayState extends MusicBeatState
 
 				if (!Settings.getPref('ghost_tap', true) && allowGhost)
 				{
-					// note miss stuff
+					if (cast(player, Player).stunnedTimer <= 0.0)
+						ghostMiss(direction);
 				}
 
 				Conductor.songPosition = lastTime;
@@ -1284,6 +1286,8 @@ class PlayState extends MusicBeatState
 			reductionRate += FlxMath.roundDecimal(Math.min(reductionRate * 0.1, 0.5), 2) * (note.isSustainNote ? 0.25 : 1.0);
 		}
 
+		cast(player, Player).stunnedTimer = 5 / 60;
+
 		scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);
 	}
@@ -1300,6 +1304,8 @@ class PlayState extends MusicBeatState
 				player.playAnim(player.missList[direction], true);
 			}
 		}
+
+		cast(player, Player).stunnedTimer = 5 / 60;
 
 		scoreText.text = '[Score] ${gameInfo.score} // [Misses] ${gameInfo.misses} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);
