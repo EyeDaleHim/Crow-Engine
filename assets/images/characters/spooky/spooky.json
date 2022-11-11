@@ -1,7 +1,8 @@
 {
     "healthColor": -2785792,
     "missList": [],
-    "animationList": [{
+    "animationList": [
+        {
             "prefix": "spooky dance idle",
             "indices": [
                 0,
@@ -88,6 +89,10 @@
         "danceRIGHT"
     ],
     "name": "spooky",
+    "flip": {
+        "x": false,
+        "y": false
+    },
     "scale": {
         "x": 1,
         "y": 1
