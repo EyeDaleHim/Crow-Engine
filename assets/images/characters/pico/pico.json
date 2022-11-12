@@ -19,7 +19,7 @@
             "looped": false
         },
         {
-            "prefix": "Pico NOTE LEFT0",
+            "prefix": "Pico Note Right0",
             "indices": [],
             "fps": 24,
             "name": "singLEFT",
@@ -52,7 +52,7 @@
             "looped": false
         },
         {
-            "prefix": "Pico Note Right0",
+            "prefix": "Pico NOTE LEFT0",
             "indices": [],
             "fps": 24,
             "name": "singRIGHT",

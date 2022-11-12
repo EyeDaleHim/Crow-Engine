@@ -19,12 +19,16 @@ class StrumNote extends FlxSprite
 	public var pressAnim:String = '';
 	public var staticAnim:String = '';
 
+	public var downScroll:Bool = false;
+
 	private var animOffsets:Map<String, FlxPoint> = [];
 	private var _strumFile:NoteFile.StrumNoteFile;
 
 	public override function new(direction:Int = 0)
 	{
 		super();
+
+		downScroll = Settings.getPref("downscroll", false);
 
 		this.direction = direction;
 

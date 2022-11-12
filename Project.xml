@@ -105,6 +105,7 @@
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
 	<haxedef name="HSCRIPT_ALLOWED" />
+	<haxedef name="EDITORS_ALLOWED" /> <!-- Whether or not the editor should be enabled -->
 
 	<!--Enable the Flixel core recording system-->
 	<!--<haxedef name="FLX_RECORD" />-->

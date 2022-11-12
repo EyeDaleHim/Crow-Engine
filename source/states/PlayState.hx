@@ -125,6 +125,7 @@ class PlayState extends MusicBeatState
 {
 	// important variables
 	public static var current:PlayState;
+	public static var globalAttributes:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	public static var isStoryMode:Bool = false;
 	public static var storyPlaylist:Array<String> = [];
@@ -705,11 +706,12 @@ class PlayState extends MusicBeatState
 		{
 			for (note in sections.notes)
 			{
-				var oldNote:Note = null;
+				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
+
+				var oldNote:Note = newNote;
 				if (pendingNotes.length > 0)
 					oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
 
-				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
 				newNote.ID = pendingNotes.length;
 				newNote._lastNote = oldNote;
 				newNote.scrollFactor.set();
@@ -722,13 +724,16 @@ class PlayState extends MusicBeatState
 
 					for (i in 0...sustainAmounts)
 					{
-						oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
-
 						if (i == 0)
 							continue;
 
 						var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
 							note.noteAnim);
+
+						oldNote = sustainNote;
+						if (pendingNotes.length > 0)
+							oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
+
 						sustainNote.ID = pendingNotes.length;
 						sustainNote.scrollFactor.set();
 						sustainNote._lastNote = oldNote;
@@ -985,7 +990,7 @@ class PlayState extends MusicBeatState
 			currentKeys[direction] = true;
 
 			var strum:StrumNote = playerStrums.members[direction];
-			if (strum != null && strum.animation.curAnim.name != strum.confirmAnim)
+			if (strum != null && strum.animation.curAnim.name != strum.confirmAnim && strum.animation.curAnim.name != strum.pressAnim)
 			{
 				strum.playAnim(strum.pressAnim);
 				strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
@@ -1064,9 +1069,7 @@ class PlayState extends MusicBeatState
 			renderedNotes.forEachAlive(function(note:Note)
 			{
 				var strumGroup:FlxTypedGroup<StrumNote> = note.mustPress ? playerStrums : opponentStrums;
-
-				var strumX:Float = strumGroup.members[note.direction].x;
-				var strumY:Float = strumGroup.members[note.direction].y;
+				var strumNote:StrumNote = strumGroup.members[note.direction];
 
 				var distance:Float = (-0.45 * (Conductor.songPosition - note.strumTime) * songSpeed);
 				if (!Settings.getPref('downscroll', false))
@@ -1074,9 +1077,9 @@ class PlayState extends MusicBeatState
 
 				if (note._lockedToStrumX)
 				{
-					note.x = strumX;
+					note.x = strumNote.x;
 					if (note.isSustainNote)
-						note.centerOverlay(strumGroup.members[note.direction], X);
+						note.centerOverlay(strumNote, X);
 				}
 
 				if (note.isSustainNote)
@@ -1094,8 +1097,8 @@ class PlayState extends MusicBeatState
 
 				if (note._lockedToStrumY)
 				{
-					note.y = strumY - distance;
-					if (Settings.getPref('downscroll', false))
+					note.y = strumNote.y - distance;
+					if (strumNote.downScroll)
 					{
 						if (note.isEndNote)
 						{
@@ -1115,7 +1118,7 @@ class PlayState extends MusicBeatState
 					if (_lastNote == null)
 						_lastNote = note;
 
-					if (Settings.getPref('downscroll', false))
+					if (strumNote.downScroll)
 					{
 						if (note.y - note.offset.y * note.scale.y + note.height >= center
 							&& (!note.mustPress || (note.wasGoodHit || (_lastNote.wasGoodHit && !note.canBeHit))))
@@ -1351,9 +1354,9 @@ class PlayState extends MusicBeatState
 
 			var loop:Int = 0;
 
-			for (i in 0...comboString.length)
+			for (num in comboString.split(""))
 			{
-				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('game/combo/numbers/num' + comboString.charAt(i)));
+				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('game/combo/numbers/num' + num));
 				numScore.scale.set(0.5, 0.5);
 				numScore.updateHitbox();
 				numScore.screenCenter();

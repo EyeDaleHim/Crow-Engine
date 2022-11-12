@@ -119,10 +119,18 @@ class Note extends FlxSprite
 		{
 			canBeHit = false;
 
-			wasGoodHit = ((strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult))
-				&& ((isSustainNote && _lastNote.wasGoodHit) || strumTime <= Conductor.songPosition));
+			if (_lastNote != null)
+			{
+				wasGoodHit = ((strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * earlyMult))
+					&& ((isSustainNote && _lastNote.wasGoodHit) || strumTime <= Conductor.songPosition));
+			}
 		}
 
 		super.update(elapsed);
+	}
+
+	function get__lastNote():Note
+	{
+		return _lastNote == null ? this : _lastNote;
 	}
 }

@@ -1,6 +1,6 @@
 package;
 
-import backend.Controls;
+import backend.data.Controls;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;

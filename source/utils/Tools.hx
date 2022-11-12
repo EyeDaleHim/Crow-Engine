@@ -7,6 +7,7 @@ import flixel.util.FlxAxes;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import sys.FileSystem;
+import lime.utils.Assets;
 
 using StringTools;
 
@@ -127,6 +128,18 @@ class Tools
 			object.y = base.y + (base.height / 2) - (object.height / 2);
 
 		return object;
+	}
+
+	// html5 support, will do this later
+	public static function fileExists(file:String):Bool
+	{
+		#if sys
+		return FileSystem.exists(file);
+		#else
+		return Assets.exists(file);
+		#end
+
+		return false;
 	}
 
 	public static function formatToReadable(string:String):String

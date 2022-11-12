@@ -64,9 +64,13 @@ class Stage
 				{
 					stageInstance.charPosList.opponentPositions = [{x: 80, y: 320}];
 					stageInstance.charPosList.playerPositions = [{x: 780, y: 440}];
-					// if (Song.currentSong.opponent == 'monster')
-
-					stageInstance.camPosList.opponentPositions = [{x: 100, y: -100}];
+					if (Song.currentSong.opponent == 'monster')
+					{
+						stageInstance.charPosList.opponentPositions = [{x: 80, y: 190}];
+						stageInstance.camPosList.opponentPositions = [{x: 200, y: -120}];
+					}
+					else
+						stageInstance.camPosList.opponentPositions = [{x: 100, y: -100}];
 
 					var halloween:BGSprite = new BGSprite({path: 'halloween_bg', library: 'week2'}, {x: -200, y: -100}, {x: 0.95, y: 0.95}, [
 						{

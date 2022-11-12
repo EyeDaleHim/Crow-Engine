@@ -111,7 +111,20 @@ class PauseSubState extends MusicBeatSubState
 			return;
 		}
 
-		if (FlxG.keys.justPressed.SEVEN) {}
+		if (FlxG.keys.justPressed.SEVEN)
+		{
+			states.PlayState.globalAttributes.set('isPlaying', true);
+
+			persistentUpdate = false;
+			var editorMenu = Type.createInstance(states.debug.EditorSelectionState, []);
+			editorMenu.onExit = function()
+			{
+				FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+				persistentUpdate = true;
+			};
+
+			openSubState(editorMenu);
+		}
 		else
 		{
 			if (controls.getKey('ACCEPT', JUST_PRESSED))

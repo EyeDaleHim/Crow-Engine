@@ -82,15 +82,19 @@ class Main extends Sprite
 
 		FlxG.console.registerClass(utils.Paths);
 		FlxG.console.registerClass(utils.Tools);
-		FlxG.console.registerClass(backend.Settings);
+		FlxG.console.registerClass(backend.data.Settings);
 		FlxG.console.registerClass(music.Song);
 
-		Application.current.window.onClose.add(function()
+		Settings.init();
+		try
 		{
-			FlxG.save.data.settings = Settings.prefs;
-
-			FlxG.save.flush();
-		});
+			@:privateAccess
+			Settings.prefs = Settings._save.data.settings;
+		}
+		catch (e)
+		{
+			Settings.prefs = new Map<String, Dynamic>();
+		}
 
 		#if !mobile
 		addChild(new DebugInfo(10, 5));

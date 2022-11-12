@@ -1,5 +1,5 @@
-import backend.Settings;
-import backend.Controls;
+import backend.data.Settings;
+import backend.data.Controls;
 import objects.handlers.Animation;
 import objects.Alphabet;
 import utils.Paths;

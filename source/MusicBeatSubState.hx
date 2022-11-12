@@ -1,7 +1,6 @@
 package;
 
-import flixel.addons.ui.FlxUISubState;
-import backend.Controls;
+import backend.data.Controls;
 import flixel.FlxG;
 import flixel.addons.ui.FlxUISubState;
 import flixel.math.FlxRect;

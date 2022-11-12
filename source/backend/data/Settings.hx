@@ -1,4 +1,4 @@
-package backend;
+package backend.data;
 
 import flixel.FlxG;
 import flixel.util.FlxSave;
@@ -20,10 +20,25 @@ class Settings
 
 		prefs = cast(_save.data.settings, Map<String, Dynamic>);
 
+		onSet.set('framerate', function(value:Dynamic)
+		{
+			FlxG.updateFramerate = FlxG.drawFramerate = value;
+		});
+
 		FlxG.stage.application.onExit.add(function(_)
 		{
 			_save.close();
 		});
+	}
+
+	public static function grabKey(name:String, defaultKeys:Array<Int>):Array<Int>
+	{
+		var keyList = getPref('control-bind', new Map<String, Array<Int>>());
+
+		if (!keyList.exists(name))
+			return defaultKeys;
+
+		return keyList.get(name);
 	}
 
 	public static function getPref(name:String, ?defaultPref:Dynamic):Dynamic

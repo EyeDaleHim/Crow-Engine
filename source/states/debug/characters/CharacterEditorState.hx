@@ -1,4 +1,4 @@
-package states.debug;
+package states.debug.characters;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
