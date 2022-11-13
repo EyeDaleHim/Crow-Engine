@@ -24,7 +24,7 @@ class ControlQueries
 				catch (e) {}
 			}
 
-			currentQueries.splice(currentQuery, 1);
+			currentQueries.splice(currentQueries.indexOf(currentQuery), 1);
 		}
 	}
 }
