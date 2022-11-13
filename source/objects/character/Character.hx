@@ -63,6 +63,8 @@ class Character extends FlxSprite
 			this.name = 'bf';
 		}
 
+		charPath = 'characters/${this.name}/${this.name}';
+
 		frames = Paths.getSparrowAtlas(charPath);
 
 		_characterData = Json.parse(Assets.getText(Paths.image(charPath).replace('png', 'json')));
