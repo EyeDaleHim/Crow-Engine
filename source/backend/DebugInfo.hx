@@ -47,6 +47,26 @@ class DebugInfo extends TextField
 
 	private function onEnter(_:Event)
 	{
+		if (FlxG.keys.justPressed.F3)
+		{
+			if (FlxG.keys.pressed.F4)
+				Settings.setPref("fpsInfo_display", Std.int((Settings.getPref("fpsInfo_display") + 1) % 3));
+			else
+			{
+				switch (Settings.getPref("fpsInfo", "default"))
+				{
+					case 'minimized':
+						Settings.setPref("fpsInfo", 'default');
+					case 'default':
+						Settings.setPref("fpsInfo", #if debug "debug" #else "disable" #end);
+					case 'debug':
+						Settings.setPref("fpsInfo", "disable");
+					case 'disable':
+						Settings.setPref("fpsInfo", 'minimized');
+				}
+			}
+		}
+
 		var now = Timer.stamp();
 		times.push(now);
 
@@ -69,7 +89,7 @@ class DebugInfo extends TextField
 			memoryPeak = Math.floor(Math.max(memory, memoryPeak));
 		}
 
-		if (visible)
+		if (visible = !(Settings.getPref("fpsInfo", "default") == 'disable'))
 		{
 			text = "";
 
@@ -77,26 +97,26 @@ class DebugInfo extends TextField
 			{
 				case 'minimized':
 					{
-						if (Settings.getPref("showFPS", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 0)
 							text += times.length + '\n';
 
-						if (Settings.getPref("showMemory", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 1)
 							text += Tools.formatMemory(memory);
 
-						if (Settings.getPref("showMemoryPeak", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 2)
 							text += " / " + Tools.formatMemory(memoryPeak) + "\n";
 						else
 							text += '\n';
 					}
 				case 'default':
 					{
-						if (Settings.getPref("showFPS", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 0)
 							text += "FPS: " + times.length + "\n";
 
-						if (Settings.getPref("showMemory", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 1)
 							text += "Memory: " + Tools.formatMemory(memory);
 
-						if (Settings.getPref("showMemoryPeak", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 2)
 							text += " / " + Tools.formatMemory(memoryPeak) + "\n";
 						else
 							text += '\n';
@@ -104,7 +124,7 @@ class DebugInfo extends TextField
 				#if debug
 				case 'debug':
 					{
-						if (Settings.getPref("showFPS", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 0)
 						{
 							text += "FPS: " + times.length;
 
@@ -125,10 +145,10 @@ class DebugInfo extends TextField
 							text += ' (${Std.string(_storedLastMS * 1000).substring(0, 5)} ms)\n';
 						}
 
-						if (Settings.getPref("showMemory", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 1)
 							text += "Memory: " + Tools.formatMemory(memory);
 
-						if (Settings.getPref("showMemoryPeak", true))
+						if (Settings.getPref("fpsInfo_display", 0) >= 2)
 							text += " / " + Tools.formatMemory(memoryPeak);
 
 						text += '\n';
