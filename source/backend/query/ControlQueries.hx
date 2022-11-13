@@ -23,6 +23,8 @@ class ControlQueries
 				}
 				catch (e) {}
 			}
+
+			currentQueries.splice(currentQuery, 1);
 		}
 	}
 }
