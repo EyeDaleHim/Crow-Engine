@@ -34,6 +34,7 @@ import objects.notes.Note;
 import objects.notes.StrumNote;
 import weeks.ScoreContainer;
 import weeks.SongHandler;
+import backend.query.ControlQueries;
 
 using StringTools;
 using utils.Tools;
@@ -571,6 +572,7 @@ class PlayState extends MusicBeatState
 				}
 			}
 
+			inputQueries.update(elapsed);
 			manageNotes();
 
 			var playerAnim = player.animation.curAnim;
@@ -927,6 +929,8 @@ class PlayState extends MusicBeatState
 
 	private var currentKeys:Array<Bool> = [];
 
+	public var inputQueries:ControlQueries = new ControlQueries();
+
 	public function keyPress(e:KeyboardEvent)
 	{
 		var direction:Int = getKeyDirection(e.keyCode);
@@ -935,59 +939,69 @@ class PlayState extends MusicBeatState
 		{
 			if (direction != -1 && FlxG.keys.checkStatus(e.keyCode, JUST_PRESSED))
 			{
-				var lastTime:Float = Conductor.songPosition;
-				Conductor.songPosition = FlxG.sound.music.time;
+				currentKeys[direction] = true;
 
-				var sortedNotesList:Array<Note> = [];
-				var allowGhost:Bool = true;
-
-				var pressNotes:Array<Note> = [];
-				var notesStopped:Bool = false;
-
-				for (note in _isolatedNotes.note[direction])
-				{
-					if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
+				inputQueries.currentQueries.push({
+					FunctionTask: function(key:Int, args:Dynamic)
 					{
-						sortedNotesList.push(note);
-						allowGhost = false;
-					}
-				}
-
-				if (sortedNotesList.length > 0)
-				{
-					sortedNotesList.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-
-					for (epicNote in sortedNotesList)
-					{
-						for (doubleNote in pressNotes)
+						if (currentKeys[direction])
 						{
-							if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1)
-								killNote(doubleNote);
-							else
-								notesStopped = true;
-						}
+							var lastTime:Float = Conductor.songPosition;
+							Conductor.songPosition = args[0];
 
-						if (!notesStopped)
-						{
-							if (!epicNote.wasGoodHit)
+							var sortedNotesList:Array<Note> = [];
+							var allowGhost:Bool = true;
+
+							var pressNotes:Array<Note> = [];
+							var notesStopped:Bool = false;
+
+							for (note in _isolatedNotes.note[direction])
 							{
-								hitNote(epicNote);
-								pressNotes.push(epicNote);
+								if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
+								{
+									sortedNotesList.push(note);
+									allowGhost = false;
+								}
 							}
+
+							if (sortedNotesList.length > 0)
+							{
+								sortedNotesList.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+
+								for (epicNote in sortedNotesList)
+								{
+									for (doubleNote in pressNotes)
+									{
+										if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1)
+											killNote(doubleNote);
+										else
+											notesStopped = true;
+									}
+
+									if (!notesStopped)
+									{
+										if (!epicNote.wasGoodHit)
+										{
+											hitNote(epicNote);
+											pressNotes.push(epicNote);
+										}
+									}
+								}
+							}
+
+							if (!Settings.getPref('ghost_tap', true) && allowGhost)
+							{
+								if (cast(player, Player).stunnedTimer <= 0.0)
+									ghostMiss(direction);
+							}
+
+							Conductor.songPosition = lastTime;
 						}
-					}
-				}
-
-				if (!Settings.getPref('ghost_tap', true) && allowGhost)
-				{
-					if (cast(player, Player).stunnedTimer <= 0.0)
-						ghostMiss(direction);
-				}
-
-				Conductor.songPosition = lastTime;
+					},
+					Arguments: [FlxG.sound.music.time],
+					Key: e.keyCode
+				});
 			}
-
-			currentKeys[direction] = true;
 
 			var strum:StrumNote = playerStrums.members[direction];
 			if (strum != null && strum.animation.curAnim.name != strum.confirmAnim && strum.animation.curAnim.name != strum.pressAnim)

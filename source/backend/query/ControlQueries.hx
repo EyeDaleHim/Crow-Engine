@@ -19,7 +19,7 @@ class ControlQueries
 			{
 				try
 				{
-					currentQuery.Function(currentQuery.Key);
+					currentQuery.FunctionTask(currentQuery.Key, currentQuery.Arguments);
 				}
 				catch (e) {}
 			}
@@ -31,6 +31,7 @@ class ControlQueries
 
 typedef ControlQuery =
 {
-	var Function:Int->Void;
+	var FunctionTask:(Int, Array<Dynamic>) -> Void;
+	var Arguments:Array<Dynamic>;
 	var Key:Int;
 };
