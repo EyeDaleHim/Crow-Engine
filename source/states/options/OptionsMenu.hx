@@ -114,6 +114,7 @@ class OptionsMenu extends MusicBeatState
 								saveHolder:String,
 								defaultValue:Dynamic,
 								?bound:{min:Int, max:Int},
+								?choices:Array<Dynamic>,
 								type:Int
 							}> = [];
 
@@ -147,8 +148,8 @@ class OptionsMenu extends MusicBeatState
 								name: 'Frame Rate',
 								description: 'How many frames should the game run at.',
 								saveHolder: 'framerate',
-								defaultValue: 60,
-								bound: {min: 60, max: 240},
+								defaultValue: 0,
+								choices: [60, 75, 90, 120, 144, 160, 240],
 								type: 1
 							});
 							listedGroup.push({
@@ -172,7 +173,7 @@ class OptionsMenu extends MusicBeatState
 							var i:Int = listedGroup.indexOf(member);
 
 							var spriteMember:OptionsSprite = new OptionsSprite(member.name, member.saveHolder, member.description, member.defaultValue,
-								member.type);
+								member.bound, member.choices, member.type);
 							spriteMember.ID = i;
 							spriteMember.setPosition(40, dimmer.y + 80 + ((spriteMember.height + 10) * i));
 							globalGroupManager.add(spriteMember);
@@ -463,6 +464,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	// float, int
 	private var _valueSet:Float;
 	private var _bound:{min:Int, max:Int};
+	private var _choices:Array<Int> = [];
 	private var _arrowLeft:FlxText;
 	private var _arrowRight:FlxText;
 	private var _numText:FlxText;
@@ -471,7 +473,8 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 
 	private var __type:Int = -1;
 
-	override function new(name:String, saveHolder:String, description:String, defaultValue:Dynamic, ?bound:{min:Int, max:Int}, type:Int = -1)
+	override function new(name:String, saveHolder:String, description:String, defaultValue:Dynamic, ?bound:{min:Int, max:Int}, ?choices:Array<Dynamic>,
+			type:Int = -1)
 	{
 		super();
 

@@ -56,6 +56,18 @@ class CurrentGame
 
 	function get_rank():String
 	{
+		var fcRanking:String = '';
+
+		if (misses <= 0)
+		{
+			if (judgementList['bad'] > 0 || judgementList['shit'] > 0)
+				return 'FC';
+			if (judgementList['good'] > 0)
+				return 'GFC';
+			if (judgementList['sick'] > 0)
+				return 'MFC';
+		}
+
 		var savedAcc:Float = get_accuracy();
 
 		if (savedAcc == 0)
