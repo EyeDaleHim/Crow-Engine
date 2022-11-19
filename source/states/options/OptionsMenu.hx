@@ -113,6 +113,7 @@ class OptionsMenu extends MusicBeatState
 								description:String,
 								saveHolder:String,
 								defaultValue:Dynamic,
+								?bound:{min:Int, max:Int},
 								type:Int
 							}> = [];
 
@@ -134,7 +135,7 @@ class OptionsMenu extends MusicBeatState
 							});
 							listedGroup.push({
 								name: 'Camera Zooming',
-								description: 'If the camera should zoom in a little every four sections.',
+								description: 'If the camera should zoom in a little every section.',
 								saveHolder: 'camZoom',
 								defaultValue: true,
 								type: 0
@@ -145,8 +146,9 @@ class OptionsMenu extends MusicBeatState
 							listedGroup.push({
 								name: 'Frame Rate',
 								description: 'How many frames should the game run at.',
-								saveHolder: 'frameRate',
+								saveHolder: 'framerate',
 								defaultValue: 60,
+								bound: {min: 60, max: 240},
 								type: 1
 							});
 							listedGroup.push({
@@ -247,7 +249,7 @@ class OptionsMenu extends MusicBeatState
 				categoryTitle.visible = true;
 			}
 		}
-		else if (controls.getKey('ACCEPT', JUST_PRESSED) || (FlxG.mouse.justPressed && FlxG.mouse.overlaps(currentObj)))
+		else if (controls.getKey('ACCEPT', JUST_PRESSED) || (FlxG.mouse.pressed && FlxG.mouse.overlaps(currentObj)))
 		{
 			@:privateAccess
 			{
@@ -255,11 +257,14 @@ class OptionsMenu extends MusicBeatState
 				{
 					case -1:
 						{
-							categoryTitle.visible = false;
-							createCategory(curSelected[0]);
+							if (controls.getKey('ACCEPT', JUST_PRESSED) || FlxG.mouse.justPressed)
+							{
+								categoryTitle.visible = false;
+								createCategory(curSelected[0]);
 
-							description._controlledAlpha = 0.0;
-							description.targetAlpha = 0.0;
+								description._controlledAlpha = 0.0;
+								description.targetAlpha = 0.0;
+							}
 						}
 					case 0 | 1:
 						{
@@ -269,7 +274,37 @@ class OptionsMenu extends MusicBeatState
 							{
 								case 0:
 									{
-										optionsSprite.onChange(!optionsSprite._isAccepted);
+										if (controls.getKey('ACCEPT', JUST_PRESSED) || FlxG.mouse.justPressed)
+											optionsSprite.onChange(!optionsSprite._isAccepted);
+									}
+								case 1:
+									{
+										var checkOverlap:FlxObject->Bool = function(obj:FlxObject)
+										{
+											return obj != null ? FlxG.mouse.overlaps(obj) : false;
+										}
+
+										if (!FlxG.mouse.pressed
+											&& (!checkOverlap(optionsSprite._arrowLeft) || !checkOverlap(optionsSprite._arrowRight)))
+										{
+											if (controls.getKey('UI_LEFT', JUST_PRESSED))
+												optionsSprite.onChange(-1);
+											else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
+												optionsSprite.onChange(1);
+										}
+										else
+										{
+											if (FlxG.mouse.overlaps(optionsSprite._arrowLeft))
+												optionsSprite.onChange(1);
+											else if (FlxG.mouse.overlaps(optionsSprite._arrowRight))
+												optionsSprite.onChange(1);
+
+											optionsSprite._heldDown += elapsed;
+											if (optionsSprite._heldDown > 1.5)
+												optionsSprite._holdCooldown = 0.08;
+											else
+												optionsSprite._holdCooldown = 1.5;
+										}
 									}
 							}
 						}
@@ -282,7 +317,7 @@ class OptionsMenu extends MusicBeatState
 			{
 				if (controls.getKey('UI_UP', JUST_PRESSED))
 				{
-					changeSelection(-1, controls.LIST_CONTROLS['UI_DOWN'].__keys);
+					changeSelection(-1, controls.LIST_CONTROLS['UI_UP'].__keys);
 				}
 				else if (controls.getKey('UI_DOWN', JUST_PRESSED))
 				{
@@ -426,13 +461,17 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	private var _statsText:FlxText; // on, off
 
 	// float, int
+	private var _valueSet:Float;
+	private var _bound:{min:Int, max:Int};
 	private var _arrowLeft:FlxText;
 	private var _arrowRight:FlxText;
 	private var _numText:FlxText;
+	private var _holdCooldown:Float = 0;
+	private var _heldDown:Float = 0;
 
 	private var __type:Int = -1;
 
-	override function new(name:String, saveHolder:String, description:String, defaultValue:Dynamic, type:Int = -1)
+	override function new(name:String, saveHolder:String, description:String, defaultValue:Dynamic, ?bound:{min:Int, max:Int}, type:Int = -1)
 	{
 		super();
 
@@ -440,6 +479,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		this.saveHolder = saveHolder;
 		this.description = description;
 		__type = type;
+		_bound = bound;
 
 		_background = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.6), 90, FlxColor.BLACK);
 		_background.scrollFactor.set();
@@ -472,6 +512,30 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 					_statsText.x = _background.x + _background.width - _statsText.width - 20;
 					add(_statsText);
 				}
+			case 1:
+				{
+					_valueSet = Settings.getPref(saveHolder, null);
+					if (!Settings.prefExists(saveHolder))
+						_valueSet = defaultValue;
+
+					_numText = new FlxText(0, 0, 0, Std.string(_valueSet), 20);
+					_numText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+					_numText.centerOverlay(_background, Y);
+					_numText.x = _background.x + _background.width - _numText.width - 20;
+					add(_numText);
+
+					_arrowLeft = new FlxText(0, 0, 0, "<", 18);
+					_arrowLeft.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+					_arrowLeft.centerOverlay(_numText, Y);
+					_arrowLeft.x = _numText.x - _arrowLeft.width - 8;
+					add(_arrowLeft);
+
+					_arrowRight = new FlxText(0, 0, 0, ">", 18);
+					_arrowRight.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+					_arrowRight.centerOverlay(_numText, Y);
+					_arrowRight.x = _numText.x + _numText.width + _arrowRight.width + 8;
+					add(_arrowRight);
+				}
 		}
 	}
 
@@ -479,13 +543,19 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 
 	override function update(elapsed:Float)
 	{
-		if ((_offsetReset += elapsed) > 1 / 6)
+		if ((_offsetReset += elapsed) > 1 / 12)
 			offset.set(0, 0);
 
 		if (isSelected)
 			_selectionBG.alpha = 0.2;
 		else
 			_selectionBG.alpha = 0.0;
+
+		_holdCooldown -= elapsed;
+		if (!FlxG.mouse.pressed)
+			_heldDown = 0.0;
+
+		super.update(elapsed);
 	}
 
 	public function onChange(Value:Dynamic)
@@ -506,7 +576,25 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 					acceptedOffset = true;
 				}
 			case 1:
-				{}
+				{
+					if (_holdCooldown <= 0.0)
+					{
+						if (_bound != null)
+							_valueSet = FlxMath.bound(_valueSet + Value, _bound.min, _bound.max);
+						else
+							_valueSet = _valueSet + Value;
+
+						_numText.text = Std.string(_valueSet);
+						_numText.x = _background.x + _background.width - _numText.width - 60;
+
+						_arrowLeft.x = _numText.x - _arrowLeft.width - 8;
+						_arrowRight.x = _numText.x + _numText.width + 8;
+
+						Settings.setPref(saveHolder, _valueSet);
+
+						acceptedOffset = true;
+					}
+				}
 		}
 
 		if (acceptedOffset)

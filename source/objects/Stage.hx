@@ -106,6 +106,11 @@ class Stage
 					vignetteFlash.ID = 1;
 					group.set('vignette', vignetteFlash);
 
+					var thunder:GameSoundObject = new GameSoundObject();
+					thunder.loadEmbedded(Paths.sound('thunder_' + FlxG.random.int(1, 2), 'week2'));
+
+					stageInstance.attributes.set('thunder', thunder);
+
 					stageInstance.attributes.set('strikeBeat', 0);
 					stageInstance.attributes.set('lightningOffset', 8);
 				}
@@ -146,7 +151,25 @@ class Stage
 					street.ID = 4;
 					group.set('street', street);
 
+					var train:BGSprite = new BGSprite({path: 'train', library: 'week3'}, {x: 2000, y: 360}, {x: 1.0, y: 1.0});
+					train.ID = 5;
+					group.set('train', train);
+
 					stageInstance.attributes.set('windowLights', [0xFF31A2FD, 0xFF31FD8C, 0xFFFB33F5, 0xFFFD4531, 0xFFFBA633]);
+
+					var trainSound:GameSoundObject = new GameSoundObject();
+					trainSound.loadEmbedded(Paths.sound('train_passes', 'week3'));
+
+					stageInstance.attributes.set('trainSound', trainSound);
+
+					stageInstance.attributes.set('trainMoving', false);
+					stageInstance.attributes.set('startedMoving', false);
+					stageInstance.attributes.set('trainFrameTime', 0.0);
+
+					stageInstance.attributes.set('carsAmount', 8);
+					stageInstance.attributes.set('trainFinish', false);
+					stageInstance.attributes.set('trainCooldown', 0);
+
 					group['window'].color = FlxG.random.getObject(stageInstance.attributes['windowLights']);
 				}
 			default:
@@ -189,6 +212,44 @@ class Stage
 			case 'philly':
 				{
 					attributes['lightShader'].update(1.5 * (Conductor.crochet / 1000) * elapsed);
+
+					if (attributes['trainSound'].time >= 4700)
+					{
+						attributes['startedMoving'] = true;
+						if (states.PlayState.current.spectator.animation.finished)
+							states.PlayState.current.spectator.playAnim('hairBlow');
+					}
+
+					if (attributes['startedMoving'])
+					{
+						attributes['trainFrameTime'] += elapsed;
+
+						if (attributes['trainFrameTime'] >= 1 / 24)
+						{
+							attributes['trainFrameTime'] -= 1 / 24;
+
+							spriteGroup['train'].x -= 400;
+
+							if (spriteGroup['train'].x < -2000 && !attributes['trainFinish'])
+							{
+								spriteGroup['train'].x = -1150;
+								attributes['carsAmount'] -= 1;
+
+								if (attributes['carsAmount'] <= 0)
+									attributes['trainFinish'] = true;
+							}
+
+							if (spriteGroup['train'].x < -4000 && attributes['trainFinish'])
+							{
+								states.PlayState.current.spectator.playAnim('hairFall');
+								spriteGroup['train'].x = 2000;
+								attributes['trainMoving'] = false;
+								attributes['carsAmount'] = 8;
+								attributes['trainFinish'] = false;
+								attributes['startedMoving'] = false;
+							}
+						}
+					}
 				}
 		}
 	}
@@ -201,21 +262,23 @@ class Stage
 				{
 					if (FlxG.random.bool(10) && beat > attributes['strikeBeat'] + attributes['lightningOffset'])
 					{
-						var thunder:GameSoundObject = new GameSoundObject();
-						thunder.loadEmbedded(Paths.sound('thunder_' + FlxG.random.int(1, 2), 'week2'));
-
+						var thunder = attributes['thunder'];
 						thunder.onComplete = function()
 						{
 							@:privateAccess
 							states.PlayState.current.___trackedSoundObjects.splice(states.PlayState.current.___trackedSoundObjects.indexOf(thunder), 1);
 							FlxG.sound.list.remove(thunder);
 						}
+
 						thunder.play();
 
 						@:privateAccess
 						states.PlayState.current.___trackedSoundObjects.push(thunder);
 
 						FlxG.sound.list.add(thunder);
+
+						states.PlayState.current.spectator.playAnim('scared');
+						states.PlayState.current.player.playAnim('scared');
 
 						spriteGroup['halloween'].animation.play('lightning');
 
@@ -235,6 +298,30 @@ class Stage
 					{
 						attributes['lightShader'].reset();
 						spriteGroup['window'].color = FlxG.random.getObject(attributes['windowLights']);
+					}
+
+					if (beat % 8 == 4 && FlxG.random.bool(30) && !attributes['startMoving'] && attributes['trainCooldown'] >= 8)
+					{
+						attributes['trainCooldown'] = FlxG.random.int(-4, 0);
+
+						attributes['startMoving'] = true;
+
+						if (!attributes['trainSound'].playing)
+						{
+							@:privateAccess
+							states.PlayState.current.___trackedSoundObjects.push(attributes['trainSound']);
+							FlxG.sound.list.add(attributes['trainSound']);
+
+							@:privateAccess
+							attributes['trainSound'].onComplete = function()
+							{
+								states.PlayState.current.___trackedSoundObjects.splice(states.PlayState.current.___trackedSoundObjects.indexOf(attributes['trainSound']),
+									1);
+								FlxG.sound.list.remove(attributes['trainSound']);
+							}
+
+							attributes['trainSound'].play(true);
+						}
 					}
 				}
 		}

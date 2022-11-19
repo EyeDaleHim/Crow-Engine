@@ -2,6 +2,7 @@ package backend.data;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxMath;
 import flixel.util.FlxSave;
 
 class Settings
@@ -23,7 +24,7 @@ class Settings
 
 		onSet.set('framerate', function(value:Dynamic)
 		{
-			FlxG.updateFramerate = FlxG.drawFramerate = value;
+			FlxG.drawFramerate = FlxG.updateFramerate = Std.int(FlxMath.bound(value, 60, 240));
 		});
 
 		onSet.set('antialiasing', function(value:Dynamic)

@@ -617,10 +617,15 @@ class PlayState extends MusicBeatState
 						if (char.overridePlayer || char.isPlayer)
 						{
 							if (char.forceIdle || char.idleList.contains(char.animation.curAnim.name))
+							{
 								char.dance();
+							}
 						}
 						else
 							char.dance();
+
+						if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
+							char.forceIdle = true;
 					}
 				}
 			}
