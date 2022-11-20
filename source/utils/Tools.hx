@@ -111,9 +111,9 @@ class Tools
 
 	public static function translateToMargin(object:FlxObject, margin:ScreenMargin, axes:FlxAxes = XY):FlxObject
 	{
-		if (axes.match(X | XY))
+		if (axes.x)
 			object.x = FlxMath.remapToRange(object.x, 0, FlxG.width, margin.x, margin.width);
-		if (axes.match(Y | XY))
+		if (axes.y)
 			object.y = FlxMath.remapToRange(object.y, 0, FlxG.height, margin.y, margin.height);
 
 		return object;
@@ -121,10 +121,10 @@ class Tools
 
 	public static function centerOverlay(object:FlxObject, base:FlxObject, axes:FlxAxes = XY):FlxObject
 	{
-		if (axes.match(X | XY))
+		if (axes.x)
 			object.x = base.x + (base.width / 2) - (object.width / 2);
 
-		if (axes.match(Y | XY))
+		if (axes.y)
 			object.y = base.y + (base.height / 2) - (object.height / 2);
 
 		return object;
