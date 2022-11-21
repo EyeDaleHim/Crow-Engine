@@ -16,6 +16,7 @@ class Main extends Sprite
 		height: 720, // Game Height
 		initialState: states.menus.TitleState, // The State when the game starts
 		framerate: 60, // Default Framerate of the Game
+		zoom: -1.0, // Zoom automatically calculates if -1
 		skipSplash: true, // Skipping Flixel's Splash Screen
 		startFullscreen: false // If the game should start fullscreen
 	};
@@ -61,7 +62,20 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
-		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate, game.skipSplash,
+		var stageWidth:Int = Lib.current.stage.stageWidth;
+		var stageHeight:Int = Lib.current.stage.stageHeight;
+
+		// -1.0 to tell its a Float, instead of having -1 as an Int
+		if (game.zoom == -1.0)
+		{
+			var ratioX:Float = stageWidth / game.width;
+			var ratioY:Float = stageHeight / game.height;
+			game.zoom = Math.min(ratioX, ratioY);
+			game.width = Math.ceil(stageWidth / game.zoom);
+			game.height = Math.ceil(stageHeight / game.zoom);
+		}
+
+		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end, game.framerate, game.framerate, game.skipSplash,
 			game.startFullscreen);
 
 		addChild(game);
