@@ -117,19 +117,7 @@ class Character extends FlxSprite
 
 		if (animation.curAnim != null)
 		{
-			if (!overridePlayer || !isPlayer)
-			{
-				if (singList.contains(animation.curAnim.name))
-					_animationTimer += elapsed;
-
-				var dadVar:Float = name == 'dad' ? 6.1 : 4.0;
-
-				if (_animationTimer >= Conductor.stepCrochet * dadVar * 0.001)
-				{
-					dance();
-					_animationTimer = 0;
-				}
-			}
+			_animationTimer += elapsed;
 		}
 
 		for (script in scripts)
@@ -142,14 +130,25 @@ class Character extends FlxSprite
 	{
 		if (idleList.length != 0) // what animations we playing today?
 		{
-			if (forcePlay || controlIdle)
+			var playIdleAnim:Bool = (singList.contains(animation.curAnim.name) && _animationTimer >= Conductor.stepCrochet * 4.5 * 0.001);
+
+			if (overridePlayer)
+				playIdleAnim = ((singList.contains(animation.curAnim.name) && _animationTimer >= Conductor.stepCrochet * 1.15 * 0.001)
+					|| (missList.contains(animation.curAnim.name) && _animationTimer >= Conductor.stepCrochet * 4 * 0.001));
+
+			if (playIdleAnim || !singList.contains(animation.curAnim.name))
 			{
-				_idleIndex++;
-				_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);
+				if (forcePlay || controlIdle)
+				{
+					_idleIndex++;
+					_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);
 
-				var animToPlay:String = idleList[_idleIndex];
+					var animToPlay:String = idleList[_idleIndex];
 
-				playAnim(animToPlay, forceIdle);
+					playAnim(animToPlay, forceIdle);
+				}
+
+				_animationTimer = 0.0;
 			}
 		}
 

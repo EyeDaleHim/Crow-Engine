@@ -586,16 +586,6 @@ class PlayState extends MusicBeatState
 
 			inputQueries.update(elapsed);
 			manageNotes();
-
-			var playerAnim = player.animation.curAnim;
-
-			if ((player._animationTimer > 0.011 * (2.5 * Conductor.stepCrochet))
-				&& !currentKeys.contains(true)
-				&& player.idleList.contains(playerAnim.name)
-				&& !player.missList.contains(playerAnim.name))
-			{
-				player.dance();
-			}
 		}
 
 		if (events.spawnedEvents[0] != null)
@@ -625,16 +615,7 @@ class PlayState extends MusicBeatState
 				{
 					if (char != null)
 					{
-						// god i hate nesting if statements
-						if (char.overridePlayer || char.isPlayer)
-						{
-							if (char.forceIdle || char.idleList.contains(char.animation.curAnim.name))
-							{
-								char.dance();
-							}
-						}
-						else
-							char.dance();
+						char.dance();
 
 						if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
 							char.forceIdle = true;
