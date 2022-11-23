@@ -692,12 +692,15 @@ class PlayState extends MusicBeatState
 
 	private function resyncVocals():Void
 	{
-		vocals.pause();
+		if (!gameEnded)
+		{
+			vocals.pause();
 
-		FlxG.sound.music.play();
-		Conductor.songPosition = FlxG.sound.music.time;
-		vocals.time = Conductor.songPosition;
-		vocals.play();
+			FlxG.sound.music.play();
+			Conductor.songPosition = FlxG.sound.music.time;
+			vocals.time = Conductor.songPosition;
+			vocals.play();
+		}
 	}
 
 	public function generateSong():Void
@@ -1082,7 +1085,8 @@ class PlayState extends MusicBeatState
 		{
 			var strumNote:StrumNote = new StrumNote(i);
 			strumNote.ID = i;
-			strumNote.x = 75 + (Note.transformedWidth * i) + (strumRange * _totalPlayers);
+
+			strumNote.x = 75 + (_totalPlayers == 0 ? 25 : 0) + (Note.transformedWidth * i) + (strumRange * _totalPlayers);
 			strumNote.y = strumLine.y;
 
 			strum.add(strumNote);

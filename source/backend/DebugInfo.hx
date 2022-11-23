@@ -7,6 +7,8 @@ import openfl.events.Event;
 import openfl.text.TextFormat;
 import openfl.text.TextField;
 import openfl.utils.Assets;
+import openfl.display.Shader;
+import openfl.filters.ShaderFilter;
 
 using StringTools;
 
@@ -19,6 +21,7 @@ class DebugInfo extends TextField
 {
 	var times:Array<Null<Float>> = [];
 	var memoryPeak:UInt = 0;
+	var textShader = new Shader();
 
 	public function new(x:Float, y:Float)
 	{
@@ -26,6 +29,26 @@ class DebugInfo extends TextField
 
 		this.x = x;
 		this.y = y;
+
+		textShader.glFragmentSource = "
+		#pragma header
+
+		void main() {
+			float x = 1.0 / openfl_TextureSize.x;
+			float y = 1.0 / openfl_TextureSize.y;
+
+			vec4 col = texture2D(bitmap, openfl_TextureCoordv.st);
+			vec4 smp = texture2D(bitmap, openfl_TextureCoordv.st + vec2(x * -1.0, y * -1.0));
+
+			if (smp.a > 0.0) {
+				gl_FragColor = mix(vec4(0.1, 0.1, 0.1, 1.0), col, col.a);
+			}
+			else {
+				gl_FragColor = col;
+			}
+		";
+
+		filters = [new ShaderFilter(textShader)];
 
 		autoSize = LEFT;
 
@@ -37,6 +60,9 @@ class DebugInfo extends TextField
 
 		width = 300;
 		height = 150;
+
+		autoSize = LEFT;
+		backgroundColor = 0;
 
 		addEventListener(Event.ENTER_FRAME, onEnter);
 	}

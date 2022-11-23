@@ -292,19 +292,17 @@ class OptionsMenu extends MusicBeatState
 												optionsSprite.onChange(-1);
 											else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
 												optionsSprite.onChange(1);
+
+											optionsSprite._holdCooldown = 0.0;
 										}
-										else
+										else if (optionsSprite._holdCooldown <= 0.0)
 										{
 											if (FlxG.mouse.overlaps(optionsSprite._arrowLeft))
-												optionsSprite.onChange(1);
+												optionsSprite.onChange(-1);
 											else if (FlxG.mouse.overlaps(optionsSprite._arrowRight))
 												optionsSprite.onChange(1);
 
-											optionsSprite._heldDown += elapsed;
-											if (optionsSprite._heldDown > 1.5)
-												optionsSprite._holdCooldown = 0.08;
-											else
-												optionsSprite._holdCooldown = 1.5;
+											optionsSprite._holdCooldown = 0.175;
 										}
 									}
 							}
@@ -524,7 +522,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 					_numText = new FlxText(0, 0, 0, Std.string(_valueSet), 20);
 					_numText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 					_numText.centerOverlay(_background, Y);
-					_numText.x = _background.x + _background.width - _numText.width - 20;
+					_numText.x = _background.x + _background.width - _numText.width - 60;
 					add(_numText);
 
 					_arrowLeft = new FlxText(0, 0, 0, "<", 18);
@@ -555,8 +553,6 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 			_selectionBG.alpha = 0.0;
 
 		_holdCooldown -= elapsed;
-		if (!FlxG.mouse.pressed)
-			_heldDown = 0.0;
 
 		super.update(elapsed);
 	}
@@ -580,23 +576,20 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 				}
 			case 1:
 				{
-					if (_holdCooldown <= 0.0)
-					{
-						if (_bound != null)
-							_valueSet = FlxMath.bound(_valueSet + Value, _bound.min, _bound.max);
-						else
-							_valueSet = _valueSet + Value;
+					if (_bound != null)
+						_valueSet = FlxMath.bound(_valueSet + Value, _bound.min, _bound.max);
+					else
+						_valueSet = _valueSet + Value;
 
-						_numText.text = Std.string(_valueSet);
-						_numText.x = _background.x + _background.width - _numText.width - 60;
+					_numText.text = Std.string(_valueSet);
+					_numText.x = _background.x + _background.width - _numText.width - 60;
 
-						_arrowLeft.x = _numText.x - _arrowLeft.width - 8;
-						_arrowRight.x = _numText.x + _numText.width + 8;
+					_arrowLeft.x = _numText.x - _arrowLeft.width - 8;
+					_arrowRight.x = _numText.x + _numText.width + 8;
 
-						Settings.setPref(saveHolder, _valueSet);
+					Settings.setPref(saveHolder, _valueSet);
 
-						acceptedOffset = true;
-					}
+					acceptedOffset = true;
 				}
 		}
 

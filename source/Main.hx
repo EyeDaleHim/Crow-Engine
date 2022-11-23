@@ -25,6 +25,8 @@ class Main extends Sprite
 	public static final gameVersion:VersionScheme = {display: "0.2.7.1", number: 7}; // Version Of The Base Game (Friday Night Funkin')
 	public static final engineVersion:VersionScheme = {display: "0.1.0A", number: 1}; // Version Of The Engine (Crow Engine)
 
+	public static var fps:DebugInfo;
+
 	public static function main():Void
 	{
 		Lib.current.addChild(new Main());
@@ -75,8 +77,8 @@ class Main extends Sprite
 			game.height = Math.ceil(stageHeight / game.zoom);
 		}
 
-		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash,
-			game.startFullscreen);
+		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
+			game.skipSplash, game.startFullscreen);
 
 		addChild(game);
 
@@ -84,6 +86,7 @@ class Main extends Sprite
 		FlxG.console.registerClass(utils.Tools);
 		FlxG.console.registerClass(backend.data.Settings);
 		FlxG.console.registerClass(music.Song);
+		FlxG.console.registerClass(Main);
 
 		Settings.init();
 		try
@@ -97,7 +100,7 @@ class Main extends Sprite
 		}
 
 		#if !mobile
-		addChild(new DebugInfo(10, 5));
+		addChild(fps = new DebugInfo(10, 5));
 		#end
 
 		FlxG.game.stage.quality = openfl.display.StageQuality.LOW; // try and remove openfl's smoothing??
