@@ -20,6 +20,8 @@ class Note extends FlxSprite
 
 	public static var transformedWidth:Float = 160 * 0.7;
 
+	public static var preAllocated:Array<Note> = [];
+
 	public override function new(strumTime:Float = 0, direction:Int = 0, mustPress:Bool = false, sustainIndex:Float = 0, sustainLength:Float = 0,
 			singAnim:String = '')
 	{

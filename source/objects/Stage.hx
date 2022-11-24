@@ -353,6 +353,13 @@ class BGSprite extends FlxSprite
 		scrollFactor.set(scroll.x, scroll.y);
 		antialiasing = Settings.getPref('antialiasing', true);
 
+		// prevent black backgrounds and use the stage default if we didn't get
+		// the player's stage correctly
+		if (image.path.split('/')[0] == 'stage-error')
+		{
+			image.path = image.path.replace('stage-error', 'stage');
+		}
+
 		this.graphicName = image.library + '/' + image.path;
 
 		image.path = Stage.currentStage + '/' + image.path;

@@ -7,6 +7,7 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
+import flixel.util.FlxStringUtil;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import backend.Transitions;
@@ -32,6 +33,11 @@ class MusicBeatState extends FlxUIState
 		}
 
 		super.create();
+
+		// calling gc to maximize between a state starting and the first lag in some cases
+		#if cpp
+		cpp.vm.Gc.run(FlxStringUtil.getClassName(FlxG.state, true) == 'PlayState');
+		#end
 	}
 
 	override function update(elapsed:Float)

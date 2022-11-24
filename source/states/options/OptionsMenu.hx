@@ -250,7 +250,7 @@ class OptionsMenu extends MusicBeatState
 				categoryTitle.visible = true;
 			}
 		}
-		else if (controls.getKey('ACCEPT', JUST_PRESSED) || (FlxG.mouse.pressed && FlxG.mouse.overlaps(currentObj)))
+		else if (controls.getKey('ACCEPT', JUST_PRESSED) || (currentObj != null && FlxG.mouse.pressed && FlxG.mouse.overlaps(currentObj)))
 		{
 			@:privateAccess
 			{
@@ -534,7 +534,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 					_arrowRight = new FlxText(0, 0, 0, ">", 18);
 					_arrowRight.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 					_arrowRight.centerOverlay(_numText, Y);
-					_arrowRight.x = _numText.x + _numText.width + _arrowRight.width + 8;
+					_arrowRight.x = _numText.x + _numText.width + 8;
 					add(_arrowRight);
 				}
 		}

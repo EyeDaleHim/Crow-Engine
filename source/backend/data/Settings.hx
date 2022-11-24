@@ -35,6 +35,9 @@ class Settings
 				FlxSprite.defaultAntialiasing = true;
 		});
 
+		onSet['framerate'](getPref('framerate', 60));
+		onSet['antialiasing'](getPref('antialiasing', true));
+
 		FlxG.stage.application.onExit.add(function(_)
 		{
 			_save.close();

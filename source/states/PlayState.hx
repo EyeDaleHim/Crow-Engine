@@ -315,7 +315,7 @@ class PlayState extends MusicBeatState
 				case 'ugh' | 'guns' | 'stress':
 					'tank';
 				default:
-					'stage';
+					'stage-error';
 			};
 
 			trace(Song.currentSong.song.formatToReadable());
@@ -461,7 +461,27 @@ class PlayState extends MusicBeatState
 		engineText.y = healthBarBG.y + 30;
 		addToHUD(engineText);
 
-		initCountdown();
+		initCountdown(null, null, 1000, function(e)
+		{
+			for (charList in [playerList, opponentList, spectatorList])
+			{
+				if (charList != null)
+				{
+					for (char in charList)
+					{
+						if (char != null)
+						{
+							char.dance(true);
+
+							if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
+								char.forceIdle = true;
+						}
+					}
+				}
+			}
+
+			stageData.countdownTick();
+		});
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
@@ -561,11 +581,11 @@ class PlayState extends MusicBeatState
 				openSubState(new PauseSubState());
 			}
 
-			Conductor.songPosition += FlxG.elapsed * 1000;
+			Conductor.songPosition += elapsed * 1000;
 
 			if (countdownState == 1)
 			{
-				if (Conductor.songPosition > 0)
+				if (Conductor.songPosition >= 0)
 				{
 					startSong();
 					countdownState = 2;
@@ -625,17 +645,24 @@ class PlayState extends MusicBeatState
 		}
 
 		// meh, hard-coded, i don't have an actual event system yet thing
-		if (Settings.getPref('camZoom', true))
-		{
-			if (curBeat % 4 == 0)
-				events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Camera Beat', arguments: ['world&spl-0.03', 'hud&spl-0.015']});
-		}
+		var preventDupe:Bool = false;
 
-		switch (songName.replace(' ', '-').toLowerCase())
+		if (!preventDupe)
 		{
-			case 'bopeebo':
-				if (curBeat % 8 == 7)
-					events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Play Animation', arguments: ['player', 'hey', '0']});
+			preventDupe = true;
+
+			if (Settings.getPref('camZoom', true))
+			{
+				if (curBeat % 4 == 0)
+					events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Camera Beat', arguments: ['world&spl-0.03', 'hud&spl-0.015']});
+			}
+
+			switch (songName.replace(' ', '-').toLowerCase())
+			{
+				case 'bopeebo':
+					if (curBeat % 8 == 7)
+						events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Play Animation', arguments: ['player', 'hey', '0']});
+			}
 		}
 
 		var sect:Int = Math.floor(curBeat / 4);
@@ -679,8 +706,12 @@ class PlayState extends MusicBeatState
 
 			FlxG.sound.music.play();
 			Conductor.songPosition = FlxG.sound.music.time;
-			vocals.time = Conductor.songPosition;
-			vocals.play();
+
+			if (Conductor.songPosition <= vocals.length) // fix the issue with the vocals randomly glitching
+			{
+				vocals.time = Conductor.songPosition;
+				vocals.play();
+			}
 		}
 	}
 

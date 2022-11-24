@@ -28,7 +28,7 @@ class Character extends FlxSprite
 	public var controlIdle:Bool = true; // Whether or not your character should keep playing the idle when it finishes an animation.
 	public var forceIdle:Bool = false;
 	// public var singAnimsUsesMulti:Bool = false; // If this is enabled, the sing animation will hold for (Conductor.crochet / 1000) * idleDuration, else, it'll just be idleDuration
-	public var idleDuration:Float = 0.65; // The amount of seconds (or multiplication) on when the idle animation should be played after the sing animation
+	public var _animationOffset:Float = 0.3;
 	public var overridePlayer:Bool = false; // If you set this to true, the enemy will be treated as a player
 
 	// animation stuff
@@ -56,10 +56,12 @@ class Character extends FlxSprite
 		var imageExists:Bool = FileSystem.exists(Paths.image(charPath));
 		var xmlExists:Bool = FileSystem.exists(Paths.image(charPath).replace('png', 'xml'));
 		var jsonExists:Bool = FileSystem.exists(Paths.image(charPath).replace('png', 'json'));
+		var failedChar:Bool = false;
 
 		if (!imageExists || !xmlExists || !jsonExists)
 		{
 			FlxG.log.error('Character $name doesn\'t exist! Please check your files!');
+			failedChar = true;
 			this.name = 'bf';
 		}
 
@@ -69,7 +71,11 @@ class Character extends FlxSprite
 
 		_characterData = Json.parse(Assets.getText(Paths.image(charPath).replace('png', 'json')));
 
-		this.healthColor = _characterData.healthColor;
+		if (failedChar)
+			this.healthColor = !isPlayer ? 0xFFFF0000 : 0xFF33FF00;
+		else
+			this.healthColor = _characterData.healthColor;
+
 		scale.set(_characterData.scale.x, _characterData.scale.y);
 
 		for (animData in _characterData.animationList)
@@ -130,15 +136,19 @@ class Character extends FlxSprite
 	{
 		if (idleList.length != 0) // what animations we playing today?
 		{
-			var playIdleAnim:Bool = (singList.contains(animation.curAnim.name) && _animationTimer >= Conductor.stepCrochet * 4.5 * 0.001);
+			// 0.3 offset
+			var playIdleAnim:Bool = (singList.contains(animation.curAnim.name)
+				&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 4.5 * 0.001);
 
 			if (overridePlayer)
-				playIdleAnim = ((singList.contains(animation.curAnim.name) && _animationTimer >= Conductor.stepCrochet * 1.15 * 0.001)
-					|| (missList.contains(animation.curAnim.name) && _animationTimer >= Conductor.stepCrochet * 4 * 0.001));
+				playIdleAnim = ((singList.contains(animation.curAnim.name)
+					&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 1.15 * 0.001)
+					|| (missList.contains(animation.curAnim.name)
+						&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 4 * 0.001));
 
-			if (playIdleAnim || !singList.contains(animation.curAnim.name))
+			if ((playIdleAnim || !singList.contains(animation.curAnim.name)) || forceIdle)
 			{
-				if (forcePlay || controlIdle)
+				if (controlIdle || forceIdle)
 				{
 					_idleIndex++;
 					_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);
