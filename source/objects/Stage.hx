@@ -172,6 +172,78 @@ class Stage
 
 					group['window'].color = FlxG.random.getObject(stageInstance.attributes['windowLights']);
 				}
+			case 'mall':
+				{
+					stageInstance.defaultZoom = 0.80;
+
+					stageInstance.charPosList.playerPositions[0].x += 200;
+					stageInstance.charPosList.opponentPositions[0].x -= 500;
+
+					stageInstance.camPosList.playerPositions[0].y -= 200;
+
+					var bg:BGSprite = new BGSprite({path: 'bgWalls', library: 'week5'}, {x: -1000, y: -500}, {x: 0.2, y: 0.2});
+					bg.scale.set(0.8, 0.8);
+					bg.updateHitbox();
+					bg.ID = 0;
+					group.set('background', bg);
+
+					var upBoppers:BGSprite = new BGSprite({path: 'upperBop', library: 'week5'}, {x: -240, y: -90}, {x: 0.33, y: 0.33}, [
+						{
+							name: 'bop',
+							prefix: "Upper Crowd Bob",
+							fps: 24,
+							looped: false,
+							indices: [],
+							offset: {x: 0, y: 0}
+						}
+					]);
+					upBoppers.scale.set(0.85, 0.85);
+					upBoppers.updateHitbox();
+					upBoppers.ID = 1;
+					group.set('upBoppers', upBoppers);
+
+					var escalator:BGSprite = new BGSprite({path: 'bgEscalator', library: 'week5'}, {x: -1100, y: -600}, {x: 0.3, y: 0.3});
+					escalator.scale.set(0.9, 0.9);
+					escalator.updateHitbox();
+					escalator.ID = 2;
+					group.set('escalator', escalator);
+
+					var tree:BGSprite = new BGSprite({path: 'christmasTree', library: 'week5'}, {x: 370, y: -250}, {x: 0.4, y: 0.4});
+					tree.updateHitbox();
+					tree.ID = 3;
+					group.set('tree', tree);
+
+					var botBoppers:BGSprite = new BGSprite({path: 'bottomBop', library: 'week5'}, {x: -300, y: 140}, {x: 0.9, y: 0.9}, [
+						{
+							name: 'bop',
+							prefix: "Bottom Level Boppers Idle",
+							fps: 24,
+							looped: false,
+							indices: [],
+							offset: {x: 0, y: 0}
+						}
+					]);
+					botBoppers.ID = 4;
+					group.set('botBoppers', botBoppers);
+
+					var ground:BGSprite = new BGSprite({path: 'fgSnow', library: 'week5'}, {x: -600, y: 700}, {x: 1.0, y: 1.0});
+					ground.ID = 5;
+					group.set('ground', ground);
+
+					var santa:BGSprite = new BGSprite({path: 'santa', library: 'week5'}, {x: -840, y: 150}, {x: 1.0, y: 1.0}, [
+						{
+							name: 'idle',
+							prefix: 'santa idle in fear',
+							fps: 24,
+							looped: false,
+							indices: [],
+							offset: {x: 0, y: 0}
+						}
+					]);
+					santa.renderPriority = 0x01;
+					santa.ID = 6;
+					group.set('santa', santa);
+				}
 			default:
 				{
 					stageInstance.defaultZoom = 0.90;
@@ -324,6 +396,11 @@ class Stage
 						}
 					}
 				}
+			case 'mall':
+				{
+					spriteGroup['upBoppers'].animation.play('bop', true);
+					spriteGroup['botBoppers'].animation.play('bop', true);
+				}
 		}
 	}
 
@@ -332,7 +409,10 @@ class Stage
 		switch (name)
 		{
 			case 'mall':
-				{}
+				{
+					spriteGroup['upBoppers'].animation.play('bop', true);
+					spriteGroup['botBoppers'].animation.play('bop', true);
+				}
 		}
 	}
 }
@@ -358,6 +438,7 @@ class BGSprite extends FlxSprite
 		if (image.path.split('/')[0] == 'stage-error')
 		{
 			image.path = image.path.replace('stage-error', 'stage');
+			image.library = 'week1';
 		}
 
 		this.graphicName = image.library + '/' + image.path;

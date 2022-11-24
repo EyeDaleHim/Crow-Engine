@@ -1,3 +1,20 @@
+# TRACKED ISSUES
+
+## Gameplay
+
+Issues that happen in-game, scripts or modification of the engine
+don't count as an issue.
+
+## Game Behavior
+
+Odd behaviors that did not work out as intended.
+Everything goes here generally.
+
+## Miscellaneous
+
+Anything that branches out from the categories but
+is an issue regardless.
+
 # TODO List
 
 ## High Priority

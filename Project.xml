@@ -103,6 +103,7 @@
 
 	<haxelib name="lime" />
 	<haxelib name="openfl" />
+	<!-- <haxelib name="trax" /> -->
 	<haxelib name="hscript" />
 
 	<haxelib name="discord_rpc" if="desktop"/>
