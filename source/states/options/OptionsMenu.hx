@@ -250,7 +250,7 @@ class OptionsMenu extends MusicBeatState
 				categoryTitle.visible = true;
 			}
 		}
-		else if (controls.getKey('ACCEPT', JUST_PRESSED) || (currentObj != null && FlxG.mouse.pressed && FlxG.mouse.overlaps(currentObj)))
+		else if (controls.getKey('ACCEPT', PRESSED) || (currentObj != null && FlxG.mouse.pressed && FlxG.mouse.overlaps(currentObj)))
 		{
 			@:privateAccess
 			{
@@ -280,18 +280,12 @@ class OptionsMenu extends MusicBeatState
 									}
 								case 1:
 									{
-										var checkOverlap:FlxObject->Bool = function(obj:FlxObject)
-										{
-											return obj != null ? FlxG.mouse.overlaps(obj) : false;
-										}
-
-										if (!FlxG.mouse.pressed
-											&& (!checkOverlap(optionsSprite._arrowLeft) || !checkOverlap(optionsSprite._arrowRight)))
+										if (!FlxG.mouse.pressed)
 										{
 											if (controls.getKey('UI_LEFT', JUST_PRESSED))
-												optionsSprite.onChange(-1);
+												optionsSprite.onChange(-5);
 											else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
-												optionsSprite.onChange(1);
+												optionsSprite.onChange(5);
 
 											optionsSprite._holdCooldown = 0.0;
 										}

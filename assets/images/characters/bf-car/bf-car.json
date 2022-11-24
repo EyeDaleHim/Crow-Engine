@@ -1,6 +1,7 @@
 {
     "healthColor": -13520687,
-    "animationList": [{
+    "animationList": [
+        {
             "prefix": "BF idle dance",
             "indices": [],
             "fps": 24,
@@ -117,11 +118,84 @@
     ],
     "name": "bf-car",
     "flip": {
-        "x": true,
+        "x": false,
         "y": false
     },
     "scale": {
         "x": 1,
         "y": 1
-    }
+    },
+    "behaviorType": "hair",
+    "animationLoopPoint": [
+        {
+            "animation": {
+                "prefix": "BF idle dance",
+                "indices": [],
+                "fps": 24,
+                "name": "idle",
+                "offset": {
+                    "x": -5,
+                    "y": 0
+                },
+                "looped": false
+            },
+            "index": 9
+        },
+        {
+            "animation": {
+                "prefix": "BF NOTE UP0",
+                "indices": [],
+                "fps": 24,
+                "name": "singUP",
+                "offset": {
+                    "x": -29,
+                    "y": 27
+                },
+                "looped": false
+            },
+            "index": 3
+        },
+        {
+            "animation": {
+                "prefix": "BF NOTE LEFT0",
+                "indices": [],
+                "fps": 24,
+                "name": "singLEFT",
+                "offset": {
+                    "x": 12,
+                    "y": -6
+                },
+                "looped": false
+            },
+            "index": 3
+        },
+        {
+            "animation": {
+                "prefix": "BF NOTE RIGHT0",
+                "indices": [],
+                "fps": 24,
+                "name": "singRIGHT",
+                "offset": {
+                    "x": -38,
+                    "y": -7
+                },
+                "looped": false
+            },
+            "index": 3
+        },
+        {
+            "animation": {
+                "prefix": "BF NOTE DOWN0",
+                "indices": [],
+                "fps": 24,
+                "name": "singDOWN",
+                "offset": {
+                    "x": -10,
+                    "y": -50
+                },
+                "looped": false
+            },
+            "index": 3
+        }
+    ]
 }

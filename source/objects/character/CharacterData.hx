@@ -10,4 +10,8 @@ typedef CharacterData =
 	var singList:Array<String>; // occasionally singLEFT, singDOWN and stuff
 	var flip:{x:Bool, y:Bool};
 	var scale:{x:Float, y:Float};
+	// custom behavior stuff
+	@:optional var behaviorType:String;
+	// hair behavior
+	@:optional var animationLoopPoint:Array<{animation:Animation, index:Int}>; // if the main animation finishes playing, where should it loop back?
 }

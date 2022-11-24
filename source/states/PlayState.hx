@@ -559,7 +559,7 @@ class PlayState extends MusicBeatState
 			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - _iconP2Offset);
 
 			if (iconP2.animation.curAnim.frames.length == 0 || iconP2.animation.curAnim.finished) // in case some bozos have animated icons
-				iconP2.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');
+				iconP2.changeState(healthBar.percent > 80 ? 'lose' : 'neutral');
 		}
 
 		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, ($curBeat, $curStep)');

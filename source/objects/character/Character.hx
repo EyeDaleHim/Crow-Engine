@@ -36,6 +36,7 @@ class Character extends FlxSprite
 	public var idleList:Array<String> = []; // automatically defaults to the character data idle list
 	public var missList:Array<String> = [];
 	public var singList:Array<String> = [];
+	public var behaviorType:String = '';
 
 	// handled by this class
 	private var _idleIndex:Int = 0;
@@ -96,6 +97,31 @@ class Character extends FlxSprite
 
 			if (animData.offset.x != 0 || animData.offset.y != 0)
 				animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
+		}
+
+		if (_characterData.behaviorType != null)
+		{
+			switch (_characterData.behaviorType)
+			{
+				case 'hair':
+					{
+						// i know loop points exist, idk how to use it yet and dont tell me how
+						for (animData in _characterData.animationLoopPoint)
+						{
+							var animName = animation.getByName(animData.animation.name);
+
+							animation.addByIndices(animData.animation.name + '-hair_loop', animData.animation.prefix, [
+								for (i in animData.index...animName.frames[animName.frames.length - 1])
+									i
+							], "", animData.animation.fps, true);
+						}
+
+						animation.finishCallback = function(name:String)
+						{
+							playAnim(name + '-hair_loop', true);
+						}
+					}
+			}
 		}
 
 		antialiasing = Settings.getPref('antialiasing', true);

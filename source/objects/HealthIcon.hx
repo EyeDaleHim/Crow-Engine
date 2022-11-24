@@ -21,6 +21,9 @@ class HealthIcon extends FlxSprite
 		// ill redo this in a later update, this isn't exactly >0.2.0 yet
 		frames = Paths.getSparrowAtlas('characters/icons/sprite');
 
+		char = char.replace('-car', '');
+		char = char.replace('-christmas', '');
+
 		for (anim in ['lose', 'neutral', 'win'])
 		{
 			animation.addByPrefix(anim, '$char-$anim', 24, true);
