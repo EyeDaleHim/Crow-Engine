@@ -749,7 +749,7 @@ class PlayState extends MusicBeatState
 				newNote.ID = pendingNotes.length;
 				newNote._lastNote = oldNote;
 				newNote.scrollFactor.set();
-				newNote.singAnim = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][newNote.direction];
+
 				newNote.missAnim = newNote.singAnim + 'miss';
 
 				if (note.sustain > 0)
@@ -773,8 +773,8 @@ class PlayState extends MusicBeatState
 						sustainNote._lastNote = oldNote;
 						sustainNote.sustainLength = sustainAmounts - 1;
 						sustainNote.alpha = 0.6;
-						sustainNote.singAnim = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][newNote.direction];
-						sustainNote.missAnim = newNote.singAnim + 'miss';
+						sustainNote.singAnim = newNote.singAnim;
+						sustainNote.missAnim = newNote.missAnim;
 
 						pendingNotes.push(sustainNote);
 					}
@@ -1241,7 +1241,10 @@ class PlayState extends MusicBeatState
 
 				if (player != null)
 				{
-					player.playAnim(note.singAnim, true);
+					if (player.animation.getByName(note.singAnim) == null)
+						player.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))]);
+					else
+						player.playAnim(note.singAnim, true);
 					player._animationTimer = 0.0;
 				}
 
@@ -1284,7 +1287,10 @@ class PlayState extends MusicBeatState
 		{
 			if (opponent != null)
 			{
-				opponent.playAnim(note.singAnim, true);
+				if (opponent.animation.getByName(note.singAnim) == null)
+					opponent.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))]);
+				else
+					opponent.playAnim(note.singAnim, true);
 				opponent._animationTimer = 0.0;
 			}
 
