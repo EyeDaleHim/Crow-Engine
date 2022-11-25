@@ -95,6 +95,11 @@ class ChartConvert
 								noteAnim: ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(notes[1] % 4)],
 								noteType: '',
 							};
+
+							if (section.altAnim)
+							{
+								convertedData.sectionList[index].notes[noteIndex].noteAnim += '-alt';
+							}
 						}
 					}
 
