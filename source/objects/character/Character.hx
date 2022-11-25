@@ -114,11 +114,16 @@ class Character extends FlxSprite
 								for (i in animData.index...animName.frames[animName.frames.length - 1])
 									i
 							], "", animData.animation.fps, true);
+
+							if (animData.animation.offset.x != 0 || animData.animation.offset.y != 0)
+								animOffsets.set(animData.animation.name + '-hair_loop',
+									new FlxPoint(animData.animation.offset.x, animData.animation.offset.y));
 						}
 
 						animation.finishCallback = function(name:String)
 						{
-							playAnim(name + '-hair_loop', true);
+							if (animation.getByName(name + '-hair_loop') != null)
+								playAnim(name + '-hair_loop', true);
 						}
 					}
 			}
@@ -237,21 +242,21 @@ class Character extends FlxSprite
 				});
 			};
 
-		quickAnimAdd('idle', 'Pico Idle Dance', [], 24, false, {x: 0, y: 0});
+		quickAnimAdd('idle', 'Parent Christmas Idle', [], 24, false, {x: 0, y: 0});
 
-		quickAnimAdd('singLEFT', 'Pico NOTE LEFT0', [], 24, false, {x: 65, y: 9});
-		quickAnimAdd('singDOWN', 'Pico Down Note0', [], 24, false, {x: 200, y: -70});
-		quickAnimAdd('singUP', 'Pico Up Note0', [], 24, false, {x: -29, y: 27});
-		quickAnimAdd('singRIGHT', 'Pico Note Right0', [], 24, false, {x: -68, y: -7});
+		quickAnimAdd('singLEFT', 'Parent Left Note Dad', [], 24, false, {x: -30, y: 15});
+		quickAnimAdd('singDOWN', 'Parent Down Note Dad', [], 24, false, {x: -31, y: -29});
+		quickAnimAdd('singUP', 'Parent Up Note Dad', [], 24, false, {x: -47, y: 24});
+		quickAnimAdd('singRIGHT', 'Parent Right Note Dad', [], 24, false, {x: -1, y: -23});
 
-		quickAnimAdd('singLEFTmiss', 'Pico NOTE LEFT miss', [], 24, false, {x: 62, y: 64});
-		quickAnimAdd('singDOWNmiss', 'Pico Down Note MISS', [], 24, false, {x: 210, y: -28});
-		quickAnimAdd('singUPmiss', 'pico Up Note miss', [], 24, false, {x: -19, y: 67});
-		quickAnimAdd('singRIGHTmiss', 'Pico Note Right Miss', [], 24, false, {x: -60, y: 41});
+		quickAnimAdd('singLEFT-alt', 'Parent Left Note Mom', [], 24, false, {x: -30, y: 15});
+		quickAnimAdd('singDOWN-alt', 'Parent Down Note Mom', [], 24, false, {x: -30, y: -27});
+		quickAnimAdd('singUP-alt', 'Parent Up Note Mom', [], 24, false, {x: -47, y: 24});
+		quickAnimAdd('singRIGHT-alt', 'Parent Right Note Mom', [], 24, false, {x: -1, y: -23});
 
 		data = {
-			name: 'pico',
-			healthColor: 0xFFB7D855,
+			name: 'parents',
+			healthColor: -5282098,
 			animationList: animationList,
 			idleList: idleList,
 			missList: missList,
