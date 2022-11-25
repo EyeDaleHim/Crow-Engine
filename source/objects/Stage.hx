@@ -176,10 +176,14 @@ class Stage
 				{
 					stageInstance.defaultZoom = 0.80;
 
-					stageInstance.charPosList.playerPositions[0].x += 200;
+					stageInstance.charPosList.playerPositions[0].x += 130;
 					stageInstance.charPosList.opponentPositions[0].x -= 500;
+					stageInstance.charPosList.opponentPositions[0].y = 70;
 
-					stageInstance.camPosList.playerPositions[0].y -= 200;
+					stageInstance.camPosList.playerPositions[0].y -= 100;
+
+					stageInstance.camPosList.opponentPositions[0].y -= 200;
+					stageInstance.camPosList.opponentPositions[0].x += 100;
 
 					var bg:BGSprite = new BGSprite({path: 'bgWalls', library: 'week5'}, {x: -1000, y: -500}, {x: 0.2, y: 0.2});
 					bg.scale.set(0.8, 0.8);
@@ -395,11 +399,14 @@ class Stage
 							attributes['trainSound'].play(true);
 						}
 					}
+					else
+						attributes['trainCooldown'] += 1;
 				}
 			case 'mall':
 				{
 					spriteGroup['upBoppers'].animation.play('bop', true);
 					spriteGroup['botBoppers'].animation.play('bop', true);
+					spriteGroup['santa'].animation.play('idle', true);
 				}
 		}
 	}
@@ -412,6 +419,7 @@ class Stage
 				{
 					spriteGroup['upBoppers'].animation.play('bop', true);
 					spriteGroup['botBoppers'].animation.play('bop', true);
+					spriteGroup['santa'].animation.play('idle', true);
 				}
 		}
 	}

@@ -31,6 +31,7 @@ class Note extends FlxSprite
 		this.direction = direction;
 		this.mustPress = mustPress;
 		this.isSustainNote = sustainIndex > 0;
+		this.singAnim = singAnim;
 
 		if (_noteFile == null)
 		{
