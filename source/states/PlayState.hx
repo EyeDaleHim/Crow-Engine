@@ -1145,6 +1145,7 @@ class PlayState extends MusicBeatState
 				if (note._lockedToStrumY)
 				{
 					note.y = strumNote.y - distance + note.offset.y;
+					note.y -= note.offset.y;
 					if (strumNote.downScroll)
 					{
 						if (note.isEndNote)
