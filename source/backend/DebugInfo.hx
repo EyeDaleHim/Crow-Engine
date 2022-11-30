@@ -124,7 +124,7 @@ class DebugInfo extends TextField
 				case 'minimized':
 					{
 						if (Settings.getPref("fpsInfo_display", 0) >= 0)
-							text += times.length + '\n';
+							text += Math.min(times.length, Settings.getPref('framerate', 60)) + '\n';
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 1)
 							text += Tools.formatMemory(memory);

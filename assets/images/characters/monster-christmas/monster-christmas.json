@@ -1,0 +1,79 @@
+{
+    "healthColor": -786578,
+    "animationList": [
+        {
+            "prefix": "monster idle",
+            "indices": [],
+            "fps": 24,
+            "name": "idle",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "monster up note",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP",
+            "offset": {
+                "x": -20,
+                "y": 50
+            },
+            "looped": false
+        },
+        {
+            "prefix": "monster down",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN",
+            "offset": {
+                "x": -30,
+                "y": -40
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Monster left note",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFT",
+            "offset": {
+                "x": -30,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Monster Right note",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHT",
+            "offset": {
+                "x": -51,
+                "y": 0
+            },
+            "looped": false
+        }
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "singList": [
+        "singLEFT",
+        "singDOWN",
+        "singUP",
+        "singRIGHT"
+    ],
+    "missList": [],
+    "name": "monster-christmas",
+    "flip": {
+        "x": false,
+        "y": false
+    },
+    "scale": {
+        "x": 1,
+        "y": 1
+    }
+}

@@ -307,13 +307,13 @@ class PlayState extends MusicBeatState
 				case 'cocoa' | 'eggnog':
 					'mall';
 				case 'winter-horrorland':
-					'mallEvil';
+					'red-mall';
 				case 'senpai' | 'roses':
 					'school';
 				case 'thorns':
-					'schoolEvil';
+					'dark-school';
 				case 'ugh' | 'guns' | 'stress':
-					'tank';
+					'warzone';
 				default:
 					'stage-error';
 			};
@@ -526,7 +526,8 @@ class PlayState extends MusicBeatState
 						_isolatedNotes.note[note.direction].push(note);
 				}
 
-				renderedNotes.add(pendingNotes.shift());
+				renderedNotes.add(note);
+				pendingNotes.splice(pendingNotes.indexOf(note), 1);
 			}
 		}
 
@@ -1298,8 +1299,8 @@ class PlayState extends MusicBeatState
 			var strum:StrumNote = opponentStrums.members[note.direction];
 			if (strum != null)
 			{
-				strum.playAnim(strum.confirmAnim);
-				strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
+				strum.playAnim(strum.confirmAnim, true);
+				strum.animationTime = Conductor.stepCrochet * 0.001 * (note.isEndNote ? 1.5 : 1.25);
 			}
 
 			if (!note.isSustainNote)
@@ -1410,26 +1411,29 @@ class PlayState extends MusicBeatState
 
 			for (num in comboString.split(""))
 			{
-				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('game/combo/numbers/num' + num));
-				numScore.scale.set(0.5, 0.5);
-				numScore.updateHitbox();
-				numScore.screenCenter();
-				numScore.setPosition(xPos + (43 * loop) - 90, numScore.y + 80);
+				if (num != '')
+				{
+					var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('game/combo/numbers/num' + num));
+					numScore.scale.set(0.5, 0.5);
+					numScore.updateHitbox();
+					numScore.screenCenter();
+					numScore.setPosition(xPos + (43 * loop) - 90, numScore.y + 80);
 
-				numScore.acceleration.y = FlxG.random.int(200, 300);
-				numScore.velocity.y -= FlxG.random.int(140, 160);
-				numScore.velocity.x = FlxG.random.float(-5, 5);
+					numScore.acceleration.y = FlxG.random.int(200, 300);
+					numScore.velocity.y -= FlxG.random.int(140, 160);
+					numScore.velocity.x = FlxG.random.float(-5, 5);
 
-				addToHUD(numScore, members.indexOf(globalStrums));
+					addToHUD(numScore, members.indexOf(globalStrums));
 
-				___trackedTweenObjects.push(FlxTween.tween(numScore, {alpha: 0}, 0.2, {
-					onComplete: function(tween:FlxTween)
-					{
-						remove(numScore);
-						numScore.destroy();
-					},
-					startDelay: Conductor.crochet * 0.002
-				}));
+					___trackedTweenObjects.push(FlxTween.tween(numScore, {alpha: 0}, 0.2, {
+						onComplete: function(tween:FlxTween)
+						{
+							remove(numScore);
+							numScore.destroy();
+						},
+						startDelay: Conductor.crochet * 0.002
+					}));
+				}
 
 				loop++;
 			}
