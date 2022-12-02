@@ -108,7 +108,8 @@
         "singRIGHT"
     ],
     "idleList": [
-        "idle"
+        "idle",
+        ""
     ],
     "missList": [
         "singLEFTmiss",

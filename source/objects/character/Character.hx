@@ -203,6 +203,9 @@ class Character extends FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
 	{
+		if (AnimName == '')
+			return;
+
 		animation.play(AnimName, Force, Reversed, Frame);
 
 		var offsetAnim:FlxPoint = FlxPoint.get();

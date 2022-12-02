@@ -36,7 +36,7 @@ class MusicBeatState extends FlxUIState
 
 		// calling gc to maximize between a state starting and the first lag in some cases
 		#if cpp
-		cpp.vm.Gc.run(FlxStringUtil.getClassName(FlxG.state, true) == 'PlayState');
+		cpp.vm.Gc.run(true);
 		#end
 	}
 
