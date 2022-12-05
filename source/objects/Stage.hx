@@ -7,6 +7,9 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.tweens.FlxTween;
+import flixel.system.FlxSoundGroup;
+import flixel.system.FlxSound;
+import flixel.util.typeLimit.OneOfTwo;
 import sys.FileSystem;
 import objects.handlers.Animation;
 import states.PlayState;
@@ -22,7 +25,10 @@ class Stage
 
 	public var defaultZoom:Float = 1.0;
 	public var name:String = '';
+
 	public var spriteGroup:Map<String, BGSprite> = [];
+	public var soundGroup:NamedSoundGroup;
+
 	public var charPosList:CharPositions;
 	public var camPosList:CharCamPositions;
 
@@ -33,6 +39,7 @@ class Stage
 	public static function getStage(stage:String):Stage
 	{
 		var group:Map<String, BGSprite> = [];
+		var sound:NamedSoundGroup = new NamedSoundGroup();
 
 		currentStage = stage;
 
@@ -109,7 +116,7 @@ class Stage
 					var thunder:GameSoundObject = new GameSoundObject();
 					thunder.loadEmbedded(Paths.sound('thunder_' + FlxG.random.int(1, 2), 'week2'));
 
-					stageInstance.attributes.set('thunder', thunder);
+					sound.addSound(thunder, 'thunder');
 
 					stageInstance.attributes.set('strikeBeat', 0);
 					stageInstance.attributes.set('lightningOffset', 8);
@@ -148,11 +155,11 @@ class Stage
 					group.set('trainPole', trainPole);
 
 					var street:BGSprite = new BGSprite({path: 'street', library: 'week3'}, {x: -40, y: 50}, {x: 0.95, y: 0.95});
-					street.ID = 4;
+					street.ID = 5;
 					group.set('street', street);
 
 					var train:BGSprite = new BGSprite({path: 'train', library: 'week3'}, {x: 2000, y: 360}, {x: 1.0, y: 1.0});
-					train.ID = 5;
+					train.ID = 4;
 					group.set('train', train);
 
 					stageInstance.attributes.set('windowLights', [0xFF31A2FD, 0xFF31FD8C, 0xFFFB33F5, 0xFFFD4531, 0xFFFBA633]);
@@ -160,7 +167,7 @@ class Stage
 					var trainSound:GameSoundObject = new GameSoundObject();
 					trainSound.loadEmbedded(Paths.sound('train_passes', 'week3'));
 
-					stageInstance.attributes.set('trainSound', trainSound);
+					sound.addSound(trainSound, 'trainSound');
 
 					stageInstance.attributes.set('trainMoving', false);
 					stageInstance.attributes.set('startedMoving', false);
@@ -277,6 +284,7 @@ class Stage
 
 		stageInstance.name = stage;
 		stageInstance.spriteGroup = group;
+		stageInstance.soundGroup = sound;
 
 		return stageInstance;
 	}
@@ -289,7 +297,9 @@ class Stage
 				{
 					attributes['lightShader'].update(1.5 * (Conductor.crochet / 1000) * elapsed);
 
-					if (attributes['trainSound'].time >= 4700)
+					var trainSound:GameSoundObject = cast(soundGroup.namedSounds.get('trainSound'), GameSoundObject);
+
+					if (trainSound.playing && trainSound.time >= 4700)
 					{
 						attributes['startedMoving'] = true;
 						if (states.PlayState.current.spectator.animation.finished)
@@ -338,7 +348,7 @@ class Stage
 				{
 					if (FlxG.random.bool(10) && beat > attributes['strikeBeat'] + attributes['lightningOffset'])
 					{
-						var thunder = attributes['thunder'];
+						var thunder:GameSoundObject = cast(soundGroup.namedSounds.get('thunder'), GameSoundObject);
 						thunder.onComplete = function()
 						{
 							@:privateAccess
@@ -382,24 +392,26 @@ class Stage
 
 						attributes['startMoving'] = true;
 
-						if (!attributes['trainSound'].playing)
+						var trainSound:GameSoundObject = cast(soundGroup.namedSounds.get('trainSound'), GameSoundObject);
+
+						if (!trainSound.playing)
 						{
 							@:privateAccess
-							states.PlayState.current.___trackedSoundObjects.push(attributes['trainSound']);
-							FlxG.sound.list.add(attributes['trainSound']);
+							states.PlayState.current.___trackedSoundObjects.push(trainSound);
+							FlxG.sound.list.add(trainSound);
 
 							@:privateAccess
-							attributes['trainSound'].onComplete = function()
+							trainSound.onComplete = function()
 							{
-								states.PlayState.current.___trackedSoundObjects.splice(states.PlayState.current.___trackedSoundObjects.indexOf(attributes['trainSound']),
-									1);
-								FlxG.sound.list.remove(attributes['trainSound']);
+								states.PlayState.current.___trackedSoundObjects.splice(states.PlayState.current.___trackedSoundObjects.indexOf(trainSound), 1);
+								FlxG.sound.list.remove(trainSound);
 							}
 
-							attributes['trainSound'].play(true);
+							trainSound.play();
 						}
 					}
-					else
+
+					if (!attributes['trainMoving'])
 						attributes['trainCooldown'] += 1;
 				}
 			case 'mall':
@@ -468,6 +480,29 @@ class BGSprite extends FlxSprite
 		}
 	}
 }
+
+class NamedSoundGroup extends FlxSoundGroup
+{
+	public var namedSounds:Map<String, DynamicSoundObject> = [];
+
+	public function addSound(Sound:DynamicSoundObject, ?Name:String = null)
+	{
+		if (Name != null)
+			namedSounds.set(Name, Sound);
+
+		return super.add(cast(Sound, FlxSound));
+	}
+
+	public function removeSound(Sound:DynamicSoundObject, ?Name:String = null)
+	{
+		if (Name != null && namedSounds.exists(Name))
+			namedSounds.remove(Name);
+
+		return super.remove(cast(Sound, FlxSound));
+	}
+}
+
+typedef DynamicSoundObject = OneOfTwo<Class<FlxSound>, GameSoundObject>;
 
 typedef CharPositions =
 {

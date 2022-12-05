@@ -759,11 +759,15 @@ class PlayState extends MusicBeatState
 
 					for (i in 0...sustainAmounts)
 					{
+						var sustainNote:Note = null;
+
 						if (i == 0)
 							continue;
-
-						var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
-							note.noteAnim);
+						/*sustainNote = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, 1, sustainAmounts - 1,
+							note.noteAnim); */
+						else
+							sustainNote = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
+								note.noteAnim);
 
 						oldNote = sustainNote;
 						if (pendingNotes.length > 0)
