@@ -56,8 +56,6 @@ class CurrentGame
 
 	function get_rank():String
 	{
-		var fcRanking:String = '';
-
 		if (misses <= 0)
 		{
 			if (judgementList['bad'] > 0 || judgementList['shit'] > 0)
@@ -140,7 +138,7 @@ class PlayState extends MusicBeatState
 	public static var current:PlayState;
 	public static var globalAttributes:Map<String, Dynamic> = new Map<String, Dynamic>();
 
-	public static var isStoryMode:Bool = false;
+	public static var playMode:PlayingMode = FREEPLAY;
 	public static var storyPlaylist:Array<String> = [];
 	public static var songDiff:Int = 1;
 
@@ -277,7 +275,7 @@ class PlayState extends MusicBeatState
 		if (Song.currentSong == null)
 			Song.loadSong('tutorial', 2);
 
-		if (!PlayState.isStoryMode)
+		if (PlayState.playMode == STORY)
 		{
 			if (!__internalSongCache.exists(Song.currentSong.song))
 			{
@@ -1098,6 +1096,11 @@ class PlayState extends MusicBeatState
 
 	public function addPlayer(strum:FlxTypedGroup<StrumNote>)
 	{
+		if (strum == null)
+			return;
+
+		strum.ID = _totalPlayers;
+
 		for (i in 0...4)
 		{
 			var strumNote:StrumNote = new StrumNote(i);
@@ -1205,7 +1208,7 @@ class PlayState extends MusicBeatState
 					if (note.isSustainNote)
 					{
 						if ((Settings.getPref('downscroll', false) && note.y > FlxG.height)
-							|| (Settings.getPref('downscroll', false) && note.y < -note.height))
+							|| (!Settings.getPref('downscroll', false) && note.y < -note.height))
 							killNote(note);
 					}
 				}
@@ -1477,4 +1480,11 @@ class PlayState extends MusicBeatState
 class GameSoundObject extends FlxSound
 {
 	public var persistentFromPause:Bool = false;
+}
+
+@:enum abstract PlayingMode(Int)
+{
+	var STORY:PlayingMode = 0x001;
+	var FREEPLAY:PlayingMode = 0x010;
+	var CHARTING:PlayingMode = 0x100;
 }

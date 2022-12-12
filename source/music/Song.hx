@@ -56,7 +56,8 @@ class Song
 			bpm: 100,
 			player: 'bf',
 			opponent: 'dad',
-			spectator: 'gf'
+			spectator: 'gf',
+			extraData: []
 		};
 	}
 }
@@ -70,6 +71,7 @@ typedef SongInfo =
 	var bpm:Float;
 	var speed:Float;
 
+	@:optional var extraData:Map<String, Dynamic>;
 	var player:String;
 	var opponent:String;
 	var spectator:String; // fancy term for gf

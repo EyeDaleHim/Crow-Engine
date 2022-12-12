@@ -59,7 +59,8 @@ class ChartConvert
 						speed: baseJSON.song.speed,
 						player: baseJSON.song.player1,
 						opponent: baseJSON.song.player2,
-						spectator: 'gf'
+						spectator: 'gf',
+						extraData: []
 					}
 
 					var totalSteps:Int = 0;
