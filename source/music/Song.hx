@@ -33,7 +33,8 @@ class Song
 				+ diffString.toLowerCase());
 			trace(path);
 
-			currentSong = backend.compat.ChartConvert.convertType('base', Assets.getText(path));
+			// currentSong = backend.compat.ChartConvert.convertType('base', Assets.getText(path));
+			currentSong = Json.parse(Assets.getText(path));
 
 			return currentSong;
 		}
