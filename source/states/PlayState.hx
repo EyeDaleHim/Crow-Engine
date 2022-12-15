@@ -294,7 +294,7 @@ class PlayState extends MusicBeatState
 		{
 			stageName = switch (Song.currentSong.song.toLowerCase().replace(' ', '-'))
 			{
-				case 'bopeebo' | 'fresh' | 'dad-battle':
+				case 'bopeebo' | 'fresh' | 'dad-battle' | 'dadbattle':
 					'stage';
 				case 'spookeez' | 'south' | 'monster':
 					'spooky';
