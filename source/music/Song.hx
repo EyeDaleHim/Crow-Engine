@@ -1,5 +1,6 @@
 package music;
 
+import flixel.FlxG;
 import flixel.math.FlxMath;
 import openfl.utils.Assets;
 import haxe.Json;
@@ -34,13 +35,13 @@ class Song
 			trace(path);
 
 			// currentSong = backend.compat.ChartConvert.convertType('base', Assets.getText(path));
-			currentSong = Json.parse(Assets.getText(path));
+			currentSong = Json.parse(fixData(Assets.getText(path)));
 
 			return currentSong;
 		}
 		catch (e)
 		{
-			throw 'Couldn\'t load song $song with difficulty $diffString (${Paths.data('charts/' + song.toLowerCase().replace(' ', '-') + '/' + song.toLowerCase().replace(' ', '-') + '-' + diffString.toLowerCase())})';
+			FlxG.log.warn('Couldn\'t load song $song with difficulty $diffString (${Paths.data('charts/' + song.toLowerCase().replace(' ', '-') + '/' + song.toLowerCase().replace(' ', '-') + '-' + diffString.toLowerCase())})');
 		}
 
 		return {

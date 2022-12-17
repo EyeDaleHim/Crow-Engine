@@ -117,7 +117,7 @@ class Paths
 
 	public static function music(song:String):String
 	{
-		return getPreloadPath(extensionHelper('music/${song.formatToReadable()}.$SOUND_EXT'));
+		return getPreloadPath(extensionHelper('music/${song}.$SOUND_EXT'));
 	}
 
 	public static function font(file:String):String

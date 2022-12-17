@@ -238,7 +238,7 @@ class PlayState extends MusicBeatState
 	public var songSpeed:Float = 1.0; // no support for changing speed yet
 
 	// various internal things
-	private var ___trackedSoundObjects:Array<GameSoundObject> = [];
+	private var ___trackedSoundObjects:Array<FlxSound> = [];
 	private var ___trackedTimerObjects:FlxTimerManager = new FlxTimerManager();
 	private var ___trackedTweenObjects:Array<FlxTween> = [];
 
@@ -832,7 +832,7 @@ class PlayState extends MusicBeatState
 					add(countdownSpr);
 				}
 
-				var countdownSound:GameSoundObject = new GameSoundObject();
+				var countdownSound:FlxSound = new FlxSound();
 
 				if (sound[i] != '')
 				{
@@ -908,8 +908,7 @@ class PlayState extends MusicBeatState
 		{
 			for (sound in ___trackedSoundObjects)
 			{
-				if (!sound.persistentFromPause)
-					sound.pause();
+				sound.pause();
 			}
 
 			for (tween in ___trackedTweenObjects)
@@ -936,8 +935,7 @@ class PlayState extends MusicBeatState
 	{
 		for (sound in ___trackedSoundObjects)
 		{
-			if (!sound.persistentFromPause)
-				sound.resume();
+			sound.resume();
 		}
 
 		for (tween in ___trackedTweenObjects)
@@ -1476,11 +1474,6 @@ class PlayState extends MusicBeatState
 
 		super.destroy();
 	}
-}
-
-class GameSoundObject extends FlxSound
-{
-	public var persistentFromPause:Bool = false;
 }
 
 @:enum abstract PlayingMode(Int)

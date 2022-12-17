@@ -333,6 +333,9 @@ class OptionsMenu extends MusicBeatState
 		if (curSelected[categoryID + 1] == null)
 			curSelected[categoryID + 1] = 0;
 
+		if (globalGroupManager.members.length == 0)
+			return;
+
 		var curSelection:Int = curSelected[categoryID + 1];
 
 		if (!mouse)
@@ -485,8 +488,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		_selectionBG.alpha = 0.0;
 
 		_nameSprite = new FlxText(20, 0, 0, name, 26);
-		_nameSprite.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
-		_nameSprite.borderSize = 1.75;
+		_nameSprite.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT);
 		_nameSprite.centerOverlay(_background, Y);
 
 		add(_background);
@@ -502,7 +504,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 						_isAccepted = defaultValue;
 
 					_statsText = new FlxText(0, 0, 0, (_isAccepted ? 'ON' : 'OFF'), 20);
-					_statsText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+					_statsText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT);
 					_statsText.centerOverlay(_background, Y);
 					_statsText.x = _background.x + _background.width - _statsText.width - 20;
 					add(_statsText);
@@ -514,19 +516,19 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 						_valueSet = defaultValue;
 
 					_numText = new FlxText(0, 0, 0, Std.string(_valueSet), 20);
-					_numText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+					_numText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT);
 					_numText.centerOverlay(_background, Y);
 					_numText.x = _background.x + _background.width - _numText.width - 60;
 					add(_numText);
 
 					_arrowLeft = new FlxText(0, 0, 0, "<", 18);
-					_arrowLeft.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+					_arrowLeft.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, LEFT);
 					_arrowLeft.centerOverlay(_numText, Y);
 					_arrowLeft.x = _numText.x - _arrowLeft.width - 8;
 					add(_arrowLeft);
 
 					_arrowRight = new FlxText(0, 0, 0, ">", 18);
-					_arrowRight.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+					_arrowRight.setFormat(Paths.font("vcr.ttf"), 22, FlxColor.WHITE, LEFT);
 					_arrowRight.centerOverlay(_numText, Y);
 					_arrowRight.x = _numText.x + _numText.width + 8;
 					add(_arrowRight);

@@ -144,10 +144,7 @@ class Tools
 
 	public static function formatToReadable(string:String):String
 	{
-		string.replace(' ', '-');
-		string.toLowerCase();
-
-		return string;
+		return string.replace(' ', '-').toLowerCase();
 	}
 
 	public static function transformSimplePoint(fromPoint:FlxPoint, toPoint:SimplePoint):FlxPoint
