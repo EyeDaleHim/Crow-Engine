@@ -53,6 +53,8 @@ class CurrentGame
 		{accuracy: 0.5, rank: 'F'}
 	];
 
+	public static var weekScore:Array<Int> = [];
+
 	public var rank(get, never):String;
 
 	function get_rank():String
@@ -895,11 +897,36 @@ class PlayState extends MusicBeatState
 			{score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
 
 		persistentUpdate = false;
+		if (PlayState.playMode != CHARTING)
+		{
+			if (PlayState.playMode != STORY || (PlayState.playMode == STORY && PlayState.storyPlaylist.length <= 0))
+			{
+				switch (PlayState.playMode)
+				{
+					case STORY:
+						// ScoreContainer.setWeek(Paths.currentLibrary, PlayState.songDiff, CurrentGame.weekScore);
 
-		MusicBeatState.switchState(new states.menus.FreeplayState());
+						MusicBeatState.switchState(new states.menus.StoryMenuState());
+					case FREEPLAY:
+						MusicBeatState.switchState(new states.menus.FreeplayState());
+					default:
+						MusicBeatState.switchState(new states.menus.MainMenuState());
+				}
 
-		FlxG.sound.playMusic(Paths.music('freakyMenu'));
-		Conductor.changeBPM(102);
+				FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				Conductor.changeBPM(102);
+			}
+			else if (PlayState.playMode == STORY)
+			{
+				PlayState.storyPlaylist.shift();
+			}
+		}
+		else
+		{
+			// i dont have a fucking charting state yet moron
+			PlayState.playMode = FREEPLAY;
+			endSong();
+		}
 	}
 
 	override function openSubState(state:FlxSubState)
@@ -1408,10 +1435,7 @@ class PlayState extends MusicBeatState
 
 		if (showNumbers)
 		{
-			var comboString:String = Std.string(gameInfo.combo);
-
-			while (comboString.length < Math.max(3, comboString.length))
-				comboString = '0' + comboString;
+			var comboString:String = Std.string(gameInfo.combo).lpad("0", 3);
 
 			var loop:Int = 0;
 
