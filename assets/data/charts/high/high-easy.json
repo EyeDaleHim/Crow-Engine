@@ -1,2770 +1,2720 @@
 {
-	"speed": 1.3,
-	"spectator": "gf",
-	"mustHitSections": [
-		true,
-		true,
-		false,
-		false,
-		false,
-		false,
-		true,
-		true,
-		true,
-		true,
-		false,
-		false,
-		false,
-		false,
-		true,
-		true,
-		true,
-		true,
-		false,
-		false,
-		false,
-		false,
-		true,
-		true,
-		true,
-		true,
-		false,
-		false,
-		false,
-		false,
-		true,
-		true,
-		true,
-		true,
-		false,
-		false,
-		false,
-		false,
-		true,
-		true,
-		true,
-		true,
-		true,
-		true,
-		true,
-		true,
-		true,
-		false,
-		true,
-		true,
-		true,
-		true,
-		true,
-		true,
-		true
-	],
-	"opponent": "mom-car",
-	"bpm": 125,
-	"player": "bf-car",
-	"sectionList": [
-		{
-			"length": 16,
-			"notes": []
-		},
-		{
-			"length": 16,
-			"notes": []
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 3840,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 4320,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 4560,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 4800,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 5160,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 5760,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 6240,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 6480,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 6720,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 7080,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 7680,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 8160,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 8400,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 8640,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 9000,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 9600,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 10080,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 10560,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 10800,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 11280,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 11520,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 12000,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 12240,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 12480,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 12840,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 13440,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 13920,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 14160,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 14400,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 14760,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 15360,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 15840,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 16080,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 16320,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 16680,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 17280,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 17280,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 17760,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 17760,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 18240,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 18240,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 18480,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 18720,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 18960,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 19200,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 19680,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 20160,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 20520,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 20880,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 21360,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 21600,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 22080,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 22440,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 22800,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 23280,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 23520,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 24000,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 24360,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 24720,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 24960,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 24960,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 25440,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 25440,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 25680,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 25920,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 25920,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 26160,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 26400,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 26400,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 26640,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 26880,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 27360,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 27840,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 28200,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 28560,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 29040,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 29280,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 29760,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 30120,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 30480,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 30960,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 31200,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 31680,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 32040,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 32400,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 32640,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 33120,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 33360,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 33600,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 33840,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 34080,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 34320,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 34560,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 35040,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 35520,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 36000,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 36480,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 36960,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 37200,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 37440,
-					"sustain": 240,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 37920,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 38280,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 38400,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 38880,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 39360,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 39840,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 40320,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 40560,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 40800,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 41040,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 41280,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 41760,
-					"sustain": 240,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 42240,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 42240,
-					"sustain": 420,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 42720,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 42720,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 43200,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 43200,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 43680,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 43680,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 44160,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 44160,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 44640,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 44880,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 45120,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 45120,
-					"sustain": 240,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 45600,
-					"sustain": 240,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 45600,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 45960,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 45960,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 46080,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 46080,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 46560,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 46560,
-					"sustain": 1440,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 47040,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 47520,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 48000,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 48240,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 48480,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 48720,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 48960,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 49440,
-					"sustain": 240,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 49920,
-					"sustain": 600,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 49920,
-					"sustain": 720,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 50640,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 50880,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 51360,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 51840,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 52320,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 52560,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 52800,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 53280,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 53760,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 54240,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 54480,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 54720,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 55200,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 55680,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 56160,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 56400,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 56640,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 56880,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 57120,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 57360,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 57600,
-					"sustain": 600,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 57600,
-					"sustain": 480,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 58320,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 58560,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 59040,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 59520,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 60000,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 60240,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 60480,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 60960,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 61440,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 61920,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 62160,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 62400,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 62880,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 63360,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 63840,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 64080,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 64320,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 64560,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 64800,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 65040,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 65280,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 65280,
-					"sustain": 480,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 65760,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 66240,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 66720,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 67200,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 67680,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 67920,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 68160,
-					"sustain": 240,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 68640,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 69000,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 69120,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 69600,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 70080,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 70560,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 71040,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 71280,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 71520,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 71760,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 72000,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 72480,
-					"sustain": 240,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 72960,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 72960,
-					"sustain": 420,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 73440,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 73440,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 73920,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 73920,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 74400,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 74400,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 74880,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 74880,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 75360,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 75600,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 75840,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 75840,
-					"sustain": 240,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 76320,
-					"sustain": 240,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 76320,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 76680,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 76680,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 76800,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 76800,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 77280,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 77280,
-					"sustain": 1440,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 77760,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 78240,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 78720,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 78960,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 79200,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 79440,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 79680,
-					"sustain": 240,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 80160,
-					"sustain": 240,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 80640,
-					"sustain": 960,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 80640,
-					"sustain": 960,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 82080,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 82080,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 82560,
-					"sustain": 600,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 82560,
-					"sustain": 600,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 83280,
-					"sustain": 600,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 83280,
-					"sustain": 600,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 84000,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 84000,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 84480,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 84480,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 84720,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 84960,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 84960,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 85440,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 85440,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 85920,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 85920,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 86160,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 86400,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 86400,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 86640,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 86880,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 86880,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 87360,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 87360,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 87840,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 87840,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 88080,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 88080,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 88200,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 88320,
-					"sustain": 960,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 88320,
-					"sustain": 960,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 89760,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 89760,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 90240,
-					"sustain": 600,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 90240,
-					"sustain": 600,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 90960,
-					"sustain": 600,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 90960,
-					"sustain": 600,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 91680,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 91680,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 92160,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 92160,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 92400,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 92640,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 92640,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 93120,
-					"sustain": 0,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 93120,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 93600,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 93600,
-					"sustain": 360,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 93840,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 94080,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 94080,
-					"sustain": 360,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 94320,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 94560,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 94560,
-					"sustain": 360,
-					"direction": 1,
-					"noteAnim": "singDOWN",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 95040,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 95040,
-					"sustain": 360,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 95520,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 95520,
-					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 95640,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 95760,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 95760,
-					"sustain": 0,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				},
-				{
-					"strumTime": 95880,
-					"sustain": 0,
-					"direction": 3,
-					"noteAnim": "singRIGHT",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": [
-				{
-					"strumTime": 96000,
-					"sustain": 960,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": false
-				},
-				{
-					"strumTime": 96000,
-					"sustain": 960,
-					"direction": 2,
-					"noteAnim": "singUP",
-					"noteType": "",
-					"mustPress": true
-				}
-			]
-		},
-		{
-			"length": 16,
-			"notes": []
-		},
-		{
-			"length": 16,
-			"notes": []
-		},
-		{
-			"length": 16,
-			"notes": []
-		},
-		{
-			"length": 16,
-			"notes": []
-		}
-	],
-	"song": "High",
-	"bpmMapping": [],
-	"extraData": {}
+    "speed": 1.3,
+    "spectator": "gf-car",
+    "mustHitSections": [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+    ],
+    "opponent": "mom-car",
+    "bpm": 125,
+    "player": "bf-car",
+    "sectionList": [{
+            "length": 16,
+            "notes": []
+        },
+        {
+            "length": 16,
+            "notes": []
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 3840,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 4320,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 4560,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 4800,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 5160,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 5760,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 6240,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 6480,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 6720,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 7080,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 7680,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 8160,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 8400,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 8640,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 9000,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 9600,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 10080,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 10560,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 10800,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 11280,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 11520,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 12000,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 12240,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 12480,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 12840,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 13440,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 13920,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 14160,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 14400,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 14760,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 15360,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 15840,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 16080,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 16320,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 16680,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 17280,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 17280,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 17760,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 17760,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 18240,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 18240,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 18480,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 18720,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 18960,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 19200,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 19680,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 20160,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 20520,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 20880,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 21360,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 21600,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 22080,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 22440,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 22800,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 23280,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 23520,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 24000,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 24360,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 24720,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 24960,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 24960,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 25440,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 25440,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 25680,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 25920,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 25920,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 26160,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 26400,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 26400,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 26640,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 26880,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 27360,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 27840,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 28200,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 28560,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 29040,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 29280,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 29760,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 30120,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 30480,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 30960,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 31200,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 31680,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 32040,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 32400,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 32640,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 33120,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 33360,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 33600,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 33840,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 34080,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 34320,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 34560,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 35040,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 35520,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 36000,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 36480,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 36960,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 37200,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 37440,
+                    "sustain": 240,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 37920,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 38280,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 38400,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 38880,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 39360,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 39840,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 40320,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 40560,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 40800,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 41040,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 41280,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 41760,
+                    "sustain": 240,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 42240,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 42240,
+                    "sustain": 420,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 42720,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 42720,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 43200,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 43200,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 43680,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 43680,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 44160,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 44160,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 44640,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 44880,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 45120,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 45120,
+                    "sustain": 240,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 45600,
+                    "sustain": 240,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 45600,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 45960,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 45960,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 46080,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 46080,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 46560,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 46560,
+                    "sustain": 1440,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 47040,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 47520,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 48000,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 48240,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 48480,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 48720,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 48960,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 49440,
+                    "sustain": 240,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 49920,
+                    "sustain": 600,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 49920,
+                    "sustain": 720,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 50640,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 50880,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 51360,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 51840,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 52320,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 52560,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 52800,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 53280,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 53760,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 54240,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 54480,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 54720,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 55200,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 55680,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 56160,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 56400,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 56640,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 56880,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 57120,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 57360,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 57600,
+                    "sustain": 600,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 57600,
+                    "sustain": 480,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 58320,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 58560,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 59040,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 59520,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 60000,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 60240,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 60480,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 60960,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 61440,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 61920,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 62160,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 62400,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 62880,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 63360,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 63840,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 64080,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 64320,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 64560,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 64800,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 65040,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 65280,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 65280,
+                    "sustain": 480,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 65760,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 66240,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 66720,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 67200,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 67680,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 67920,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 68160,
+                    "sustain": 240,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 68640,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 69000,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 69120,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 69600,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 70080,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 70560,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 71040,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 71280,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 71520,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 71760,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 72000,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 72480,
+                    "sustain": 240,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 72960,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 72960,
+                    "sustain": 420,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 73440,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 73440,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 73920,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 73920,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 74400,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 74400,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 74880,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 74880,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 75360,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 75600,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 75840,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 75840,
+                    "sustain": 240,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 76320,
+                    "sustain": 240,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 76320,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 76680,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 76680,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 76800,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 76800,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 77280,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 77280,
+                    "sustain": 1440,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 77760,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 78240,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 78720,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 78960,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 79200,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 79440,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 79680,
+                    "sustain": 240,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 80160,
+                    "sustain": 240,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 80640,
+                    "sustain": 960,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 80640,
+                    "sustain": 960,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 82080,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 82080,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 82560,
+                    "sustain": 600,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 82560,
+                    "sustain": 600,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 83280,
+                    "sustain": 600,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 83280,
+                    "sustain": 600,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 84000,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 84000,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 84480,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 84480,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 84720,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 84960,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 84960,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 85440,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 85440,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 85920,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 85920,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 86160,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 86400,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 86400,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 86640,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 86880,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 86880,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 87360,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 87360,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 87840,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 87840,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 88080,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 88080,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 88200,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 88320,
+                    "sustain": 960,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 88320,
+                    "sustain": 960,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 89760,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 89760,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 90240,
+                    "sustain": 600,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 90240,
+                    "sustain": 600,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 90960,
+                    "sustain": 600,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 90960,
+                    "sustain": 600,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 91680,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 91680,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 92160,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 92160,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 92400,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 92640,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 92640,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 93120,
+                    "sustain": 0,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 93120,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 93600,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 93600,
+                    "sustain": 360,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 93840,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 94080,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 94080,
+                    "sustain": 360,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 94320,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 94560,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 94560,
+                    "sustain": 360,
+                    "direction": 1,
+                    "noteAnim": "singDOWN",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 95040,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 95040,
+                    "sustain": 360,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 95520,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 95520,
+                    "sustain": 0,
+                    "direction": 0,
+                    "noteAnim": "singLEFT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 95640,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 95760,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 95760,
+                    "sustain": 0,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                },
+                {
+                    "strumTime": 95880,
+                    "sustain": 0,
+                    "direction": 3,
+                    "noteAnim": "singRIGHT",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": [{
+                    "strumTime": 96000,
+                    "sustain": 960,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": false
+                },
+                {
+                    "strumTime": 96000,
+                    "sustain": 960,
+                    "direction": 2,
+                    "noteAnim": "singUP",
+                    "noteType": "",
+                    "mustPress": true
+                }
+            ]
+        },
+        {
+            "length": 16,
+            "notes": []
+        },
+        {
+            "length": 16,
+            "notes": []
+        },
+        {
+            "length": 16,
+            "notes": []
+        },
+        {
+            "length": 16,
+            "notes": []
+        }
+    ],
+    "song": "High",
+    "bpmMapping": [],
+    "extraData": {}
 }
