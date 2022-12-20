@@ -13,7 +13,14 @@ import flixel.math.FlxMath;
 class MainMenuState extends MusicBeatState
 {
 	public static var menuList:Array<MenuCallback> = [
-		{name: 'story_mode', callback: () -> {}, skipAnimBG: false},
+		{
+			name: 'story_mode',
+			callback: function()
+			{
+				MusicBeatState.switchState(new StoryMenuState());
+			},
+			skipAnimBG: false
+		},
 		{
 			name: 'freeplay',
 			callback: function()
@@ -181,6 +188,8 @@ class MainMenuState extends MusicBeatState
 				{
 					if (menuList[curSelected].callback != null)
 						menuList[curSelected].callback();
+					else
+						revertBack();
 				});
 			}
 			else
@@ -196,12 +205,20 @@ class MainMenuState extends MusicBeatState
 							{
 								if (menuList[curSelected].callback != null)
 									menuList[curSelected].callback();
+								else
+									revertBack();
 							}
 						});
 					}
 				});
 			}
 		}
+	}
+
+	private function revertBack():Void
+	{
+		flickerBG.visible = false;
+		allowControl = true;
 	}
 }
 

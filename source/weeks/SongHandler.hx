@@ -64,6 +64,31 @@ class SongHandler
 		]
 	];
 
+	public static var weekCharacters:Map<String, Array<String>> = [
+		'tutorial' => ["", "bf", "gf"],
+		'week1' => ["dad", "bf", "gf"],
+		"week2" => ["spooky", "bf", "gf"],
+		"week3" => ["pico", "bf", "gf"],
+		"week4" => ["mom", "bf", "gf"],
+		"week5" => ["parents", "bf", "gf"],
+		"week6" => ["pixel", "bf", "gf"],
+		"week7" => ["tankman", "bf", "gf"]
+	];
+
+	public static function getWeek(week:String):WeekList
+	{
+		if (songs['Base_Game'].exists(week))
+			return songs['Base_Game'].get(week);
+
+		return {
+			songs: [],
+			icons: [],
+			diffs: PLACEHOLDER_DIFF,
+			color: 0xFFFFFFFF,
+			index: -1
+		};
+	}
+
 	public static final PLACEHOLDER_DIFF:DiffList = ['Easy', 'Normal', 'Hard'];
 }
 

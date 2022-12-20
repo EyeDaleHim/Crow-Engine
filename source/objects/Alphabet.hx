@@ -6,13 +6,14 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.util.FlxTimer;
+import objects.handlers.IFunkinSprite;
 
 using StringTools;
 
 /**
  * Loosley based on FlxTypeText lolol
  */
-class Alphabet extends FlxSpriteGroup
+class Alphabet extends FlxSpriteGroup implements IFunkinSprite
 {
 	public var delay:Float = 0.05;
 	public var paused:Bool = false;
