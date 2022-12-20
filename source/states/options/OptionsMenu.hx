@@ -15,6 +15,9 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.input.keyboard.FlxKey;
 import states.options.DescriptionHolder;
+import states.options.categories.CategoryOptions;
+import states.options.categories.GameplayOptions;
+import states.options.categories.GraphicsOptions;
 import objects.Alphabet;
 
 using StringTools;
@@ -26,8 +29,8 @@ class OptionsMenu extends MusicBeatState
 	private var mainCategory:Array<CategoryInfo> = [
 		{name: 'gameplay', description: 'Change the overall gameplay of your game.'},
 		{name: 'graphics', description: 'Change the game\'s appearance.'},
-		{name: 'controls', description: 'Change the controls to your liking.'},
-		{name: 'notes', description: 'Change the note\'s appearance in-game.'}
+		{name: 'controls', description: 'Change the controls to your liking.'} // ,
+		// {name: 'notes', description: 'Change the note\'s appearance in-game.'}
 	];
 
 	// sprites and stuff, automatically handled
@@ -107,70 +110,25 @@ class OptionsMenu extends MusicBeatState
 			{
 				case 0 | 1:
 					{
-						var listedGroup:Array<
-							{
-								name:String,
-								description:String,
-								saveHolder:String,
-								defaultValue:Dynamic,
-								?bound:{min:Int, max:Int},
-								?choices:Array<Dynamic>,
-								type:Int
-							}> = [];
+						var fromOptions:Array<CategoryOption> = null;
 
-						if (id == 0)
+						switch (categoryID)
 						{
-							listedGroup.push({
-								name: 'Downscroll',
-								description: 'If enabled, the notes will scroll downwards.',
-								saveHolder: 'downscroll',
-								defaultValue: false,
-								type: 0
-							});
-							listedGroup.push({
-								name: 'Ghost Tap',
-								description: 'Allows you to make inputs that are not called for while playing a song.',
-								saveHolder: 'ghost_tap',
-								defaultValue: true,
-								type: 0
-							});
-							listedGroup.push({
-								name: 'Camera Zooming',
-								description: 'If the camera should zoom in a little every section.',
-								saveHolder: 'camZoom',
-								defaultValue: true,
-								type: 0
-							});
-						}
-						else
-						{
-							listedGroup.push({
-								name: 'Frame Rate',
-								description: 'How many frames should the game run at.',
-								saveHolder: 'framerate',
-								defaultValue: 0,
-								choices: [60, 75, 90, 120, 144, 160, 240],
-								type: 1
-							});
-							listedGroup.push({
-								name: 'Antialiasing',
-								description: 'Removes jagged edges of the game for an improved quality.',
-								saveHolder: 'antialiasing',
-								defaultValue: true,
-								type: 0
-							});
-							listedGroup.push({
-								name: 'Flashing Lights',
-								description: 'Whether flashing lights should be on or off for photosensitive players.',
-								saveHolder: 'flashing_lights',
-								defaultValue: false,
-								type: 0
-							});
+							case 0:
+								fromOptions = GameplayOptions.getOptions();
+							case 1:
+								fromOptions = GraphicsOptions.getOptions();
 						}
 
-						for (member in listedGroup)
+						if (fromOptions == null)
 						{
-							var i:Int = listedGroup.indexOf(member);
+							createCategory(-1);
+							return;
+						}
+
+						for (member in fromOptions)
+						{
+							var i:Int = fromOptions.indexOf(member);
 
 							var spriteMember:OptionsSprite = new OptionsSprite(member.name, member.saveHolder, member.description, member.defaultValue,
 								member.bound, member.choices, member.type);
@@ -278,18 +236,20 @@ class OptionsMenu extends MusicBeatState
 										if (controls.getKey('ACCEPT', JUST_PRESSED) || FlxG.mouse.justPressed)
 											optionsSprite.onChange(!optionsSprite._isAccepted);
 									}
-								case 1:
+								case 1 | 2:
 									{
-										if (!FlxG.mouse.pressed)
-										{
-											if (controls.getKey('UI_LEFT', JUST_PRESSED))
-												optionsSprite.onChange(-5);
-											else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
-												optionsSprite.onChange(5);
+										/*if (!FlxG.mouse.pressed)
+											{
+												if (controls.getKey('UI_LEFT', JUST_PRESSED))
+													optionsSprite.onChange(-5);
+												else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
+													optionsSprite.onChange(5);
 
-											optionsSprite._holdCooldown = 0.0;
-										}
-										else if (optionsSprite._holdCooldown <= 0.0)
+												optionsSprite._holdCooldown = 0.0;
+											}
+											else */
+
+										if (optionsSprite._holdCooldown <= 0.0)
 										{
 											if (FlxG.mouse.overlaps(optionsSprite._arrowLeft))
 												optionsSprite.onChange(-1);
@@ -459,12 +419,14 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	// float, int
 	private var _valueSet:Float;
 	private var _bound:{min:Int, max:Int};
-	private var _choices:Array<Int> = [];
+	private var _choices:Array<Dynamic> = [];
 	private var _arrowLeft:FlxText;
 	private var _arrowRight:FlxText;
 	private var _numText:FlxText;
 	private var _holdCooldown:Float = 0;
 	private var _heldDown:Float = 0;
+
+	private var _actualData:Dynamic = [];
 
 	private var __type:Int = -1;
 
@@ -478,6 +440,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		this.description = description;
 		__type = type;
 		_bound = bound;
+		_choices = choices;
 
 		_background = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.6), 90, FlxColor.BLACK);
 		_background.scrollFactor.set();
@@ -503,17 +466,21 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 					if (!Settings.prefExists(saveHolder))
 						_isAccepted = defaultValue;
 
+					_actualData = _isAccepted;
+
 					_statsText = new FlxText(0, 0, 0, (_isAccepted ? 'ON' : 'OFF'), 20);
 					_statsText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT);
 					_statsText.centerOverlay(_background, Y);
 					_statsText.x = _background.x + _background.width - _statsText.width - 20;
 					add(_statsText);
 				}
-			case 1:
+			case 1 | 2:
 				{
 					_valueSet = Settings.getPref(saveHolder, null);
 					if (!Settings.prefExists(saveHolder))
 						_valueSet = defaultValue;
+
+					_actualData = _valueSet;
 
 					_numText = new FlxText(0, 0, 0, Std.string(_valueSet), 20);
 					_numText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT);
@@ -561,7 +528,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		{
 			case 0:
 				{
-					_isAccepted = Value;
+					_actualData = _isAccepted = Value;
 
 					_statsText.text = _isAccepted ? 'ON' : 'OFF';
 					_statsText.x = _background.x + _background.width - _statsText.width - 20;
@@ -570,20 +537,44 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 
 					acceptedOffset = true;
 				}
-			case 1:
+			case 1 | 2:
 				{
-					if (_bound != null)
-						_valueSet = FlxMath.bound(_valueSet + Value, _bound.min, _bound.max);
+					if (_choices != null && __type == 2)
+					{
+						var index:Int = _choices.indexOf(_actualData);
+
+						if (index == -1)
+							index = 0;
+
+						index = FlxMath.wrap(index + Value, 0, _choices.length - 1);
+
+						_numText.text = Std.string(_choices[index]);
+						_numText.x = _background.x + _background.width - _numText.width - 60;
+
+						_arrowLeft.x = _numText.x - _arrowLeft.width - 8;
+						_arrowRight.x = _numText.x + _numText.width + 8;
+
+						Settings.setPref(saveHolder, _choices[index]);
+
+						_actualData = _choices[index];
+					}
 					else
-						_valueSet = _valueSet + Value;
+					{
+						if (_bound != null)
+							_valueSet = FlxMath.bound(_valueSet + Value, _bound.min, _bound.max);
+						else
+							_valueSet = _valueSet + Value;
 
-					_numText.text = Std.string(_valueSet);
-					_numText.x = _background.x + _background.width - _numText.width - 60;
+						_actualData = _valueSet;
 
-					_arrowLeft.x = _numText.x - _arrowLeft.width - 8;
-					_arrowRight.x = _numText.x + _numText.width + 8;
+						_numText.text = Std.string(_valueSet);
+						_numText.x = _background.x + _background.width - _numText.width - 60;
 
-					Settings.setPref(saveHolder, _valueSet);
+						_arrowLeft.x = _numText.x - _arrowLeft.width - 8;
+						_arrowRight.x = _numText.x + _numText.width + 8;
+
+						Settings.setPref(saveHolder, _valueSet);
+					}
 
 					acceptedOffset = true;
 				}
@@ -595,6 +586,17 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 			offset.set(0, -8);
 		}
 	}
+}
+
+typedef CategoryOption =
+{
+	var name:String;
+	var description:String;
+	var saveHolder:String;
+	var defaultValue:Dynamic;
+	var ?bound:{min:Int, max:Int};
+	var ?choices:Array<Dynamic>;
+	var type:Int;
 }
 
 typedef CategoryInfo =
