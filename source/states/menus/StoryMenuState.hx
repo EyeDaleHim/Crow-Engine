@@ -19,7 +19,7 @@ using utils.Tools;
 class StoryMenuState extends MusicBeatState
 {
 	public static var curSelected:Int = 0;
-	public static var curDifficulty:Int = 0;
+	public static var curDifficulty:Int = Std.int(Math.max(0, SongHandler.PLACEHOLDER_DIFF.indexOf(SongHandler.defaultDifficulty)));
 
 	// fuck you
 	public var sortedWeeks:Array<WeekList> = [];

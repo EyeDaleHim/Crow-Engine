@@ -451,6 +451,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		{
 			_truthSprite = new FlxSprite().makeGraphic(20, 90, FlxColor.WHITE);
 			_truthSprite.scrollFactor.set();
+			add(_truthSprite);
 		}
 
 		_selectionBG = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.6), 90, FlxColor.WHITE);
@@ -461,7 +462,6 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		_nameSprite.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT);
 		_nameSprite.centerOverlay(_background, Y);
 
-		add(_truthSprite);
 		add(_background);
 		add(_selectionBG);
 		add(_nameSprite);
@@ -529,6 +529,14 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 
 		if (__type == 0)
 		{
+			var wantedScale:Float = _truthSprite.scale.x + 1.5;
+
+			if (_truthSprite.x <= _background.x || _truthSprite.x >= _background.x + _background.width - _truthSprite.width)
+				wantedScale = 1.0;
+
+			_truthSprite.scale.x = Tools.lerpBound(_truthSprite.scale.x, wantedScale, elapsed * 12.4);
+			_truthSprite.updateHitbox();
+
 			if (_isAccepted)
 				_truthSprite.x += elapsed * 320 * 4.7;
 			else

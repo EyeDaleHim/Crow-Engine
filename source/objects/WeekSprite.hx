@@ -22,9 +22,9 @@ class WeekSprite extends FlxSprite implements IFunkinSprite
 	{
 		if (isFlashing)
 		{
-			if ((_flashElapsed += elapsed) >= 1 / 30)
+			if ((_flashElapsed += elapsed) >= 1 / 25)
 			{
-				_flashElapsed -= 1 / 30;
+				_flashElapsed -= 1 / 25;
 
 				color = (color == FlxColor.WHITE ? FlxColor.CYAN : FlxColor.WHITE);
 			}

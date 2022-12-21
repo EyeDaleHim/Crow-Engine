@@ -40,9 +40,10 @@ class PauseSubState extends MusicBeatSubState
 			callback: function()
 			{
 				FlxTween.tween(PlayState.current.pauseCamera, {alpha: 0.0}, 0.5, {ease: FlxEase.quadOut});
-				/*if (PlayState.isStoryMode)
-					MusicBeatState.switchState(new ) */
-				MusicBeatState.switchState(new states.menus.FreeplayState());
+				if (PlayState.playMode == STORY)
+					MusicBeatState.switchState(new states.menus.StoryMenuState());
+				else
+					MusicBeatState.switchState(new states.menus.FreeplayState());
 
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				Conductor.changeBPM(102);

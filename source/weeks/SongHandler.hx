@@ -90,6 +90,7 @@ class SongHandler
 	}
 
 	public static final PLACEHOLDER_DIFF:DiffList = ['Easy', 'Normal', 'Hard'];
+	public static var defaultDifficulty:String = 'Normal';
 }
 
 typedef DiffList = Array<String>;

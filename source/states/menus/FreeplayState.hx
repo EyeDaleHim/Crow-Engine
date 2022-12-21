@@ -30,7 +30,7 @@ class FreeplayState extends MusicBeatState
 	public var iconArray:Array<HealthIcon> = [];
 
 	private static var curSelected:Int = 0;
-	private static var curDifficulty:Int = 1;
+	private static var curDifficulty:Int = Std.int(Math.max(0, SongHandler.PLACEHOLDER_DIFF.indexOf(SongHandler.defaultDifficulty)));
 
 	private static var score:LerpConstant = {current: 0.0, lerp: 0.0};
 	private static var miss:LerpConstant = {current: 0.0, lerp: 0.0};
