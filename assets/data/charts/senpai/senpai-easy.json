@@ -2650,5 +2650,7 @@
 	],
 	"song": "Senpai",
 	"bpmMapping": [],
-	"extraData": {}
+	"extraData": {
+		"noteSkin": "pixel"
+	}
 }
