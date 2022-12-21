@@ -3100,5 +3100,7 @@
 	],
 	"song": "Roses",
 	"bpmMapping": [],
-	"extraData": {}
+	"extraData": {
+		"noteSkin": "pixel"
+	}
 }
