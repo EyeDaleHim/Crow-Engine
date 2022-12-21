@@ -6,11 +6,15 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
+import flixel.util.FlxTimer;
 import flixel.util.FlxSort;
 import objects.WeekSprite;
 import objects.character.WeekCharacter;
 import weeks.SongHandler;
 import weeks.SongHandler.WeekList;
+import states.PlayState;
+
+using utils.Tools;
 
 class StoryMenuState extends MusicBeatState
 {
@@ -19,6 +23,7 @@ class StoryMenuState extends MusicBeatState
 
 	// fuck you
 	public var sortedWeeks:Array<WeekList> = [];
+	public var weekDataNames:Array<String> = [];
 
 	public var backgroundBox:FlxSprite;
 	public var weekSprites:FlxTypedGroup<WeekSprite>;
@@ -38,13 +43,11 @@ class StoryMenuState extends MusicBeatState
 		weekSprites = new FlxTypedGroup<WeekSprite>();
 		difficultySelectors = new FlxTypedGroup<FlxSprite>();
 
-		var weekNames:Array<String> = [];
-
 		for (key in SongHandler.songs["Base_Game"].keys())
 		{
 			var weekData:WeekList = SongHandler.getWeek(key);
 			sortedWeeks[weekData.index] = weekData;
-			weekNames[weekData.index] = key;
+			weekDataNames[weekData.index] = key;
 		}
 
 		sortedWeeks.sort(function(a, b)
@@ -55,7 +58,7 @@ class StoryMenuState extends MusicBeatState
 		for (week in sortedWeeks)
 		{
 			// sprite
-			var weekSprite:WeekSprite = new WeekSprite(0, (week.index * 120) + 480, weekNames[week.index]);
+			var weekSprite:WeekSprite = new WeekSprite(0, (week.index * 120) + 480, weekDataNames[week.index]);
 			weekSprite.screenCenter(X);
 			weekSprite.targetY = weekSprite.ID = Std.int(week.index);
 			weekSprite.attributes.set('weekY', 0.0);
@@ -117,7 +120,8 @@ class StoryMenuState extends MusicBeatState
 	{
 		if (allowControl)
 		{
-			if (controls.getKey('ACCEPT', JUST_PRESSED)) {}
+			if (controls.getKey('ACCEPT', JUST_PRESSED))
+				acceptWeek();
 			else if (controls.getKey('BACK', JUST_PRESSED))
 			{
 				allowControl = false;
@@ -226,5 +230,30 @@ class StoryMenuState extends MusicBeatState
 		}
 	}
 
-	public function acceptWeek():Void {}
+	public function acceptWeek():Void
+	{
+		allowControl = false;
+
+		FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.75);
+
+		weekSprites.members[curSelected].isFlashing = true;
+
+		new FlxTimer().start(1.5, function(tmr:FlxTimer)
+		{
+			Paths.currentLibrary = weekDataNames[curSelected];
+
+			PlayState.playMode = STORY;
+			PlayState.storyPlaylist = sortedWeeks[curSelected].songs;
+			PlayState.songDiff = curDifficulty;
+
+			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), curDifficulty);
+			MusicBeatState.switchState(new PlayState());
+		});
+
+		for (character in characters)
+		{
+			if (character.confirmPose != '')
+				character._posing = true;
+		}
+	}
 }

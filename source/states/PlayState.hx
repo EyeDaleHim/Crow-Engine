@@ -532,7 +532,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (camFollow != null)
+		if (camFollow != null && camFollowObject != null)
 		{
 			var lerpVal:Float = elapsed * 2.4;
 			camFollowObject.setPosition(Tools.lerpBound(camFollowObject.x, camFollow.x, lerpVal), Tools.lerpBound(camFollowObject.y, camFollow.y, lerpVal));
@@ -571,7 +571,7 @@ class PlayState extends MusicBeatState
 
 		if (countdownState != 0)
 		{
-			if (controls.getKey('PAUSE', JUST_PRESSED))
+			if (!gameEnded && controls.getKey('PAUSE', JUST_PRESSED))
 			{
 				if (songStarted)
 				{
@@ -667,21 +667,24 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		var sect:Int = Math.floor(curBeat / 4);
-
-		if (Song.currentSong.sectionList[sect] != null)
+		if (camFollow != null)
 		{
-			if (curBeat % Math.floor(Song.currentSong.sectionList[sect].length / 4) == 0)
+			var sect:Int = Math.floor(curBeat / 4);
+
+			if (Song.currentSong.sectionList[sect] != null)
 			{
-				if (Song.currentSong.mustHitSections[sect] != null)
+				if (curBeat % Math.floor(Song.currentSong.sectionList[sect].length / 4) == 0)
 				{
-					var newPos:FlxPoint = FlxPoint.get();
-					Tools.transformSimplePoint(newPos,
-						(Song.currentSong.mustHitSections[sect] ? stageData.camPosList.playerPositions[0] : stageData.camPosList.opponentPositions[0]));
+					if (Song.currentSong.mustHitSections[sect] != null)
+					{
+						var newPos:FlxPoint = FlxPoint.get();
+						Tools.transformSimplePoint(newPos,
+							(Song.currentSong.mustHitSections[sect] ? stageData.camPosList.playerPositions[0] : stageData.camPosList.opponentPositions[0]));
 
-					var midPoint:FlxPoint = (Song.currentSong.mustHitSections[sect] ? player : opponent).getMidpoint();
+						var midPoint:FlxPoint = (Song.currentSong.mustHitSections[sect] ? player : opponent).getMidpoint();
 
-					camFollow.set(midPoint.x + newPos.x, midPoint.y + newPos.y);
+						camFollow.set(midPoint.x + newPos.x, midPoint.y + newPos.y);
+					}
 				}
 			}
 		}
@@ -892,6 +895,12 @@ class PlayState extends MusicBeatState
 	public function endSong()
 	{
 		gameEnded = true;
+		persistentUpdate = false;
+
+		if (FlxG.sound.music != null)
+			FlxG.sound.music.stop();
+		if (vocals != null)
+			vocals.stop();
 
 		ScoreContainer.setSong(songName.replace(' ', '-').toLowerCase(), songDiff,
 			{score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
@@ -919,6 +928,9 @@ class PlayState extends MusicBeatState
 			else if (PlayState.playMode == STORY)
 			{
 				PlayState.storyPlaylist.shift();
+
+				Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
+				MusicBeatState.switchState(new PlayState());
 			}
 		}
 		else
@@ -927,6 +939,11 @@ class PlayState extends MusicBeatState
 			PlayState.playMode = FREEPLAY;
 			endSong();
 		}
+	}
+
+	private function getPlaylist()
+	{
+		return PlayState.storyPlaylist;
 	}
 
 	override function openSubState(state:FlxSubState)
