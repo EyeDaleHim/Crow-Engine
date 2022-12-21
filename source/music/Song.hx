@@ -13,6 +13,7 @@ using utils.Tools;
 class Song
 {
 	public static var currentSong:SongInfo;
+	public static final chartFormats:Array<String> = ['base'];
 
 	public static function loadSong(song:String, diff:Int = 2):SongInfo
 	{
@@ -32,10 +33,16 @@ class Song
 
 			var path = Paths.data('charts/' + song.toLowerCase().replace(' ', '-') + '/' + song.toLowerCase().replace(' ', '-') + '-'
 				+ diffString.toLowerCase());
-			trace(path);
 
-			// currentSong = backend.compat.ChartConvert.convertType('base', Assets.getText(path));
-			currentSong = Json.parse(fixData(Assets.getText(path)));
+			// do this in case i fockin add new things to the meta.json thing
+			var meta:{format:String} = null;
+
+			if (Assets.exists(Paths.data('charts/${song.formatToReadable()}/meta')))
+				meta = Json.parse(Assets.getText(Paths.data('charts/${song.formatToReadable()}/meta')));
+			if (meta != null && chartFormats.contains(meta.format))
+				currentSong = backend.compat.ChartConvert.convertType(meta.format, Assets.getText(path));
+			else
+				currentSong = Json.parse(fixData(Assets.getText(path)));
 
 			return currentSong;
 		}
