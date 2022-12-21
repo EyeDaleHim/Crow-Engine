@@ -71,6 +71,12 @@ class Song
 	}
 }
 
+typedef SongMetaChart =
+{
+	var format:String;
+	@:optional var defaultData:Map<String, Dynamic>;
+}
+
 typedef SongInfo =
 {
 	var song:String;

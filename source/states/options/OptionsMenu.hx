@@ -409,6 +409,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	public var isSelected:Bool = false;
 
 	private var _background:FlxSprite;
+	private var _truthSprite:FlxSprite;
 	private var _selectionBG:FlxSprite;
 	private var _nameSprite:FlxText;
 
@@ -446,6 +447,12 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		_background.scrollFactor.set();
 		_background.alpha = 0.3;
 
+		if (__type == 0)
+		{
+			_truthSprite = new FlxSprite().makeGraphic(20, 90, FlxColor.WHITE);
+			_truthSprite.scrollFactor.set();
+		}
+
 		_selectionBG = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.6), 90, FlxColor.WHITE);
 		_selectionBG.scrollFactor.set();
 		_selectionBG.alpha = 0.0;
@@ -454,6 +461,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		_nameSprite.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT);
 		_nameSprite.centerOverlay(_background, Y);
 
+		add(_truthSprite);
 		add(_background);
 		add(_selectionBG);
 		add(_nameSprite);
@@ -467,6 +475,8 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 						_isAccepted = defaultValue;
 
 					_actualData = _isAccepted;
+
+					_truthSprite.x = if (_isAccepted) width - _truthSprite.width else 0;
 
 					_statsText = new FlxText(0, 0, 0, (_isAccepted ? 'ON' : 'OFF'), 20);
 					_statsText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, LEFT);
@@ -516,6 +526,16 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 			_selectionBG.alpha = 0.0;
 
 		_holdCooldown -= elapsed;
+
+		if (__type == 0)
+		{
+			if (_isAccepted)
+				_truthSprite.x += elapsed * 320 * 4.7;
+			else
+				_truthSprite.x -= elapsed * 320 * 4.7;
+
+			_truthSprite.x = FlxMath.bound(_truthSprite.x, _background.x, _background.x + _background.width - _truthSprite.width);
+		}
 
 		super.update(elapsed);
 	}
