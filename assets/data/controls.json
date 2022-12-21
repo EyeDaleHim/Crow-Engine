@@ -1,0 +1,94 @@
+{
+    "controls": [
+        {
+            "name": "NOTE_LEFT",
+            "display": "Left Note",
+            "keys": [
+                65,
+                37
+            ],
+            "id": 0
+        },
+        {
+            "name": "NOTE_DOWN",
+            "display": "Down Note",
+            "keys": [
+                83,
+                40
+            ],
+            "id": 1
+        },
+        {
+            "name": "NOTE_UP",
+            "display": "Up Note",
+            "keys": [
+                87,
+                38
+            ],
+            "id": 2
+        },
+        {
+            "name": "NOTE_RIGHT",
+            "display": "Right Note",
+            "keys": [
+                68,
+                39
+            ],
+            "id": 3
+        },
+        {
+            "name": "UI_LEFT",
+            "display": "Left UI",
+            "keys": [
+                65,
+                37
+            ],
+            "id": 4
+        },
+        {
+            "name": "UI_DOWN",
+            "display": "Down UI",
+            "keys": [
+                83,
+                40
+            ],
+            "id": 5
+        },
+        {
+            "name": "UI_UP",
+            "display": "Up UI",
+            "keys": [
+                87,
+                38
+            ],
+            "id": 6
+        },
+        {
+            "name": "UI_RIGHT",
+            "display": "Right UI",
+            "keys": [
+                68,
+                39
+            ],
+            "id": 7
+        },
+        {
+            "name": "ACCEPT",
+            "display": "Confirm",
+            "keys": [
+                13,
+                -1
+            ],
+            "id": 8
+        },
+        {
+            "name": "BACK",
+            "display": "Back",
+            "keys": [
+                27,
+                -8
+            ],
+            "id": 8
+        }
+    ]
+}
