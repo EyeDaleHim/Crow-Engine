@@ -97,6 +97,7 @@ class Stage
 						}
 					]);
 					halloween.ID = 0;
+					halloween.active = true;
 					halloween.animation.play('idle');
 
 					group.set('halloween', halloween);
@@ -258,6 +259,96 @@ class Stage
 					santa.renderPriority = 0x01;
 					santa.ID = 6;
 					group.set('santa', santa);
+				}
+			case 'warzone':
+				{
+					stageInstance.defaultZoom = 0.90;
+
+					stageInstance.charPosList.spectatorPositions[0].y += 10;
+					stageInstance.charPosList.spectatorPositions[0].x -= 30;
+
+					stageInstance.charPosList.playerPositions[0].x += 40;
+
+					stageInstance.charPosList.opponentPositions[0].y += 60;
+					stageInstance.charPosList.opponentPositions[0].x -= 80;
+
+					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week7'}, {x: -400, y: -400}, {x: 0.0, y: 0.0});
+					sky.ID = 0;
+					group.set('sky', sky);
+
+					var cloud:BGSprite = new BGSprite({path: 'clouds', library: 'week7'}, {x: FlxG.random.int(-700, -100), y: FlxG.random.int(-20, 20)},
+						{x: 0.10, y: 0.10});
+					cloud.active = true;
+					cloud.ID = 1;
+					group.set('clouds', cloud);
+
+					var mountains:BGSprite = new BGSprite({path: 'mountains', library: 'week7'}, {x: -300, y: -20}, {x: 0.20, y: 0.20});
+					mountains.scale.set(1.2, 1.2);
+					mountains.updateHitbox();
+					mountains.ID = 2;
+					group.set('mountains', mountains);
+
+					var building:BGSprite = new BGSprite({path: 'buildings', library: 'week7'}, {x: -200, y: 0}, {x: 0.30, y: 0.30});
+					building.scale.set(1.1, 1.1);
+					building.updateHitbox();
+					building.ID = 3;
+					group.set('building', building);
+
+					var ruin:BGSprite = new BGSprite({path: 'ruins', library: 'week7'}, {x: -200, y: 0}, {x: 0.35, y: 0.35});
+					ruin.scale.set(1.1, 1.1);
+					ruin.updateHitbox();
+					ruin.ID = 4;
+					group.set('ruin', ruin);
+
+					var smokeLeft:BGSprite = new BGSprite({path: 'smokeLeft', library: 'week7'}, {x: -200, y: -100}, {x: 0.4, y: 0.4}, [
+						{
+							name: 'emitSmoke',
+							prefix: 'SmokeBlurLeft',
+							indices: [],
+							fps: 24,
+							looped: true,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					smokeLeft.ID = 5;
+					smokeLeft.active = true;
+					smokeLeft.animation.play('emitSmoke');
+					group.set('smokeLeft', smokeLeft);
+
+					var smokeRight:BGSprite = new BGSprite({path: 'smokeRight', library: 'week7'}, {x: 1100, y: -100}, {x: 0.4, y: 0.4}, [
+						{
+							name: 'emitSmoke',
+							prefix: 'SmokeRight',
+							indices: [],
+							fps: 24,
+							looped: true,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					smokeRight.ID = 5;
+					smokeRight.active = true;
+					smokeRight.animation.play('emitSmoke');
+					group.set('smokeRight', smokeRight);
+
+					var tankTower:BGSprite = new BGSprite({path: 'watchTower', library: 'week7'}, {x: 100, y: 50}, {x: 0.50, y: 0.50}, [
+						{
+							name: 'idle',
+							prefix: 'watchtower gradient color instance 1',
+							indices: [],
+							fps: 24,
+							looped: false,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					tankTower.ID = 6;
+					tankTower.active = true;
+					group.set('tankTower', tankTower);
+
+					var ground:BGSprite = new BGSprite({path: 'ground', library: 'week7'}, {x: -420, y: -150});
+					ground.scale.set(1.15, 1.15);
+					ground.updateHitbox();
+					ground.ID = 7;
+					group.set('ground', ground);
 				}
 			default:
 				{
@@ -429,6 +520,11 @@ class Stage
 					spriteGroup['botBoppers'].animation.play('bop', true);
 					spriteGroup['santa'].animation.play('idle', true);
 				}
+			case 'warzone':
+				{
+					if (beat % 2 == 0)
+						spriteGroup['tankTower'].animation.play('idle', true);
+				}
 		}
 	}
 
@@ -457,6 +553,9 @@ class BGSprite extends FlxSprite
 			position = {x: 0.0, y: 0.0};
 		if (scroll == null)
 			scroll = {x: 1.0, y: 1.0};
+
+		if (image.library == null)
+			image.library = Paths.currentLibrary;
 
 		super(position.x, position.y);
 		scrollFactor.set(scroll.x, scroll.y);
@@ -487,6 +586,8 @@ class BGSprite extends FlxSprite
 		{
 			loadGraphic(Paths.image(image.path, image.library));
 		}
+
+		active = false;
 	}
 }
 
@@ -507,7 +608,7 @@ typedef CharCamPositions =
 typedef ImagePath =
 {
 	var path:String;
-	var library:Null<String>;
+	@:optional var library:Null<String>;
 }
 
 typedef SimplePoint =

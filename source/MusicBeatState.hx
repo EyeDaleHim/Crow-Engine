@@ -34,7 +34,7 @@ class MusicBeatState extends FlxUIState
 
 		super.create();
 
-		// calling gc to maximize between a state starting and the first lag in some cases
+		// calling gc to hopefully stop a lag spike between a state starting and the first lag in some cases
 		#if cpp
 		cpp.vm.Gc.run(true);
 		#end

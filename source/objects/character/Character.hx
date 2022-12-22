@@ -53,10 +53,11 @@ class Character extends FlxSprite
 		this.isPlayer = isPlayer;
 
 		var charPath:String = 'characters/${this.name}/${this.name}';
+		var calledPath:String = Paths.image(charPath);
 
-		var imageExists:Bool = FileSystem.exists(Paths.image(charPath));
-		var xmlExists:Bool = FileSystem.exists(Paths.image(charPath).replace('png', 'xml'));
-		var jsonExists:Bool = FileSystem.exists(Paths.image(charPath).replace('png', 'json'));
+		var imageExists:Bool = FileSystem.exists(calledPath);
+		var xmlExists:Bool = FileSystem.exists(calledPath.replace('png', 'xml'));
+		var jsonExists:Bool = FileSystem.exists(calledPath.replace('png', 'json'));
 		var failedChar:Bool = false;
 
 		if (!imageExists || !xmlExists || !jsonExists)
@@ -68,9 +69,15 @@ class Character extends FlxSprite
 
 		charPath = 'characters/${this.name}/${this.name}';
 
-		frames = Paths.getSparrowAtlas(charPath);
-
 		_characterData = Json.parse(Assets.getText(Paths.image(charPath).replace('png', 'json')));
+
+		frames = switch (_characterData == null ? 'sparrow' : _characterData.atlasType)
+		{
+			case 'packer':
+				Paths.getPackerAtlas(charPath);
+			default:
+				Paths.getSparrowAtlas(charPath);
+		}
 
 		if (failedChar)
 			this.healthColor = !isPlayer ? 0xFFFF0000 : 0xFF33FF00;

@@ -137,8 +137,15 @@ class Paths
 
 	public static function getSparrowAtlas(file:String, ?library:String = null):FlxAtlasFrames
 	{
-		var imagePath:String = Paths.image(file);
-		var xmlPath:String = Paths.image(file).replace('png', 'xml');
+		var imagePath:String = Paths.image(file, library);
+		var xmlPath:String = imagePath.replace('png', 'xml');
 		return FlxAtlasFrames.fromSparrow(imagePath, OpenFlAssets.getText(xmlPath));
+	}
+
+	public static function getPackerAtlas(file:String, ?library:String = null):FlxAtlasFrames
+	{
+		var imagePath:String = Paths.image(file, library);
+		var txtPath:String = imagePath.replace('png', 'txt');
+		return FlxAtlasFrames.fromSpriteSheetPacker(imagePath, OpenFlAssets.getText(txtPath));
 	}
 }

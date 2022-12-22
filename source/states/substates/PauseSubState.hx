@@ -70,17 +70,20 @@ class PauseSubState extends MusicBeatSubState
 
 		for (text in textList)
 		{
-			var textObject:FlxText = new FlxText(0, 0, 0, text, 32);
-			textObject.setFormat(Paths.font('vcr.ttf'), 32);
-			textObject.updateHitbox();
-			textObject.setPosition(FlxG.width - (textObject.width + 20), 20 + (2.5 + textObject.height * textList.indexOf(text)));
-			textObject.alpha = 0.0;
-			textGroups.add(textObject);
+			if (text != '')
+			{
+				var textObject:FlxText = new FlxText(0, 0, 0, text, 32);
+				textObject.setFormat(Paths.font('vcr.ttf'), 32);
+				textObject.updateHitbox();
+				textObject.setPosition(FlxG.width - (textObject.width + 20), 20 + (2.5 + textObject.height * textList.indexOf(text)));
+				textObject.alpha = 0.0;
+				textGroups.add(textObject);
 
-			var formerY:Float = textObject.y;
-			textObject.y -= 5;
+				var formerY:Float = textObject.y;
+				textObject.y -= 5;
 
-			FlxTween.tween(textObject, {alpha: 1.0, y: formerY}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3 + (0.2 * textList.indexOf(text))});
+				FlxTween.tween(textObject, {alpha: 1.0, y: formerY}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3 + (0.2 * textList.indexOf(text))});
+			}
 		}
 
 		for (selection in selectionList)
