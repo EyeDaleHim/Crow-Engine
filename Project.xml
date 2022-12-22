@@ -151,5 +151,8 @@
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
 
-	<icon path="assets/icon.png"/>
+	<icon path="assets/icons/iconOG.png" />
+	<icon path="assets/icons/icon16.png" size='16'/>
+	<icon path="assets/icons/icon32.png" size='32'/>
+	<icon path="assets/icons/icon64.png" size='64'/>
 </project>
