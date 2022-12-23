@@ -82,6 +82,7 @@ class Main extends Sprite
 
 		addChild(game);
 
+		FlxG.console.registerClass(weeks.ScoreContainer);
 		FlxG.console.registerClass(utils.Paths);
 		FlxG.console.registerClass(utils.Tools);
 		FlxG.console.registerClass(backend.data.Settings);
@@ -89,6 +90,8 @@ class Main extends Sprite
 		FlxG.console.registerClass(Main);
 
 		Settings.init();
+		weeks.ScoreContainer.init();
+
 		try
 		{
 			@:privateAccess

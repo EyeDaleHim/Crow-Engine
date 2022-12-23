@@ -161,11 +161,13 @@ class FreeplayState extends MusicBeatState
 	{
 		var scoreString:String = 'PERSONAL BEST: ';
 
-		score.current = FlxMath.bound(FlxMath.lerp(score.current, score.lerp, FlxMath.bound(FlxG.elapsed * 4.775, 0, 1)), 0, score.lerp);
+		score.current = Tools.lerpBound(score.current, score.lerp, FlxG.elapsed * 4.775);
+		if (Math.abs(score.current - score.lerp) < 20)
+			score.current = score.lerp;
 		scoreString += Math.floor(score.current);
 
-		accuracy.current = FlxMath.bound(FlxMath.lerp(score.current, score.lerp, FlxMath.bound(FlxG.elapsed * 4.775, 0, 1)), 0, score.lerp);
-		scoreString += ' (${Tools.formatAccuracy(accuracy.current)}%)';
+		accuracy.current = FlxMath.bound(FlxMath.lerp(accuracy.current, accuracy.lerp, FlxMath.bound(FlxG.elapsed * 4.775, 0, 1)), 0, score.lerp);
+		scoreString += ' (${Tools.formatAccuracy(accuracy.current * 100)}%)';
 
 		scoreText.text = scoreString;
 		scoreText.x = FlxMath.lerp(scoreText.x, FlxG.width - scoreText.width - 8, FlxMath.bound(FlxG.elapsed * 6.775, 0, 1));

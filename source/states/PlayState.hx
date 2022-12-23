@@ -908,7 +908,7 @@ class PlayState extends MusicBeatState
 		persistentUpdate = false;
 		if (PlayState.playMode != CHARTING)
 		{
-			if (PlayState.playMode != STORY || (PlayState.playMode == STORY && PlayState.storyPlaylist.length <= 0))
+			if ((PlayState.playMode == STORY && PlayState.storyPlaylist.length <= 0) || PlayState.playMode != STORY)
 			{
 				switch (PlayState.playMode)
 				{

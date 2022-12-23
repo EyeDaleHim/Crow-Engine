@@ -21,6 +21,21 @@ class ScoreContainer
 	{
 		folder = x;
 		_save.bind(folder + '-highscore', 'crow-engine');
+
+		if (_save.data.savedScores != null)
+			songScores = _save.data.savedScores;
+		else
+			_save.data.savedScores = new Map<String, Map<Int, SongScore>>();
+
+		if (_save.data.weekScores != null)
+			weekScores = _save.data.weekScores;
+		else
+			_save.data.weekScores = new Map<String, Map<Int, SongScore>>();
+
+		FlxG.stage.application.onExit.add(function(_)
+		{
+			_save.flush();
+		});
 	}
 
 	// Gets the song info, if one exists
@@ -53,6 +68,8 @@ class ScoreContainer
 			songScores.set(song, []);
 			return setSong(song, diff, result);
 		}
+
+		_save.flush();
 
 		return result;
 	}
@@ -99,6 +116,8 @@ class ScoreContainer
 			weekScores.set(week, []);
 			return setWeek(week, diff, results);
 		}
+
+		_save.flush();
 
 		return getWeek(week, diff);
 	}

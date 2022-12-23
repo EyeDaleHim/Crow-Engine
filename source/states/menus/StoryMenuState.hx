@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
@@ -30,6 +31,7 @@ class StoryMenuState extends MusicBeatState
 	public var difficultySelectors:FlxTypedGroup<FlxSprite>;
 	public var characters:Array<WeekCharacter> = [];
 
+	public var songList:FlxText;
 	public var diffSprite:FlxSprite;
 	public var arrowLeft:FlxSprite;
 	public var arrowRight:FlxSprite;

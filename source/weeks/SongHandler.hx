@@ -17,49 +17,56 @@ class SongHandler
 				icons: ['dad', 'dad', 'dad'],
 				diffs: PLACEHOLDER_DIFF,
 				color: 0xFFB97BDD,
-				index: 1
+				index: 1,
+				description: 'Daddy Dearest'
 			},
 			'week2' => {
 				songs: ['Spookeez', 'South', 'Monster'],
 				icons: ['spooky', 'spooky', 'monster'],
 				diffs: PLACEHOLDER_DIFF,
 				color: 0xFF1D5D7A,
-				index: 2
+				index: 2,
+				description: 'Spooky Month'
 			},
 			'week3' => {
 				songs: ['Pico', 'Philly Nice', 'Blammed'],
 				icons: ['pico', 'pico', 'pico'],
 				diffs: PLACEHOLDER_DIFF,
 				color: 0xFF941653,
-				index: 3
+				index: 3,
+				description: 'Pico'
 			},
 			'week4' => {
 				songs: ['Satin Panties', 'High', 'Milf'],
 				icons: ['mom', 'mom', 'mom'],
 				diffs: PLACEHOLDER_DIFF,
 				color: 0xFFD8558E,
-				index: 4
+				index: 4,
+				description: 'Mommy Must Murder'
 			},
 			'week5' => {
 				songs: ['Cocoa', 'Eggnog', 'Winter Horrorland'],
 				icons: ['parents', 'parents', 'monster'],
 				diffs: PLACEHOLDER_DIFF,
 				color: 0xFFA0D1FF,
-				index: 5
+				index: 5,
+				description: 'Red Snow'
 			},
 			'week6' => {
 				songs: ['Senpai', 'Roses', 'Thorns'],
 				icons: ['senpai', 'senpai', 'spirit'],
 				diffs: PLACEHOLDER_DIFF,
 				color: 0xFFFF78BF,
-				index: 6
+				index: 6,
+				description: 'Hating Simulator Ft. Moawling'
 			},
 			'week7' => {
 				songs: ['Ugh', 'Guns', 'Stress'],
 				icons: ['tankman', 'tankman', 'tankman'],
 				diffs: PLACEHOLDER_DIFF,
 				color: 0xFFF6B604,
-				index: 7
+				index: 7,
+				description: 'Tankman'
 			}
 		]
 	];
@@ -102,4 +109,5 @@ typedef WeekList =
 	var diffs:DiffList;
 	var color:Int;
 	var index:Int;
+	@:optional var description:String;
 }

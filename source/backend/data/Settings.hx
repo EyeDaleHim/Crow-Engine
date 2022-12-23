@@ -40,7 +40,7 @@ class Settings
 
 		FlxG.stage.application.onExit.add(function(_)
 		{
-			_save.close();
+			_save.flush();
 		});
 	}
 

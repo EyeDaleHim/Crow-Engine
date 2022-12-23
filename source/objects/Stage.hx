@@ -269,7 +269,7 @@ class Stage
 
 					stageInstance.charPosList.playerPositions[0].x += 40;
 
-					stageInstance.charPosList.opponentPositions[0].y += 60;
+					stageInstance.charPosList.opponentPositions[0].y += 160;
 					stageInstance.charPosList.opponentPositions[0].x -= 80;
 
 					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week7'}, {x: -400, y: -400}, {x: 0.0, y: 0.0});
@@ -325,7 +325,7 @@ class Stage
 							offset: {x: 0, y: 0}
 						}
 					]);
-					smokeRight.ID = 5;
+					smokeRight.ID = 6;
 					smokeRight.active = true;
 					smokeRight.animation.play('emitSmoke');
 					group.set('smokeRight', smokeRight);
@@ -340,14 +340,14 @@ class Stage
 							offset: {x: 0, y: 0}
 						}
 					]);
-					tankTower.ID = 6;
+					tankTower.ID = 7;
 					tankTower.active = true;
 					group.set('tankTower', tankTower);
 
 					var ground:BGSprite = new BGSprite({path: 'ground', library: 'week7'}, {x: -420, y: -150});
 					ground.scale.set(1.15, 1.15);
 					ground.updateHitbox();
-					ground.ID = 7;
+					ground.ID = 8;
 					group.set('ground', ground);
 				}
 			default:
