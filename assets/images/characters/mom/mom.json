@@ -1,0 +1,83 @@
+{
+    "healthColor": -2599538,
+    "missList": [
+        "singLEFTmiss",
+        "singDOWNmiss",
+        "singUPmiss",
+        "singRIGHTmiss"
+    ],
+    "animationList": [{
+            "prefix": "Mom Idle",
+            "indices": [],
+            "fps": 24,
+            "name": "idle",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Mom Up Pose",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP",
+            "offset": {
+                "x": 14,
+                "y": 71
+            },
+            "looped": false
+        },
+        {
+            "prefix": "MOM DOWN POSE",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN",
+            "offset": {
+                "x": 20,
+                "y": -160
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Mom Left Pose",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFT",
+            "offset": {
+                "x": 250,
+                "y": -23
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Mom Pose Left",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHT",
+            "offset": {
+                "x": 10,
+                "y": -60
+            },
+            "looped": false
+        }
+    ],
+    "singList": [
+        "singLEFT",
+        "singDOWN",
+        "singUP",
+        "singRIGHT"
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "name": "mom",
+    "flip": {
+        "x": false,
+        "y": false
+    },
+    "scale": {
+        "x": 1,
+        "y": 1
+    }
+}
