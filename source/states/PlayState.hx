@@ -927,7 +927,7 @@ class PlayState extends MusicBeatState
 			}
 			else if (PlayState.playMode == STORY)
 			{
-				PlayState.storyPlaylist.shift();
+				PlayState.storyPlaylist.splice(0, 1);
 
 				Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
 				MusicBeatState.switchState(new PlayState());

@@ -245,7 +245,14 @@ class StoryMenuState extends MusicBeatState
 			Paths.currentLibrary = weekDataNames[curSelected];
 
 			PlayState.playMode = STORY;
-			PlayState.storyPlaylist = sortedWeeks[curSelected].songs;
+
+			var tempArray:Array<String> = [];
+			for (song in 0...sortedWeeks[curSelected].songs.length - 1)
+			{
+				tempArray.push(sortedWeeks[curSelected].songs[song]);
+			}
+			PlayState.storyPlaylist = tempArray;
+
 			PlayState.songDiff = curDifficulty;
 
 			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), curDifficulty);
