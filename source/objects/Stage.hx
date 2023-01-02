@@ -269,8 +269,10 @@ class Stage
 
 					stageInstance.charPosList.playerPositions[0].x += 40;
 
-					stageInstance.charPosList.opponentPositions[0].y += 160;
+					stageInstance.charPosList.opponentPositions[0].y += 300;
 					stageInstance.charPosList.opponentPositions[0].x -= 80;
+
+					stageInstance.camPosList.opponentPositions[0].y *= -1;
 
 					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week7'}, {x: -400, y: -400}, {x: 0.0, y: 0.0});
 					sky.ID = 0;
@@ -537,6 +539,12 @@ class Stage
 					spriteGroup['upBoppers'].animation.play('bop', true);
 					spriteGroup['botBoppers'].animation.play('bop', true);
 					spriteGroup['santa'].animation.play('idle', true);
+				}
+			case 'warzone':
+				{
+					@:privateAccess
+					if (Math.abs(cast(FlxG.state, MusicBeatState).curBeat) % 2 == 0)
+						spriteGroup['tankTower'].animation.play('idle', true);
 				}
 		}
 	}

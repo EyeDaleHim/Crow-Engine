@@ -233,7 +233,7 @@ class TitleState extends MusicBeatState
 						case 14:
 							addMoreText('Night');
 						case 15:
-							addMoreText('Funkin');
+							addMoreText("Funkin'");
 						case 16:
 							skipIntro();
 					}

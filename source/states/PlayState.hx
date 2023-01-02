@@ -289,7 +289,11 @@ class PlayState extends MusicBeatState
 
 		vocals = new FlxSound();
 		vocals.looped = false;
-		FlxG.sound.list.add(vocals);
+		if (vocals != null)
+		{
+			vocals.loadEmbedded(Paths.vocals(Song.currentSong.song));
+			FlxG.sound.list.add(vocals);
+		}
 
 		var stageName:String = 'stage';
 
@@ -884,9 +888,8 @@ class PlayState extends MusicBeatState
 			_lastFrameTime = FlxG.game.ticks;
 
 			FlxG.sound.playMusic(Paths.inst(Song.currentSong.song));
-
-			vocals.loadEmbedded(Paths.vocals(Song.currentSong.song));
-			vocals.play();
+			if (vocals != null)
+				vocals.play();
 
 			FlxG.sound.music.onComplete = endSong;
 		}

@@ -101,6 +101,7 @@ class FreeplayState extends MusicBeatState
 				var iconObject:HealthIcon = new HealthIcon(0, 0, SongHandler.songs['Base_Game'][week.week].icons[songsList.indexOf(song)]);
 				iconObject.ID = songObject.ID;
 				iconObject.sprTracker = songObject;
+				iconObject.offsetTracker.set(songObject.width + 10, (songObject.height / 2) - (iconObject.height / 2));
 				iconArray.push(iconObject);
 				add(iconObject);
 

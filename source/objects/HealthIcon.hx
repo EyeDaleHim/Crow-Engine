@@ -13,6 +13,7 @@ class HealthIcon extends FlxSprite
 {
 	public var char:String;
 	public var sprTracker:FlxSprite;
+	public var offsetTracker(default, null):FlxPoint = FlxPoint.get();
 
 	public override function new(x:Float = 0, y:Float = 0, char:String = 'bf')
 	{
@@ -60,7 +61,7 @@ class HealthIcon extends FlxSprite
 		}
 
 		if (sprTracker != null)
-			setPosition(sprTracker.x + sprTracker.width + 10, sprTracker.y - 30);
+			setPosition(sprTracker.x + offsetTracker.x, sprTracker.y + offsetTracker.y);
 	}
 
 	// need sprTracker if you wanna make 'em beat, otherwise, just scales by itself.

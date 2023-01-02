@@ -2,7 +2,7 @@ package states.options.categories;
 
 import states.options.OptionsMenu.CategoryOption;
 
-class CategoryOptions
+abstract class CategoryOptions
 {
 	public static function getOptions():Array<CategoryOption>
 	{
