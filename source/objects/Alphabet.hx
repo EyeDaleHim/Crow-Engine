@@ -78,9 +78,9 @@ class Alphabet extends FlxSpriteGroup implements IFunkinSprite
 				lastWasSpace = true;
 			}
 
-			var isLetter:Bool = AlphaCharacter.alphabet.indexOf(character.toLowerCase()) != -1;
-			var isNumber:Bool = AlphaCharacter.numbers.indexOf(character.toLowerCase()) != -1;
-			var isSymbol:Bool = AlphaCharacter.symbols.indexOf(character.toLowerCase()) != -1;
+			var isLetter:Bool = AlphaCharacter.alphabet.match(character.toLowerCase());
+			var isNumber:Bool = AlphaCharacter.numbers.match(character.toLowerCase());
+			var isSymbol:Bool = AlphaCharacter.symbols.match(character.toLowerCase());
 
 			if (isLetter || isNumber || isSymbol)
 				// if (AlphaCharacter.alphabet.contains(character.toLowerCase()))
@@ -144,10 +144,10 @@ class Alphabet extends FlxSpriteGroup implements IFunkinSprite
 				lastWasSpace = true;
 			}
 
-			var isNumber:Bool = AlphaCharacter.numbers.indexOf(splitWords[i]) != -1;
-			var isSymbol:Bool = AlphaCharacter.symbols.indexOf(splitWords[i]) != -1;
+			var isNumber:Bool = AlphaCharacter.numbers.match(splitWords[i]);
+			var isSymbol:Bool = AlphaCharacter.symbols.match(splitWords[i]);
 
-			if (AlphaCharacter.alphabet.indexOf(splitWords[i].toLowerCase()) != -1 || isNumber || isSymbol)
+			if (AlphaCharacter.alphabet.match(splitWords[i].toLowerCase()) || isNumber || isSymbol)
 				// if (AlphaCharacter.alphabet.contains(splitWords[loopNum].toLowerCase()) || isNumber || isSymbol)
 
 			{
@@ -211,11 +211,9 @@ class Alphabet extends FlxSpriteGroup implements IFunkinSprite
 
 class AlphaCharacter extends FlxSprite
 {
-	public static var alphabet:String = "abcdefghijklmnopqrstuvwxyz";
-
-	public static var numbers:String = "1234567890";
-
-	public static var symbols:String = "|~#$%()*+-:;<=>@[]^_.,'!?";
+	public static var alphabet = ~/[a-z]|[A-Z]/g;
+	public static var numbers = ~/[0-9]/g;
+	public static var symbols = ~/[\|~#$%()*+-:;<=>@\[\]\^_.,'!@]/g;
 
 	public var row:Int = 0;
 

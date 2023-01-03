@@ -8,6 +8,7 @@ import flixel.util.FlxSave;
 class Settings
 {
 	public static var prefs:Map<String, Dynamic> = [];
+	public static var controls:Map<String, Array<Int>> = [];
 	public static var onSet:Map<String, Dynamic->Void> = [];
 
 	private static var _save:FlxSave;
@@ -19,8 +20,11 @@ class Settings
 
 		if (_save.data.settings == null)
 			_save.data.settings = new Map<String, Dynamic>();
+		if (_save.data.controls == null)
+			_save.data.controls = new Map<String, Dynamic>();
 
-		prefs = cast(_save.data.settings, Map<String, Dynamic>);
+		prefs = _save.data.settings;
+		controls = _save.data.controls;
 
 		onSet.set('framerate', function(value:Dynamic)
 		{
@@ -40,18 +44,24 @@ class Settings
 
 		FlxG.stage.application.onExit.add(function(_)
 		{
+			_save.data.controls = controls;
 			_save.flush();
 		});
 	}
 
-	public static function grabKey(name:String, defaultKeys:Array<Int>):Array<Int>
+	public static function grabKey(name:String, ?defaultKeys:Array<Int>):Array<Int>
 	{
-		var keyList = getPref('control-bind', new Map<String, Array<Int>>());
-
-		if (!keyList.exists(name))
+		if (controls != null && !controls.exists(name))
 			return defaultKeys;
 
-		return keyList.get(name);
+		return controls.get(name);
+	}
+
+	public static function changeKey(name:String, keys:Array<Int>):Array<Int>
+	{
+		controls.set(name, keys);
+
+		return grabKey(name);
 	}
 
 	public static function getPref(name:String, ?defaultPref:Dynamic):Dynamic

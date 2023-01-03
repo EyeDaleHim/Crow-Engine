@@ -3,9 +3,11 @@ package utils;
 import objects.Stage.SimplePoint;
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.util.FlxAxes;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
+import flixel.math.FlxRect;
 import sys.FileSystem;
 import lime.utils.Assets;
 
@@ -97,6 +99,11 @@ class Tools
 			object.y = base.y + (base.height / 2) - (object.height / 2);
 
 		return object;
+	}
+
+	public static function calcRectOnStatusPosition(sprite:FlxSprite, rectangle:FlxRect)
+	{
+		return new FlxRect(rectangle.x - sprite.x, rectangle.y - sprite.y, rectangle.width, rectangle.height);
 	}
 
 	// html5 support, will do this later

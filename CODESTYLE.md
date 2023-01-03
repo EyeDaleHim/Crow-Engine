@@ -1,26 +1,20 @@
-# Crow Engine - Code Style
+# Crow Engine - Code Style Guidelines
 
-When making a Pull Request for Crow Engine, please consider the following requirements:
-
----
+When submitting a Pull Request for the Crow Engine project, please ensure that your code adheres to the following guidelines:
 
 ## File Formatting
-
-Please always format your haxe `.hx` files (Right Click -> Format Document)
+All .hx files should be properly formatted before submission (Right Click -> Format Document).
 
 ## Variable Naming
-Variable names should follow as is:
 
-**SNAKE_CASED** `var MIN_TIME:Float = .5;` is made in a way to differentiate importance. Name variables this way for important variables, usually after static variables.
-**pascalCased** `var defaultZoom:Float = .9;` is commonly used, you are free to use this in some cases you find necessary.
+Variable names should be formatted as follows:
 
-Please name a variable properly that defines their actual functionality or variable.
+* **SNAKE_CASED** (`e.g. var MIN_TIME:Float = .5;`) should be used for important variables, typically after static variables.
+* **pascalCased** (`e.g. var defaultZoom:Float = .9;`) may be used in certain cases as deemed necessary.
+It is important to ensure that variable names accurately reflect their purpose or function.
 
 ## Long Functions / Important Variables
-
-If a function is extremely long or if a variable is important, leave a comment `// a cool comment` to why.
+If a function is particularly long or if a variable is of particular importance, please include a comment explaining why (e.g. // a cool comment).
 
 ## Optimization
-
-Please make sure your pull request is tested and running well before you submit your pull request in the first place.
-
+Please ensure that your Pull Request has been thoroughly tested and is functioning optimally before submission.

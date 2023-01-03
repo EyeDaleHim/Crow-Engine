@@ -33,6 +33,8 @@ class OptionsMenu extends MusicBeatState
 		// {name: 'notes', description: 'Change the note\'s appearance in-game.'}
 	];
 
+	public static var changedSettings:Bool = false;
+
 	// sprites and stuff, automatically handled
 	public var background:FlxSprite;
 	public var dimmer:FlxSprite;
@@ -280,12 +282,25 @@ class OptionsMenu extends MusicBeatState
 				switch (categoryID)
 				{
 					case 2:
-						{}
+						{
+							if (controls.getKey('UI_LEFT', JUST_PRESSED) || controls.getKey('UI_RIGHT', JUST_PRESSED))
+							{
+								changeCategory();
+								changeSelection(0, []);
+							}
+						}
 				}
 			}
 		}
 
 		super.update(elapsed);
+	}
+
+	public var controlsCategory:Int = 0;
+
+	public function changeCategory():Void
+	{
+		controlsCategory = FlxMath.wrap(controlsCategory + 1, 0, 1);
 	}
 
 	public function changeSelection(change:Int = 0, keys:Array<Int>, mouse:Bool = false)
@@ -364,8 +379,6 @@ class OptionsMenu extends MusicBeatState
 					}
 				}
 			case 2:
-				{}
-			case 3:
 				{}
 		}
 	}
@@ -534,7 +547,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 			if (_truthSprite.x <= _background.x || _truthSprite.x >= _background.x + _background.width - _truthSprite.width)
 				wantedScale = 1.0;
 
-			_truthSprite.scale.x = Tools.lerpBound(_truthSprite.scale.x, wantedScale, elapsed * 12.4);
+			_truthSprite.scale.x = FlxMath.bound(Tools.lerpBound(_truthSprite.scale.x, wantedScale, elapsed * 12.4), 1, 1.8);
 			_truthSprite.updateHitbox();
 
 			if (_isAccepted)
@@ -612,6 +625,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 		{
 			_offsetReset = 0.0;
 			offset.set(0, -8);
+			_truthSprite.offset.set(0, -8);
 		}
 	}
 }
