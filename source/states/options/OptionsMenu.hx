@@ -261,6 +261,8 @@ class OptionsMenu extends MusicBeatState
 											optionsSprite._holdCooldown = 0.175;
 										}
 									}
+								case 3:
+									{}
 							}
 						}
 				}
@@ -294,6 +296,13 @@ class OptionsMenu extends MusicBeatState
 		}
 
 		super.update(elapsed);
+	}
+
+	override function closeSubState():Void
+	{
+		persistentUpdate = true;
+
+		super.closeSubState();
 	}
 
 	public var controlsCategory:Int = 0;
@@ -440,6 +449,12 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	private var _holdCooldown:Float = 0;
 	private var _heldDown:Float = 0;
 
+	// controls
+	private var _controlTitle:FlxText;
+
+	private var _mainControl:FlxText;
+	private var _altControl:FlxText;
+
 	private var _actualData:Dynamic = [];
 
 	private var __type:Int = -1;
@@ -531,7 +546,11 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	override function update(elapsed:Float)
 	{
 		if ((_offsetReset += elapsed) > 1 / 12)
-			offset.set(0, 0);
+		{
+			offset.set();
+			if (_truthSprite != null)
+				_truthSprite.offset.set();
+		}
 
 		if (isSelected)
 			_selectionBG.alpha = 0.2;
@@ -619,13 +638,20 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 
 					acceptedOffset = true;
 				}
+			case 3:
+				{
+					persistentUpdate = false;
+
+					acceptedOffset = true;
+				}
 		}
 
 		if (acceptedOffset)
 		{
 			_offsetReset = 0.0;
 			offset.set(0, -8);
-			_truthSprite.offset.set(0, -8);
+			if (_truthSprite != null)
+				_truthSprite.offset.set(0, -8);
 		}
 	}
 }

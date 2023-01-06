@@ -28,17 +28,18 @@ class ControlsBindSubState extends MusicBeatSubState
 		{
 			backTime += 2.5 / 2.75;
 		}
-		else if (backTime <= 0.0
-			&& controls.getKey('BACK', PRESSED)
-			|| InputFormat.matchesInput(FlxG.keys.firstJustReleased())) // released in case i want combination binding later
+		else if (backTime <= 0.0 || FlxG.keys.firstJustReleased() > 0) // released in case i want combination binding later
 		{
-			var savedBinding:Array<Int> = Settings.grabKey(bind);
-			savedBinding[keyIndex] = FlxG.keys.firstJustReleased();
+			if (controls.getKey('BACK', PRESSED) || InputFormat.matchesInput(FlxG.keys.firstJustReleased()))
+			{
+				var savedBinding:Array<Int> = Settings.grabKey(bind);
+				savedBinding[keyIndex] = FlxG.keys.firstJustReleased();
 
-			Settings.changeKey(bind, savedBinding);
+				Settings.changeKey(bind, savedBinding);
 
-			FlxG.sound.play(Paths.sound("menus/cancelMenu"));
-			close();
+				FlxG.sound.play(Paths.sound("menus/cancelMenu"));
+				close();
+			}
 		}
 
 		backTime -= elapsed * 6;
