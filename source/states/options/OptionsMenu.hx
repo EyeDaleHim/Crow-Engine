@@ -640,8 +640,6 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 				}
 			case 3:
 				{
-					persistentUpdate = false;
-
 					acceptedOffset = true;
 				}
 		}
