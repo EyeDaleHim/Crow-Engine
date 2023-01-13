@@ -9,6 +9,11 @@ class Controls
 	// does nothing lmao
 	public function new() {}
 
+	public static var RENAME_CONTROLS:Map<String, String> = [
+		'NOTE_LEFT' => 'Left Note', 'NOTE_DOWN' => 'Down Note', 'NOTE_UP' => 'Up Note', 'NOTE_RIGHT' => 'Right Note', 'UI_LEFT' => 'Left UI',
+		'UI_DOWN' => 'Down UI', 'UI_UP' => 'Up UI', 'UI_RIGHT' => 'Right UI', 'ACCEPT' => 'Accept', 'BACK' => 'Back', 'PAUSE' => 'Pause', 'RESET' => 'Pause'
+	];
+
 	// simplify controls to make this much easier
 	// not recommended to get the controls directly here unless you're smart
 	public var LIST_CONTROLS:Map<String, Control> = [
