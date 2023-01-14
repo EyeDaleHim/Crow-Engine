@@ -213,7 +213,7 @@ class AlphaCharacter extends FlxSprite
 {
 	public static var alphabet = ~/[a-z]|[A-Z]/g;
 	public static var numbers = ~/[0-9]/g;
-	public static var symbols = ~/[\|~#$%()*+-:;<=>@\[\]\^_.,'!@]/g;
+	public static var symbols = ~/[\|~#$%()*+-:;<=>\[\]\^_.,'!@]/g;
 
 	public var row:Int = 0;
 

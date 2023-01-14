@@ -44,7 +44,7 @@ class OptionsMenu extends MusicBeatState
 	public var description:DescriptionHolder;
 	public var groupCategory:FlxTypedGroup<OptionsSprite>;
 
-	public var globalGroupManager:FlxTypedGroup<FlxObject>;
+	public var globalGroupManager:FlxTypedGroup<FlxSprite>;
 
 	public var categoryID:Int = -1;
 
@@ -63,9 +63,9 @@ class OptionsMenu extends MusicBeatState
 		add(dimmer);
 
 		description = new DescriptionHolder();
-		description.text = 'test test boogie boogie';
+		description.text = ' ';
 
-		globalGroupManager = new FlxTypedGroup<FlxObject>();
+		globalGroupManager = new FlxTypedGroup<FlxSprite>();
 
 		categoryTitle = new FlxSprite(0, 100);
 		categoryTitle.frames = Paths.getSparrowAtlas('menus/mainmenu/menu_options');
@@ -90,6 +90,8 @@ class OptionsMenu extends MusicBeatState
 	{
 		categoryID = id;
 		globalGroupManager.clear();
+
+		description.alpha = 0;
 
 		if (id == -1)
 		{
@@ -139,6 +141,28 @@ class OptionsMenu extends MusicBeatState
 							globalGroupManager.add(spriteMember);
 						}
 					}
+				case 2:
+					{
+						var sortedControls:Array<String> = [];
+
+						for (key => member in controls.LIST_CONTROLS)
+						{
+							sortedControls[member.id] = key;
+						}
+
+						// what the fuck??
+						sortedControls.remove(sortedControls[sortedControls.length - 1]);
+
+						for (member in sortedControls)
+						{
+							var i:Int = sortedControls.indexOf(member);
+
+							var spriteMember:OptionsSprite = new OptionsSprite(member, '#CONTROL_$member', '', null, null, null, 3);
+							spriteMember.ID = spriteMember.selectionIndex = i;
+							spriteMember.setPosition(40, dimmer.y + 80 + ((spriteMember.height + 10) * i));
+							globalGroupManager.add(spriteMember);
+						}
+					}
 			}
 		}
 	}
@@ -167,36 +191,52 @@ class OptionsMenu extends MusicBeatState
 
 		description.setPosition(Tools.lerpBound(description.x, lerpTowards.x, lerpValue), Tools.lerpBound(description.y, lerpTowards.y, lerpValue));
 
-		if (FlxG.mouse.justMoved)
+		if (FlxG.mouse.justMoved && (categoryID != 2 || (categoryID == 2 && FlxG.mouse.justPressed)))
 		{
 			_lerpTarget = 0;
 
-			switch (categoryID)
+			for (category in globalGroupManager.members)
 			{
-				case -1 | 0 | 1:
+				if (category.ID != curSelected[categoryID + 1])
+				{
+					if (FlxG.mouse.overlaps(category))
 					{
-						for (category in globalGroupManager.members)
-						{
-							if (category.ID != curSelected[categoryID + 1])
-							{
-								if (FlxG.mouse.overlaps(category))
-								{
-									changeSelection(category.ID, [], true);
-									break;
-								}
-							}
-						}
-
-						if (categoryID == 0 || categoryID == 1)
-						{
-							if (!FlxG.mouse.overlaps(globalGroupManager.members[curSelected[categoryID + 1]]))
-								cast(globalGroupManager.members[curSelected[categoryID + 1]], OptionsSprite).isSelected = false;
-						}
+						changeSelection(category.ID, [], true);
+						break;
 					}
+				}
+			}
+
+			if (categoryID != -1)
+			{
+				if (!FlxG.mouse.overlaps(globalGroupManager.members[curSelected[categoryID + 1]]))
+					cast(globalGroupManager.members[curSelected[categoryID + 1]], OptionsSprite).isSelected = false;
 			}
 		}
 
-		var currentObj:FlxObject = globalGroupManager.members[curSelected[categoryID + 1]];
+		if (categoryID == 2)
+		{
+			for (sprite in globalGroupManager.members)
+			{
+				var controlledSprite = cast(sprite, OptionsSprite);
+
+				controlledSprite.y = Tools.lerpBound(controlledSprite.y, dimmer.y + 80 + ((controlledSprite.height + 10) * controlledSprite.selectionIndex),
+					elapsed * 14.8);
+
+				if (controlledSprite.y + controlledSprite.height <= dimmer.y || controlledSprite.y >= dimmer.y + dimmer.height)
+				{
+					controlledSprite.visible = false;
+					controlledSprite.clipRect = null;
+				}
+				else
+				{
+					controlledSprite.visible = true;
+					controlledSprite.clipRect = new FlxRect(dimmer.x - controlledSprite.x, dimmer.y - controlledSprite.y, dimmer.width, dimmer.height);
+				}
+			}
+		}
+
+		var currentObj:FlxSprite = globalGroupManager.members[curSelected[categoryID + 1]];
 
 		if (controls.getKey('BACK', JUST_PRESSED))
 		{
@@ -227,7 +267,7 @@ class OptionsMenu extends MusicBeatState
 								description.targetAlpha = 0.0;
 							}
 						}
-					case 0 | 1:
+					case 0 | 1 | 2:
 						{
 							var optionsSprite:OptionsSprite = cast(currentObj, OptionsSprite);
 
@@ -262,7 +302,9 @@ class OptionsMenu extends MusicBeatState
 										}
 									}
 								case 3:
-									{}
+									{
+										optionsSprite.onChange(null);
+									}
 							}
 						}
 				}
@@ -329,7 +371,19 @@ class OptionsMenu extends MusicBeatState
 
 		curSelected[categoryID + 1] = curSelection;
 
-		if (change != 0)
+		var range:Int = 0;
+
+		if (categoryID == 2)
+		{
+			for (object in globalGroupManager.members)
+			{
+				var bindControlObject:OptionsSprite = cast(object, OptionsSprite);
+				bindControlObject.selectionIndex = range - curSelection;
+				range++;
+			}
+		}
+
+		if (change != 0 && !(mouse && categoryID == 2))
 			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
 
 		var keyDirection:Int = FlxKey.NONE;
@@ -369,7 +423,7 @@ class OptionsMenu extends MusicBeatState
 							textObj.alpha = 0.6;
 					}
 				}
-			case 0 | 1:
+			case 0 | 1 | 2:
 				{
 					for (text in globalGroupManager.members)
 					{
@@ -387,8 +441,6 @@ class OptionsMenu extends MusicBeatState
 						}
 					}
 				}
-			case 2:
-				{}
 		}
 	}
 

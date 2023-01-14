@@ -7,6 +7,13 @@ import backend.data.Settings;
 class Controls
 {
 	// does nothing lmao
+	public static var instance(get, never):Controls;
+
+	static function get_instance():Controls
+	{
+		return cast(FlxG.state, MusicBeatState).controls;
+	}
+
 	public function new() {}
 
 	public static var RENAME_CONTROLS:Map<String, String> = [

@@ -6,6 +6,9 @@ import flixel.text.FlxText;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.util.FlxColor;
 import flixel.math.FlxMath;
+import utils.InputFormat;
+import backend.data.Controls;
+import states.options.ControlsBindSubState;
 
 using StringTools;
 using utils.Tools;
@@ -17,7 +20,8 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	public var saveHolder:String = '';
 	public var description:String = '';
 
-	public var isSelected:Bool = false;
+	public var isSelected(default, set):Bool = false;
+	public var selectionIndex:Int = 0;
 
 	private var _background:FlxSprite;
 	private var _truthSprite:FlxSprite;
@@ -39,6 +43,8 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 	private var _heldDown:Float = 0;
 
 	// controls
+	public var selectedControls:Int = 0;
+
 	private var _controlTitle:FlxText;
 
 	private var _mainControl:FlxText;
@@ -129,7 +135,32 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 				}
 			case 3:
 				{
-					//  _controlTitle = new FlxText(0, 0, 0, )
+					remove(_nameSprite);
+
+					_controlTitle = new FlxText(0, 0, 0, Controls.RENAME_CONTROLS.get(saveHolder.replace('#CONTROL_', '')), 20);
+					_controlTitle.setFormat(Paths.font("vcr.ttf"), 26);
+					_controlTitle.centerOverlay(_background, Y);
+					_controlTitle.x = _background.x + 30;
+					add(_controlTitle);
+
+					@:privateAccess
+					{
+						_mainControl = new FlxText(0, 0, 0,
+							InputFormat.format(Controls.instance.LIST_CONTROLS.get(saveHolder.replace('#CONTROL_', '')).__keys[0]).toUpperCase(), 18);
+						_mainControl.setFormat(Paths.font("vcr.ttf"), 24);
+						_mainControl.centerOverlay(_controlTitle, Y);
+						_mainControl.x = _controlTitle.x + Math.max(_controlTitle.width, 200) + 150;
+						_mainControl.x -= _mainControl.width / 2;
+						add(_mainControl);
+
+						_altControl = new FlxText(0, 0, 0,
+							InputFormat.format(Controls.instance.LIST_CONTROLS.get(saveHolder.replace('#CONTROL_', '')).__keys[1]).toUpperCase(), 18);
+						_altControl.setFormat(Paths.font("vcr.ttf"), 24);
+						_altControl.centerOverlay(_controlTitle, Y);
+						_altControl.x = _controlTitle.x + Math.max(_controlTitle.width, 200) + 400;
+						_altControl.x -= _altControl.width / 2;
+						add(_altControl);
+					}
 				}
 		}
 	}
@@ -168,6 +199,18 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 				_truthSprite.x -= elapsed * 320 * 4.7;
 
 			_truthSprite.x = FlxMath.bound(_truthSprite.x, _background.x, _background.x + _background.width - _truthSprite.width);
+		}
+		else if (__type == 3 && isSelected)
+		{
+			if (Controls.instance.getKey('UI_LEFT', JUST_PRESSED) || Controls.instance.getKey('UI_RIGHT', JUST_PRESSED))
+			{
+				selectedControls = (selectedControls == 0 ? 1 : 0);
+
+				(selectedControls == 0 ? _mainControl : _altControl).scale.set(1.3, 1.3);
+				(selectedControls == 1 ? _mainControl : _altControl).scale.set(1.0, 1.0);
+
+				FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+			}
 		}
 
 		super.update(elapsed);
@@ -233,6 +276,10 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 				}
 			case 3:
 				{
+					FlxG.state.persistentUpdate = false;
+
+					FlxG.state.openSubState(new ControlsBindSubState(saveHolder.replace('#CONTROL_', ''), selectedControls));
+
 					acceptedOffset = true;
 				}
 		}
@@ -244,5 +291,19 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 			if (_truthSprite != null)
 				_truthSprite.offset.set(0, -8);
 		}
+	}
+
+	function set_isSelected(Value:Bool):Bool
+	{
+		if (__type == 3)
+		{
+			_mainControl.scale.set(1.0, 1.0);
+			_altControl.scale.set(1.0, 1.0);
+
+			if (Value)
+				(selectedControls == 0 ? _mainControl : _altControl).scale.set(1.3, 1.3);
+		}
+
+		return (isSelected = Value);
 	}
 }

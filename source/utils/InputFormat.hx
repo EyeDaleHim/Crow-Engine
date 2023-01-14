@@ -137,6 +137,6 @@ class InputFormat
 				return "#*";
 			default:
 		}
-		return FlxKey.toStringMap.exists(id) ? FlxKey.toStringMap[id].toLowerCase() : "";
+		return FlxKey.toStringMap.exists(id) ? FlxKey.toStringMap[id].toLowerCase() : "N/A";
 	}
 }

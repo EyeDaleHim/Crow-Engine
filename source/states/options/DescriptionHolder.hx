@@ -35,13 +35,16 @@ class DescriptionHolder extends FlxTypedSpriteGroup<FlxSprite>
 
 	override function update(elapsed:Float)
 	{
-		_controlledAlpha += (elapsed * 1.175) * (targetAlpha > _controlledAlpha ? 1 : -1);
-		_controlledAlpha = FlxMath.bound(_controlledAlpha, 0, 1);
+		if (text != '' || text.length > 0)
+		{
+			_controlledAlpha += (elapsed * 1.175) * (targetAlpha > _controlledAlpha ? 1 : -1);
+			_controlledAlpha = FlxMath.bound(_controlledAlpha, 0, 1);
 
-		if (_background != null)
-			_background.alpha = FlxEase.quadOut(_controlledAlpha);
-		if (_text != null)
-			_text.alpha = FlxEase.quadOut(_controlledAlpha);
+			if (_background != null)
+				_background.alpha = FlxEase.quadOut(_controlledAlpha);
+			if (_text != null)
+				_text.alpha = FlxEase.quadOut(_controlledAlpha);
+		}
 
 		super.update(elapsed);
 	}

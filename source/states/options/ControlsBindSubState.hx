@@ -2,6 +2,9 @@ package states.options;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.util.FlxColor;
 import objects.Alphabet;
 import states.options.OptionsMenu;
 import utils.InputFormat;
@@ -12,37 +15,26 @@ class ControlsBindSubState extends MusicBeatSubState
 	private var bind:String;
 	private var keyIndex:Int = 0;
 
+	public var background:FlxSprite;
+
 	override public function new(bind:String, keyIndex:Int)
 	{
 		super();
 
 		this.bind = bind;
 		this.keyIndex = keyIndex;
+
+		background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		background.alpha = 0;
+		add(background);
+
+		FlxTween.tween(background, {alpha: 0.6}, 1);
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-		if (controls.getKey('BACK', JUST_PRESSED))
-		{
-			backTime += 2.5 / 2.75;
-		}
-		else if (backTime <= 0.0 || FlxG.keys.firstJustReleased() > 0) // released in case i want combination binding later
-		{
-			if (controls.getKey('BACK', PRESSED) || InputFormat.matchesInput(FlxG.keys.firstJustReleased()))
-			{
-				var savedBinding:Array<Int> = Settings.grabKey(bind);
-				savedBinding[keyIndex] = FlxG.keys.firstJustReleased();
-
-				Settings.changeKey(bind, savedBinding);
-
-				FlxG.sound.play(Paths.sound("menus/cancelMenu"));
-				close();
-			}
-		}
-
-		backTime -= elapsed * 6;
-		backTime = Math.max(0, backTime);
+		close(); // will add functionality later
 	}
 }
