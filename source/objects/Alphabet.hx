@@ -207,6 +207,20 @@ class Alphabet extends FlxSpriteGroup implements IFunkinSprite
 
 		super.update(elapsed);
 	}
+
+	function set_text(Text:String):String
+	{
+		for (letter in members)
+		{
+			remove(letter, true);
+			letter.destroy();
+		}
+
+		text = Text;
+		addText();
+
+		return text;
+	}
 }
 
 class AlphaCharacter extends FlxSprite

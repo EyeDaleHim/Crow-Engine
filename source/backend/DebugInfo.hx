@@ -32,7 +32,7 @@ class DebugInfo extends TextField
 		selectable = false;
 
 		defaultTextFormat = new TextFormat(Assets.getFont(Paths.font("vcr")).fontName, 12, 0xFFFFFFFF);
-		alpha = 0.2;
+		alpha = 0.75;
 
 		text = "";
 

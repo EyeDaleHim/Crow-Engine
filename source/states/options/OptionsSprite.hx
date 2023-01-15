@@ -200,16 +200,25 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 
 			_truthSprite.x = FlxMath.bound(_truthSprite.x, _background.x, _background.x + _background.width - _truthSprite.width);
 		}
-		else if (__type == 3 && isSelected)
+		else if (__type == 3)
 		{
-			if (Controls.instance.getKey('UI_LEFT', JUST_PRESSED) || Controls.instance.getKey('UI_RIGHT', JUST_PRESSED))
+			if (isSelected)
 			{
-				selectedControls = (selectedControls == 0 ? 1 : 0);
+				if (Controls.instance.getKey('UI_LEFT', JUST_PRESSED) || Controls.instance.getKey('UI_RIGHT', JUST_PRESSED))
+				{
+					selectedControls = (selectedControls == 0 ? 1 : 0);
 
-				(selectedControls == 0 ? _mainControl : _altControl).scale.set(1.3, 1.3);
-				(selectedControls == 1 ? _mainControl : _altControl).scale.set(1.0, 1.0);
+					(selectedControls == 0 ? _mainControl : _altControl).scale.set(1.3, 1.3);
+					(selectedControls == 1 ? _mainControl : _altControl).scale.set(1.0, 1.0);
 
-				FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+					FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+				}
+			}
+
+			@:privateAccess
+			{
+				_mainControl.text = InputFormat.format(Controls.instance.LIST_CONTROLS.get(saveHolder.replace('#CONTROL_', '')).__keys[0]).toUpperCase();
+				_altControl.text = InputFormat.format(Controls.instance.LIST_CONTROLS.get(saveHolder.replace('#CONTROL_', '')).__keys[1]).toUpperCase();
 			}
 		}
 

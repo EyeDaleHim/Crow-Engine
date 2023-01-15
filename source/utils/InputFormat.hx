@@ -17,6 +17,8 @@ class InputFormat
 		{
 			return extraAllowed.contains(parsedFormat);
 		}
+		else
+			return true;
 
 		return false;
 	}
