@@ -181,6 +181,46 @@ class Stage
 				}
 			case 'limo':
 				{
+					stageInstance.defaultZoom = 0.90;
+
+					var sky:BGSprite = new BGSprite({path: 'limoSunset', library: 'week4'}, {x: -120, y: -50}, {x: 0.1, y: 0.1});
+					sky.ID = 0;
+					group.set('sky', sky);
+
+					var backLimo:BGSprite = new BGSprite({path: 'bgLimo', library: 'week4'}, {x: -200, y: 480}, {x: 0.4, y: 0.4}, [
+						{
+							name: 'driving',
+							prefix: "background limo pink",
+							fps: 24,
+							looped: true,
+							indices: [],
+							offset: {x: 0, y: 0}
+						}
+					]);
+					backLimo.active = true;
+					backLimo.animation.play('driving');
+					backLimo.ID = 1;
+					group.set('backgroundLimo', backLimo);
+
+					var limo:BGSprite = new BGSprite({path: 'limoDrive', library: 'week4'}, {x: -120, y: 550}, {x: 1, y: 1}, [
+						{
+							name: 'driving',
+							prefix: "Limo stage",
+							fps: 24,
+							looped: true,
+							indices: [],
+							offset: {x: 0, y: 0}
+						}
+					]);
+					limo.active = true;
+					limo.animation.play('driving');
+					limo.ID = 2;
+					group.set('limo', limo);
+
+					var car:BGSprite = new BGSprite({path: 'fastCarLol', library: 'week4'}, {x: -300, y: 160});
+					car.ID = 3;
+					group.set('car', car);
+
 					stageInstance.attributes.set('carActive', false);
 					stageInstance.attributes.set('carPassingTime', 0.0);
 				}

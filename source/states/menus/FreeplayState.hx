@@ -52,7 +52,6 @@ class FreeplayState extends MusicBeatState
 
 		scoreText = new FlxText(0, 5, 0, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE);
-		scoreText.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		scoreText.text = 'PERSONAL BEST: ${Math.floor(score.current)} (${Tools.formatAccuracy(accuracy.current)}%)';
 		scoreText.x = FlxG.width - scoreText.width - 8;
 		// scoreText.centerOverlay(scoreBG, X); might come in handy
@@ -60,7 +59,6 @@ class FreeplayState extends MusicBeatState
 
 		diffText = new FlxText(0, scoreText.y + 35, FlxG.width - scoreText.x, "", 26);
 		diffText.setFormat(Paths.font("vcr.ttf"), 26, FlxColor.WHITE, CENTER);
-		diffText.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		diffText.antialiasing = Settings.getPref('antialiasing', true);
 		diffText.centerOverlay(scoreBG, X);
 
