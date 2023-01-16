@@ -66,7 +66,8 @@ class ControlsBindSubState extends MusicBeatSubState
 		{
 			if (FlxG.mouse.overlaps(backKey))
 				closeControls();
-			else if (FlxG.mouse.overlaps(acceptKey)) {}
+			else if (FlxG.mouse.overlaps(acceptKey))
+				acceptControls();
 		}
 
 		if (FlxG.keys.firstJustPressed() != -1)
@@ -88,8 +89,13 @@ class ControlsBindSubState extends MusicBeatSubState
 				heldBind += elapsed * 2;
 		}
 
-		if ((FlxG.keys.justPressed.ESCAPE && FlxG.keys.pressed.SHIFT) || heldBind >= 1.25)
+		if (FlxG.keys.justPressed.ESCAPE && FlxG.keys.pressed.SHIFT)
 			closeControls();
+		else if (heldBind >= 1.25)
+		{
+			acceptControls();
+			closeControls();
+		}
 	}
 
 	private function closeControls():Void

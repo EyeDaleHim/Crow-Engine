@@ -1142,7 +1142,7 @@ class PlayState extends MusicBeatState
 
 	public function addPlayer(strum:FlxTypedGroup<StrumNote>)
 	{
-		if (strum == null)
+		if (strum == null || strum.length != 0)
 			return;
 
 		strum.ID = _totalPlayers;
@@ -1289,9 +1289,9 @@ class PlayState extends MusicBeatState
 				switch (judgement.judge)
 				{
 					case 'sick':
-						{}
-					case 'good' | 'bad' | 'shit':
-						{}
+						{
+							// insert notesplash
+						}
 				}
 
 				if (player != null)

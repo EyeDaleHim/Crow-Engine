@@ -165,6 +165,8 @@ class OptionsMenu extends MusicBeatState
 					}
 			}
 		}
+
+		disableControlTimer = 0.25;
 	}
 
 	private var manualLerpPoint:FlxPoint = FlxPoint.get();
@@ -191,26 +193,130 @@ class OptionsMenu extends MusicBeatState
 
 		description.setPosition(Tools.lerpBound(description.x, lerpTowards.x, lerpValue), Tools.lerpBound(description.y, lerpTowards.y, lerpValue));
 
-		if (FlxG.mouse.justMoved && (categoryID != 2 || (categoryID == 2 && FlxG.mouse.justPressed)))
+		if (disableControlTimer <= 0.0)
 		{
-			_lerpTarget = 0;
-
-			for (category in globalGroupManager.members)
+			if (FlxG.mouse.justMoved && (categoryID != 2 || (categoryID == 2 && FlxG.mouse.justPressed)))
 			{
-				if (category.ID != curSelected[categoryID + 1])
+				_lerpTarget = 0;
+
+				for (category in globalGroupManager.members)
 				{
-					if (FlxG.mouse.overlaps(category))
+					if (category.ID != curSelected[categoryID + 1])
 					{
-						changeSelection(category.ID, [], true);
-						break;
+						if (FlxG.mouse.overlaps(category))
+						{
+							changeSelection(category.ID, [], true);
+							break;
+						}
 					}
+				}
+
+				if (categoryID != -1)
+				{
+					if (!FlxG.mouse.overlaps(globalGroupManager.members[curSelected[categoryID + 1]]))
+						cast(globalGroupManager.members[curSelected[categoryID + 1]], OptionsSprite).isSelected = false;
 				}
 			}
 
-			if (categoryID != -1)
+			var currentObj:FlxSprite = globalGroupManager.members[curSelected[categoryID + 1]];
+
+			if (controls.getKey('BACK', JUST_PRESSED))
 			{
-				if (!FlxG.mouse.overlaps(globalGroupManager.members[curSelected[categoryID + 1]]))
-					cast(globalGroupManager.members[curSelected[categoryID + 1]], OptionsSprite).isSelected = false;
+				if (categoryID == -1)
+					MusicBeatState.switchState(new states.menus.MainMenuState());
+				else
+				{
+					createCategory(-1);
+					changeSelection(0, [], false);
+
+					categoryTitle.visible = true;
+				}
+			}
+			else if (controls.getKey('ACCEPT', PRESSED) || (currentObj != null && FlxG.mouse.pressed && FlxG.mouse.overlaps(currentObj)))
+			{
+				@:privateAccess
+				{
+					switch (categoryID)
+					{
+						case -1:
+							{
+								if (controls.getKey('ACCEPT', JUST_PRESSED) || FlxG.mouse.justPressed)
+								{
+									categoryTitle.visible = false;
+									createCategory(curSelected[0]);
+
+									description._controlledAlpha = 0.0;
+									description.targetAlpha = 0.0;
+								}
+							}
+						case 0 | 1 | 2:
+							{
+								var optionsSprite:OptionsSprite = cast(currentObj, OptionsSprite);
+
+								switch (optionsSprite.__type)
+								{
+									case 0:
+										{
+											if (controls.getKey('ACCEPT', JUST_PRESSED) || FlxG.mouse.justPressed)
+												optionsSprite.onChange(!optionsSprite._isAccepted);
+										}
+									case 1 | 2:
+										{
+											/*if (!FlxG.mouse.pressed)
+												{
+													if (controls.getKey('UI_LEFT', JUST_PRESSED))
+														optionsSprite.onChange(-5);
+													else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
+														optionsSprite.onChange(5);
+
+													optionsSprite._holdCooldown = 0.0;
+												}
+												else */
+
+											if (optionsSprite._holdCooldown <= 0.0)
+											{
+												if (FlxG.mouse.overlaps(optionsSprite._arrowLeft))
+													optionsSprite.onChange(-1);
+												else if (FlxG.mouse.overlaps(optionsSprite._arrowRight))
+													optionsSprite.onChange(1);
+
+												optionsSprite._holdCooldown = 0.175;
+											}
+										}
+									case 3:
+										{
+											optionsSprite.onChange(null);
+										}
+								}
+							}
+					}
+				}
+			}
+			else
+			{
+				@:privateAccess
+				{
+					if (controls.getKey('UI_UP', JUST_PRESSED))
+					{
+						changeSelection(-1, controls.LIST_CONTROLS['UI_UP'].__keys);
+					}
+					else if (controls.getKey('UI_DOWN', JUST_PRESSED))
+					{
+						changeSelection(1, controls.LIST_CONTROLS['UI_DOWN'].__keys);
+					}
+
+					switch (categoryID)
+					{
+						case 2:
+							{
+								if (controls.getKey('UI_LEFT', JUST_PRESSED) || controls.getKey('UI_RIGHT', JUST_PRESSED))
+								{
+									changeCategory();
+									changeSelection(0, []);
+								}
+							}
+					}
+				}
 			}
 		}
 
@@ -236,109 +342,12 @@ class OptionsMenu extends MusicBeatState
 			}
 		}
 
-		var currentObj:FlxSprite = globalGroupManager.members[curSelected[categoryID + 1]];
-
-		if (controls.getKey('BACK', JUST_PRESSED))
-		{
-			if (categoryID == -1)
-				MusicBeatState.switchState(new states.menus.MainMenuState());
-			else
-			{
-				createCategory(-1);
-				changeSelection(0, [], false);
-
-				categoryTitle.visible = true;
-			}
-		}
-		else if (controls.getKey('ACCEPT', PRESSED) || (currentObj != null && FlxG.mouse.pressed && FlxG.mouse.overlaps(currentObj)))
-		{
-			@:privateAccess
-			{
-				switch (categoryID)
-				{
-					case -1:
-						{
-							if (controls.getKey('ACCEPT', JUST_PRESSED) || FlxG.mouse.justPressed)
-							{
-								categoryTitle.visible = false;
-								createCategory(curSelected[0]);
-
-								description._controlledAlpha = 0.0;
-								description.targetAlpha = 0.0;
-							}
-						}
-					case 0 | 1 | 2:
-						{
-							var optionsSprite:OptionsSprite = cast(currentObj, OptionsSprite);
-
-							switch (optionsSprite.__type)
-							{
-								case 0:
-									{
-										if (controls.getKey('ACCEPT', JUST_PRESSED) || FlxG.mouse.justPressed)
-											optionsSprite.onChange(!optionsSprite._isAccepted);
-									}
-								case 1 | 2:
-									{
-										/*if (!FlxG.mouse.pressed)
-											{
-												if (controls.getKey('UI_LEFT', JUST_PRESSED))
-													optionsSprite.onChange(-5);
-												else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
-													optionsSprite.onChange(5);
-
-												optionsSprite._holdCooldown = 0.0;
-											}
-											else */
-
-										if (optionsSprite._holdCooldown <= 0.0)
-										{
-											if (FlxG.mouse.overlaps(optionsSprite._arrowLeft))
-												optionsSprite.onChange(-1);
-											else if (FlxG.mouse.overlaps(optionsSprite._arrowRight))
-												optionsSprite.onChange(1);
-
-											optionsSprite._holdCooldown = 0.175;
-										}
-									}
-								case 3:
-									{
-										optionsSprite.onChange(null);
-									}
-							}
-						}
-				}
-			}
-		}
-		else
-		{
-			@:privateAccess
-			{
-				if (controls.getKey('UI_UP', JUST_PRESSED))
-				{
-					changeSelection(-1, controls.LIST_CONTROLS['UI_UP'].__keys);
-				}
-				else if (controls.getKey('UI_DOWN', JUST_PRESSED))
-				{
-					changeSelection(1, controls.LIST_CONTROLS['UI_DOWN'].__keys);
-				}
-
-				switch (categoryID)
-				{
-					case 2:
-						{
-							if (controls.getKey('UI_LEFT', JUST_PRESSED) || controls.getKey('UI_RIGHT', JUST_PRESSED))
-							{
-								changeCategory();
-								changeSelection(0, []);
-							}
-						}
-				}
-			}
-		}
+		disableControlTimer -= elapsed;
 
 		super.update(elapsed);
 	}
+
+	private var disableControlTimer:Float = 0.0;
 
 	override function closeSubState():Void
 	{
