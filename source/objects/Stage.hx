@@ -183,6 +183,9 @@ class Stage
 				{
 					stageInstance.defaultZoom = 0.90;
 
+					stageInstance.charPosList.playerPositions[0].x += 260;
+					stageInstance.charPosList.playerPositions[0].y -= 220;
+
 					var sky:BGSprite = new BGSprite({path: 'limoSunset', library: 'week4'}, {x: -120, y: -50}, {x: 0.1, y: 0.1});
 					sky.ID = 0;
 					group.set('sky', sky);
@@ -202,7 +205,7 @@ class Stage
 					backLimo.ID = 1;
 					group.set('backgroundLimo', backLimo);
 
-					var limo:BGSprite = new BGSprite({path: 'limoDrive', library: 'week4'}, {x: -120, y: 550}, {x: 1, y: 1}, [
+					var limo:BGSprite = new BGSprite({path: 'limoDrive', library: 'week4'}, {x: -120, y: 550}, null, [
 						{
 							name: 'driving',
 							prefix: "Limo stage",
@@ -299,6 +302,24 @@ class Stage
 					santa.renderPriority = 0x01;
 					santa.ID = 6;
 					group.set('santa', santa);
+				}
+			case 'red-mall':
+				{
+					stageInstance.charPosList.playerPositions[0].x += 320;
+
+					var bg:BGSprite = new BGSprite({path: 'evilBG', library: 'week5'}, {x: -400, y: -500}, {x: 0.2, y: 0.2});
+					bg.scale.set(0.8, 0.8);
+					bg.updateHitbox();
+					bg.ID = 0;
+					group.set('background', bg);
+
+					var tree:BGSprite = new BGSprite({path: 'evilTree', library: 'week5'}, {x: 300, y: -300}, {x: 0.2, y: 0.2});
+					tree.ID = 1;
+					group.set('tree', tree);
+
+					var snow:BGSprite = new BGSprite({path: 'evilSnow', library: 'week5'}, {x: -200, y: 700});
+					snow.ID = 2;
+					group.set('snow', snow);
 				}
 			case 'warzone':
 				{
