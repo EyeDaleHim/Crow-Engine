@@ -1,3 +1,4 @@
 {
-    "format": "base"
+    "format": "base",
+    "overrideCountdownStory": true
 }

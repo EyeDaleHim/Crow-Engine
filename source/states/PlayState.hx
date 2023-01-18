@@ -21,6 +21,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.system.FlxSound;
+import game.CutsceneHandler;
 import openfl.events.KeyboardEvent;
 import states.substates.GameOverSubState;
 import states.substates.PauseSubState;
@@ -221,6 +222,7 @@ class PlayState extends MusicBeatState
 
 	// stage stuff, will change because this is overly simple
 	public var stageData:Stage;
+	public var cutsceneHandler:CutsceneHandler;
 
 	public var preStageRender:FlxTypedGroup<BGSprite>;
 	public var postStageRender:FlxTypedGroup<BGSprite>;
@@ -466,27 +468,57 @@ class PlayState extends MusicBeatState
 		engineText.y = healthBarBG.y + 30;
 		addToHUD(engineText);
 
-		initCountdown(null, null, 1000, function(e)
-		{
-			for (charList in [playerList, opponentList, spectatorList])
-			{
-				if (charList != null)
-				{
-					for (char in charList)
-					{
-						if (char != null)
-						{
-							char.dance(true);
+		Conductor.songPosition = -500;
 
-							if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
-								char.forceIdle = true;
+		if (CutsceneHandler.checkCutscene(Song.currentSong.song.formatToReadable()))
+		{
+			cutsceneHandler = new CutsceneHandler(Song.currentSong.song.formatToReadable());
+			cutsceneHandler.endCallback = initCountdown.bind(null, null, 1000, function(e)
+			{
+				for (charList in [playerList, opponentList, spectatorList])
+				{
+					if (charList != null)
+					{
+						for (char in charList)
+						{
+							if (char != null)
+							{
+								char.dance(true);
+
+								if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
+									char.forceIdle = true;
+							}
 						}
 					}
 				}
-			}
 
-			stageData.countdownTick();
-		});
+				stageData.countdownTick();
+			});
+		}
+		else
+		{
+			initCountdown(null, null, 1000, function(e)
+			{
+				for (charList in [playerList, opponentList, spectatorList])
+				{
+					if (charList != null)
+					{
+						for (char in charList)
+						{
+							if (char != null)
+							{
+								char.dance(true);
+
+								if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
+									char.forceIdle = true;
+							}
+						}
+					}
+				}
+
+				stageData.countdownTick();
+			});
+		}
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
@@ -551,12 +583,14 @@ class PlayState extends MusicBeatState
 		super.update(elapsed);
 
 		stageData.update(elapsed);
+		if (cutsceneHandler != null)
+			cutsceneHandler.update(elapsed);
 
 		if (iconP1 != null)
 		{
 			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - _iconP1Offset;
 
-			if (iconP1.animation.curAnim.frames.length == 0 || iconP1.animation.curAnim.finished) // in case some bozos have animated icons
+			if (iconP1.animation.curAnim.frames.length == 0 || iconP1.animation.curAnim.finished)
 				iconP1.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');
 		}
 
@@ -564,7 +598,7 @@ class PlayState extends MusicBeatState
 		{
 			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - _iconP2Offset);
 
-			if (iconP2.animation.curAnim.frames.length == 0 || iconP2.animation.curAnim.finished) // in case some bozos have animated icons
+			if (iconP2.animation.curAnim.frames.length == 0 || iconP2.animation.curAnim.finished)
 				iconP2.changeState(healthBar.percent > 80 ? 'lose' : 'neutral');
 		}
 
@@ -660,10 +694,10 @@ class PlayState extends MusicBeatState
 			if (Settings.getPref('camZoom', true))
 			{
 				if (curBeat % 4 == 0)
-					events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Camera Beat', arguments: ['world&spl-0.03', 'hud&spl-0.015']});
+					events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Camera Beat', arguments: ['world&spl-0.015', 'hud&spl-0.03']});
 			}
 
-			switch (songName.replace(' ', '-').toLowerCase())
+			switch (Song.currentSong.song.formatToReadable())
 			{
 				case 'bopeebo':
 					if (curBeat % 8 == 7)
@@ -709,7 +743,7 @@ class PlayState extends MusicBeatState
 
 	private function resyncVocals():Void
 	{
-		if (!gameEnded)
+		if (!gameEnded && songStarted)
 		{
 			vocals.pause();
 
@@ -750,6 +784,7 @@ class PlayState extends MusicBeatState
 			for (note in sections.notes)
 			{
 				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
+				newNote.visible = false;
 
 				var oldNote:Note = newNote;
 				if (pendingNotes.length > 0)
@@ -776,6 +811,7 @@ class PlayState extends MusicBeatState
 						else
 							sustainNote = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
 								note.noteAnim);
+						sustainNote.visible = false;
 
 						oldNote = sustainNote;
 						if (pendingNotes.length > 0)
@@ -816,7 +852,6 @@ class PlayState extends MusicBeatState
 
 		if (list.length == 0) // ok??? just assume the person wants to start instantly
 		{
-			Conductor.songPosition = -500;
 			if (onProgress != null)
 				onProgress(0);
 		}
@@ -905,7 +940,7 @@ class PlayState extends MusicBeatState
 		if (vocals != null)
 			vocals.stop();
 
-		ScoreContainer.setSong(songName.replace(' ', '-').toLowerCase(), songDiff,
+		ScoreContainer.setSong(Song.currentSong.song.formatToReadable(), songDiff,
 			{score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
 
 		persistentUpdate = false;
@@ -1198,8 +1233,7 @@ class PlayState extends MusicBeatState
 
 				if (note._lockedToStrumY)
 				{
-					note.y = strumNote.y - distance + note.offset.y;
-					note.y -= note.offset.y;
+					note.y = strumNote.y - distance;
 					if (strumNote.downScroll)
 					{
 						if (note.isEndNote)
@@ -1248,7 +1282,7 @@ class PlayState extends MusicBeatState
 
 				if (!note.mustPress && note.wasGoodHit)
 				{
-					if (!note.isSustainNote || (note.isSustainNote && !note._hitSustain))
+					if (!note.isSustainNote || ((note.isSustainNote && note.strumTime <= Conductor.songPosition) && !note._hitSustain))
 						hitNote(note, true);
 
 					if (note.isSustainNote)

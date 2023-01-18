@@ -91,8 +91,6 @@ class OptionsMenu extends MusicBeatState
 		categoryID = id;
 		globalGroupManager.clear();
 
-		description.alpha = 0;
-
 		if (id == -1)
 		{
 			for (i in 0...mainCategory.length)
@@ -165,6 +163,8 @@ class OptionsMenu extends MusicBeatState
 					}
 			}
 		}
+
+		description.visible = categoryID != 2;
 
 		disableControlTimer = 0.25;
 	}
@@ -290,6 +290,8 @@ class OptionsMenu extends MusicBeatState
 								}
 							}
 					}
+
+					changeSelection(0, [], false);
 				}
 			}
 			else
