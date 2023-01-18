@@ -407,11 +407,29 @@ class Stage
 					tankTower.active = true;
 					group.set('tankTower', tankTower);
 
+					var tank:BGSprite = new BGSprite({path: 'tank', library: 'week7'}, {x: 300, y: 300}, {x: 0.5, y: 0.5}, [
+						{
+							name: 'idle',
+							prefix: 'BG tank w lighting',
+							indices: [],
+							fps: 24,
+							looped: true,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					tank.active = true;
+					tank.animation.play('idle');
+					tank.ID = 8;
+					group.set('tank', tank);
+
 					var ground:BGSprite = new BGSprite({path: 'ground', library: 'week7'}, {x: -420, y: -150});
 					ground.scale.set(1.15, 1.15);
 					ground.updateHitbox();
-					ground.ID = 8;
+					ground.ID = 9;
 					group.set('ground', ground);
+
+					stageInstance.attributes.set('tankAngle', FlxG.random.int(-90, 45));
+					stageInstance.attributes.set('tankSpeed', FlxG.random.float(5, 7));
 				}
 			default:
 				{
@@ -496,6 +514,14 @@ class Stage
 							spriteGroup['train'].x = 2000;
 						}
 					}
+				}
+			case 'warzone':
+				{
+					attributes['tankAngle'] += elapsed * attributes['tankSpeed'];
+
+					spriteGroup['tank'].angle = attributes['tankAngle'] - 90 + 15;
+					spriteGroup['tank'].x = 400 + (1500 * Math.cos(Math.PI / 180 * (1 * attributes['tankAngle'] + 180)));
+					spriteGroup['tank'].y = 1300 + (1100 * Math.sin(Math.PI / 180 * (1 * attributes['tankAngle'] + 180)));
 				}
 		}
 	}

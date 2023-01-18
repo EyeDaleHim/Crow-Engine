@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="tank.png">
+	<!-- Created with Adobe Animate version 23.0.0.407 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="BG tank w lighting0000" x="0" y="0" width="334" height="295"/>
+	<SubTexture name="BG tank w lighting0001" x="334" y="0" width="334" height="292" frameX="0" frameY="-3" frameWidth="334" frameHeight="295"/>
+	<SubTexture name="BG tank w lighting0002" x="668" y="0" width="334" height="292" frameX="0" frameY="-3" frameWidth="334" frameHeight="295"/>
+</TextureAtlas>
