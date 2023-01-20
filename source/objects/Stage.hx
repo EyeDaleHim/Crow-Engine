@@ -217,6 +217,7 @@ class Stage
 					]);
 					limo.active = true;
 					limo.animation.play('driving');
+					limo.renderPriority = AFTER_CHAR;
 					limo.ID = 2;
 					group.set('limo', limo);
 
