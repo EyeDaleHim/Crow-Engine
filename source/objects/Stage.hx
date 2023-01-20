@@ -259,6 +259,7 @@ class Stage
 					upBoppers.scale.set(0.85, 0.85);
 					upBoppers.updateHitbox();
 					upBoppers.ID = 1;
+					upBoppers.active = true;
 					group.set('upBoppers', upBoppers);
 
 					var escalator:BGSprite = new BGSprite({path: 'bgEscalator', library: 'week5'}, {x: -1100, y: -600}, {x: 0.3, y: 0.3});
@@ -283,6 +284,7 @@ class Stage
 						}
 					]);
 					botBoppers.ID = 4;
+					botBoppers.active = true;
 					group.set('botBoppers', botBoppers);
 
 					var ground:BGSprite = new BGSprite({path: 'fgSnow', library: 'week5'}, {x: -600, y: 700}, {x: 1.0, y: 1.0});
@@ -299,8 +301,9 @@ class Stage
 							offset: {x: 0, y: 0}
 						}
 					]);
-					santa.renderPriority = 0x01;
+					santa.renderPriority = AFTER_CHAR;
 					santa.ID = 6;
+					santa.active = true;
 					group.set('santa', santa);
 				}
 			case 'red-mall':
@@ -329,11 +332,13 @@ class Stage
 					stageInstance.charPosList.spectatorPositions[0].x -= 30;
 
 					stageInstance.charPosList.playerPositions[0].x += 40;
+					stageInstance.charPosList.playerPositions[0].y += 90;
 
 					stageInstance.charPosList.opponentPositions[0].y += 300;
 					stageInstance.charPosList.opponentPositions[0].x -= 80;
 
 					stageInstance.camPosList.opponentPositions[0].y *= -1;
+					stageInstance.camPosList.opponentPositions[0].y += 20;
 
 					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week7'}, {x: -400, y: -400}, {x: 0.0, y: 0.0});
 					sky.ID = 0;
@@ -450,7 +455,7 @@ class Stage
 					var curtains:BGSprite = new BGSprite({path: 'stagecurtains', library: 'week1'}, {x: -500, y: -300}, {x: 1.3, y: 1.3});
 					curtains.scale.set(0.9, 0.9);
 					curtains.updateHitbox();
-					curtains.renderPriority = 0x01;
+					curtains.renderPriority = AFTER_CHAR;
 					curtains.ID = 2;
 					group.set('curtain', curtains);
 				}
@@ -640,7 +645,7 @@ class Stage
 class BGSprite extends FlxSprite
 {
 	public var graphicName:String = '';
-	public var renderPriority:Int = 0x00; // this is literally just to tell you if this sprite wants to be rendered before or after the characters
+	public var renderPriority:RenderPriority = BEFORE_CHAR; // this is literally just to tell you if this sprite wants to be rendered before or after the characters
 
 	public function new(image:ImagePath, ?position:SimplePoint, ?scroll:SimplePoint, ?animArray:Array<Animation> = null)
 	{
@@ -684,6 +689,12 @@ class BGSprite extends FlxSprite
 
 		active = false;
 	}
+}
+
+@:enum abstract RenderPriority(Int)
+{
+	var BEFORE_CHAR:RenderPriority = 0;
+	var AFTER_CHAR:RenderPriority = 1;
 }
 
 typedef CharPositions =

@@ -86,6 +86,96 @@ class Character extends FlxSprite
 
 		scale.set(_characterData.scale.x, _characterData.scale.y);
 
+		setupCharacter();
+
+		for (script in scripts)
+		{
+			script.executeFunction("create", [false]);
+		}
+
+		flipX = _characterData.flip.x;
+		flipY = _characterData.flip.y;
+
+		quickCharacterMaker();
+	}
+
+	override function update(elapsed:Float)
+	{
+		for (script in scripts)
+		{
+			script.executeFunction("update", [elapsed, false]);
+		}
+
+		super.update(elapsed);
+
+		if (animation.curAnim != null)
+		{
+			_animationTimer += elapsed;
+		}
+
+		for (script in scripts)
+		{
+			script.executeFunction("update", [elapsed, true]);
+		}
+	}
+
+	public function dance(?forcePlay:Bool = false):Void
+	{
+		if (idleList.length != 0) // what animations we playing today?
+		{
+			if (animation.curAnim != null)
+			{
+				// 0.3 offset
+				var playIdleAnim:Bool = (singList.contains(animation.curAnim.name)
+					&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 4.5 * 0.001);
+
+				if (overridePlayer)
+					playIdleAnim = ((singList.contains(animation.curAnim.name)
+						&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 1.15 * 0.001)
+						|| (missList.contains(animation.curAnim.name)
+							&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 4 * 0.001));
+
+				if ((playIdleAnim || !singList.contains(animation.curAnim.name)) || forceIdle)
+				{
+					if (controlIdle || forceIdle)
+					{
+						_idleIndex++;
+						_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);
+
+						var animToPlay:String = idleList[_idleIndex];
+
+						playAnim(animToPlay, forceIdle);
+					}
+
+					_animationTimer = 0.0;
+				}
+			}
+		}
+
+		forceIdle = false;
+
+		for (script in scripts)
+		{
+			script.executeFunction("dance", []);
+		}
+	}
+
+	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
+	{
+		if (AnimName == '')
+			return;
+
+		animation.play(AnimName, Force, Reversed, Frame);
+
+		var offsetAnim:FlxPoint = FlxPoint.get();
+		if (animOffsets.exists(AnimName))
+			offsetAnim.set(animOffsets[AnimName].x, animOffsets[AnimName].y);
+
+		offset.set(offsetAnim.x, offsetAnim.y);
+	}
+
+	public function setupCharacter():Void
+	{
 		for (animData in _characterData.animationList)
 		{
 			if (animData.indices != null && animData.indices.length > 0)
@@ -140,86 +230,6 @@ class Character extends FlxSprite
 
 		if (idleList.length > 0)
 			playAnim(idleList[0]);
-
-		for (script in scripts)
-		{
-			script.executeFunction("create", [false]);
-		}
-
-		flipX = _characterData.flip.x;
-		flipY = _characterData.flip.y;
-	}
-
-	override function update(elapsed:Float)
-	{
-		for (script in scripts)
-		{
-			script.executeFunction("update", [elapsed, false]);
-		}
-
-		super.update(elapsed);
-
-		if (animation.curAnim != null)
-		{
-			_animationTimer += elapsed;
-		}
-
-		for (script in scripts)
-		{
-			script.executeFunction("update", [elapsed, true]);
-		}
-	}
-
-	public function dance(?forcePlay:Bool = false):Void
-	{
-		if (idleList.length != 0) // what animations we playing today?
-		{
-			// 0.3 offset
-			var playIdleAnim:Bool = (singList.contains(animation.curAnim.name)
-				&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 4.5 * 0.001);
-
-			if (overridePlayer)
-				playIdleAnim = ((singList.contains(animation.curAnim.name)
-					&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 1.15 * 0.001)
-					|| (missList.contains(animation.curAnim.name)
-						&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 4 * 0.001));
-
-			if ((playIdleAnim || !singList.contains(animation.curAnim.name)) || forceIdle)
-			{
-				if (controlIdle || forceIdle)
-				{
-					_idleIndex++;
-					_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);
-
-					var animToPlay:String = idleList[_idleIndex];
-
-					playAnim(animToPlay, forceIdle);
-				}
-
-				_animationTimer = 0.0;
-			}
-		}
-
-		forceIdle = false;
-
-		for (script in scripts)
-		{
-			script.executeFunction("dance", []);
-		}
-	}
-
-	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
-	{
-		if (AnimName == '')
-			return;
-
-		animation.play(AnimName, Force, Reversed, Frame);
-
-		var offsetAnim:FlxPoint = FlxPoint.get();
-		if (animOffsets.exists(AnimName))
-			offsetAnim.set(animOffsets[AnimName].x, animOffsets[AnimName].y);
-
-		offset.set(offsetAnim.x, offsetAnim.y);
 	}
 
 	override function destroy()
@@ -252,21 +262,19 @@ class Character extends FlxSprite
 				});
 			};
 
-		quickAnimAdd('idle', 'Parent Christmas Idle', [], 24, false, {x: 0, y: 0});
+		quickAnimAdd('idle', 'Tankman Idle Dance 1', [], 24, false, {x: 0, y: 0});
 
-		quickAnimAdd('singLEFT', 'Parent Left Note Dad', [], 24, false, {x: -30, y: 15});
-		quickAnimAdd('singDOWN', 'Parent Down Note Dad', [], 24, false, {x: -31, y: -29});
-		quickAnimAdd('singUP', 'Parent Up Note Dad', [], 24, false, {x: -47, y: 24});
-		quickAnimAdd('singRIGHT', 'Parent Right Note Dad', [], 24, false, {x: -1, y: -23});
+		quickAnimAdd('singLEFT', 'Tankman Note Left 1', [], 24, false, {x: 84, y: -14});
+		quickAnimAdd('singDOWN', 'Tankman DOWN note 1', [], 24, false, {x: 76, y: -101});
+		quickAnimAdd('singUP', 'Tankman UP note 1', [], 24, false, {x: 48, y: 54});
+		quickAnimAdd('singRIGHT', 'Tankman Right Note 1', [], 24, false, {x: -21, y: -31});
 
-		quickAnimAdd('singLEFT-alt', 'Parent Left Note Mom', [], 24, false, {x: -30, y: 15});
-		quickAnimAdd('singDOWN-alt', 'Parent Down Note Mom', [], 24, false, {x: -30, y: -27});
-		quickAnimAdd('singUP-alt', 'Parent Up Note Mom', [], 24, false, {x: -47, y: 24});
-		quickAnimAdd('singRIGHT-alt', 'Parent Right Note Mom', [], 24, false, {x: -1, y: -23});
+		quickAnimAdd('singDOWN-alt', 'PRETTY GOOD tankman 1', [], 24, false, {x: 1, y: 16});
+		quickAnimAdd('singUP-alt', 'TANKMAN UGH 1', [], 24, false, {x: -15, y: -8});
 
 		data = {
-			name: 'parents',
-			healthColor: -5282098,
+			name: 'tankman',
+			healthColor: 0xDDB64A,
 			animationList: animationList,
 			idleList: idleList,
 			missList: missList,

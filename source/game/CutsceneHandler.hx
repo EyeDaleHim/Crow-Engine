@@ -108,6 +108,8 @@ class CutsceneHandler
 
 							var opponent = PlayState.current.opponent;
 
+							opponent.flipX = !opponent.flipX;
+
 							var tankmanTalking:FlxAtlasFrames = Paths.getSparrowAtlas('cutscenes/ugh/tankman');
 
 							endTime = 12;
@@ -137,8 +139,8 @@ class CutsceneHandler
 							cutsceneActions.push({
 								action: function()
 								{
-									FlxTween.tween(calculatedPosition, {x: calculatedPosition.x + 600, y: calculatedPosition.y + 90}, 0.9, {
-										ease: FlxEase.quadOut,
+									FlxTween.tween(calculatedPosition, {x: calculatedPosition.x + 550, y: calculatedPosition.y + 80}, 1.1, {
+										ease: FlxEase.quintOut,
 										onUpdate: function(twn:FlxTween)
 										{
 											snapCamera(calculatedPosition.x, calculatedPosition.y);
@@ -157,8 +159,7 @@ class CutsceneHandler
 									player.playAnim('singUP', true);
 									new FlxTimer().start(0.75, function(tmr:FlxTimer)
 									{
-										player.playAnim('idle', true, true);
-										player.animation.curAnim.pause();
+										player.playAnim('idle', true);
 									});
 								},
 								time: 4.5
@@ -167,8 +168,8 @@ class CutsceneHandler
 							cutsceneActions.push({
 								action: function()
 								{
-									FlxTween.tween(calculatedPosition, {x: calculatedPosition.x - 600, y: calculatedPosition.y - 90}, 0.9, {
-										ease: FlxEase.quadOut,
+									FlxTween.tween(calculatedPosition, {x: calculatedPosition.x - 550, y: calculatedPosition.y - 80}, 1.1, {
+										ease: FlxEase.quintOut,
 										onUpdate: function(twn:FlxTween)
 										{
 											snapCamera(calculatedPosition.x, calculatedPosition.y);
@@ -184,10 +185,12 @@ class CutsceneHandler
 							cutsceneActions.push({
 								action: function()
 								{
-									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.attributes['zoomLerpValue']}, 1.0, {ease: FlxEase.quadOut});
+									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.attributes['zoomLerpValue']}, 1.0, {ease: FlxEase.quintOut});
 									FlxTween.tween(PlayState.current.hudCamera, {alpha: 1.0}, 1.5, {ease: FlxEase.quadInOut});
 
 									opponent.frames = Paths.getSparrowAtlas('characters/${opponent.name}/${opponent.name}');
+									opponent.flipX = !opponent.flipX;
+									opponent.setupCharacter();
 									opponent.animation.play('idle', true);
 								},
 								time: 11.9

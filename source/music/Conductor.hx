@@ -38,7 +38,7 @@ class Conductor
 					bpmChangeMap.push(event);
 				}
 
-				var deltaSteps:Int = song.sectionList[i].length;
+				var deltaSteps:Int = song.sectionList[Math.floor(totalSteps / 16)].length;
 				totalSteps += deltaSteps;
 				totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
 			}

@@ -1,0 +1,101 @@
+{
+    "healthColor": 14530122,
+    "missList": [],
+    "animationList": [
+        {
+            "prefix": "Tankman Idle Dance 1",
+            "indices": [],
+            "fps": 24,
+            "name": "idle",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Tankman Right Note 1",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFT",
+            "offset": {
+                "x": 84,
+                "y": -14
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Tankman DOWN note 1",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN",
+            "offset": {
+                "x": 76,
+                "y": -101
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Tankman UP note 1",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP",
+            "offset": {
+                "x": 48,
+                "y": 54
+            },
+            "looped": false
+        },
+        {
+            "prefix": "Tankman Note Left 1",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHT",
+            "offset": {
+                "x": -21,
+                "y": -31
+            },
+            "looped": false
+        },
+        {
+            "prefix": "PRETTY GOOD tankman 1",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN-alt",
+            "offset": {
+                "x": 1,
+                "y": 16
+            },
+            "looped": false
+        },
+        {
+            "prefix": "TANKMAN UGH 1",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP-alt",
+            "offset": {
+                "x": -15,
+                "y": -8
+            },
+            "looped": false
+        }
+    ],
+    "singList": [
+        "singLEFT",
+        "singDOWN",
+        "singUP",
+        "singRIGHT"
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "flip": {
+        "x": true,
+        "y": false
+    },
+    "name": "tankman",
+    "scale": {
+        "x": 1,
+        "y": 1
+    }
+}

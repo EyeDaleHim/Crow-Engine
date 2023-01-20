@@ -353,9 +353,9 @@ class PlayState extends MusicBeatState
 		{
 			switch (spriteList.renderPriority)
 			{
-				case 0x00:
+				case BEFORE_CHAR:
 					preStageRender.add(spriteList);
-				case 0x01:
+				case AFTER_CHAR:
 					postStageRender.add(spriteList);
 			}
 		}
@@ -470,7 +470,7 @@ class PlayState extends MusicBeatState
 
 		Conductor.songPosition = -500;
 
-		if (CutsceneHandler.checkCutscene(Song.currentSong.song.formatToReadable()))
+		if (playMode == STORY && CutsceneHandler.checkCutscene(Song.currentSong.song.formatToReadable()))
 		{
 			cutsceneHandler = new CutsceneHandler(Song.currentSong.song.formatToReadable());
 			cutsceneHandler.endCallback = initCountdown.bind(null, null, 1000, function(e)
@@ -784,7 +784,7 @@ class PlayState extends MusicBeatState
 			for (note in sections.notes)
 			{
 				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
-				newNote.visible = false;
+				newNote.x = -2000;
 
 				var oldNote:Note = newNote;
 				if (pendingNotes.length > 0)
@@ -811,7 +811,7 @@ class PlayState extends MusicBeatState
 						else
 							sustainNote = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
 								note.noteAnim);
-						sustainNote.visible = false;
+						sustainNote.x = -2000;
 
 						oldNote = sustainNote;
 						if (pendingNotes.length > 0)
