@@ -186,6 +186,11 @@ class Stage
 					stageInstance.charPosList.playerPositions[0].x += 260;
 					stageInstance.charPosList.playerPositions[0].y -= 220;
 
+					stageInstance.camPosList.playerPositions[0].x -= 80;
+					stageInstance.camPosList.playerPositions[0].y += 20;
+
+					stageInstance.camPosList.opponentPositions[0].y = stageInstance.camPosList.playerPositions[0].y;
+
 					var sky:BGSprite = new BGSprite({path: 'limoSunset', library: 'week4'}, {x: -120, y: -50}, {x: 0.1, y: 0.1});
 					sky.ID = 0;
 					group.set('sky', sky);
@@ -510,6 +515,20 @@ class Stage
 
 						if (spriteGroup['train'].x < -4000 && attributes['trainAmount'] <= 0)
 						{
+							@:privateAccess
+							{
+								states.PlayState.current.spectator.animation.callback = function(name:String, frameNumber:Int, frameIndex:Int)
+								{
+									states.PlayState.current.spectator._animationTimer = 0;
+								}
+
+								states.PlayState.current.spectator.animation.finishCallback = function(name:String)
+								{
+									states.PlayState.current.spectator.animation.callback = null;
+									states.PlayState.current.spectator.animation.finishCallback = null;
+								}
+							}
+
 							states.PlayState.current.spectator.playAnim('hairFall');
 
 							attributes['trainAmount'] = 8;

@@ -77,7 +77,7 @@
             "name": "sad",
             "offset": {
                 "x": -2,
-                "y": -2
+                "y": -21
             },
             "looped": false
         },
@@ -171,7 +171,7 @@
             "fps": 24,
             "name": "hairFall",
             "offset": {
-                "x": 0,
+                "x": 44,
                 "y": -9
             },
             "looped": false

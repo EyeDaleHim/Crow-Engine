@@ -96,7 +96,7 @@ class Character extends FlxSprite
 		flipX = _characterData.flip.x;
 		flipY = _characterData.flip.y;
 
-		quickCharacterMaker();
+		// quickCharacterMaker();
 	}
 
 	override function update(elapsed:Float)

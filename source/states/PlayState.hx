@@ -470,7 +470,7 @@ class PlayState extends MusicBeatState
 
 		Conductor.songPosition = -500;
 
-		if (playMode == STORY && CutsceneHandler.checkCutscene(Song.currentSong.song.formatToReadable()))
+		if (#if !debug playMode == STORY && #end CutsceneHandler.checkCutscene(Song.currentSong.song.formatToReadable()))
 		{
 			cutsceneHandler = new CutsceneHandler(Song.currentSong.song.formatToReadable());
 			cutsceneHandler.endCallback = initCountdown.bind(null, null, 1000, function(e)

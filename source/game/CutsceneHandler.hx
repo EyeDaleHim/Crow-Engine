@@ -107,7 +107,6 @@ class CutsceneHandler
 							FlxG.camera.zoom *= 1.2;
 
 							var opponent = PlayState.current.opponent;
-
 							opponent.flipX = !opponent.flipX;
 
 							var tankmanTalking:FlxAtlasFrames = Paths.getSparrowAtlas('cutscenes/ugh/tankman');
@@ -186,7 +185,7 @@ class CutsceneHandler
 								action: function()
 								{
 									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.attributes['zoomLerpValue']}, 1.0, {ease: FlxEase.quintOut});
-									FlxTween.tween(PlayState.current.hudCamera, {alpha: 1.0}, 1.5, {ease: FlxEase.quadInOut});
+									FlxTween.tween(PlayState.current.hudCamera, {alpha: 1.0}, 0.4, {ease: FlxEase.quadInOut});
 
 									opponent.frames = Paths.getSparrowAtlas('characters/${opponent.name}/${opponent.name}');
 									opponent.flipX = !opponent.flipX;
@@ -194,6 +193,113 @@ class CutsceneHandler
 									opponent.animation.play('idle', true);
 								},
 								time: 11.9
+							});
+						}
+					}
+				}
+			case 'guns':
+				{
+					@:privateAccess
+					{
+						if (cutscene.split('-##')[1] == 'start')
+						{
+							lockedUpdateLoops.set('lockCharUpdate', function()
+							{
+								PlayState.current.player._animationTimer = 0.0;
+								PlayState.current.spectator._animationTimer = 0.0;
+								PlayState.current.opponent._animationTimer = 0.0;
+							});
+
+							var savedSounds:Map<String, FlxSound> = [];
+							var listOfSounds:Array<{name:String, file:String}> = [{name: 'tightBars', file: 'tightBars'}];
+
+							for (sound in listOfSounds)
+							{
+								savedSounds.set(sound.name, FlxG.sound.load(Paths.sound('cutscenes/guns/${sound.file}')));
+								savedSounds[sound.name].onComplete = function()
+								{
+									FlxG.sound.list.remove(savedSounds[sound.name]);
+									savedSounds[sound.name].destroy();
+									savedSounds.remove(sound.name);
+								};
+
+								FlxG.sound.list.add(savedSounds[sound.name]);
+							}
+
+							PlayState.current.hudCamera.alpha = 0.0;
+							// FlxG.camera.zoom *= 1.2;
+
+							var opponent = PlayState.current.opponent;
+							opponent.flipX = !opponent.flipX;
+
+							var tankmanTalking:FlxAtlasFrames = Paths.getSparrowAtlas('cutscenes/guns/tankman');
+
+							endTime = 11.6;
+
+							var newPos:FlxPoint = FlxPoint.get();
+							Tools.transformSimplePoint(newPos, PlayState.current.stageData.camPosList.opponentPositions[0]);
+
+							newPos.subtract(60, 40);
+
+							var midPoint:FlxPoint = opponent.getMidpoint();
+							var calculatedPosition:FlxPoint = FlxPoint.get(midPoint.x + newPos.x, midPoint.y + newPos.y);
+
+							snapCamera(calculatedPosition.x, calculatedPosition.y);
+
+							opponent.frames = tankmanTalking;
+
+							var zoomClosely:FlxTween;
+
+							opponent.animation.addByPrefix('bars', 'TANK TALK 2', 24, false);
+							cutsceneActions.push({
+								action: function()
+								{
+									opponent.animation.play('bars', true);
+									savedSounds['tightBars'].play(true);
+
+									zoomClosely = FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.zoom * 1.2 * 1.2}, 6, {ease: FlxEase.quadIn});
+								},
+								time: 0.1
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									zoomClosely.cancel();
+									zoomClosely.destroy();
+									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.attributes['zoomLerpValue'] * 1.2 * 1.2}, 0.3, {
+										ease: FlxEase.quintOut,
+										onComplete: function(twn:FlxTween)
+										{
+											FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.attributes['zoomLerpValue'] * 1.2}, 3.5 + 0.2,
+												{ease: FlxEase.quadInOut});
+										}
+									});
+
+									PlayState.current.spectator.animation.finishCallback = function(anim:String)
+									{
+										PlayState.current.spectator.playAnim('sad', true);
+									};
+
+									PlayState.current.spectator.playAnim('sad', true);
+								},
+								time: 4.2
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.attributes['zoomLerpValue']}, 1.0, {ease: FlxEase.quintOut});
+									FlxTween.tween(PlayState.current.hudCamera, {alpha: 1.0}, 0.4, {ease: FlxEase.quadInOut});
+
+									opponent.frames = Paths.getSparrowAtlas('characters/${opponent.name}/${opponent.name}');
+									opponent.flipX = !opponent.flipX;
+									opponent.setupCharacter();
+									opponent.animation.play('idle', true);
+
+									PlayState.current.spectator.animation.finishCallback = null;
+								},
+								time: 11.5
 							});
 						}
 					}
