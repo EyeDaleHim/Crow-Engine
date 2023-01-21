@@ -80,29 +80,6 @@ class BuildingShader extends FlxGraphicsShader
 
 			vec4 sum = vec4(0.0, 0.0, 0.0, 0.0);
 
-			// repeat for 9 times
-			// x
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x - 4.0 * (1.0 / 512.0), openfl_TextureCoordv.y)) * 0.05;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x - 3.0 * (1.0 / 512.0), openfl_TextureCoordv.y)) * 0.09;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x - 2.0 * (1.0 / 512.0), openfl_TextureCoordv.y)) * 0.12;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x - (1.0 / 512.0), openfl_TextureCoordv.y)) * 0.15;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y)) * 0.16;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x + (1.0 / 512.0), openfl_TextureCoordv.y)) * 0.15;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x + 2.0 * (1.0 / 512.0), openfl_TextureCoordv.y)) * 0.12;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x + 3.0 * (1.0 / 512.0), openfl_TextureCoordv.y)) * 0.09;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x + 4.0 * (1.0 / 512.0), openfl_TextureCoordv.y)) * 0.05;
-
-			// y
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y - 4.0 * (1.0 / 512.0))) * 0.05;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y - 3.0 * (1.0 / 512.0))) * 0.09;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y - 2.0 * (1.0 / 512.0))) * 0.12;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y - (1.0 / 512.0))) * 0.15;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y)) * 0.16;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y + (1.0 / 512.0))) * 0.15;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y + 2.0 * (1.0 / 512.0))) * 0.12;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y + 3.0 * (1.0 / 512.0))) * 0.09;
-			sum += flixel_texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y + 4.0 * (1.0 / 512.0))) * 0.05;
-
 			if (color.a > 0.0)
 			{
                 color -= alphaShit;
