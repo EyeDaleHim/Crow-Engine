@@ -108,7 +108,7 @@ class Character extends FlxSprite
 
 		super.update(elapsed);
 
-		if (animation.curAnim != null)
+		if (animation.curAnim != null && controlIdle)
 		{
 			_animationTimer += elapsed;
 		}
