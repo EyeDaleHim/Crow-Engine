@@ -733,8 +733,8 @@ class PlayState extends MusicBeatState
 	{
 		super.stepHit();
 
-		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 20
-			|| (Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 20))
+		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 30
+			|| (Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 30))
 		{
 			resyncVocals();
 		}
@@ -749,7 +749,7 @@ class PlayState extends MusicBeatState
 			FlxG.sound.music.play();
 			Conductor.songPosition = FlxG.sound.music.time;
 
-			if (Conductor.songPosition <= vocals.length) // fix the issue with the vocals randomly glitching
+			if (Conductor.songPosition < vocals.length) // fix the issue with the vocals randomly glitching
 			{
 				vocals.time = Conductor.songPosition;
 				vocals.play();
