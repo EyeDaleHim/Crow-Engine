@@ -428,8 +428,7 @@ class PlayState extends MusicBeatState
 
 		generateSong();
 
-		healthBarBG = new FlxSprite(0,
-			Settings.getPref('downscroll', false) ? FlxG.height * 0.1 : FlxG.height * 0.9).loadGraphic(Paths.image('game/ui/healthBar'));
+		healthBarBG = new FlxSprite(0, FlxG.height * (Settings.getPref('downscroll', false) ? 0.1 : 0.9)).loadGraphic(Paths.image('game/ui/healthBar'));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		addToHUD(healthBarBG);
