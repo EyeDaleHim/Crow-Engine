@@ -1281,7 +1281,7 @@ class PlayState extends MusicBeatState
 
 				if (!note.mustPress && note.wasGoodHit)
 				{
-					if (!note.isSustainNote || ((note.isSustainNote && note.strumTime <= Conductor.songPosition) && !note._hitSustain))
+					if (note.strumTime <= Conductor.songPosition && !note._hitSustain)
 						hitNote(note, true);
 
 					if (note.isSustainNote)
