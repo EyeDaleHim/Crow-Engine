@@ -229,9 +229,6 @@ class Stage
 					var car:BGSprite = new BGSprite({path: 'fastCarLol', library: 'week4'}, {x: -300, y: 160});
 					car.ID = 3;
 					group.set('car', car);
-
-					stageInstance.attributes.set('carActive', false);
-					stageInstance.attributes.set('carPassingTime', 0.0);
 				}
 			case 'mall':
 				{
@@ -533,6 +530,8 @@ class Stage
 						}
 					}
 				}
+			case 'limo':
+				{}
 			case 'warzone':
 				{
 					attributes['tankAngle'] += elapsed * attributes['tankSpeed'];
@@ -621,6 +620,8 @@ class Stage
 						}
 					}
 				}
+			case 'limo':
+				{}
 			case 'mall':
 				{
 					spriteGroup['upBoppers'].animation.play('bop', true);
