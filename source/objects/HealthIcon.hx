@@ -24,6 +24,7 @@ class HealthIcon extends FlxSprite
 
 		char = char.replace('-car', '');
 		char = char.replace('-christmas', '');
+		char = char.replace('-tankmen', '');
 
 		for (anim in ['lose', 'neutral', 'win'])
 		{
