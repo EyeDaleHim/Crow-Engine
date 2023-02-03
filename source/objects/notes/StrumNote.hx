@@ -32,7 +32,7 @@ class StrumNote extends FlxSprite
 
 		this.direction = direction;
 
-		var path:String = Paths.image('game/ui/STRUM_$currentSkin').replace('png', 'json');
+		var path:String = Paths.imagePath('game/ui/STRUM_$currentSkin').replace('png', 'json');
 
 		if (!FileSystem.exists(path))
 		{

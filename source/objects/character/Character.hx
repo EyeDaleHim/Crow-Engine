@@ -53,7 +53,7 @@ class Character extends FlxSprite
 		this.isPlayer = isPlayer;
 
 		var charPath:String = 'characters/${this.name}/${this.name}';
-		var calledPath:String = Paths.image(charPath);
+		var calledPath:String = Paths.imagePath(charPath);
 
 		var imageExists:Bool = FileSystem.exists(calledPath);
 		var xmlExists:Bool = FileSystem.exists(calledPath.replace('png', 'xml'));
@@ -69,7 +69,7 @@ class Character extends FlxSprite
 
 		charPath = 'characters/${this.name}/${this.name}';
 
-		_characterData = Json.parse(Assets.getText(Paths.image(charPath).replace('png', 'json')));
+		_characterData = Json.parse(Assets.getText(Paths.imagePath(charPath).replace('png', 'json')));
 
 		frames = switch (_characterData == null ? 'sparrow' : _characterData.atlasType)
 		{

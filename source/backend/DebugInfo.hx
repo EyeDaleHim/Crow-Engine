@@ -22,6 +22,8 @@ class DebugInfo extends TextField
 	private var timer:HaxeTimer;
 	private var memoryPeak:UInt = 0;
 
+	private static final dataSizes:Array<String> = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+
 	public function new(x:Float, y:Float)
 	{
 		super();
@@ -83,10 +85,10 @@ class DebugInfo extends TextField
 							text += Math.min(frameCount, Settings.getPref('framerate', 60)) + '\n';
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 1)
-							text += Tools.formatMemory(memory);
+							text += Tools.abbreviateNumber(memory, dataSizes);
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 2)
-							text += " / " + Tools.formatMemory(memoryPeak) + "\n";
+							text += " / " + Tools.abbreviateNumber(memoryPeak, dataSizes) + "\n";
 						else
 							text += '\n';
 					}
@@ -96,10 +98,10 @@ class DebugInfo extends TextField
 							text += "FPS: " + Math.min(frameCount, Settings.getPref('framerate', 60)) + "\n";
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 1)
-							text += "Memory: " + Tools.formatMemory(memory);
+							text += "Memory: " + Tools.abbreviateNumber(memory, dataSizes);
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 2)
-							text += " / " + Tools.formatMemory(memoryPeak) + "\n";
+							text += " / " + Tools.abbreviateNumber(memoryPeak, dataSizes) + "\n";
 						else
 							text += '\n';
 					}

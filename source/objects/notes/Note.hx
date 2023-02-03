@@ -35,7 +35,7 @@ class Note extends FlxSprite
 
 		if (_noteFile == null)
 		{
-			var path = Paths.image('game/ui/$currentSkin').replace('png', 'json');
+			var path = Paths.imagePath('game/ui/$currentSkin').replace('png', 'json');
 
 			if (!FileSystem.exists(path))
 			{
