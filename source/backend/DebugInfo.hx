@@ -93,7 +93,7 @@ class DebugInfo extends TextField
 				case 'default':
 					{
 						if (Settings.getPref("fpsInfo_display", 0) >= 0)
-							text += "FPS: " + frameCount + "\n";
+							text += "FPS: " + Math.min(frameCount, Settings.getPref('framerate', 60)) + "\n";
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 1)
 							text += "Memory: " + Tools.formatMemory(memory);
