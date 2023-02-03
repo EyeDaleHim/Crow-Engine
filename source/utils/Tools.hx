@@ -20,20 +20,23 @@ class Tools
 		return a + FlxMath.bound(ratio, 0, 1) * (b - a);
 	}
 
-	public static function formatMemory(num:UInt):String
+	public static function abbreviateNumber(num:UInt, sizeDivision:Float = 1000, dataAbbreviation:Array<String>):String
 	{
+		if (dataAbbreviation.length == 0)
+			return "" + num;
+
 		var size:Float = num;
 		var data = 0;
-		var dataTexts = ["B", "KB", "MB", "GB", "TB", "PB"];
-		while (size > 1024 && data < dataTexts.length - 1)
+
+		while (size > sizeDivision && data < dataAbbreviation.length - 1)
 		{
 			data++;
-			size = size / 1024;
+			size = size / sizeDivision;
 		}
 
 		size = Math.round(size * 100) / 100;
 		var formatSize:String = formatAccuracy(size);
-		return formatSize + " " + dataTexts[data];
+		return formatSize + " " + dataAbbreviation[data];
 	}
 
 	public static function numberArray(min:Int, max:Int, ?exclude:Array<Int>):Array<Int>
