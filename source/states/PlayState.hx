@@ -1286,8 +1286,8 @@ class PlayState extends MusicBeatState
 
 					if (note.isSustainNote)
 					{
-						if ((Settings.getPref('downscroll', false) && note.y > FlxG.height)
-							|| (!Settings.getPref('downscroll', false) && note.y < -note.height))
+						if ((Settings.getPref('downscroll', false) && note.y > FlxG.height * (1.0 + songSpeed))
+							|| (!Settings.getPref('downscroll', false) && note.y < -note.height * (1.0 + songSpeed)))
 							killNote(note);
 					}
 				}
