@@ -1329,7 +1329,7 @@ class PlayState extends MusicBeatState
 
 				if (player != null)
 				{
-					if (player.animation.getByName(note.singAnim) == null)
+					if (!player.animOffsets.exists(note.singAnim))
 						player.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))]);
 					else
 						player.playAnim(note.singAnim, true);
@@ -1375,7 +1375,7 @@ class PlayState extends MusicBeatState
 		{
 			if (opponent != null)
 			{
-				if (opponent.animation.getByName(note.singAnim) == null)
+				if (!opponent.animOffsets.exists(note.singAnim))
 					opponent.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))]);
 				else
 					opponent.playAnim(note.singAnim, true);
