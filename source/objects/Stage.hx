@@ -6,7 +6,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxAngle;
 import flixel.tweens.FlxTween;
 import flixel.system.FlxSoundGroup;
 import flixel.system.FlxSound;
@@ -419,7 +418,7 @@ class Stage
 					var tank:BGSprite = new BGSprite({path: 'tank', library: 'week7'}, {x: 300, y: 300}, {x: 0.5, y: 0.5}, [
 						{
 							name: 'idle',
-							prefix: 'BG tank w lighting',
+							prefix: 'BG tank w lighting instance 1',
 							indices: [],
 							fps: 24,
 							looped: true,
@@ -538,8 +537,8 @@ class Stage
 					attributes['tankAngle'] += elapsed * attributes['tankSpeed'];
 
 					spriteGroup['tank'].angle = attributes['tankAngle'] - 90 + 15;
-					spriteGroup['tank'].x = 400 + Math.cos(FlxAngle.asRadians(attributes['tankAngle'] + 180)) * 1500;
-					spriteGroup['tank'].y = 1300 + Math.sin(FlxAngle.asRadians(attributes['tankAngle'] + 180)) * 1100;
+					spriteGroup['tank'].x = 400 + (1500 * Math.cos(Math.PI / 180 * (1 * attributes['tankAngle'] + 180)));
+					spriteGroup['tank'].y = 1300 + (1100 * Math.sin(Math.PI / 180 * (1 * attributes['tankAngle'] + 180)));
 				}
 		}
 	}
