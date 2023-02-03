@@ -7,6 +7,8 @@ import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+import utils.CacheManager;
+import utils.CacheManager.AssetTypeData;
 
 using StringTools;
 using utils.Tools;
@@ -95,7 +97,17 @@ class Paths
 		return 'assets/$file';
 	}
 
-	public static function image(file:String, ?library:String = null):String
+	public static function image(file:String, ?library:String = null):FlxGraphic
+	{
+		var fullPath:String = imagePath(file, library);
+
+		if (CacheManager.cachedAssets[BITMAP].exists(fullPath))
+			return CacheManager.getBitmap(fullPath);
+
+		return CacheManager.setBitmap(fullPath);
+	}
+
+	public static function imagePath(file:String, ?library:String = null):String
 	{
 		return getPath(extensionHelper('images/${file}.png'), IMAGE, library);
 	}
@@ -137,15 +149,13 @@ class Paths
 
 	public static function getSparrowAtlas(file:String, ?library:String = null):FlxAtlasFrames
 	{
-		var imagePath:String = Paths.image(file, library);
-		var xmlPath:String = imagePath.replace('png', 'xml');
-		return FlxAtlasFrames.fromSparrow(imagePath, OpenFlAssets.getText(xmlPath));
+		var xmlPath:String = Paths.imagePath(file, library).replace('png', 'xml');
+		return FlxAtlasFrames.fromSparrow(Paths.image(file, library), OpenFlAssets.getText(xmlPath));
 	}
 
 	public static function getPackerAtlas(file:String, ?library:String = null):FlxAtlasFrames
 	{
-		var imagePath:String = Paths.image(file, library);
-		var txtPath:String = imagePath.replace('png', 'txt');
-		return FlxAtlasFrames.fromSpriteSheetPacker(imagePath, OpenFlAssets.getText(txtPath));
+		var txtPath:String = Paths.imagePath(file, library).replace('png', 'txt');
+		return FlxAtlasFrames.fromSpriteSheetPacker(Paths.image(file, library), OpenFlAssets.getText(txtPath));
 	}
 }

@@ -12,6 +12,7 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import backend.Transitions;
 
+@:access(MusicBeatState.callAssetsToCache)
 class MusicBeatState extends FlxUIState
 {
 	private var curStep:Int = 0;
@@ -100,9 +101,19 @@ class MusicBeatState extends FlxUIState
 			endCallback: function()
 			{
 				_finishedFade = true;
+				for (asset in cast(state, MusicBeatState).callAssetsToCache())
+				{
+					utils.CacheManager.setBitmap(asset);
+				}
 				FlxG.switchState(state);
 			}
 		});
+	}
+
+	// empty function that can be used to return a list of asset paths that can be cached automatically by the asset manager
+	private function callAssetsToCache():Array<String>
+	{
+		return [];
 	}
 
 	public function stepHit():Void

@@ -2,6 +2,7 @@ package utils;
 
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
+import openfl.Assets;
 
 class CacheManager
 {
@@ -10,10 +11,10 @@ class CacheManager
 	public static var persistentAssets:Array<String> = ['alphabet', 'mainBG', 'freeplayBG', 'flickerBG'];
 
 	// permaneant cache thing, useful for a "caching-ahead" situation
-	public static var cachedAssets:Map<AssetTypeData, Map<String, AssetCached>> = [
-		BITMAP => new Map<String, AssetCached>(),
-		AUDIO => new Map<String, AssetCached>(),
-		DYNAMIC => new Map<String, AssetCached>()
+	public static var cachedAssets:Map<AssetTypeData, Map<String, CachedAsset>> = [
+		BITMAP => new Map<String, CachedAsset>(),
+		AUDIO => new Map<String, CachedAsset>(),
+		DYNAMIC => new Map<String, CachedAsset>()
 	];
 
 	public static function getBitmap(key:String = ''):FlxGraphic
@@ -26,22 +27,33 @@ class CacheManager
 		return null;
 	}
 
-	public static function setBitmap(key:String = ''):FlxGraphic
+	// threading is useful if you're making dynamic scenes or some WEIRD shit!
+	public static function setBitmap(key:String = '', thread:Bool = false):FlxGraphic
 	{
-		var graphic:FlxGraphic = FlxGraphic.fromAssetKey(key, false, null, false);
+		if (Assets.exists(key, IMAGE))
+		{
+			var graphic:FlxGraphic = FlxGraphic.fromAssetKey(key, false, null, false);
+			graphic.persist = true;
 
-		cachedAssets[BITMAP].set(key, {type: BITMAP, data: graphic});
+			cachedAssets[BITMAP].set(key, {type: BITMAP, data: graphic});
 
-		return getBitmap(key);
+			return getBitmap(key);
+		}
+		trace('Could not find $key, check your path.');
+		return null;
 	}
 
 	public static function clearBitmap(graphicKey:String)
 	{
-		// for (key in )
+		if (cachedAssets[BITMAP].exists(graphicKey))
+		{
+			FlxG.bitmap.removeByKey(graphicKey);
+			cachedAssets[BITMAP].remove(graphicKey);
+		}
 	}
 }
 
-typedef AssetCached =
+typedef CachedAsset =
 {
 	var type:AssetTypeData;
 	var data:Dynamic;
