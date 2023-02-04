@@ -167,9 +167,9 @@ class DebugInfo extends TextField
 	{
 		frameCount++;
 
-		if (FlxG.keys.justPressed.F3)
+		if (FlxG.keys.justPressed.F4)
 		{
-			if (FlxG.keys.pressed.F4)
+			if (FlxG.keys.pressed.F3)
 				Settings.setPref("fpsInfo_display", Std.int((Settings.getPref("fpsInfo_display") + 1) % 3));
 			else
 			{
