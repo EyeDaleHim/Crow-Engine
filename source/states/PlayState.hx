@@ -34,6 +34,7 @@ import objects.character.Character;
 import objects.character.Player;
 import objects.notes.Note;
 import objects.notes.StrumNote;
+import utils.CacheManager;
 import weeks.ScoreContainer;
 import weeks.SongHandler;
 import backend.query.ControlQueries;

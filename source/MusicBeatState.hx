@@ -21,13 +21,23 @@ class MusicBeatState extends FlxUIState
 
 	public var controls(default, null):Controls = new Controls();
 
+	private static var callFunctions:Array<Void->Void> = [];
+
 	override function create()
 	{
 		if (_finishedFade)
 		{
 			_finishedFade = false;
 			Transitions.transition(0.5, Out, FlxEase.linear, Slider_Down, {
-				startCallback: null,
+				startCallback: function()
+				{
+					for (func in callFunctions)
+					{
+						func();
+					}
+
+					callFunctions = [];
+				},
 				updateCallback: null,
 				endCallback: null
 			});
@@ -92,7 +102,7 @@ class MusicBeatState extends FlxUIState
 
 	private static var _finishedFade:Bool = false;
 
-	public static function switchState(state:FlxState)
+	public static function switchState(state:FlxState, onFinishTransition:Void->Void = null)
 	{
 		Transitions.transition(0.5, In, FlxEase.linear, Slider_Down, {
 			// in case you wanna do something, these two aren't useful for now
@@ -101,6 +111,10 @@ class MusicBeatState extends FlxUIState
 			endCallback: function()
 			{
 				_finishedFade = true;
+
+				if (onFinishTransition != null)
+					callFunctions.push(onFinishTransition);
+
 				for (asset in cast(state, MusicBeatState).callAssetsToCache())
 				{
 					utils.CacheManager.setBitmap(asset);

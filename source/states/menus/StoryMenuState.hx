@@ -14,6 +14,7 @@ import objects.character.WeekCharacter;
 import weeks.SongHandler;
 import weeks.SongHandler.WeekList;
 import states.PlayState;
+import utils.CacheManager;
 
 using utils.Tools;
 
@@ -40,6 +41,8 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
+		CacheManager.freeMemory(BITMAP, true);
+
 		backgroundBox = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
 
 		weekSprites = new FlxTypedGroup<WeekSprite>();

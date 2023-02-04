@@ -8,6 +8,9 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import lime.ui.Window;
 import lime.app.Application;
+import sys.FileSystem;
+import sys.io.File;
+import utils.CacheManager;
 
 class Main extends Sprite
 {
@@ -92,6 +95,28 @@ class Main extends Sprite
 		FlxG.console.registerClass(backend.data.Settings);
 		FlxG.console.registerClass(music.Song);
 		FlxG.console.registerClass(Main);
+
+		FlxG.console.registerFunction('checkCache', function()
+		{
+			var listOfCache:String = '---[BITMAP]---\n\n';
+
+			for (bitmapCache in CacheManager.cachedAssets[BITMAP].keys())
+			{
+				listOfCache += 'FILE: "' + bitmapCache + '"';
+				listOfCache += '\n';
+			}
+
+			listOfCache += '\n\n---[AUDIO]---\n\n';
+
+			for (audioCache in CacheManager.cachedAssets[AUDIO].keys())
+			{
+				listOfCache += 'FILE: "' + audioCache + '"';
+				listOfCache += '\n';
+			}
+
+			File.saveContent('listedCache.txt', listOfCache + '\n');
+			trace('saved cache');
+		});
 
 		Settings.init();
 		weeks.ScoreContainer.init();

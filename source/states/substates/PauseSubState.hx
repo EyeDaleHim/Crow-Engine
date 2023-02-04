@@ -9,6 +9,7 @@ import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import objects.Alphabet;
+import utils.CacheManager;
 
 using StringTools;
 
@@ -44,7 +45,6 @@ class PauseSubState extends MusicBeatSubState
 					MusicBeatState.switchState(new states.menus.StoryMenuState());
 				else
 					MusicBeatState.switchState(new states.menus.FreeplayState());
-
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				Conductor.changeBPM(102);
 			}

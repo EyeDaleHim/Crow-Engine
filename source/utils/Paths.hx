@@ -5,6 +5,7 @@ import flixel.util.FlxSave;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
+import flash.media.Sound;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 import utils.CacheManager;
@@ -117,17 +118,37 @@ class Paths
 		return getPath(extensionHelper('sounds/${file}.$SOUND_EXT'), SOUND, library);
 	}
 
-	public static function inst(song:String, ?library:String = null):String
+	public static function inst(song:String):Sound
 	{
-		return getPreloadPath(extensionHelper('music/songs/${song.toLowerCase().replace(' ', '-')}/Inst.$SOUND_EXT'));
+		var fullPath:String = music('songs/${song.toLowerCase().replace(' ', '-')}/Inst');
+
+		if (CacheManager.cachedAssets[AUDIO].exists(fullPath))
+			return CacheManager.getAudio(fullPath);
+
+		return CacheManager.setAudio(fullPath);
 	}
 
-	public static function vocals(song:String, ?library:String = null):String
+	public static function instPath(song:String):String
 	{
-		return getPreloadPath(extensionHelper('music/songs/${song.toLowerCase().replace(' ', '-')}/Voices.$SOUND_EXT'));
+		return music('songs/${song.toLowerCase().replace(' ', '-')}/Inst');
 	}
 
-	public static function music(song:String):String
+	public static function vocals(song:String):Sound
+	{
+		var fullPath:String = music('songs/${song.toLowerCase().replace(' ', '-')}/Voices');
+
+		if (CacheManager.cachedAssets[AUDIO].exists(fullPath))
+			return CacheManager.getAudio(fullPath);
+
+		return CacheManager.setAudio(fullPath);
+	}
+
+	public static function vocalsPath(song:String):String
+	{
+		return music('songs/${song.toLowerCase().replace(' ', '-')}/Voices');
+	}
+
+	public static function music(song:String, ?library:String = null):String
 	{
 		return getPreloadPath(extensionHelper('music/${song}.$SOUND_EXT'));
 	}

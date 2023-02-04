@@ -13,6 +13,7 @@ import states.menus.MainMenuState;
 import weeks.ScoreContainer;
 import weeks.SongHandler;
 import objects.HealthIcon;
+import utils.CacheManager;
 
 using utils.Tools;
 
@@ -38,6 +39,8 @@ class FreeplayState extends MusicBeatState
 
 	override public function create()
 	{
+		CacheManager.freeMemory(BITMAP, true);
+
 		background = new FlxSprite(0, 0).loadGraphic(Paths.image("menus/freeplayBG"));
 		background.scale.set(1.1, 1.1);
 		background.screenCenter();
@@ -123,30 +126,62 @@ class FreeplayState extends MusicBeatState
 	}
 
 	private var currentColor:Int = 0;
+	private var canPress:Bool = true;
+
+	private static var lastPlayed:String = '';
 
 	override public function update(elapsed:Float)
 	{
-		if (controls.getKey('BACK', JUST_PRESSED))
-			MusicBeatState.switchState(new MainMenuState());
-		else if (controls.getKey('ACCEPT', JUST_PRESSED))
+		if (canPress)
 		{
-			Paths.currentLibrary = songs[curSelected].weekName;
+			if (controls.getKey('BACK', JUST_PRESSED))
+				MusicBeatState.switchState(new MainMenuState());
+			else if (controls.getKey('ACCEPT', JUST_PRESSED))
+			{
+				canPress = false;
 
-			Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
-			PlayState.songDiff = curDifficulty;
-			MusicBeatState.switchState(new PlayState());
-		}
-		else
-		{
-			if (controls.getKey('UI_UP', JUST_PRESSED))
-				changeSelection(-1);
-			else if (controls.getKey('UI_DOWN', JUST_PRESSED))
-				changeSelection(1);
+				if (Song.currentSong != null)
+				{
+					if (lastPlayed != Song.currentSong.song)
+					{
+						trace('WIPING OUT AUDIO ${lastPlayed}');
 
-			if (controls.getKey('UI_LEFT', JUST_PRESSED))
-				changeDiff(-1);
-			else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
-				changeDiff(1);
+						CacheManager.clearAudio(Paths.instPath(lastPlayed));
+						CacheManager.clearAudio(Paths.vocalsPath(lastPlayed));
+					}
+					else
+						trace('SEE DIFFERENCE! ${lastPlayed} and ${Song.currentSong.song}');
+
+					lastPlayed = Song.currentSong.song;
+				}
+				else
+					trace('WHOOPS! NO SONG TO WIPE YET!');
+
+				Paths.currentLibrary = songs[curSelected].weekName;
+				PlayState.songDiff = curDifficulty;
+
+				FlxG.sound.music.fadeOut(0.5, 0.0);
+
+				MusicBeatState.switchState(new PlayState(), function()
+				{
+					Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
+
+					Paths.inst(Song.currentSong.song);
+					Paths.vocals(Song.currentSong.song);
+				});
+			}
+			else
+			{
+				if (controls.getKey('UI_UP', JUST_PRESSED))
+					changeSelection(-1);
+				else if (controls.getKey('UI_DOWN', JUST_PRESSED))
+					changeSelection(1);
+
+				if (controls.getKey('UI_LEFT', JUST_PRESSED))
+					changeDiff(-1);
+				else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
+					changeDiff(1);
+			}
 		}
 
 		updateScore();
