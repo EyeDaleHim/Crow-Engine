@@ -24,6 +24,10 @@ is an issue regardless.
 These features are being prioritized ahead first.
 Usually game editors, systems will appear here.
 
+### Shift+Enter = Freeplay Playlist (0.1.0B)
+
+* Self-explanatory
+
 ### Modified HScript System (0.1.1)
 
 * Do not allow imports to various classes due to security concerns
