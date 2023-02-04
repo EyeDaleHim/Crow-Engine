@@ -313,6 +313,12 @@ class Stage
 				{
 					stageInstance.charPosList.playerPositions[0].x += 320;
 
+					stageInstance.charPosList.opponentPositions[0].x = 70;
+					stageInstance.charPosList.opponentPositions[0].y = 150;
+
+					stageInstance.camPosList.opponentPositions[0].x = 200;
+					stageInstance.camPosList.opponentPositions[0].y = -90;
+
 					var bg:BGSprite = new BGSprite({path: 'evilBG', library: 'week5'}, {x: -400, y: -500}, {x: 0.2, y: 0.2});
 					bg.scale.set(0.8, 0.8);
 					bg.updateHitbox();
@@ -331,8 +337,8 @@ class Stage
 				{
 					stageInstance.defaultZoom = 0.90;
 
-					stageInstance.charPosList.spectatorPositions[0].y += 10;
-					stageInstance.charPosList.spectatorPositions[0].x -= 30;
+					stageInstance.charPosList.spectatorPositions[0].y = 110;
+					stageInstance.charPosList.spectatorPositions[0].x = 330;
 
 					stageInstance.charPosList.playerPositions[0].x += 40;
 					stageInstance.charPosList.playerPositions[0].y += 90;

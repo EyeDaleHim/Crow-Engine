@@ -112,7 +112,11 @@ class CurrentGame
 
 	public var judgementList:Map<String, Int> = ['sick' => 0, 'good' => 0, 'bad' => 0, 'shit' => 0];
 
-	public function judgeNote(rate:Float = 0):{judge:String, diff:Float}
+	public function judgeNote(rate:Float = 0):
+		{
+			judge:String,
+			diff:Float
+		}
 	{
 		for (i in 0...judgements.length)
 		{
@@ -137,8 +141,7 @@ class CurrentGame
 }
 
 class PlayState extends MusicBeatState
-{
-	// important variables
+{ // important variables
 	public static var current:PlayState;
 	public static var globalAttributes:Map<String, Dynamic> = new Map<String, Dynamic>();
 
@@ -284,8 +287,10 @@ class PlayState extends MusicBeatState
 		{
 			if (!__internalSongCache.exists(Song.currentSong.song))
 			{
-				__internalSongCache.set(Song.currentSong.song,
-					{music: FlxG.sound.load(Paths.inst(Song.currentSong.song)), vocal: FlxG.sound.load(Paths.vocals(Song.currentSong.song))});
+				__internalSongCache.set(Song.currentSong.song, {
+					music: FlxG.sound.load(Paths.inst(Song.currentSong.song)),
+					vocal: FlxG.sound.load(Paths.vocals(Song.currentSong.song))
+				});
 			}
 		}
 
@@ -579,6 +584,9 @@ class PlayState extends MusicBeatState
 				camera.zoom = Tools.lerpBound(camera.zoom, camera.attributes['zoomLerpValue'], elapsed * 3.125);
 		}
 
+		if (FlxG.keys.justPressed.F7)
+			super.openSubState(new states.debug.game.StageEditSubState());
+
 		super.update(elapsed);
 
 		stageData.update(elapsed);
@@ -601,7 +609,7 @@ class PlayState extends MusicBeatState
 				iconP2.changeState(healthBar.percent > 80 ? 'lose' : 'neutral');
 		}
 
-		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, ($curBeat, $curStep)');
+		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, (BEAT: $curBeat, STEP: $curStep)');
 
 		if (___trackedTimerObjects.active)
 			___trackedTimerObjects.update(elapsed);
@@ -971,8 +979,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		else
-		{
-			// i dont have a fucking charting state yet moron
+		{ // i dont have a fucking charting state yet moron
 			PlayState.playMode = FREEPLAY;
 			endSong();
 		}
@@ -1247,8 +1254,7 @@ class PlayState extends MusicBeatState
 				}
 
 				if (note.isSustainNote)
-				{
-					// temporary fix because monster dies
+				{ // temporary fix because monster dies
 					var _lastNote:Note = note._lastNote;
 					if (_lastNote == null)
 						_lastNote = note;
@@ -1406,6 +1412,7 @@ class PlayState extends MusicBeatState
 		{
 			if (player != null)
 			{
+				player._animationTimer = Conductor.stepCrochet * 0.001;
 				player.playAnim(note.missAnim, true);
 			}
 
