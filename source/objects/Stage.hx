@@ -337,8 +337,8 @@ class Stage
 				{
 					stageInstance.defaultZoom = 0.90;
 
-					stageInstance.charPosList.spectatorPositions[0].y += 10;
-					stageInstance.charPosList.spectatorPositions[0].x -= 30;
+					stageInstance.charPosList.spectatorPositions[0].y = 110;
+					stageInstance.charPosList.spectatorPositions[0].x = 330;
 
 					stageInstance.charPosList.playerPositions[0].x += 40;
 					stageInstance.charPosList.playerPositions[0].y += 90;
