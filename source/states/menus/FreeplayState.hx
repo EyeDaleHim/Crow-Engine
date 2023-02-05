@@ -33,9 +33,11 @@ class FreeplayState extends MusicBeatState
 	private static var curSelected:Int = 0;
 	private static var curDifficulty:Int = Std.int(Math.max(0, SongHandler.PLACEHOLDER_DIFF.indexOf(SongHandler.defaultDifficulty)));
 
-	private static var score:LerpConstant = {current: 0.0, lerp: 0.0};
-	private static var miss:LerpConstant = {current: 0.0, lerp: 0.0};
-	private static var accuracy:LerpConstant = {current: 0.0, lerp: 0.0};
+	private static var savedScore:Float = 0.0;
+	private static var savedAccuracy:Float = 0.0;
+
+	private static var lerpingScore:Float = 0.0;
+	private static var lerpingAccuracy:Float = 0.0;
 
 	override public function create()
 	{
@@ -55,7 +57,7 @@ class FreeplayState extends MusicBeatState
 
 		scoreText = new FlxText(0, 5, 0, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE);
-		scoreText.text = 'PERSONAL BEST: ${Math.floor(score.current)} (${Tools.formatAccuracy(accuracy.current)}%)';
+		scoreText.text = 'PERSONAL BEST: ${Math.floor(savedScore)} (${Tools.formatAccuracy(savedAccuracy)}%)';
 		scoreText.x = FlxG.width - scoreText.width - 8;
 		// scoreText.centerOverlay(scoreBG, X); might come in handy
 		scoreText.antialiasing = Settings.getPref('antialiasing', true);
@@ -122,6 +124,8 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		changeDiff();
 
+		updateScore(FlxMath.MAX_VALUE_FLOAT);
+
 		super.create();
 	}
 
@@ -135,7 +139,10 @@ class FreeplayState extends MusicBeatState
 		if (canPress)
 		{
 			if (controls.getKey('BACK', JUST_PRESSED))
+			{
+				canPress = false;
 				MusicBeatState.switchState(new MainMenuState());
+			}
 			else if (controls.getKey('ACCEPT', JUST_PRESSED))
 			{
 				canPress = false;
@@ -144,28 +151,22 @@ class FreeplayState extends MusicBeatState
 				{
 					if (lastPlayed != Song.currentSong.song)
 					{
-						trace('WIPING OUT AUDIO ${lastPlayed}');
-
 						CacheManager.clearAudio(Paths.instPath(lastPlayed));
 						CacheManager.clearAudio(Paths.vocalsPath(lastPlayed));
-					}
-					else
-						trace('SEE DIFFERENCE! ${lastPlayed} and ${Song.currentSong.song}');
 
-					lastPlayed = Song.currentSong.song;
+						lastPlayed = Song.currentSong.song;
+					}
 				}
-				else
-					trace('WHOOPS! NO SONG TO WIPE YET!');
 
 				Paths.currentLibrary = songs[curSelected].weekName;
 				PlayState.songDiff = curDifficulty;
 
 				FlxG.sound.music.fadeOut(0.5, 0.0);
 
+				Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
+
 				MusicBeatState.switchState(new PlayState(), function()
 				{
-					Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
-
 					Paths.inst(Song.currentSong.song);
 					Paths.vocals(Song.currentSong.song);
 				});
@@ -184,31 +185,35 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		updateScore();
+		updateScore(elapsed);
 
 		background.color = FlxColor.interpolate(background.color, currentColor, FlxMath.bound(elapsed * 1.75, 0, 1));
 
 		super.update(elapsed);
 	}
 
-	private function updateScore():Void
+	private function updateScore(elapsed:Float = 1):Void
 	{
 		var scoreString:String = 'PERSONAL BEST: ';
 
-		score.current = Tools.lerpBound(score.current, score.lerp, FlxG.elapsed * 4.775);
-		if (Math.abs(score.current - score.lerp) < 20)
-			score.current = score.lerp;
-		scoreString += Math.floor(score.current);
+		lerpingScore = Tools.lerpBound(lerpingScore, savedScore, elapsed * 4.775);
+		if (Math.abs(savedScore - lerpingScore) < 10)
+			lerpingScore = savedScore;
+		scoreString += Math.floor(lerpingScore);
 
-		accuracy.current = FlxMath.bound(FlxMath.lerp(accuracy.current, accuracy.lerp, FlxMath.bound(FlxG.elapsed * 4.775, 0, 1)), 0, score.lerp);
-		scoreString += ' (${Tools.formatAccuracy(accuracy.current * 100)}%)';
+		lerpingAccuracy = Tools.lerpBound(lerpingAccuracy, savedAccuracy, elapsed * 4.775);
+		if (Math.abs(savedAccuracy - lerpingAccuracy) <= 0.05)
+			lerpingAccuracy = savedAccuracy;
+		scoreString += ' (${Tools.formatAccuracy(FlxMath.roundDecimal(lerpingAccuracy * 100, 2))}%)';
 
 		scoreText.text = scoreString;
-		scoreText.x = FlxMath.lerp(scoreText.x, FlxG.width - scoreText.width - 8, FlxMath.bound(FlxG.elapsed * 6.775, 0, 1));
+		scoreText.x = FlxMath.lerp(scoreText.x, FlxG.width - scoreText.width - 8, FlxMath.bound(elapsed * 6.775, 0, 1));
 
 		scoreBG.x = scoreText.x - 8;
-		scoreBG.setGraphicSize(Std.int(scoreText.width + 16), Std.int(scoreBG.height));
+		scoreBG.setGraphicSize(Std.int(Math.max(scoreText.width + 16, (FlxG.width + 20) - scoreText.x)), Std.int(scoreBG.height));
 		scoreBG.updateHitbox();
+
+		diffText.centerOverlay(scoreBG, X);
 	}
 
 	public function changeSelection(change:Int = 0)
@@ -244,11 +249,10 @@ class FreeplayState extends MusicBeatState
 
 		currentColor = songs[curSelected].color;
 
-		var songResult = ScoreContainer.getSong(songs[curSelected].name, curDifficulty);
+		var songResult = ScoreContainer.getSong(songs[curSelected].name.formatToReadable(), curDifficulty);
 
-		score.lerp = songResult.score;
-		miss.lerp = songResult.misses;
-		accuracy.lerp = songResult.accuracy;
+		savedScore = songResult.score;
+		savedAccuracy = songResult.accuracy;
 	}
 
 	public function changeDiff(change:Int = 0)
@@ -289,10 +293,4 @@ class SongMetadata
 		this.diffs = diffs;
 		this.color = color;
 	}
-}
-
-typedef LerpConstant =
-{
-	var current:Float;
-	var lerp:Float;
 }

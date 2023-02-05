@@ -57,7 +57,9 @@ class ScoreContainer
 		{
 			if (songScores[song].exists(diff))
 			{
-				if (songScores[song][diff].score > result.score)
+				var savedPerformance:Float = songScores[song][diff].score * songScores[song][diff].accuracy;
+
+				if (result.score * result.accuracy > savedPerformance)
 					songScores[song].set(diff, result);
 			}
 			else
