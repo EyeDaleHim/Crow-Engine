@@ -29,8 +29,8 @@
             "fps": 24,
             "name": "singDOWN",
             "offset": {
-                "x": -30,
-                "y": -40
+                "x": -47,
+                "y": -92
             },
             "looped": false
         },
