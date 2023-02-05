@@ -250,9 +250,6 @@ class PlayState extends MusicBeatState
 	private var ___trackedTimerObjects:FlxTimerManager = new FlxTimerManager();
 	private var ___trackedTweenObjects:Array<FlxTween> = [];
 
-	// used for weeks, load all the songs beforehand instead of loading one individually, limit is 3
-	private static var __internalSongCache:Map<String, {music:FlxSound, vocal:FlxSound}> = [];
-
 	private static var _cameraPos:FlxPoint;
 
 	override public function create()
@@ -283,17 +280,6 @@ class PlayState extends MusicBeatState
 
 		if (Song.currentSong == null)
 			Song.loadSong('tutorial', 2);
-
-		if (PlayState.playMode == STORY)
-		{
-			if (!__internalSongCache.exists(Song.currentSong.song))
-			{
-				__internalSongCache.set(Song.currentSong.song, {
-					music: FlxG.sound.load(Paths.inst(Song.currentSong.song)),
-					vocal: FlxG.sound.load(Paths.vocals(Song.currentSong.song))
-				});
-			}
-		}
 
 		vocals = new FlxSound();
 		vocals.looped = false;
