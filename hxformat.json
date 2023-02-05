@@ -3,7 +3,8 @@
 		"leftCurly": "both",
 		"rightCurly": "both",
 		"objectLiteralCurly": {
-			"leftCurly": "after"
+			"leftCurly": "after",
+			"rightCurly": "after"
 		}
 	},
 	"sameLine": {
