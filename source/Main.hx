@@ -89,6 +89,11 @@ class Main extends Sprite
 
 		addChild(game);
 
+		#if (flixel >= "5.1.0")
+		FlxG.game.soundTray.volumeDownSound = Paths.sound('backend/volume');
+		FlxG.game.soundTray.volumeUpSound = Paths.sound('backend/volume');
+		#end
+
 		FlxG.console.registerClass(weeks.ScoreContainer);
 		FlxG.console.registerClass(utils.Paths);
 		FlxG.console.registerClass(utils.Tools);
