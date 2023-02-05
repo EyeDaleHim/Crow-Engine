@@ -120,7 +120,7 @@ class Paths
 
 	public static function inst(song:String):Sound
 	{
-		var fullPath:String = music('songs/${song.toLowerCase().replace(' ', '-')}/Inst');
+		var fullPath:String = instPath(song);
 
 		if (CacheManager.cachedAssets[AUDIO].exists(fullPath))
 			return CacheManager.getAudio(fullPath);
@@ -135,7 +135,7 @@ class Paths
 
 	public static function vocals(song:String):Sound
 	{
-		var fullPath:String = music('songs/${song.toLowerCase().replace(' ', '-')}/Voices');
+		var fullPath:String = vocalsPath(song);
 
 		if (CacheManager.cachedAssets[AUDIO].exists(fullPath))
 			return CacheManager.getAudio(fullPath);

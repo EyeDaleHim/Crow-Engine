@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
 import flash.media.Sound;
 import openfl.Assets;
+import haxe.ds.StringMap;
 
 class CacheManager
 {
@@ -18,7 +19,7 @@ class CacheManager
 	];
 
 	// permaneant cache thing, useful for a "caching-ahead" situation
-	public static var cachedAssets:Map<AssetTypeData, Map<String, CachedAsset>> = [
+	public static var cachedAssets:Map<AssetTypeData, StringMap<CachedAsset>> = [
 		BITMAP => new Map<String, CachedAsset>(),
 		AUDIO => new Map<String, CachedAsset>(),
 		DYNAMIC => new Map<String, CachedAsset>()
@@ -164,5 +165,6 @@ typedef CachedAsset =
 {
 	var BITMAP:AssetTypeData = 0x00;
 	var AUDIO:AssetTypeData = 0x01;
-	var DYNAMIC:AssetTypeData = 0x10;
+	var FRAME:AssetTypeData = 0x10;
+	var DYNAMIC:AssetTypeData = 0x11;
 }
