@@ -3,6 +3,7 @@ package backend.data;
 import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
 import backend.data.Settings;
+import haxe.ds.StringMap;
 
 class Controls
 {
@@ -16,7 +17,7 @@ class Controls
 
 	public function new() {}
 
-	public static var RENAME_CONTROLS:Map<String, String> = [
+	public static var RENAME_CONTROLS:StringMap<String> = [
 		'NOTE_LEFT' => 'Left Note', 'NOTE_DOWN' => 'Down Note', 'NOTE_UP' => 'Up Note', 'NOTE_RIGHT' => 'Right Note', 'UI_LEFT' => 'Left UI',
 		'UI_DOWN' => 'Down UI', 'UI_UP' => 'Up UI', 'UI_RIGHT' => 'Right UI', 'ACCEPT' => 'Accept', 'BACK' => 'Back', 'PAUSE' => 'Pause', 'RESET' => 'Pause'
 	];
