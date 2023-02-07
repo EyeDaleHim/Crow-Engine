@@ -10,6 +10,7 @@ import lime.ui.Window;
 import lime.app.Application;
 import sys.FileSystem;
 import sys.io.File;
+import haxe.Json;
 import utils.CacheManager;
 
 class Main extends Sprite
@@ -100,6 +101,34 @@ class Main extends Sprite
 		FlxG.console.registerClass(backend.data.Settings);
 		FlxG.console.registerClass(music.Song);
 		FlxG.console.registerClass(Main);
+
+		FlxG.stage.window.onDropFile.add(function(path:String)
+		{
+			trace("DROPPED FILE FROM: " + Std.string(path));
+			while (!path.startsWith('assets'))
+			{
+				path = path.substring(1);
+			}
+
+			var parsed = File.getContent(path);
+			var convertedData = backend.compat.ChartConvert.convertType('base', parsed);
+
+			var data:String = Json.stringify(convertedData, "\t");
+
+			// find the file name
+			var copyPath = path;
+
+			var lastBackslash = copyPath.lastIndexOf('\\');
+			copyPath = copyPath.substring(lastBackslash);
+			trace(lastBackslash);
+
+			var newPath:String = Paths.data('charts/' + 'tempFolder' + '/' + copyPath);
+
+			if (data != null && data.length > 0)
+			{
+				File.saveContent(newPath, data.trim());
+			}
+		});
 
 		FlxG.console.registerFunction('checkCache', function()
 		{

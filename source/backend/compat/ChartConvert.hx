@@ -88,12 +88,17 @@ class ChartConvert
 							if (notes[1] > 3)
 								gottaHitNote = !gottaHitNote;
 
+							var noteAnim:String = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(notes[1] % 4)];
+
+							if (notes[3])
+								noteAnim += '-alt';
+
 							convertedData.sectionList[index].notes[noteIndex] = {
 								strumTime: notes[0],
 								direction: Std.int(notes[1] % 4),
 								mustPress: gottaHitNote,
 								sustain: notes[2],
-								noteAnim: ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(notes[1] % 4)],
+								noteAnim: noteAnim,
 								noteType: '',
 							};
 
