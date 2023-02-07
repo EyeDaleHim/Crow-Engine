@@ -193,7 +193,7 @@ class Character extends FlxSprite
 				missList[_characterData.idleList.indexOf(animData.name)] = animData.name;
 
 			if (animData.offset.x != 0 || animData.offset.y != 0)
-				animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
+				animOffsets.set(animData.name, FlxPoint.get(animData.offset.x, animData.offset.y));
 		}
 
 		if (_characterData.behaviorType != null)
@@ -214,7 +214,7 @@ class Character extends FlxSprite
 
 							if (animData.animation.offset.x != 0 || animData.animation.offset.y != 0)
 								animOffsets.set(animData.animation.name + '-hair_loop',
-									new FlxPoint(animData.animation.offset.x, animData.animation.offset.y));
+									FlxPoint.get(animData.animation.offset.x, animData.animation.offset.y));
 						}
 
 						animation.finishCallback = function(name:String)

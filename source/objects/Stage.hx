@@ -28,8 +28,8 @@ class Stage
 	public var spriteGroup:Map<String, BGSprite> = [];
 	public var stageSoundObjects:Map<String, FlxSound> = [];
 
-	public var charPosList:CharPositions;
-	public var camPosList:CharCamPositions;
+	public var charPosList:ListedPosition;
+	public var camPosList:ListedPosition;
 
 	public var attributes:Map<String, Dynamic> = [];
 
@@ -717,14 +717,7 @@ class BGSprite extends FlxSprite
 	var AFTER_CHAR:RenderPriority = 1;
 }
 
-typedef CharPositions =
-{
-	var playerPositions:Array<SimplePoint>;
-	var spectatorPositions:Array<SimplePoint>;
-	var opponentPositions:Array<SimplePoint>;
-}
-
-typedef CharCamPositions =
+typedef ListedPosition =
 {
 	var playerPositions:Array<SimplePoint>;
 	var spectatorPositions:Array<SimplePoint>;

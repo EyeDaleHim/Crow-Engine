@@ -175,17 +175,17 @@ class OptionsMenu extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		var lerpValue:Float = elapsed * 7.725;
-		var lerpTowards:FlxPoint = new FlxPoint();
+		var lerpTowards:FlxPoint = FlxPoint.get();
 
 		switch (_lerpTarget)
 		{
 			case 0:
-				lerpTowards = new FlxPoint(Math.min(FlxG.mouse.screenX + 24, FlxG.width - description.width - 8),
+				lerpTowards = FlxPoint.get(Math.min(FlxG.mouse.screenX + 24, FlxG.width - description.width - 8),
 					Math.min(FlxG.mouse.screenY + 32, FlxG.height - description.height - 8));
 
 				lerpTowards.set(Math.max(8, lerpTowards.x), Math.max(8, lerpTowards.y));
 
-				lerpValue = elapsed * Math.max(FlxMath.remapToRange(new FlxPoint(description.x, description.y).distanceTo(lerpTowards), 150, 450, 7.725,
+				lerpValue = elapsed * Math.max(FlxMath.remapToRange(FlxPoint.get(description.x, description.y).distanceTo(lerpTowards), 150, 450, 7.725,
 					15.775), 7.725);
 			case 1:
 				manualLerpPoint.copyTo(lerpTowards);

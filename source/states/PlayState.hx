@@ -281,7 +281,7 @@ class PlayState extends MusicBeatState
 		if (Song.currentSong == null)
 			Song.loadSong('tutorial', 2);
 
-		vocals = new FlxSound();
+		vocals = FlxG.sound.list.recycle(FlxSound);
 		vocals.looped = false;
 		if (vocals != null)
 		{
@@ -380,7 +380,7 @@ class PlayState extends MusicBeatState
 			_cameraPos.copyTo(camFollow);
 		else
 		{
-			camFollow = new FlxPoint();
+			camFollow = FlxPoint.get();
 
 			if (Song.currentSong.mustHitSections[0] != null)
 			{
@@ -642,7 +642,7 @@ class PlayState extends MusicBeatState
 			manageNotes();
 		}
 
-		if (events.spawnedEvents[0] != null)
+		if (events.eventList[0] != null)
 		{
 			for (event in events.eventList)
 			{
@@ -677,28 +677,6 @@ class PlayState extends MusicBeatState
 				}
 			}
 		}
-
-		// meh, hard-coded, i don't have an actual event system yet thing
-		var preventDupe:Bool = false;
-
-		if (!preventDupe)
-		{
-			preventDupe = true;
-
-			if (Settings.getPref('camZoom', true))
-			{
-				if (curBeat % 4 == 0)
-					events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Camera Beat', arguments: ['world&spl-0.015', 'hud&spl-0.03']});
-			}
-
-			switch (Song.currentSong.song.formatToReadable())
-			{
-				case 'bopeebo':
-					if (curBeat % 8 == 7)
-						events.triggerEvent({strumTime: Conductor.songPosition, eventName: 'Play Animation', arguments: ['player', 'hey', '0']});
-			}
-		}
-
 		if (camFollow != null)
 		{
 			var sect:Int = Math.floor(curBeat / 4);
@@ -771,7 +749,7 @@ class PlayState extends MusicBeatState
 
 		songSpeed = FlxMath.roundDecimal(Song.currentSong.speed, 2);
 
-		events = new EventManager();
+		events = new EventManager(Song.currentSong.song.formatToReadable(), true);
 
 		for (sections in Song.currentSong.sectionList)
 		{
@@ -870,7 +848,7 @@ class PlayState extends MusicBeatState
 					add(countdownSpr);
 				}
 
-				var countdownSound:FlxSound = new FlxSound();
+				var countdownSound:FlxSound = FlxG.sound.list.recycle(FlxSound);
 
 				if (sound[i] != '')
 				{

@@ -85,7 +85,7 @@ class StageEditSubState extends MusicBeatSubState
 				FlxG.keys.justPressed.S,
 				FlxG.keys.justPressed.D
 			];
-			var changeValue:Array<FlxPoint> = [new FlxPoint(0, -1), new FlxPoint(-1, 0), new FlxPoint(0, 1), new FlxPoint(1, 0)];
+			var changeValue:Array<FlxPoint> = [FlxPoint.get(0, -1), FlxPoint.get(-1, 0), FlxPoint.get(0, 1), FlxPoint.get(1, 0)];
 
 			var stageDataChar = PlayState.current.stageData.charPosList;
 			var stageDataCam = PlayState.current.stageData.camPosList;
@@ -115,7 +115,7 @@ class StageEditSubState extends MusicBeatSubState
 							stageDataCam.playerPositions[0].x += changeValue[keys.indexOf(key)].x;
 							stageDataCam.playerPositions[0].y += changeValue[keys.indexOf(key)].y;
 						default:
-							new FlxPoint();
+							FlxPoint.get();
 					}
 				}
 			}
@@ -135,19 +135,19 @@ class StageEditSubState extends MusicBeatSubState
 		var selectedPoint:FlxPoint = switch (curSelected)
 		{
 			case 0:
-				Tools.transformSimplePoint(new FlxPoint(), PlayState.current.stageData.charPosList.opponentPositions[0]);
+				Tools.transformSimplePoint(FlxPoint.get(), PlayState.current.stageData.charPosList.opponentPositions[0]);
 			case 1:
-				Tools.transformSimplePoint(new FlxPoint(), PlayState.current.stageData.charPosList.spectatorPositions[0]);
+				Tools.transformSimplePoint(FlxPoint.get(), PlayState.current.stageData.charPosList.spectatorPositions[0]);
 			case 2:
-				Tools.transformSimplePoint(new FlxPoint(), PlayState.current.stageData.charPosList.playerPositions[0]);
+				Tools.transformSimplePoint(FlxPoint.get(), PlayState.current.stageData.charPosList.playerPositions[0]);
 			case 3:
-				Tools.transformSimplePoint(new FlxPoint(), PlayState.current.stageData.camPosList.opponentPositions[0]);
+				Tools.transformSimplePoint(FlxPoint.get(), PlayState.current.stageData.camPosList.opponentPositions[0]);
 			case 4:
-				Tools.transformSimplePoint(new FlxPoint(), PlayState.current.stageData.camPosList.spectatorPositions[0]);
+				Tools.transformSimplePoint(FlxPoint.get(), PlayState.current.stageData.camPosList.spectatorPositions[0]);
 			case 5:
-				Tools.transformSimplePoint(new FlxPoint(), PlayState.current.stageData.camPosList.playerPositions[0]);
+				Tools.transformSimplePoint(FlxPoint.get(), PlayState.current.stageData.camPosList.playerPositions[0]);
 			default:
-				new FlxPoint();
+				FlxPoint.get();
 		}
 
 		if (selectedObject != null)

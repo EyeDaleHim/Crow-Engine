@@ -52,7 +52,7 @@ class StrumNote extends FlxSprite
 				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 
 			if (animData.offset.x != 0 || animData.offset.y != 0)
-				animOffsets.set(animData.name, new FlxPoint(animData.offset.x, animData.offset.y));
+				animOffsets.set(animData.name, FlxPoint.get(animData.offset.x, animData.offset.y));
 		}
 
 		confirmAnim = _strumFile.confirmAnim[direction];

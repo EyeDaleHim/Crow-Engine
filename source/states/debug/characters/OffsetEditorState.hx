@@ -72,7 +72,7 @@ class OffsetEditorState extends MusicBeatState
 		gameCamera.follow(camFollow, null, 1);
 		attributes.set('camZoom', 1.0);
 
-		FlxG.mouse.getPositionInCameraView(gameCamera, (_lastPress == null ? (_lastPress = new FlxPoint()) : _lastPress));
+		FlxG.mouse.getPositionInCameraView(gameCamera, (_lastPress == null ? (_lastPress = FlxPoint.get()) : _lastPress));
 
 		super.create();
 	}
@@ -107,7 +107,7 @@ class OffsetEditorState extends MusicBeatState
 				camFollow.x = camFollow.x + (_lastPress.x - camPos.x);
 				camFollow.y = camFollow.y + (_lastPress.y - camPos.y);
 
-				FlxG.mouse.getPositionInCameraView(gameCamera, (_lastPress == null ? (_lastPress = new FlxPoint()) : _lastPress));
+				FlxG.mouse.getPositionInCameraView(gameCamera, (_lastPress == null ? (_lastPress = FlxPoint.get()) : _lastPress));
 			}
 			else if (FlxG.mouse.justPressed)
 			{
@@ -137,7 +137,7 @@ class OffsetEditorState extends MusicBeatState
 
 				formatTextOffset(textGroup.members[selected], animationList[selected], offset);
 
-				FlxG.mouse.getPositionInCameraView(gameCamera, (_lastPress == null ? (_lastPress = new FlxPoint()) : _lastPress));
+				FlxG.mouse.getPositionInCameraView(gameCamera, (_lastPress == null ? (_lastPress = FlxPoint.get()) : _lastPress));
 			}
 		}
 		else
@@ -247,7 +247,7 @@ class OffsetEditorState extends MusicBeatState
 			animText.ID = i;
 			animText.setBorderStyle(OUTLINE, 0, 1.25, 1);
 			animText.setPosition(10, 10 + (animText.height * i));
-			formatTextOffset(animText, list[i], !character.animOffsets.exists(list[i]) ? new FlxPoint() : character.animOffsets[list[i]]);
+			formatTextOffset(animText, list[i], !character.animOffsets.exists(list[i]) ? FlxPoint.get() : character.animOffsets[list[i]]);
 			textGroup.add(animText);
 
 			animationList[i] = list[i];

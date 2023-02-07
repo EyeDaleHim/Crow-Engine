@@ -1,6 +1,8 @@
 package music;
 
+import flixel.FlxG;
 import flixel.FlxCamera;
+import flixel.util.FlxSort;
 import states.PlayState;
 import objects.character.Character;
 
@@ -10,16 +12,71 @@ class EventManager
 	public var spawnedEvents:Array<String> = [];
 	public var eventList:EventInfo = [];
 
-	public function new() {}
-
-	public function onSpawnEvent(event:EventData)
+	public function new(song:String, overrideEvents:Bool = false)
 	{
-		var gameInstance:PlayState = PlayState.current;
+		if (overrideEvents) // fancy term for "hardcode"
+		{
+			switch (song)
+			{
+				case 'bopeebo':
+					{
+						var beat:Int = 0;
 
+						while (Conductor.crochet * beat <= FlxG.sound.music.length)
+						{
+							if (beat % 8 == 7)
+								spawnEvent({strumTime: Conductor.crochet * beat, eventName: 'Play Animation', arguments: ['player', 'hey', '0']});
+
+							beat += 8;
+						}
+					}
+				case 'milf':
+					{
+						var beat = 168;
+
+						while (beat < 200)
+						{
+							spawnEvent({
+								eventName: 'Camera Beat',
+								strumTime: Conductor.crochet * beat,
+								arguments: ['world&spl-0.015', 'hud&spl-0.03']
+							});
+
+							beat++;
+						}
+					}
+			}
+		}
+
+		var beat:Int = 4;
+
+		if (Settings.getPref('camZoom', true))
+		{
+			while (Conductor.crochet * beat <= FlxG.sound.music.length)
+			{
+				if (beat % 4 == 0)
+					spawnEvent({strumTime: Conductor.crochet * beat, eventName: 'Camera Beat', arguments: ['world&spl-0.015', 'hud&spl-0.03']});
+
+				beat++;
+			}
+		}
+
+		eventList.sort(function(f1, f2)
+		{
+			return FlxSort.byValues(FlxSort.ASCENDING, f1.strumTime, f2.strumTime);
+		});
+	}
+
+	public function spawnEvent(event:EventData)
+	{
 		switch (event.eventName) {}
 
 		if (!spawnedEvents.contains(event.eventName))
 			spawnedEvents.push(event.eventName);
+
+		eventList.push(event);
+
+		eventList[eventList.indexOf(event)].id = eventList.indexOf(event);
 	}
 
 	public function triggerEvent(event:EventData)
@@ -81,6 +138,7 @@ typedef EventInfo = Array<EventData>;
 
 typedef EventData =
 {
+	@:optional var id:Int;
 	var strumTime:Float;
 	var eventName:String;
 	var arguments:Array<Dynamic>;
