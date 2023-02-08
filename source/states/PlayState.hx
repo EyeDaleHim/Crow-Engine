@@ -283,9 +283,11 @@ class PlayState extends MusicBeatState
 
 		vocals = FlxG.sound.list.recycle(FlxSound);
 		vocals.looped = false;
+		vocals.attributes.set('isPlaying', false);
 		if (vocals != null)
 		{
 			vocals.loadEmbedded(Paths.vocals(Song.currentSong.song));
+			vocals.attributes.set('isPlaying', true);
 			FlxG.sound.list.add(vocals);
 		}
 
@@ -608,7 +610,8 @@ class PlayState extends MusicBeatState
 				if (songStarted)
 				{
 					FlxG.sound.music.resume();
-					vocals.resume();
+					if (vocals.attributes.get('isPlaying'))
+						vocals.resume();
 				}
 
 				paused = true;
@@ -646,7 +649,7 @@ class PlayState extends MusicBeatState
 		{
 			for (event in events.eventList)
 			{
-				if (Conductor.songPosition > event.strumTime)
+				if (Conductor.songPosition >= event.strumTime)
 					events.triggerEvent(event);
 				else
 					break;
@@ -895,7 +898,7 @@ class PlayState extends MusicBeatState
 			_lastFrameTime = FlxG.game.ticks;
 
 			FlxG.sound.playMusic(Paths.inst(Song.currentSong.song));
-			if (vocals != null)
+			if (vocals != null && vocals.attributes.get('isPlaying'))
 				vocals.play();
 
 			FlxG.sound.music.onComplete = endSong;
@@ -909,7 +912,7 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
-		if (vocals != null)
+		if (vocals != null && vocals.attributes.get('isPlaying'))
 			vocals.stop();
 
 		ScoreContainer.setSong(Song.currentSong.song.formatToReadable(), songDiff,
@@ -978,7 +981,8 @@ class PlayState extends MusicBeatState
 		if (songStarted)
 		{
 			FlxG.sound.music.pause();
-			vocals.pause();
+			if (vocals.attributes.get('isPlaying'))
+				vocals.pause();
 		}
 
 		super.openSubState(state);
@@ -1316,7 +1320,8 @@ class PlayState extends MusicBeatState
 
 				note.wasGoodHit = true;
 
-				vocals.volume = 1.0;
+				if (vocals.attributes.get('isPlaying'))
+					vocals.volume = 1.0;
 
 				if (!note.isSustainNote)
 				{
@@ -1365,7 +1370,8 @@ class PlayState extends MusicBeatState
 			else
 				note._hitSustain = true;
 
-			vocals.volume = 1.0;
+			if (vocals.attributes.get('isPlaying'))
+				vocals.volume = 1.0;
 		}
 	}
 
@@ -1381,7 +1387,8 @@ class PlayState extends MusicBeatState
 				player.playAnim(note.missAnim, true);
 			}
 
-			vocals.volume = 0.0;
+			if (vocals.attributes.get('isPlaying'))
+				vocals.volume = 0.0;
 
 			gameInfo.misses++;
 			gameInfo.playerHitMods++;
