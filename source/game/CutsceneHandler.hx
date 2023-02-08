@@ -9,6 +9,7 @@ import flixel.system.FlxSound;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.util.FlxTimer;
+import utils.CacheManager;
 import states.PlayState;
 
 class CutsceneHandler
@@ -300,6 +301,131 @@ class CutsceneHandler
 									PlayState.current.spectator.animation.finishCallback = null;
 								},
 								time: 11.5
+							});
+						}
+					}
+				}
+			case 'stress':
+				{
+					@:privateAccess
+					{
+						if (cutscene.split('-##')[1] == 'start')
+						{
+							lockedUpdateLoops.set('lockCharUpdate', function()
+							{
+								PlayState.current.player._animationTimer = 0.0;
+								PlayState.current.spectator._animationTimer = 0.0;
+								PlayState.current.opponent._animationTimer = 0.0;
+							});
+
+							var savedSounds:Map<String, FlxSound> = [];
+							var listOfSounds:Array<{name:String, file:String}> = [{name: 'stressCutscene', file: 'stressCutscene'}];
+
+							for (sound in listOfSounds)
+							{
+								savedSounds.set(sound.name, FlxG.sound.load(Paths.sound('cutscenes/stress/${sound.file}')));
+								savedSounds[sound.name].onComplete = function()
+								{
+									FlxG.sound.list.remove(savedSounds[sound.name]);
+									savedSounds[sound.name].destroy();
+									savedSounds.remove(sound.name);
+								};
+
+								FlxG.sound.list.add(savedSounds[sound.name]);
+							}
+
+							PlayState.current.hudCamera.alpha = 0.0;
+							// FlxG.camera.zoom *= 1.2;
+
+							var opponent = PlayState.current.opponent;
+							opponent.flipX = !opponent.flipX;
+
+							// IM A FUCKING GENIUS
+							var tankmanTalking:FlxAtlasFrames = Paths.getSparrowAtlas('cutscenes/stress/tankman1'); // god effing dammit
+							tankmanTalking.frames.concat(Paths.getSparrowAtlas('cutscenes/stress/tankman2').frames); // look who it is
+
+							var endTime = 35.6;
+
+							var newPos:FlxPoint = FlxPoint.get();
+							Tools.transformSimplePoint(newPos, PlayState.current.stageData.camPosList.opponentPositions[0]);
+
+							newPos.add(50, 20);
+
+							var midPoint:FlxPoint = opponent.getMidpoint();
+							var calculatedPosition:FlxPoint = FlxPoint.get(midPoint.x + newPos.x, midPoint.y + newPos.y);
+
+							snapCamera(calculatedPosition.x, calculatedPosition.y);
+
+							opponent.frames = tankmanTalking;
+
+							opponent.animation.addByPrefix('effing', 'TANK TALK 3 P1 UNCUT', 24, false);
+
+							cutsceneActions.push({
+								action: function()
+								{
+									opponent.animation.play('effing', true);
+
+									savedSounds['stressCutscene'].play(true);
+								},
+								time: 0.1
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									FlxTween.tween(calculatedPosition, {x: calculatedPosition.x - 40, y: calculatedPosition.y - 10}, 5, {
+										ease: FlxEase.cubeInOut,
+										onUpdate: function(twn:FlxTween)
+										{
+											snapCamera(calculatedPosition.x, calculatedPosition.y);
+										}
+									});
+
+									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.zoom * 1.05}, 6, {ease: FlxEase.quadInOut});
+								},
+								time: 0.4
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.zoom * 1.3}, 2.1, {
+										ease: FlxEase.quadInOut
+									});
+
+									FlxTween.tween(calculatedPosition, {x: calculatedPosition.x + 200, y: calculatedPosition.y - 170}, 1.0, {
+										ease: FlxEase.cubeInOut,
+										onUpdate: function(twn:FlxTween)
+										{
+											snapCamera(calculatedPosition.x, calculatedPosition.y);
+										}
+									});
+								},
+								time: 15.2
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.attributes['zoomLerpValue']}, 1.0, {ease: FlxEase.quintOut});
+									FlxTween.tween(PlayState.current.hudCamera, {alpha: 1.0}, 0.4, {ease: FlxEase.quadInOut});
+
+									opponent.frames = Paths.getSparrowAtlas('characters/${opponent.name}/${opponent.name}');
+									opponent.flipX = !opponent.flipX;
+									opponent.setupCharacter();
+									opponent.animation.play('idle', true);
+
+									PlayState.current.spectator.animation.finishCallback = null;
+
+									var clearCacheList:Array<String> = [
+										"assets/images/cutscenes/stress/tankman1.png",
+										"assets/images/cutscenes/stress/tankman2.png"
+									];
+
+									for (cache in clearCacheList)
+										CacheManager.clearBitmap(cache);
+								},
+								time: 35.5
 							});
 						}
 					}
