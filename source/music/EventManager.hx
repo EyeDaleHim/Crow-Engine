@@ -24,10 +24,10 @@ class EventManager
 
 						while (Conductor.crochet * beat <= FlxG.sound.music.length)
 						{
-							if (beat % 8 == 7)
-								spawnEvent({strumTime: Conductor.crochet * beat, eventName: 'Play Animation', arguments: ['player', 'hey', '0']});
+							if (beat % 8 == 7) // 20 offset because it bugs out for some reason
+								spawnEvent({strumTime: ((Conductor.crochet) * beat) + 20, eventName: 'Play Animation', arguments: ['player', 'hey', '0']});
 
-							beat += 8;
+							beat++;
 						}
 					}
 				case 'milf':
@@ -122,7 +122,8 @@ class EventManager
 					if (character != null)
 					{
 						character.playAnim(event.arguments[1], true);
-						character.forceIdle = true;
+						@:privateAccess
+						character._animationTimer = -(Conductor.stepCrochet * 0.004);
 					}
 				}
 			case 'Change Stage':
