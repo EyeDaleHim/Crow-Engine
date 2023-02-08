@@ -338,7 +338,7 @@ class Stage
 					stageInstance.defaultZoom = 0.90;
 
 					stageInstance.charPosList.spectatorPositions[0].y = 110;
-					stageInstance.charPosList.spectatorPositions[0].x = 330;
+					stageInstance.charPosList.spectatorPositions[0].x = 270;
 
 					stageInstance.charPosList.playerPositions[0].x += 40;
 					stageInstance.charPosList.playerPositions[0].y += 90;
@@ -348,6 +348,8 @@ class Stage
 
 					stageInstance.camPosList.opponentPositions[0].y *= -1;
 					stageInstance.camPosList.opponentPositions[0].y += 20;
+
+					stageInstance.camPosList.playerPositions[0].y = -130;
 
 					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week7'}, {x: -400, y: -400}, {x: 0.0, y: 0.0});
 					sky.ID = 0;
@@ -441,6 +443,99 @@ class Stage
 					ground.updateHitbox();
 					ground.ID = 9;
 					group.set('ground', ground);
+
+					var audienceList:Array<BGSprite> = [];
+					stageInstance.attributes.set('audienceList', audienceList);
+
+					var fgTank0:BGSprite = new BGSprite({path: 'audience/tank0', library: 'week7'}, {x: -500, y: 650}, {x: 1.7, y: 1.5}, [
+						{
+							name: 'idle',
+							prefix: 'fg tankhead far right instance 1',
+							indices: [],
+							fps: 24,
+							looped: false,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					fgTank0.active = true;
+					fgTank0.ID = 10;
+					fgTank0.renderPriority = AFTER_CHAR;
+					group.set('tank0', fgTank0);
+
+					var fgTank1:BGSprite = new BGSprite({path: 'audience/tank1', library: 'week7'}, {x: -300, y: 750}, {x: 2.0, y: 0.2}, [
+						{
+							name: 'idle',
+							prefix: 'fg tankhead 5 instance 1',
+							indices: [],
+							fps: 24,
+							looped: false,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					fgTank1.active = true;
+					fgTank1.ID = 11;
+					fgTank1.renderPriority = AFTER_CHAR;
+					group.set('tank1', fgTank1);
+
+					var fgTank2:BGSprite = new BGSprite({path: 'audience/tank2', library: 'week7'}, {x: 450, y: 940}, {x: 1.5, y: 1.5}, [
+						{
+							name: 'idle',
+							prefix: 'foreground man 3 instance 1',
+							indices: [],
+							fps: 24,
+							looped: false,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					fgTank2.active = true;
+					fgTank2.ID = 12;
+					fgTank2.renderPriority = AFTER_CHAR;
+					group.set('tank2', fgTank2);
+
+					var fgTank3:BGSprite = new BGSprite({path: 'audience/tank3', library: 'week7'}, {x: 1300, y: 1200}, {x: 3.5, y: 2.5}, [
+						{
+							name: 'idle',
+							prefix: 'fg tankhead 4 instance 1',
+							indices: [],
+							fps: 24,
+							looped: false,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					fgTank3.active = true;
+					fgTank3.ID = 15;
+					fgTank3.renderPriority = AFTER_CHAR;
+					group.set('tank3', fgTank3);
+
+					var fgTank4:BGSprite = new BGSprite({path: 'audience/tank4', library: 'week7'}, {x: 1300, y: 900}, {x: 1.5, y: 1.5}, [
+						{
+							name: 'idle',
+							prefix: 'fg tankman bobbin 3 instance 1',
+							indices: [],
+							fps: 24,
+							looped: false,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					fgTank4.active = true;
+					fgTank4.ID = 13;
+					fgTank4.renderPriority = AFTER_CHAR;
+					group.set('tank4', fgTank4);
+
+					var fgTank5:BGSprite = new BGSprite({path: 'audience/tank5', library: 'week7'}, {x: 1620, y: 700}, {x: 1.5, y: 1.5}, [
+						{
+							name: 'idle',
+							prefix: 'fg tankhead far right instance 1',
+							indices: [],
+							fps: 24,
+							looped: false,
+							offset: {x: 0, y: 0}
+						}
+					]);
+					fgTank5.active = true;
+					fgTank5.ID = 14;
+					fgTank5.renderPriority = AFTER_CHAR;
+					group.set('tank5', fgTank5);
 
 					stageInstance.attributes.set('tankAngle', FlxG.random.int(-90, 45));
 					stageInstance.attributes.set('tankSpeed', FlxG.random.float(5, 7));
@@ -540,7 +635,8 @@ class Stage
 				{}
 			case 'warzone':
 				{
-					attributes['tankAngle'] += elapsed * attributes['tankSpeed'];
+					if (states.PlayState.current.cutsceneHandler == null || states.PlayState.current.cutsceneHandler.cutsceneIsFinished)
+						attributes['tankAngle'] += elapsed * attributes['tankSpeed'];
 
 					spriteGroup['tank'].angle = attributes['tankAngle'] - 90 + 15;
 					spriteGroup['tank'].x = 400 + (1500 * Math.cos(Math.PI / 180 * (1 * attributes['tankAngle'] + 180)));
@@ -638,6 +734,12 @@ class Stage
 				{
 					if (beat % 2 == 0)
 						spriteGroup['tankTower'].animation.play('idle', true);
+
+					for (i in 0...6)
+					{
+						if (spriteGroup.exists('tank$i'))
+							spriteGroup['tank$i'].animation.play('idle');
+					}
 				}
 		}
 	}
