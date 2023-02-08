@@ -128,7 +128,9 @@ class CurrentGame
 		return {judge: 'miss', diff: FlxMath.MAX_VALUE_FLOAT}; // a miss??? this shouldn't be really possible btw
 	}
 
-	public function new() {}
+	public function new()
+	{
+	}
 
 	function get_accuracy():Float
 	{
