@@ -13,6 +13,6 @@
 		"ifElse": "next",
 		"forBody": "next",
 		"doWhile": "next",
-		"tryBody": "next",
+		"tryBody": "next"
 	}
 }

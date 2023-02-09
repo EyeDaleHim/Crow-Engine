@@ -131,8 +131,7 @@ class Main extends Sprite
 		{
 			@:privateAccess
 			Settings.prefs = Settings._save.data.settings;
-		}
-		catch (e)
+		} catch (e)
 		{
 			Settings.prefs = new Map<String, Dynamic>();
 		}

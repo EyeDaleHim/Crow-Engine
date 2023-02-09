@@ -39,7 +39,9 @@ class CutsceneHandler
 		{
 			case 'eggnog':
 				{
-					if (cutscene.split('-##')[1] == 'end') {}
+					if (cutscene.split('-##')[1] == 'end')
+					{
+					}
 				}
 			case 'winter-horrorland':
 				{

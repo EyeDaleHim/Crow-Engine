@@ -69,7 +69,9 @@ class EventManager
 
 	public function spawnEvent(event:EventData)
 	{
-		switch (event.eventName) {}
+		switch (event.eventName)
+		{
+		}
 
 		if (!spawnedEvents.contains(event.eventName))
 			spawnedEvents.push(event.eventName);
@@ -127,7 +129,8 @@ class EventManager
 					}
 				}
 			case 'Change Stage':
-				{}
+				{
+				}
 		}
 
 		if (eventList.contains(event))

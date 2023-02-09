@@ -10,6 +10,4 @@ import flixel.tweens.FlxEase;
 class GameOverSubState extends MusicBeatSubState
 {
 	public var camFollow:FlxObject;
-
-	
 }

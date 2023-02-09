@@ -1,3 +1,5 @@
 package states.debug.game;
 
-class EventEditorSubState extends MusicBeatSubState {}
+class EventEditorSubState extends MusicBeatSubState
+{
+}

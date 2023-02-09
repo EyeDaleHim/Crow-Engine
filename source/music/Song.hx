@@ -45,8 +45,7 @@ class Song
 				currentSong = Json.parse(fixData(Assets.getText(path)));
 
 			return currentSong;
-		}
-		catch (e)
+		} catch (e)
 		{
 			FlxG.log.warn('Couldn\'t load song $song with difficulty $diffString (${Paths.data('charts/' + song.toLowerCase().replace(' ', '-') + '/' + song.toLowerCase().replace(' ', '-') + '-' + diffString.toLowerCase())})');
 		}

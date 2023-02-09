@@ -15,7 +15,9 @@ class Controls
 		return cast(FlxG.state, MusicBeatState).controls;
 	}
 
-	public function new() {}
+	public function new()
+	{
+	}
 
 	public static var RENAME_CONTROLS:StringMap<String> = [
 		'NOTE_LEFT' => 'Left Note', 'NOTE_DOWN' => 'Down Note', 'NOTE_UP' => 'Up Note', 'NOTE_RIGHT' => 'Right Note', 'UI_LEFT' => 'Left UI',

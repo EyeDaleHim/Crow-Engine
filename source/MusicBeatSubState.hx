@@ -40,7 +40,8 @@ class MusicBeatSubState extends FlxUISubState
 	}
 
 	public function load():Void // doesn't do anything really, you just have to override it
-	{}
+	{
+	}
 
 	private function updateBeat():Void
 	{

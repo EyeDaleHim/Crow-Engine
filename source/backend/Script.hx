@@ -29,8 +29,7 @@ class Script
 			try
 			{
 				interp.execute(scriptData.parseString(Assets.getText(Paths.file('assets/$path/$script', 'hx', TEXT))));
-			}
-			catch (e)
+			} catch (e)
 			{
 				trace(e.message);
 			}
@@ -69,8 +68,7 @@ class Script
 				try
 				{
 					func();
-				}
-				catch (e)
+				} catch (e)
 				{
 					trace(e.message);
 				}
@@ -80,8 +78,7 @@ class Script
 				try
 				{
 					Reflect.callMethod(null, func, args);
-				}
-				catch (e)
+				} catch (e)
 				{
 					trace(e.message);
 				}

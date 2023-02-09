@@ -76,7 +76,9 @@ class FlxBasic implements IFlxDestroyable
 	@:noCompletion
 	var _cameras:Array<FlxCamera>;
 
-	public function new() {}
+	public function new()
+	{
+	}
 
 	/**
 	 * **WARNING:** A destroyed `FlxBasic` can't be used anymore.

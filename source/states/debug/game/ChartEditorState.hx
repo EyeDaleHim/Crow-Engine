@@ -1,3 +1,5 @@
 package states.debug.game;
 
-class ChartEditorState extends MusicBeatState {}
+class ChartEditorState extends MusicBeatState
+{
+}

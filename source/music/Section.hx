@@ -1,6 +1,8 @@
 package music;
 
-class Section {}
+class Section
+{
+}
 
 typedef SectionInfo =
 {
