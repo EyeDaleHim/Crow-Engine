@@ -33,7 +33,9 @@ class Stage
 
 	public var attributes:Map<String, Dynamic> = [];
 
-	public function new() {}
+	public function new()
+	{
+	}
 
 	public static function getStage(stage:String):Stage
 	{
@@ -632,7 +634,8 @@ class Stage
 					}
 				}
 			case 'limo':
-				{}
+				{
+				}
 			case 'warzone':
 				{
 					if (states.PlayState.current.cutsceneHandler == null || states.PlayState.current.cutsceneHandler.cutsceneIsFinished)
@@ -723,7 +726,8 @@ class Stage
 					}
 				}
 			case 'limo':
-				{}
+				{
+				}
 			case 'mall':
 				{
 					spriteGroup['upBoppers'].animation.play('bop', true);

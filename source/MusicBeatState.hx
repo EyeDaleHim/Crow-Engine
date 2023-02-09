@@ -72,7 +72,8 @@ class MusicBeatState extends FlxUIState
 	}
 
 	public function load():Void // doesn't do anything really, you just have to override it
-	{}
+	{
+	}
 
 	private function updateBeat():Void
 	{
@@ -142,7 +143,9 @@ class MusicBeatState extends FlxUIState
 			sectionHit();
 	}
 
-	public function sectionHit():Void {}
+	public function sectionHit():Void
+	{
+	}
 
 	override public function onFocusLost():Void
 	{

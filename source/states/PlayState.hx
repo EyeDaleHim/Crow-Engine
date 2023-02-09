@@ -1,6 +1,5 @@
 package states;
 
-import objects.character.CharacterAnimate;
 import flixel.FlxG;
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -129,7 +128,9 @@ class CurrentGame
 		return {judge: 'miss', diff: FlxMath.MAX_VALUE_FLOAT}; // a miss??? this shouldn't be really possible btw
 	}
 
-	public function new() {}
+	public function new()
+	{
+	}
 
 	function get_accuracy():Float
 	{
@@ -513,11 +514,6 @@ class PlayState extends MusicBeatState
 				stageData.countdownTick();
 			});
 		}
-
-		var testPico:CharacterAnimate = new CharacterAnimate(50, 50, 'picoKill', 'cutscenes/stress');
-		testPico.addAnim('anim', 'Pico Badass', 24, false);
-		testPico.playAnim('anim', true);
-		add(testPico);
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);

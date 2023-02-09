@@ -4,7 +4,9 @@ class ControlQueries
 {
 	public var currentQueries:Array<ControlQuery> = [];
 
-	public function new() {}
+	public function new()
+	{
+	}
 
 	public function update(elapsed:Float)
 	{
@@ -20,8 +22,9 @@ class ControlQueries
 				try
 				{
 					currentQuery.FunctionTask(currentQuery.Key, currentQuery.Arguments);
+				} catch (e)
+				{
 				}
-				catch (e) {}
 			}
 
 			currentQueries.splice(currentQueries.indexOf(currentQuery), 1);
