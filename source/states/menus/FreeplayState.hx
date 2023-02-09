@@ -8,6 +8,7 @@ import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
+import flixel.util.FlxStringUtil;
 import flixel.util.FlxSort;
 import states.menus.MainMenuState;
 import weeks.ScoreContainer;
@@ -196,10 +197,11 @@ class FreeplayState extends MusicBeatState
 	{
 		var scoreString:String = 'PERSONAL BEST: ';
 
-		lerpingScore = Tools.lerpBound(lerpingScore, savedScore, elapsed * 4.775);
+		lerpingScore = Tools.lerpBound(lerpingScore, savedScore, elapsed * 8.775);
 		if (Math.abs(savedScore - lerpingScore) < 10)
 			lerpingScore = savedScore;
-		scoreString += Math.floor(lerpingScore);
+		scoreString += (lerpingScore > 1000000) ? Tools.shorthandNumber(Math.floor(lerpingScore),
+			['K', 'M', 'B']) : FlxStringUtil.formatMoney(Math.floor(lerpingScore), false);
 
 		lerpingAccuracy = Tools.lerpBound(lerpingAccuracy, savedAccuracy, elapsed * 4.775);
 		if (Math.abs(savedAccuracy - lerpingAccuracy) <= 0.05)

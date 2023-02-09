@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.util.FlxAxes;
+import flixel.util.FlxStringUtil;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
@@ -37,6 +38,16 @@ class Tools
 		size = Math.round(size * 100) / 100;
 		var formatSize:String = formatAccuracy(size);
 		return formatSize + " " + dataAbbreviation[data];
+	}
+
+	public static function shorthandNumber(num:Float, abbreviationList:Array<String>):String
+	{
+		if (abbreviationList.length == 0 || num < 1000)
+			return "" + num;
+
+		var shorthandHelper:Array<String> = FlxStringUtil.formatMoney(num, false).split(",");
+
+		return shorthandHelper[0] + abbreviationList[shorthandHelper.length - 2];
 	}
 
 	public static function numberArray(min:Int, max:Int, ?exclude:Array<Int>):Array<Int>
