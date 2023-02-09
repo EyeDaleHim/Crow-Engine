@@ -8,3 +8,4 @@ import music.Conductor;
 import music.Conductor.BPMChangeEvent;
 
 using StringTools;
+using utils.Tools;

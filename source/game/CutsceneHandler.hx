@@ -10,6 +10,7 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.util.FlxTimer;
 import utils.CacheManager;
+import objects.character.CharacterAnimate;
 import states.PlayState;
 
 class CutsceneHandler
@@ -28,24 +29,24 @@ class CutsceneHandler
 
 	public function new(cutscene:String)
 	{
-		this.cutscene = cutscene.split('-##')[0];
+		this.cutscene = cutscene.split('-cutscene-')[0];
 
-		if (cutscene.split('-##').length == 1)
-			cutscene += '-##start';
+		if (cutscene.split('-cutscene-').length == 1)
+			cutscene += '-cutscene-start';
 
 		trace('starting ${cutscene}');
 
-		switch (cutscene.split('-##')[0])
+		switch (cutscene.split('-cutscene-')[0])
 		{
 			case 'eggnog':
 				{
-					if (cutscene.split('-##')[1] == 'end')
+					if (cutscene.split('-cutscene-')[1] == 'end')
 					{
 					}
 				}
 			case 'winter-horrorland':
 				{
-					if (cutscene.split('-##')[1] == 'start')
+					if (cutscene.split('-cutscene-')[1] == 'start')
 					{
 						FlxG.sound.play(Paths.sound('Lights_Turn_On'), 0.6);
 						FlxG.sound.music.pause();
@@ -75,7 +76,7 @@ class CutsceneHandler
 				}
 			case 'ugh':
 				{
-					if (cutscene.split('-##')[1] == 'start')
+					if (cutscene.split('-cutscene-')[1] == 'start')
 					{
 						@:privateAccess
 						{
@@ -204,7 +205,7 @@ class CutsceneHandler
 				{
 					@:privateAccess
 					{
-						if (cutscene.split('-##')[1] == 'start')
+						if (cutscene.split('-cutscene-')[1] == 'start')
 						{
 							lockedUpdateLoops.set('lockCharUpdate', function()
 							{
@@ -258,6 +259,8 @@ class CutsceneHandler
 								action: function()
 								{
 									opponent.animation.play('bars', true);
+									opponent.offset.set(-40, -10);
+
 									savedSounds['tightBars'].play(true);
 
 									zoomClosely = FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.zoom * 1.2 * 1.2}, 6, {ease: FlxEase.quadIn});
@@ -311,7 +314,7 @@ class CutsceneHandler
 				{
 					@:privateAccess
 					{
-						if (cutscene.split('-##')[1] == 'start')
+						if (cutscene.split('-cutscene-')[1] == 'start')
 						{
 							lockedUpdateLoops.set('lockCharUpdate', function()
 							{
@@ -339,14 +342,39 @@ class CutsceneHandler
 							PlayState.current.hudCamera.alpha = 0.0;
 							// FlxG.camera.zoom *= 1.2;
 
+							var player = PlayState.current.player;
+							var spectator = PlayState.current.spectator;
 							var opponent = PlayState.current.opponent;
+
+							spectator.y += 100;
+
 							opponent.flipX = !opponent.flipX;
 
-							// IM A FUCKING GENIUS
 							var tankmanTalking:FlxAtlasFrames = Paths.getSparrowAtlas('cutscenes/stress/tankman1'); // god effing dammit
-							tankmanTalking.frames.concat(Paths.getSparrowAtlas('cutscenes/stress/tankman2').frames); // look who it is
+							var tankmanTalking2:FlxAtlasFrames = Paths.getSparrowAtlas('cutscenes/stress/tankman2'); // look who it is
 
-							var endTime = 35.6;
+							var gfDemonEye:FlxAtlasFrames = Paths.getSparrowAtlas('cutscenes/stress/stressGF'); // GLOWWWWW
+
+							var dancingGf:FlxAtlasFrames = Paths.getSparrowAtlas('characters/gf-tankmen/gf-tankmen');
+							spectator.frames = dancingGf;
+
+							spectator.animation.addByIndices('danceLeft', 'GF Dancing at Gunpoint', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+								"", 24, false);
+							spectator.animation.addByIndices('danceRight', 'GF Dancing at Gunpoint',
+								[15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+
+							var picoAppear:CharacterAnimate = new CharacterAnimate(410, 435, 'picoKill', 'cutscenes/stress');
+							picoAppear.scrollFactor.set(0.95, 0.95);
+							picoAppear.addAnim('anim', 'Pico Saves them sequence', 24, false);
+							picoAppear.playAnim('anim', true);
+							picoAppear.anim.stop();
+							picoAppear.visible = false;
+
+							consoleObject = picoAppear;
+
+							PlayState.current.insert(PlayState.current.members.indexOf(spectator), picoAppear);
+
+							endTime = 35.6;
 
 							var newPos:FlxPoint = FlxPoint.get();
 							Tools.transformSimplePoint(newPos, PlayState.current.stageData.camPosList.opponentPositions[0]);
@@ -362,10 +390,24 @@ class CutsceneHandler
 
 							opponent.animation.addByPrefix('effing', 'TANK TALK 3 P1 UNCUT', 24, false);
 
+							spectator.playAnim('danceLeft', true);
+							spectator.offset.x += 80; // fuck you
+
+							spectator.animation.finishCallback = function(name:String)
+							{
+								if (name == 'danceLeft')
+									spectator.playAnim('danceRight', true);
+								else
+									spectator.playAnim('danceLeft', true);
+
+								spectator.offset.x += 80;
+							};
+
 							cutsceneActions.push({
 								action: function()
 								{
 									opponent.animation.play('effing', true);
+									opponent.offset.set(54, 14);
 
 									savedSounds['stressCutscene'].play(true);
 								},
@@ -402,8 +444,119 @@ class CutsceneHandler
 											snapCamera(calculatedPosition.x, calculatedPosition.y);
 										}
 									});
+
+									spectator.frames = gfDemonEye;
+									spectator.animation.addByPrefix('turn', 'GF STARTS TO TURN PART 1', 24, false);
+									spectator.animation.addByPrefix('kill', 'GF STARTS TO TURN PART 2', 24, false);
+
+									spectator.animation.finishCallback = function(name:String)
+									{
+										switch (name)
+										{
+											case 'turn':
+												{
+													spectator.animation.play('kill');
+													spectator.offset.set(224 + 80, 440);
+												}
+											default:
+												{
+													picoAppear.playAnim('anim', true);
+													picoAppear.visible = true;
+
+													spectator.visible = false;
+
+													spectator.animation.finishCallback = null;
+												}
+										}
+									};
+
+									spectator.animation.play('turn', true);
 								},
-								time: 15.2
+								time: 15.1
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									FlxG.camera.zoom = FlxG.camera.attributes['zoomLerpValue'];
+								},
+								time: 17.6
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									opponent.frames = tankmanTalking2;
+									opponent.animation.addByPrefix('lookwho', 'TANK TALK 3 P2 UNCUT', 24, false);
+									opponent.offset.set(-30);
+									opponent.animation.play('lookwho', true);
+								},
+								time: 19.3
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									FlxTween.tween(FlxG.camera, {zoom: FlxG.camera.zoom * 1.05}, 2.0, {
+										ease: FlxEase.quadInOut
+									});
+
+									FlxTween.tween(calculatedPosition, {x: calculatedPosition.x - 200, y: calculatedPosition.y + 170}, 2.5, {
+										ease: FlxEase.cubeInOut,
+										onUpdate: function(twn:FlxTween)
+										{
+											snapCamera(calculatedPosition.x, calculatedPosition.y);
+										}
+									});
+								},
+								time: 20.1
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									spectator.frames = Paths.getSparrowAtlas('characters/${spectator.name}/${spectator.name}');
+									spectator.setupCharacter();
+									spectator.visible = true;
+									spectator.playAnim(opponent.idleList[0], true);
+									spectator.y -= 100;
+
+									picoAppear.destroy();
+								},
+								time: 23.7
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									states.PlayState.current.stageData.spriteGroup['tank3'].visible = false;
+
+									player.playAnim('singUPmiss', true);
+
+									player.animation.finishCallback = function(name:String)
+									{
+										if (name == 'singUPmiss')
+										{
+											player.playAnim('idle', true);
+											player.animation.curAnim.finish();
+										}
+									};
+
+									snapCamera(player.getMidpoint().x, player.getMidpoint().y - 50);
+									FlxTween.tween(FlxG.camera, {zoom: 0.9 * 1.2 * 1.2}, 0.25, {ease: FlxEase.elasticOut});
+								},
+								time: 31.3
+							});
+
+							cutsceneActions.push({
+								action: function()
+								{
+									states.PlayState.current.stageData.spriteGroup['tank3'].visible = true;
+									FlxG.camera.zoom = FlxG.camera.attributes['zoomLerpValue'] * 1.2;
+
+									snapCamera(calculatedPosition.x + 60, calculatedPosition.y + 10);
+								},
+								time: 32.3
 							});
 
 							cutsceneActions.push({
@@ -421,7 +574,9 @@ class CutsceneHandler
 
 									var clearCacheList:Array<String> = [
 										"assets/images/cutscenes/stress/tankman1.png",
-										"assets/images/cutscenes/stress/tankman2.png"
+										"assets/images/cutscenes/stress/tankman2.png",
+										"assets/images/cutscenes/stress/picoKill/spritemap1.png",
+										"assets/images/cutscenes/stress/stressGF.png"
 									];
 
 									for (cache in clearCacheList)

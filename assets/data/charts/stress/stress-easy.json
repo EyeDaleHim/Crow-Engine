@@ -1,6 +1,6 @@
 {
 	"speed": 1.75,
-	"spectator": "gf",
+	"spectator": "picoSpeaker",
 	"mustHitSections": [
 		false,
 		false,

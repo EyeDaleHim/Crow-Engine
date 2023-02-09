@@ -353,6 +353,9 @@ class Stage
 
 					stageInstance.camPosList.playerPositions[0].y = -130;
 
+					if (Song.currentSong.spectator == 'picoSpeaker')
+						stageInstance.charPosList.spectatorPositions[0].y = -10;
+
 					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week7'}, {x: -400, y: -400}, {x: 0.0, y: 0.0});
 					sky.ID = 0;
 					group.set('sky', sky);

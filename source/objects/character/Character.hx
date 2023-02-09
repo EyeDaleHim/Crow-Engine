@@ -6,10 +6,13 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxStringUtil;
+import flixel.util.FlxSort;
 import haxe.Json;
 import openfl.Assets;
 import sys.FileSystem;
 import objects.character.CharacterData;
+import music.Song;
+import music.Song.SongInfo;
 import backend.Script;
 
 using StringTools;
@@ -96,7 +99,8 @@ class Character extends FlxSprite
 		flipX = _characterData.flip.x;
 		flipY = _characterData.flip.y;
 
-		// quickCharacterMaker();
+		if (Song.currentSong != null)
+			generateSingSchedule(Song.currentSong.song.formatToReadable());
 	}
 
 	override function update(elapsed:Float)
@@ -111,6 +115,24 @@ class Character extends FlxSprite
 		if (animation.curAnim != null && controlIdle)
 		{
 			_animationTimer += elapsed;
+		}
+
+		if (singSchedules.length > 0)
+		{
+			var index:Int = 0;
+
+			for (i in 0...singSchedules.length)
+			{
+				if (Conductor.songPosition > singSchedules[i].time)
+					playAnim(singSchedules[i].anim, true);
+				else
+				{
+					index = i;
+					break;
+				}
+			}
+
+			singSchedules.splice(0, index);
 		}
 
 		for (script in scripts)
@@ -139,12 +161,18 @@ class Character extends FlxSprite
 				{
 					if (controlIdle || forceIdle)
 					{
-						_idleIndex++;
-						_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);
+						if ((name == 'tankman'
+							&& (animation.curAnim.name != 'singDOWN-alt'
+								|| (animation.curAnim.name == 'singDOWN-alt' && animation.curAnim.finished))
+							|| name != 'tankman')) // dammit man... ill figure something out
+						{
+							_idleIndex++;
+							_idleIndex = FlxMath.wrap(_idleIndex, 0, idleList.length - 1);
 
-						var animToPlay:String = idleList[_idleIndex];
+							var animToPlay:String = idleList[_idleIndex];
 
-						playAnim(animToPlay, forceIdle);
+							playAnim(animToPlay, forceIdle);
+						}
 					}
 
 					_animationTimer = 0.0;
@@ -232,12 +260,47 @@ class Character extends FlxSprite
 			playAnim(idleList[0]);
 	}
 
+	public var singSchedules:Array<CharacterSingTask> = [];
+
+	public function generateSingSchedule(song:String):Void
+	{
+		var path:String = Paths.data('charts/$song/charSchedule/$name');
+
+		if (FileSystem.exists(path))
+		{
+			var parsedData:SongInfo = Json.parse(Assets.getText(path));
+
+			for (section in parsedData.sectionList)
+			{
+				for (note in section.notes)
+				{
+					var noteData:Int = 1;
+					if (note.direction > 2)
+						noteData = 3;
+
+					noteData += FlxG.random.int(0, 1);
+
+					singSchedules.push({anim: 'shoot${noteData}', time: note.strumTime});
+				}
+			}
+
+			singSchedules.sort(function(note1:CharacterSingTask, note2:CharacterSingTask)
+			{
+				return FlxSort.byValues(FlxSort.ASCENDING, note1.time, note2.time);
+			});
+		}
+	}
+
 	override function destroy()
 	{
 		super.destroy();
 
 		animOffsets = null;
 		idleList = null;
+		singList = null;
+		missList = null;
+
+		_characterData = null;
 	}
 
 	private function quickCharacterMaker()
@@ -246,7 +309,7 @@ class Character extends FlxSprite
 
 		var idleList:Array<String> = ['idle'];
 		var missList:Array<String> = [];
-		var singList:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
+		var singList:Array<String> = ['shoot1', 'shoot2', 'shoot3', 'shoot4'];
 
 		var animationList:Array<Animation> = [];
 		var quickAnimAdd:(String, String, Array<Int>, Int, Bool,
@@ -262,27 +325,30 @@ class Character extends FlxSprite
 				});
 			};
 
-		quickAnimAdd('idle', 'Tankman Idle Dance 1', [], 24, false, {x: 0, y: 0});
+		quickAnimAdd('shoot1', 'Pico shoot 1', [], 24, false, {x: 0, y: 0});
+		quickAnimAdd('shoot2', 'Pico shoot 2', [], 24, false, {x: -1, y: -128});
+		quickAnimAdd('shoot3', 'Pico shoot 3', [], 24, false, {x: 412, y: -64});
+		quickAnimAdd('shoot4', 'Pico shoot 4', [], 24, false, {x: 439, y: -19});
 
-		quickAnimAdd('singLEFT', 'Tankman Note Left 1', [], 24, false, {x: 84, y: -14});
-		quickAnimAdd('singDOWN', 'Tankman DOWN note 1', [], 24, false, {x: 76, y: -101});
-		quickAnimAdd('singUP', 'Tankman UP note 1', [], 24, false, {x: 48, y: 54});
-		quickAnimAdd('singRIGHT', 'Tankman Right Note 1', [], 24, false, {x: -21, y: -31});
-
-		quickAnimAdd('singDOWN-alt', 'PRETTY GOOD tankman 1', [], 24, false, {x: 1, y: 16});
-		quickAnimAdd('singUP-alt', 'TANKMAN UGH 1', [], 24, false, {x: -15, y: -8});
+		quickAnimAdd('idle', 'Pico shoot 2', [4, 5, 6], 24, true, {x: -1, y: -128});
 
 		data = {
-			name: 'tankman',
-			healthColor: 0xDDB64A,
+			name: 'picoSpeaker',
+			healthColor: -4728747,
 			animationList: animationList,
 			idleList: idleList,
 			missList: missList,
 			singList: singList,
-			flip: {x: true, y: false},
+			flip: {x: false, y: false},
 			scale: {x: 1.0, y: 1.0}
 		}
 
 		trace(Json.stringify(data, "\t"));
 	}
+}
+
+typedef CharacterSingTask =
+{
+	var anim:String;
+	var time:Float;
 }
