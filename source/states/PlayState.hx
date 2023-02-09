@@ -259,6 +259,8 @@ class PlayState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
+		Conductor.songPosition = 0;
+
 		current = this;
 
 		gameCamera = new FlxCamera();
@@ -824,6 +826,9 @@ class PlayState extends MusicBeatState
 			list = ['', 'ready', 'set', 'go'];
 		if (sound == null)
 			sound = ['3', '2', '1', 'Go'];
+
+		list.unshift('');
+		sound.unshift('');
 
 		countdownState = 1;
 
