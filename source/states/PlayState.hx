@@ -256,7 +256,7 @@ class PlayState extends MusicBeatState
 	private var ___trackedTimerObjects:FlxTimerManager = new FlxTimerManager();
 	private var ___trackedTweenObjects:Array<FlxTween> = [];
 
-	private var botplay:Bool = true;
+	private var botplay:Bool = false;
 
 	private static var _cameraPos:FlxPoint;
 
