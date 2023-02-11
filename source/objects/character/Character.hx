@@ -103,6 +103,8 @@ class Character extends FlxSprite
 			generateSingSchedule(Song.currentSong.song.formatToReadable());
 	}
 
+	public var containsSchedule:Bool = false;
+
 	override function update(elapsed:Float)
 	{
 		for (script in scripts)
@@ -119,20 +121,16 @@ class Character extends FlxSprite
 
 		if (singSchedules.length > 0)
 		{
-			var index:Int = 0;
-
 			for (i in 0...singSchedules.length)
 			{
-				if (Conductor.songPosition > singSchedules[i].time)
-					playAnim(singSchedules[i].anim, true);
-				else
+				if (singSchedules[i] != null && Conductor.songPosition > singSchedules[i].time)
 				{
-					index = i;
-					break;
+					playAnim(singSchedules[i].anim, true);
+					singSchedules.shift();
 				}
+				else
+					break;
 			}
-
-			singSchedules.splice(0, index);
 		}
 
 		for (script in scripts)
@@ -258,6 +256,8 @@ class Character extends FlxSprite
 
 		if (idleList.length > 0)
 			playAnim(idleList[0]);
+		else if (containsSchedule)
+			playAnim(singList[0] + '-hair_loop');
 	}
 
 	public var singSchedules:Array<CharacterSingTask> = [];
@@ -268,6 +268,8 @@ class Character extends FlxSprite
 
 		if (FileSystem.exists(path))
 		{
+			containsSchedule = true;
+
 			var parsedData:SongInfo = Json.parse(Assets.getText(path));
 
 			for (section in parsedData.sectionList)
@@ -280,7 +282,7 @@ class Character extends FlxSprite
 
 					noteData += FlxG.random.int(0, 1);
 
-					singSchedules.push({anim: 'shoot${noteData}', time: note.strumTime});
+					singSchedules.push({anim: 'shoot${noteData}', direction: noteData, time: note.strumTime});
 				}
 			}
 
@@ -350,5 +352,6 @@ class Character extends FlxSprite
 typedef CharacterSingTask =
 {
 	var anim:String;
+	var direction:Int;
 	var time:Float;
 }

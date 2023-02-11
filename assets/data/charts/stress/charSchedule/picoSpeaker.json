@@ -4578,8 +4578,8 @@
 				{
 					"strumTime": 121179.775280899,
 					"sustain": 0,
-					"direction": 0,
-					"noteAnim": "singLEFT",
+					"direction": 1,
+					"noteAnim": "singDOWN",
 					"noteType": "",
 					"mustPress": true
 				}

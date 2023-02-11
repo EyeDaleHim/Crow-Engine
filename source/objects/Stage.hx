@@ -776,44 +776,51 @@ class BGSprite extends FlxSprite
 	public var graphicName:String = '';
 	public var renderPriority:RenderPriority = BEFORE_CHAR; // this is literally just to tell you if this sprite wants to be rendered before or after the characters
 
-	public function new(image:ImagePath, ?position:SimplePoint, ?scroll:SimplePoint, ?animArray:Array<Animation> = null)
+	public function new(image:Null<ImagePath>, ?position:SimplePoint, ?scroll:SimplePoint, ?animArray:Array<Animation> = null)
 	{
 		if (position == null)
 			position = {x: 0.0, y: 0.0};
 		if (scroll == null)
 			scroll = {x: 1.0, y: 1.0};
 
-		if (image.library == null)
-			image.library = Paths.currentLibrary;
-
-		super(position.x, position.y);
-		scrollFactor.set(scroll.x, scroll.y);
-		antialiasing = Settings.getPref('antialiasing', true);
-
-		// prevent black backgrounds and use the stage default if we didn't get
-		// the player's stage correctly
-		if (image.path.split('/')[0] == 'stage-error')
+		if (image == null)
 		{
-			image.path = image.path.replace('stage-error', 'stage');
-			image.library = 'week1';
-		}
-
-		this.graphicName = image.library + '/' + image.path;
-
-		image.path = Stage.currentStage + '/' + image.path;
-
-		if (animArray != null)
-		{
-			frames = Paths.getSparrowAtlas(image.path, image.library);
-
-			for (anim in animArray)
-			{
-				animation.addByPrefix(anim.name, anim.prefix, anim.fps, anim.looped);
-			}
+			super();
 		}
 		else
 		{
-			loadGraphic(Paths.image(image.path, image.library));
+			if (image.library == null)
+				image.library = Paths.currentLibrary;
+
+			super(position.x, position.y);
+			scrollFactor.set(scroll.x, scroll.y);
+			antialiasing = Settings.getPref('antialiasing', true);
+
+			// prevent black backgrounds and use the stage default if we didn't get
+			// the player's stage correctly
+			if (image.path.split('/')[0] == 'stage-error')
+			{
+				image.path = image.path.replace('stage-error', 'stage');
+				image.library = 'week1';
+			}
+
+			this.graphicName = image.library + '/' + image.path;
+
+			image.path = Stage.currentStage + '/' + image.path;
+
+			if (animArray != null)
+			{
+				frames = Paths.getSparrowAtlas(image.path, image.library);
+
+				for (anim in animArray)
+				{
+					animation.addByPrefix(anim.name, anim.prefix, anim.fps, anim.looped);
+				}
+			}
+			else
+			{
+				loadGraphic(Paths.image(image.path, image.library));
+			}
 		}
 
 		active = false;

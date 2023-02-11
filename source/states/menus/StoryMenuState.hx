@@ -250,7 +250,7 @@ class StoryMenuState extends MusicBeatState
 			PlayState.playMode = STORY;
 
 			var tempArray:Array<String> = [];
-			for (song in 0...sortedWeeks[curSelected].songs.length - 1)
+			for (song in 0...sortedWeeks[curSelected].songs.length)
 			{
 				tempArray.push(sortedWeeks[curSelected].songs[song]);
 			}

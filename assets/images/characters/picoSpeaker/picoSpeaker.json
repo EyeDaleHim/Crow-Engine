@@ -45,21 +45,6 @@
                 "y": -19
             },
             "looped": false
-        },
-        {
-            "prefix": "Pico shoot 2",
-            "indices": [
-                4,
-                5,
-                6
-            ],
-            "fps": 24,
-            "name": "idle",
-            "offset": {
-                "x": -1,
-                "y": -128
-            },
-            "looped": true
         }
     ],
     "singList": [
@@ -68,9 +53,7 @@
         "shoot3",
         "shoot4"
     ],
-    "idleList": [
-        "idle"
-    ],
+    "idleList": [],
     "flip": {
         "x": false,
         "y": false
@@ -79,5 +62,64 @@
     "scale": {
         "x": 1,
         "y": 1
-    }
+    },
+    "behaviorType": "hair",
+    "animationLoopPoint": [
+        {
+            "animation": {
+                "prefix": "Pico shoot 1",
+                "indices": [],
+                "fps": 24,
+                "name": "shoot1",
+                "offset": {
+                    "x": 0,
+                    "y": 0
+                },
+                "looped": false
+            },
+            "index": 21
+        },
+        {
+            "animation": {
+                "prefix": "Pico shoot 2",
+                "indices": [],
+                "fps": 24,
+                "name": "shoot2",
+                "offset": {
+                    "x": -1,
+                    "y": -128
+                },
+                "looped": false
+            },
+            "index": 55
+        },
+        {
+            "animation": {
+                "prefix": "Pico shoot 3",
+                "indices": [],
+                "fps": 24,
+                "name": "shoot3",
+                "offset": {
+                    "x": 412,
+                    "y": -64
+                },
+                "looped": false
+            },
+            "index": 48
+        },
+        {
+            "animation": {
+                "prefix": "Pico shoot 4",
+                "indices": [],
+                "fps": 24,
+                "name": "shoot4",
+                "offset": {
+                    "x": 439,
+                    "y": -19
+                },
+                "looped": false
+            },
+            "index": 48
+        }
+    ]
 }

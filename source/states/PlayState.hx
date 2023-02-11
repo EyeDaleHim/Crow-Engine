@@ -30,6 +30,7 @@ import music.EventManager;
 import objects.HealthIcon;
 import objects.Stage;
 import objects.Stage.BGSprite;
+import objects.stageParts.TankmenUnit;
 import objects.character.Character;
 import objects.character.Player;
 import objects.notes.Note;
@@ -52,10 +53,11 @@ class CurrentGame
 		{accuracy: 0.9, rank: 'B'},
 		{accuracy: 0.875, rank: 'C'},
 		{accuracy: 0.665, rank: 'D'},
-		{accuracy: 0.5, rank: 'F'}
+		{accuracy: 0.5, rank: 'F'},
+		{accuracy: 0.0, rank: 'F-'}
 	];
 
-	public static var weekScore:Array<Int> = [];
+	public static var weekScores:Array<SongScore> = [];
 
 	public var rank(get, never):String;
 
@@ -233,6 +235,8 @@ class PlayState extends MusicBeatState
 	public var preStageRender:FlxTypedGroup<BGSprite>;
 	public var postStageRender:FlxTypedGroup<BGSprite>;
 
+	public var tankmenSoldiers:TankmenUnit;
+
 	// information
 	public var songName:String = '';
 	public var songDiffText:String = ''; // ok fine, its a text too
@@ -251,6 +255,8 @@ class PlayState extends MusicBeatState
 	private var ___trackedSoundObjects:Array<FlxSound> = [];
 	private var ___trackedTimerObjects:FlxTimerManager = new FlxTimerManager();
 	private var ___trackedTweenObjects:Array<FlxTween> = [];
+
+	private var botplay:Bool = true;
 
 	private static var _cameraPos:FlxPoint;
 
@@ -369,6 +375,16 @@ class PlayState extends MusicBeatState
 
 		spectator = new Character(specPos[0].x, specPos[0].y, Song.currentSong.spectator, true);
 		spectator.scrollFactor.set(0.95, 0.95);
+
+		if (Song.currentSong.song.formatToReadable() == 'stress')
+		{
+			preStageRender.remove(stageData.spriteGroup['ground'], true);
+
+			tankmenSoldiers = new TankmenUnit();
+			add(tankmenSoldiers);
+		}
+
+		add(stageData.spriteGroup['ground']);
 		add(spectator);
 
 		player = new Player(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
@@ -928,29 +944,38 @@ class PlayState extends MusicBeatState
 		persistentUpdate = false;
 		if (PlayState.playMode != CHARTING)
 		{
-			if ((PlayState.playMode == STORY && PlayState.storyPlaylist.length <= 0) || PlayState.playMode != STORY)
+			switch (PlayState.playMode)
 			{
-				switch (PlayState.playMode)
-				{
-					case STORY:
-						// ScoreContainer.setWeek(Paths.currentLibrary, PlayState.songDiff, CurrentGame.weekScore);
+				case STORY:
+					CurrentGame.weekScores.push({score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
+					PlayState.storyPlaylist.shift();
 
+					if (PlayState.storyPlaylist.length > 0)
+					{
+						Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
+						MusicBeatState.switchState(new PlayState());
+					}
+					else
+					{
+						ScoreContainer.setWeek(Paths.currentLibrary, PlayState.songDiff, CurrentGame.weekScores);
+						CurrentGame.weekScores = [];
 						MusicBeatState.switchState(new states.menus.StoryMenuState());
-					case FREEPLAY:
-						MusicBeatState.switchState(new states.menus.FreeplayState());
-					default:
-						MusicBeatState.switchState(new states.menus.MainMenuState());
-				}
+					}
+				case FREEPLAY:
+					MusicBeatState.switchState(new states.menus.FreeplayState());
+				default:
+					MusicBeatState.switchState(new states.menus.MainMenuState());
+			}
 
+			if (PlayState.playMode == FREEPLAY)
+			{
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				Conductor.changeBPM(102);
 			}
-			else if (PlayState.playMode == STORY)
+			else
 			{
-				PlayState.storyPlaylist.splice(0, 1);
-
-				Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
-				MusicBeatState.switchState(new PlayState());
+				FlxG.sound.music.volume = 0;
+				FlxG.sound.music.stop();
 			}
 		}
 		else
@@ -1033,7 +1058,7 @@ class PlayState extends MusicBeatState
 	{
 		var direction:Int = getKeyDirection(e.keyCode);
 
-		if (!paused && generatedMusic && !gameEnded)
+		if (!botplay && !paused && generatedMusic && !gameEnded)
 		{
 			if (direction != -1 && FlxG.keys.checkStatus(e.keyCode, JUST_PRESSED))
 			{
@@ -1274,13 +1299,15 @@ class PlayState extends MusicBeatState
 					}
 				}
 
-				if (note.strumTime - Conductor.songPosition < -300)
+				if (note.mustPress && Conductor.songPosition >= note.strumTime && botplay)
+					hitNote(note);
+				else if (note.strumTime - Conductor.songPosition < -300)
 				{
 					if (note.mustPress)
 						noteMiss(note);
 				}
 
-				if (currentKeys.contains(true))
+				if (!botplay && currentKeys.contains(true))
 				{
 					player._animationTimer = 0.0;
 

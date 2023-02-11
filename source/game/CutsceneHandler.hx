@@ -370,8 +370,6 @@ class CutsceneHandler
 							picoAppear.anim.stop();
 							picoAppear.visible = false;
 
-							// consoleObject = picoAppear;
-
 							PlayState.current.insert(PlayState.current.members.indexOf(spectator), picoAppear);
 
 							endTime = 35.6;
@@ -518,7 +516,7 @@ class CutsceneHandler
 									spectator.frames = Paths.getSparrowAtlas('characters/${spectator.name}/${spectator.name}');
 									spectator.setupCharacter();
 									spectator.visible = true;
-									spectator.playAnim(opponent.idleList[0], true);
+									spectator.playAnim('shoot1-hair_loop', true);
 									spectator.y -= 100;
 
 									picoAppear.destroy();
@@ -570,7 +568,11 @@ class CutsceneHandler
 									opponent.setupCharacter();
 									opponent.animation.play('idle', true);
 
-									PlayState.current.spectator.animation.finishCallback = null;
+									PlayState.current.spectator.animation.finishCallback = function(name:String)
+									{
+										if (PlayState.current.spectator.animation.getByName(name + '-hair_loop') != null)
+											PlayState.current.spectator.playAnim(name + '-hair_loop', true);
+									}
 
 									var clearCacheList:Array<String> = [
 										"assets/images/cutscenes/stress/tankman1.png",
