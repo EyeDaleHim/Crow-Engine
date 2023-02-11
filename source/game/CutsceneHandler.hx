@@ -370,7 +370,7 @@ class CutsceneHandler
 							picoAppear.anim.stop();
 							picoAppear.visible = false;
 
-							consoleObject = picoAppear;
+							// consoleObject = picoAppear;
 
 							PlayState.current.insert(PlayState.current.members.indexOf(spectator), picoAppear);
 
