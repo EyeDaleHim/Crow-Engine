@@ -106,6 +106,9 @@
 	<!-- <haxelib name="trax" /> -->
 	<haxelib name="hscript" />
 
+	<!-- haxelib git hxCodec https://github.com/EliteMasterEric/hxCodec -->
+	<haxelib name="hxCodec" /> <!-- Should probably use Eric's hxCodec instead -->
+
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="hxcpp-debug-server" if="debug"/>
 
