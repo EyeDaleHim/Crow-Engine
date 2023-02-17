@@ -211,7 +211,7 @@ class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>
 					(selectedControls == 0 ? _mainControl : _altControl).scale.set(1.3, 1.3);
 					(selectedControls == 1 ? _mainControl : _altControl).scale.set(1.0, 1.0);
 
-					FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+					InternalHelper.playSound(SCROLL, 0.75);
 				}
 			}
 

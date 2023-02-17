@@ -1,5 +1,6 @@
 package states.menus;
 
+import utils.CacheManager;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -67,13 +68,16 @@ class TitleState extends MusicBeatState
 		textGroup = new FlxTypedGroup<FlxSprite>();
 		add(textGroup);
 
-		newgroundsLogo = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('title/newgrounds_logo'));
-		newgroundsLogo.antialiasing = Settings.getPref('antialiasing', true);
+		if (!initialized)
+		{
+			newgroundsLogo = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('title/newgrounds_logo'));
+			newgroundsLogo.antialiasing = Settings.getPref('antialiasing', true);
 
-		newgroundsLogo.scale.set(0.8, 0.8);
-		newgroundsLogo.updateHitbox();
-		newgroundsLogo.screenCenter(X);
-		newgroundsLogo.visible = false;
+			newgroundsLogo.scale.set(0.8, 0.8);
+			newgroundsLogo.updateHitbox();
+			newgroundsLogo.screenCenter(X);
+			newgroundsLogo.visible = false;
+		}
 
 		fnfLogo = new FlxSprite(-150, -100);
 		fnfLogo.antialiasing = Settings.getPref('antialiasing', true);
@@ -108,7 +112,8 @@ class TitleState extends MusicBeatState
 		idleGroup.add(enterText);
 
 		startGroup.add(blackBG);
-		startGroup.add(newgroundsLogo);
+		if (!initialized)
+			startGroup.add(newgroundsLogo);
 
 		super.create();
 	}
@@ -166,7 +171,7 @@ class TitleState extends MusicBeatState
 					enterText.animation.play('pressed');
 
 					FlxG.camera.flash((Settings.getPref('flashing-lights', true) ? 0xFFFFFFFF : 0xFF000000), 1);
-					FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.7);
+					InternalHelper.playSound(CONFIRM, 0.75);
 
 					new FlxTimer().start(2, function(timer:FlxTimer)
 					{
@@ -221,7 +226,10 @@ class TitleState extends MusicBeatState
 							newgroundsLogo.visible = true;
 						case 8:
 							deleteCoolText();
-							newgroundsLogo.visible = false;
+
+							startGroup.remove(newgroundsLogo, true);
+							newgroundsLogo.destroy();
+							CacheManager.clearBitmap("assets/images/title/newgrounds_logo.png");
 						case 9:
 							createCoolText([introText[0]]);
 						case 11:

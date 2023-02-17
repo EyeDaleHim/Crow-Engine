@@ -109,6 +109,10 @@ class FreeplayState extends MusicBeatState
 				iconArray.push(iconObject);
 				add(iconObject);
 
+				// we have no reason to update the sprite's animation if it has one frame
+				if (iconObject.animation.curAnim != null && iconObject.animation.curAnim.numFrames <= 1)
+					iconObject.animation.curAnim.paused = true;
+
 				var metaData:SongMetadata = new SongMetadata(song, Std.int(i + 1), SongHandler.songs['Base_Game'][week.week].diffs,
 					SongHandler.songs['Base_Game'][week.week].color);
 				// metaData.
@@ -186,6 +190,12 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
+		songList.forEachExists(function(txt:Alphabet)
+		{
+			if (!txt.active)
+				txt.updateMenuPosition(elapsed);
+		});
+
 		updateScore(elapsed);
 
 		background.color = FlxColor.interpolate(background.color, currentColor, FlxMath.bound(elapsed * 1.75, 0, 1));
@@ -221,7 +231,7 @@ class FreeplayState extends MusicBeatState
 	public function changeSelection(change:Int = 0)
 	{
 		if (change != 0)
-			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+			InternalHelper.playSound(SCROLL, 0.75);
 
 		curSelected = FlxMath.wrap(curSelected + change, 0, songList.length - 1);
 
@@ -240,6 +250,8 @@ class FreeplayState extends MusicBeatState
 			{
 				song.alpha = 0.6;
 			}
+
+			song.active = Math.abs(song.targetY) < 4;
 		}
 
 		for (i in 0...iconArray.length)
@@ -260,7 +272,7 @@ class FreeplayState extends MusicBeatState
 	public function changeDiff(change:Int = 0)
 	{
 		if (change != 0)
-			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.50);
+			InternalHelper.playSound(SCROLL, 0.50);
 
 		curDifficulty = FlxMath.wrap(curDifficulty + change, 0, 2);
 

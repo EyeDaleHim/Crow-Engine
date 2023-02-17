@@ -94,7 +94,7 @@ class EditorSelectionState extends MusicBeatSubState
 	public function changeSelection(change:Int = 0)
 	{
 		if (change != 0)
-			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+			InternalHelper.playSound(SCROLL, 0.75);
 
 		curSelected = FlxMath.wrap(curSelected + change, 0, textGroup.length - 1);
 

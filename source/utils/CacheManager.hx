@@ -43,7 +43,8 @@ class CacheManager
 			var graphic:FlxGraphic = FlxGraphic.fromAssetKey(key, false, null, false);
 			graphic.persist = true;
 
-			cachedAssets[BITMAP].set(key, {type: BITMAP, data: graphic});
+			FlxG.bitmap.addGraphic(graphic);
+			cachedAssets[BITMAP].set(key, {type: BITMAP, data: FlxG.bitmap.get(graphic.key)});
 
 			return getBitmap(key);
 		}
@@ -60,6 +61,8 @@ class CacheManager
 			cast(cachedAssets[BITMAP].get(graphicKey).data, FlxGraphic).destroy();
 			cachedAssets[BITMAP].remove(graphicKey);
 		}
+		else
+			trace('Couldn\'t find $graphicKey to remove its cache.');
 	}
 
 	public static function getAudio(key:String = ''):Sound
@@ -97,12 +100,8 @@ class CacheManager
 	{
 		if (type != DYNAMIC)
 		{
-			var listOfCache:Int = 0;
-
 			for (cache in cachedAssets[type].keys())
 			{
-				listOfCache++;
-
 				if (keepPersistence && persistentAssets.contains(cache))
 					continue;
 
@@ -110,21 +109,15 @@ class CacheManager
 				{
 					case AUDIO:
 						{
-							trace('Cleared out $cache');
 							clearAudio(cache);
-							listOfCache--;
 						}
 					case BITMAP:
 						{
-							trace('Cleared out $cache');
 							clearBitmap(cache);
-							listOfCache--;
 						}
 					case _:
 				}
 			}
-
-			trace('Over ${listOfCache} have been cleared from the cache.');
 		}
 		else
 		{
@@ -139,12 +132,10 @@ class CacheManager
 					{
 						case AUDIO:
 							{
-								trace('Cleared out $cache');
 								clearAudio(cache);
 							}
 						case BITMAP:
 							{
-								trace('Cleared out $cache');
 								clearBitmap(cache);
 							}
 						case _:

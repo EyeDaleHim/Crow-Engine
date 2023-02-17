@@ -394,8 +394,8 @@ class OptionsMenu extends MusicBeatState
 			}
 		}
 
-		if (change != 0 && !(mouse && categoryID == 2))
-			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+		if (change != 0 && (!mouse && categoryID != 2))
+			InternalHelper.playSound(SCROLL, 0.75);
 
 		var keyDirection:Int = FlxKey.NONE;
 

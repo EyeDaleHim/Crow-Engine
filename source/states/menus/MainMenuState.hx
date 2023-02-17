@@ -138,7 +138,7 @@ class MainMenuState extends MusicBeatState
 
 	private function changeSelection(change:Int = 0)
 	{
-		FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+		InternalHelper.playSound(SCROLL, 0.75);
 
 		curSelected = FlxMath.wrap(curSelected + change, 0, menuList.length - 1);
 
@@ -170,7 +170,7 @@ class MainMenuState extends MusicBeatState
 		{
 			allowControl = false;
 
-			FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.75);
+			InternalHelper.playSound(CONFIRM, 0.75);
 
 			menuGroup.forEach(function(spr:FlxSprite)
 			{

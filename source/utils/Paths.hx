@@ -108,12 +108,12 @@ class Paths
 		return CacheManager.setBitmap(fullPath);
 	}
 
-	public static function imagePath(file:String, ?library:String = null):String
+	public inline static function imagePath(file:String, ?library:String = null):String
 	{
 		return getPath(extensionHelper('images/${file}.png'), IMAGE, library);
 	}
 
-	public static function sound(file:String, ?library:String = null):String
+	public inline static function sound(file:String, ?library:String = null):String
 	{
 		return getPath(extensionHelper('sounds/${file}.$SOUND_EXT'), SOUND, library);
 	}

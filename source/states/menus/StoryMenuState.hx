@@ -172,7 +172,7 @@ class StoryMenuState extends MusicBeatState
 	public function changeWeek(change:Int = 0):Void
 	{
 		if (change != 0)
-			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+			InternalHelper.playSound(SCROLL, 0.75);
 
 		curSelected = FlxMath.wrap(Std.int(curSelected + change), 0, sortedWeeks.length - 1);
 
@@ -199,7 +199,7 @@ class StoryMenuState extends MusicBeatState
 	public function changeDiff(change:Int = 0):Void
 	{
 		if (change != 0)
-			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.50);
+			InternalHelper.playSound(SCROLL, 0.50);
 
 		var lastDiff:Int = curDifficulty;
 
@@ -239,7 +239,7 @@ class StoryMenuState extends MusicBeatState
 	{
 		allowControl = false;
 
-		FlxG.sound.play(Paths.sound('menu/confirmMenu'), 0.75);
+		InternalHelper.playSound(CONFIRM, 0.75);
 
 		weekSprites.members[curSelected].isFlashing = true;
 

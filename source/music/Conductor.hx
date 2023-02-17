@@ -1,6 +1,7 @@
 package music;
 
 import flixel.math.FlxMath;
+import music.Song;
 
 class Conductor
 {
@@ -23,25 +24,32 @@ class Conductor
 		var curBPM:Float = song.bpm;
 		var totalSteps:Int = 0;
 		var totalPos:Float = 0;
-		for (i in 0...song.bpmMapping.length)
+
+		var stepIndex:Int = 0;
+
+		for (i in 0...song.sectionList.length)
 		{
-			if (song.bpmMapping[i] != null) // bpm mapping is based on actual sections, not something like section 23 at index 0, and then section 44 at index 1 LOLL
+			if (stepIndex < song.bpmMapping.length - 1)
 			{
-				if (totalSteps >= song.bpmMapping[i].step && song.bpmMapping[i].bpm != curBPM)
+				if (totalSteps >= song.bpmMapping[stepIndex].step)
 				{
-					curBPM = song.bpmMapping[i].bpm;
+					curBPM = song.bpmMapping[stepIndex].bpm;
+
 					var event:BPMChangeEvent = {
 						stepTime: totalSteps,
 						songTime: totalPos,
 						bpm: curBPM
 					};
 					bpmChangeMap.push(event);
+
+					stepIndex++;
 				}
 
-				var deltaSteps:Int = song.sectionList[Math.floor(totalSteps / 16)].length;
-				totalSteps += deltaSteps;
-				totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
+				totalSteps += song.sectionList[i].length;
+				totalPos += ((60 / curBPM) * 1000 / 4) * totalSteps;
 			}
+			else
+				break;
 		}
 	}
 

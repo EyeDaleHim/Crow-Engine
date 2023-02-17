@@ -123,7 +123,7 @@ class PauseSubState extends MusicBeatSubState
 			var editorMenu = Type.createInstance(states.debug.EditorSelectionState, []);
 			editorMenu.onExit = function()
 			{
-				FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+				InternalHelper.playSound(SCROLL, 0.75);
 				persistentUpdate = true;
 			};
 
@@ -155,7 +155,7 @@ class PauseSubState extends MusicBeatSubState
 	public function changeSelection(change:Int = 0)
 	{
 		if (change != 0)
-			FlxG.sound.play(Paths.sound('menu/scrollMenu'), 0.75);
+			InternalHelper.playSound(SCROLL, 0.75);
 
 		curSelected = FlxMath.wrap(curSelected + change, 0, selectionList.length - 1);
 

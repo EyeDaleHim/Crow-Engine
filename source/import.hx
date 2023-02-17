@@ -1,5 +1,6 @@
 import backend.data.Settings;
 import backend.data.Controls;
+import backend.InternalHelper;
 import objects.handlers.Animation;
 import objects.Alphabet;
 import utils.Paths;

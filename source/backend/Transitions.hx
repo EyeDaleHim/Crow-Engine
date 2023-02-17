@@ -31,6 +31,7 @@ class Transitions
 
 		var group:FlxTypedGroup<FlxSprite> = new FlxTypedGroup<FlxSprite>();
 		group.cameras = [camera];
+		group.active = false;
 		FlxG.state.add(group);
 
 		switch (type)
@@ -124,6 +125,42 @@ class Transitions
 								black.y = (gradient.y - black.height) + 50;
 							else
 								black.y = gradient.y + gradient.height;
+						},
+						onComplete: function(twn:FlxTween)
+						{
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
+						}
+					});
+				}
+			case Slider_Right:
+				{
+					var gradient:FlxSprite = FlxGradient.createGradientFlxSprite(200, FlxG.height, [FlxColor.BLACK, 0x0], 1, 0);
+					gradient.flipX = (fade == Out);
+					group.add(gradient);
+
+					var black:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width * 1.2), FlxG.height, FlxColor.BLACK);
+					group.add(black);
+
+					gradient.x = gradient.width;
+					black.x = (gradient.y + gradient.height) - 50;
+
+					FlxTween.tween(gradient, {x: FlxG.width}, duration, {
+						ease: ease,
+						onStart: function(twn:FlxTween)
+						{
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
+						},
+						onUpdate: function(twn:FlxTween)
+						{
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
+
+							if (fade == In)
+								black.x = (gradient.x - black.width) + 50;
+							else
+								black.x = gradient.x + gradient.width;
 						},
 						onComplete: function(twn:FlxTween)
 						{

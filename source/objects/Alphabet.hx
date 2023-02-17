@@ -3,7 +3,7 @@ package objects;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxSpriteGroup;
+import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.util.FlxTimer;
 import objects.handlers.IFunkinSprite;
@@ -13,7 +13,7 @@ using StringTools;
 /**
  * Loosley based on FlxTypeText lolol
  */
-class Alphabet extends FlxSpriteGroup implements IFunkinSprite
+class Alphabet extends FlxTypedSpriteGroup<AlphaCharacter> implements IFunkinSprite
 {
 	public var delay:Float = 0.05;
 	public var paused:Bool = false;
@@ -171,7 +171,9 @@ class Alphabet extends FlxSpriteGroup implements IFunkinSprite
 				// trace(_finalText.fastCodeAt(loopNum) + " " + _finalText.charAt(loopNum));
 
 				// var letter:AlphaCharacter = new AlphaCharacter(30 * loopNum, 0);
-				var letter:AlphaCharacter = new AlphaCharacter(xPos, 55 * yMulti);
+				var letter:AlphaCharacter = recycle(AlphaCharacter);
+				letter.setPosition(xPos, 55 * yMulti);
+				letter.ID = i;
 				letter.row = curRow;
 				if (isNumber)
 				{
@@ -197,15 +199,20 @@ class Alphabet extends FlxSpriteGroup implements IFunkinSprite
 
 	override function update(elapsed:Float)
 	{
-		if (isMenuItem)
+		updateMenuPosition(elapsed);
+
+		super.update(elapsed);
+	}
+
+	public function updateMenuPosition(elapsed:Float, force:Bool = false)
+	{
+		if (isMenuItem || force)
 		{
 			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
 
 			y = Tools.lerpBound(y, (scaledY * 120) + (FlxG.height - height) / 2, elapsed * 9.6);
 			x = Tools.lerpBound(x, (targetY * 20) + 90, elapsed * 9.6);
 		}
-
-		super.update(elapsed);
 	}
 
 	function set_text(Text:String):String
