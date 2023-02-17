@@ -28,7 +28,7 @@ class MusicBeatState extends FlxUIState
 		if (_finishedFade)
 		{
 			_finishedFade = false;
-			Transitions.transition(0.5, Out, FlxEase.linear, Slider_Right, {
+			Transitions.transition(0.5, Out, FlxEase.linear, Slider_Down, {
 				startCallback: function()
 				{
 					for (func in callFunctions)
