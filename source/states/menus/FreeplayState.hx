@@ -15,6 +15,10 @@ import weeks.ScoreContainer;
 import weeks.SongHandler;
 import objects.HealthIcon;
 import utils.CacheManager;
+#if PRELOAD_ALL
+import sys.thread.Thread;
+import openfl.utils.Assets;
+#end
 
 using utils.Tools;
 
@@ -137,6 +141,8 @@ class FreeplayState extends MusicBeatState
 	private var currentColor:Int = 0;
 	private var canPress:Bool = true;
 
+	// no you dingdong don't judge me
+	private static var lastSelected:Int = 0;
 	private static var lastPlayed:String = '';
 
 	override public function update(elapsed:Float)
@@ -147,6 +153,8 @@ class FreeplayState extends MusicBeatState
 			{
 				canPress = false;
 				MusicBeatState.switchState(new MainMenuState());
+
+				playSong(true);
 			}
 			else if (controls.getKey('ACCEPT', JUST_PRESSED))
 			{
@@ -196,11 +204,53 @@ class FreeplayState extends MusicBeatState
 				txt.updateMenuPosition(elapsed);
 		});
 
+		if (idleTime > 2.5)
+			playSong();
+		else
+			idleTime += elapsed;
+
 		updateScore(elapsed);
 
 		background.color = FlxColor.interpolate(background.color, currentColor, FlxMath.bound(elapsed * 1.75, 0, 1));
 
 		super.update(elapsed);
+	}
+
+	private var existingSong:Bool = false;
+	private var idleTime:Float = 0.0;
+
+	public function playSong(?menu:Bool = false):Void
+	{
+		#if PRELOAD_ALL
+		if (!existingSong)
+		{
+			var instPath:String = Paths.instPath(songs[curSelected].name.formatToReadable());
+
+			if (menu)
+				instPath = Paths.music('freakyMenu');
+
+			if (Assets.exists(instPath))
+			{
+				existingSong = true;
+
+				CacheManager.setAudio(instPath);
+
+				Thread.create(function()
+				{
+					if (menu)
+						CacheManager.clearAudio(Paths.instPath(songs[curSelected].name.formatToReadable()));
+					else
+						Paths.inst(songs[curSelected].name.formatToReadable());
+
+					FlxG.sound.music.fadeOut(0.5, 0.0, function(twn)
+					{
+						FlxG.sound.playMusic(CacheManager.getAudio(instPath), 0.0);
+						FlxG.sound.music.fadeIn(1.5, 0.0, 0.8);
+					});
+				});
+			}
+		#end
+		}
 	}
 
 	private function updateScore(elapsed:Float = 1):Void
@@ -233,7 +283,16 @@ class FreeplayState extends MusicBeatState
 		if (change != 0)
 			InternalHelper.playSound(SCROLL, 0.75);
 
+		idleTime = 0;
+
+		lastSelected = curSelected;
+
+		CacheManager.clearAudio(Paths.instPath(songs[lastSelected].name.formatToReadable()));
+
 		curSelected = FlxMath.wrap(curSelected + change, 0, songList.length - 1);
+
+		if (curSelected != lastSelected)
+			existingSong = false;
 
 		var range:Int = 0;
 
@@ -290,9 +349,7 @@ class FreeplayState extends MusicBeatState
 
 		changeSelection();
 	}
-}
-
-class SongMetadata
+} class SongMetadata
 {
 	public var name:String;
 	public var weekName:String;

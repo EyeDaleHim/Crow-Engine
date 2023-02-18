@@ -25,31 +25,19 @@ class Conductor
 		var totalSteps:Int = 0;
 		var totalPos:Float = 0;
 
-		var stepIndex:Int = 0;
-
-		for (i in 0...song.sectionList.length)
+		for (i in 0...song.bpmMapping.length)
 		{
-			if (stepIndex < song.bpmMapping.length - 1)
-			{
-				if (totalSteps >= song.bpmMapping[stepIndex].step)
-				{
-					curBPM = song.bpmMapping[stepIndex].bpm;
+			curBPM = song.bpmMapping[i].bpm;
 
-					var event:BPMChangeEvent = {
-						stepTime: totalSteps,
-						songTime: totalPos,
-						bpm: curBPM
-					};
-					bpmChangeMap.push(event);
+			var event:BPMChangeEvent = {
+				stepTime: totalSteps,
+				songTime: totalPos,
+				bpm: curBPM
+			};
+			bpmChangeMap.push(event);
 
-					stepIndex++;
-				}
-
-				totalSteps += song.sectionList[i].length;
-				totalPos += ((60 / curBPM) * 1000 / 4) * totalSteps;
-			}
-			else
-				break;
+			totalSteps += song.bpmMapping[i].step;
+			totalPos += ((60 / curBPM) * 1000 / 4) * totalSteps;
 		}
 	}
 

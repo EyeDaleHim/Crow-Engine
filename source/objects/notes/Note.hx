@@ -80,6 +80,9 @@ class Note extends FlxSprite
 		animation.play(animPlay, true);
 		scale.set(0.7, 0.7);
 		updateHitbox();
+
+		if (animation.curAnim.numFrames <= 1)
+			animation.pause();
 	}
 
 	public var noteType:String = '';

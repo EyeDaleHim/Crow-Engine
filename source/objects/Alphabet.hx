@@ -210,8 +210,8 @@ class Alphabet extends FlxTypedSpriteGroup<AlphaCharacter> implements IFunkinSpr
 		{
 			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
 
-			y = Tools.lerpBound(y, (scaledY * 120) + (FlxG.height - height) / 2, elapsed * 9.6);
-			x = Tools.lerpBound(x, (targetY * 20) + 90, elapsed * 9.6);
+			y = Tools.lerpBound(y, (scaledY * 120) + (FlxG.height - height) / 2, elapsed * 6.3);
+			x = Tools.lerpBound(x, (targetY * 20) + 90, elapsed * 6.3);
 		}
 	}
 
