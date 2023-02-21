@@ -1,7 +1,6 @@
 package;
 
 import backend.DebugInfo;
-import backend.libraries.FlxRes;
 import flixel.FlxG;
 import flixel.FlxGame;
 import openfl.Lib;
@@ -73,7 +72,6 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
-		#if (flixel < "5.0.0")
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 
@@ -86,14 +84,6 @@ class Main extends Sprite
 			game.width = Math.ceil(stageWidth / game.zoom);
 			game.height = Math.ceil(stageHeight / game.zoom);
 		}
-		#end
-
-		var returnWidth:Bool = false;
-
-		if (returnWidth)
-			game.width = FlxRes.getOtherDimension(game.height, returnWidth);
-		else
-			game.height = FlxRes.getOtherDimension(game.width);
 
 		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
 			game.skipSplash, game.startFullscreen);
