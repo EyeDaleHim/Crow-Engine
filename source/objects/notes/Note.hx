@@ -68,7 +68,7 @@ class Note extends FlxSprite
 
 			earlyMult = 1.0;
 
-			if (sustainIndex == sustainLength)
+			if (sustainIndex > sustainLength)
 			{
 				animPlay = _noteFile.sustainAnimDirections[direction].end;
 				isEndNote = true;

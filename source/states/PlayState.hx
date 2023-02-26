@@ -793,19 +793,19 @@ class PlayState extends MusicBeatState
 
 				if (note.sustain > 0)
 				{
-					var sustainAmounts:Int = Math.floor((note.sustain + 1) / Conductor.stepCrochet);
+					var sustainAmounts:Int = Math.floor(note.sustain / Conductor.stepCrochet);
+					sustainAmounts++;
 
 					for (i in 0...sustainAmounts)
 					{
 						var sustainNote:Note = null;
 
-						if (i == 0)
-							continue;
-						/*sustainNote = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, 1, sustainAmounts - 1,
-							note.noteAnim); */
-						else
-							sustainNote = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, i, sustainAmounts - 1,
-								note.noteAnim);
+						/*if (i == 0)
+								sustainNote = new Note(note.strumTime + (Conductor.stepCrochet * i), note.direction, note.mustPress, 1, sustainAmounts - 1,
+									note.noteAnim);
+							else */
+						sustainNote = new Note(note.strumTime + (Conductor.stepCrochet * i + 1), note.direction, note.mustPress, i + 1, sustainAmounts - 1,
+							note.noteAnim);
 						sustainNote.x = -2000;
 
 						oldNote = sustainNote;
@@ -1241,16 +1241,23 @@ class PlayState extends MusicBeatState
 				if (note._lockedToStrumY)
 				{
 					note.y = strumNote.y - distance;
-					if (strumNote.downScroll)
+					if (note.isSustainNote && strumNote.downScroll)
 					{
-						if (note.isEndNote)
+						if (!note.isEndNote)
+							note.y -= (Note.transformedWidth / 2) * (songSpeed * 0.5);
+						else
 						{
-							note.y += 10.5 * (fakeCrochet / 400) * 1.5 * songSpeed + (46 * (songSpeed - 1));
-							note.y -= 46 * (1 - (fakeCrochet / 600)) * songSpeed;
-							note.y -= 19;
+							if (!note.attributes.exists('gapOffset'))
+							{
+								note.attributes.set('gapOffset', (note._lastNote.y - (note.y + note.height)));
+							}
+							else
+								note.y += note.attributes['gapOffset'] + (6 * songSpeed);
 						}
-						note.y += (Note.transformedWidth / 2) - (60.5 * (songSpeed - 1));
-						note.y += 27.5 * ((Song.currentSong.bpm / 100) - 1) * (songSpeed - 1);
+					}
+					else if (note.isSustainNote)
+					{
+						note.y += (Note.transformedWidth / 2) * (songSpeed * 0.5);
 					}
 				}
 
@@ -1290,13 +1297,13 @@ class PlayState extends MusicBeatState
 				{
 					if (note.strumTime <= Conductor.songPosition && !note._hitSustain)
 						hitNote(note, true);
+				}
 
-					if (note.isSustainNote)
-					{
-						if ((Settings.getPref('downscroll', false) && note.y > FlxG.height * (1.0 + songSpeed))
-							|| (!Settings.getPref('downscroll', false) && note.y < -note.height * (1.0 + songSpeed)))
-							killNote(note);
-					}
+				if (note.isSustainNote)
+				{
+					if ((Settings.getPref('downscroll', false) && note.y > FlxG.height * (1.0 + songSpeed))
+						|| (!Settings.getPref('downscroll', false) && note.y < -note.height * (1.0 + songSpeed)))
+						killNote(note);
 				}
 
 				if (note.mustPress && Conductor.songPosition >= note.strumTime && botplay)
