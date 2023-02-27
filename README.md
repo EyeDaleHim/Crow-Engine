@@ -1,6 +1,8 @@
 Crow Engine
 ======
 
+![Crow Engine](crow_engine_logo.png)
+
 ## Info
 
 Crow Engine is a modified version of the game Friday Night Funkin' that has been rebuilt to include comprehensive documentation for modding and to introduce new features. The primary goal of this project is to facilitate a clearer understanding of modding for players and developers.
