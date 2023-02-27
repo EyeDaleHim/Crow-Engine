@@ -25,3 +25,5 @@ The following have contributed to Crow Engine.
 * [EyeDaleHim](https://linktr.ee/eyedalehim) - Lead Maintainer & Owner of Crow Engine
 
 * [WeldedFlap](https://weldedflap.carrd.co/) - Major Contributor
+
+* [AmeliaTheSharmi](https://www.youtube.com/@AmeliaTheSharmi) - Logo Artist
