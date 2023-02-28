@@ -91,6 +91,15 @@ class Character extends FlxSprite
 
 		setupCharacter();
 
+		if (_characterData.extraAttributes != null)
+		{
+			for (attribute in _characterData.extraAttributes)
+			{
+				if (attribute.toLowerCase() == "pixel")
+					antialiasing = false;
+			}
+		}
+
 		for (script in scripts)
 		{
 			script.executeFunction("create", [false]);

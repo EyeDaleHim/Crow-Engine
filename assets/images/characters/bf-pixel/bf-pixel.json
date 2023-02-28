@@ -1,0 +1,132 @@
+{
+    "healthColor": -13520687,
+    "animationList": [
+        {
+            "prefix": "BF IDLE",
+            "indices": [],
+            "fps": 24,
+            "name": "idle",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF LEFT NOTE",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFT",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF DOWN NOTE",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF UP NOTE",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF RIGHT NOTE",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHT",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF LEFT MISS",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFTmiss",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF DOWN MISS",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWNmiss",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF UP MISS",
+            "indices": [],
+            "fps": 24,
+            "name": "singUPmiss",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "BF RIGHT MISS",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHTmiss",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        }
+    ],
+    "singList": [
+        "singLEFT",
+        "singDOWN",
+        "singUP",
+        "singRIGHT"
+    ],
+    "idleList": [
+        "idle",
+        ""
+    ],
+    "missList": [
+        "singLEFTmiss",
+        "singDOWNmiss",
+        "singUPmiss",
+        "singRIGHTmiss"
+    ],
+    "name": "bf-pixel",
+    "flip": {
+        "x": false,
+        "y": false
+    },
+    "scale": {
+        "x": 6,
+        "y": 6
+    },
+    "extraAttributes": [
+        "pixel"
+    ]
+}

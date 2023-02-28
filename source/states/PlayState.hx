@@ -300,7 +300,6 @@ class PlayState extends MusicBeatState
 			vocals.attributes.set('isPlaying', true);
 			FlxG.sound.list.add(vocals);
 		}
-
 		var stageName:String = 'stage';
 
 		if (Song.currentSong != null)
@@ -618,8 +617,6 @@ class PlayState extends MusicBeatState
 				iconP2.changeState(healthBar.percent > 80 ? 'lose' : 'neutral');
 		}
 
-		FlxG.watch.addQuick('SONG POS', '${Math.round(Conductor.songPosition)}, (BEAT: $curBeat, STEP: $curStep)');
-
 		if (___trackedTimerObjects.active)
 			___trackedTimerObjects.update(elapsed);
 
@@ -656,7 +653,10 @@ class PlayState extends MusicBeatState
 
 				if (Conductor.lastSongPos != Conductor.songPosition)
 				{
-					_songTime = (_songTime + Conductor.songPosition) / 2;
+					if (Conductor.songPosition - _songTime < 2000)
+						_songTime = Conductor.songPosition;
+					else
+						_songTime = (_songTime + Conductor.songPosition) / 2;
 					Conductor.lastSongPos = Conductor.songPosition;
 				}
 			}
@@ -793,8 +793,7 @@ class PlayState extends MusicBeatState
 
 				if (note.sustain > 0)
 				{
-					var sustainAmounts:Int = Math.floor(note.sustain / Conductor.stepCrochet);
-					sustainAmounts++;
+					var sustainAmounts:Int = Math.floor(Math.max(2, note.sustain / Conductor.stepCrochet));
 
 					for (i in 0...sustainAmounts)
 					{
@@ -819,6 +818,9 @@ class PlayState extends MusicBeatState
 						sustainNote.alpha = 0.6;
 						sustainNote.singAnim = newNote.singAnim;
 						sustainNote.missAnim = newNote.missAnim;
+
+						if (sustainNote.isEndNote && Settings.getPref('downscroll', false))
+							sustainNote.attributes.set('gapOffset', (sustainNote._lastNote.y - (sustainNote.y + sustainNote.height)));
 
 						pendingNotes.push(sustainNote);
 					}
@@ -864,7 +866,7 @@ class PlayState extends MusicBeatState
 
 				if (list[i] != '')
 				{
-					countdownSpr = new FlxSprite().loadGraphic(Paths.image('game/countdown/${list[i]}'));
+					countdownSpr.loadGraphic(Paths.image('game/countdown/${list[i]}'));
 					countdownSpr.visible = true;
 					countdownSpr.alpha = 0.0;
 					countdownSpr.scrollFactor.set();
@@ -1247,11 +1249,7 @@ class PlayState extends MusicBeatState
 							note.y -= (Note.transformedWidth / 2) * (songSpeed * 0.5);
 						else
 						{
-							if (!note.attributes.exists('gapOffset'))
-							{
-								note.attributes.set('gapOffset', (note._lastNote.y - (note.y + note.height)));
-							}
-							else
+							if (note.attributes.exists('gapOffset'))
 								note.y += note.attributes['gapOffset'] + (6 * songSpeed);
 						}
 					}

@@ -77,7 +77,7 @@ class StageEditSubState extends MusicBeatSubState
 			getValue();
 		}
 
-		if (FlxG.keys.anyJustPressed([W, A, S, D]))
+		if (FlxG.keys.anyPressed([W, A, S, D]))
 		{
 			var keys:Array<Bool> = [
 				FlxG.keys.justPressed.W,
@@ -85,6 +85,17 @@ class StageEditSubState extends MusicBeatSubState
 				FlxG.keys.justPressed.S,
 				FlxG.keys.justPressed.D
 			];
+
+			if (FlxG.keys.pressed.SHIFT)
+			{
+				keys = [
+					FlxG.keys.pressed.W,
+					FlxG.keys.pressed.A,
+					FlxG.keys.pressed.S,
+					FlxG.keys.pressed.D
+				];
+			}
+
 			var changeValue:Array<FlxPoint> = [FlxPoint.get(0, -1), FlxPoint.get(-1, 0), FlxPoint.get(0, 1), FlxPoint.get(1, 0)];
 
 			var stageDataChar = PlayState.current.stageData.charPosList;

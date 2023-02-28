@@ -212,6 +212,38 @@ class Stage
 					backLimo.ID = 1;
 					group.set('backgroundLimo', backLimo);
 
+					for (i in 0...6)
+					{
+						var leftIndices:Array<Int> = Tools.numberArray(0, 14);
+
+						var rightIndices:Array<Int> = Tools.numberArray(15, 29);
+
+						var dancer:BGSprite = new BGSprite({path: 'limoDancer', library: 'week4'}, {x: (370 * i) + 170, y: backLimo.y - 400},
+							{x: 0.4, y: 0.4}, [
+							{
+								name: 'danceLeft',
+								prefix: 'bg dancer sketch PINK',
+								fps: 24,
+								indices: leftIndices,
+								looped: false,
+								offset: {x: 0, y: 0}
+							},
+							{
+								name: 'danceRight',
+								prefix: 'bg dancer sketch PINK',
+								fps: 24,
+								indices: rightIndices,
+								looped: false,
+								offset: {x: 0, y: 0}
+							}
+						]);
+						dancer.ID = 2 + i;
+						dancer.active = true;
+						dancer.animation.play('danceLeft');
+						dancer.attributes.set('danceDirection', true);
+						group.set('dancer$i', dancer);
+					}
+
 					var limo:BGSprite = new BGSprite({path: 'limoDrive', library: 'week4'}, {x: -120, y: 550}, null, [
 						{
 							name: 'driving',
@@ -225,11 +257,11 @@ class Stage
 					limo.active = true;
 					limo.animation.play('driving');
 					limo.renderPriority = AFTER_CHAR;
-					limo.ID = 2;
+					limo.ID = 7;
 					group.set('limo', limo);
 
 					var car:BGSprite = new BGSprite({path: 'fastCarLol', library: 'week4'}, {x: -300, y: 160});
-					car.ID = 3;
+					car.ID = 8;
 					group.set('car', car);
 				}
 			case 'mall':
@@ -334,6 +366,46 @@ class Stage
 					var snow:BGSprite = new BGSprite({path: 'evilSnow', library: 'week5'}, {x: -200, y: 700});
 					snow.ID = 2;
 					group.set('snow', snow);
+				}
+			case 'school':
+				{
+					stageInstance.charPosList.playerPositions[0].x = 1000;
+					stageInstance.charPosList.playerPositions[0].y = 650;
+
+					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week6'}, {x: -12, y: 0}, {x: 0.1, y: 0.1});
+					sky.antialiasing = false;
+					sky.scale.set(6, 6);
+					sky.updateHitbox();
+					sky.ID = 0;
+					group.set('sky', sky);
+
+					var school:BGSprite = new BGSprite({path: 'school', library: 'week6'}, {x: -216, y: 0}, {x: 0.6, y: 0.9});
+					school.antialiasing = false;
+					school.scale.set(6, 6);
+					school.updateHitbox();
+					school.ID = 1;
+					group.set('school', school);
+
+					var street:BGSprite = new BGSprite({path: 'street', library: 'week6'}, {x: -204, y: 0}, {x: 0.95, y: 0.95});
+					street.antialiasing = false;
+					street.scale.set(6, 6);
+					street.updateHitbox();
+					street.ID = 2;
+					group.set('street', street);
+
+					var bgTrees:BGSprite = new BGSprite({path: 'treesBack', library: 'week6'}, {x: -30, y: 130}, {x: 0.9, y: 0.9});
+					bgTrees.antialiasing = false;
+					bgTrees.scale.set(6, 6);
+					bgTrees.updateHitbox();
+					bgTrees.ID = 3;
+					group.set('bgTrees', bgTrees);
+
+					var fgTrees:BGSprite = new BGSprite({path: 'trees', library: 'week6'}, {x: -30, y: 130}, {x: 0.9, y: 0.9});
+					fgTrees.antialiasing = false;
+					fgTrees.scale.set(6, 6);
+					fgTrees.updateHitbox();
+					fgTrees.ID = 3;
+					group.set('fgTrees', fgTrees);
 				}
 			case 'warzone':
 				{
@@ -730,6 +802,15 @@ class Stage
 				}
 			case 'limo':
 				{
+					for (i in 0...6)
+					{
+						if (spriteGroup['dancer$i'].attributes['danceDirection'])
+							spriteGroup['dancer$i'].animation.play('danceRight', true);
+						else
+							spriteGroup['dancer$i'].animation.play('danceLeft', true);
+
+						spriteGroup['dancer$i'].attributes.set('danceDirection', !spriteGroup['dancer$i'].attributes['danceDirection']);
+					}
 				}
 			case 'mall':
 				{
@@ -755,6 +836,18 @@ class Stage
 	{
 		switch (name)
 		{
+			case 'limo':
+				{
+					for (i in 0...6)
+					{
+						if (spriteGroup['dancer$i'].attributes['danceDirection'])
+							spriteGroup['dancer$i'].animation.play('danceRight', true);
+						else
+							spriteGroup['dancer$i'].animation.play('danceLeft', true);
+
+						spriteGroup['dancer$i'].attributes.set('danceDirection', !spriteGroup['dancer$i'].attributes['danceDirection']);
+					}
+				}
 			case 'mall':
 				{
 					spriteGroup['upBoppers'].animation.play('bop', true);
@@ -776,7 +869,7 @@ class BGSprite extends FlxSprite
 	public var graphicName:String = '';
 	public var renderPriority:RenderPriority = BEFORE_CHAR; // this is literally just to tell you if this sprite wants to be rendered before or after the characters
 
-	public function new(image:Null<ImagePath>, ?position:SimplePoint, ?scroll:SimplePoint, ?animArray:Array<Animation> = null)
+	public function new(image:Null<ImagePath>, ?position:SimplePoint, ?scroll:SimplePoint, ?animArray:Array<StageAnimation> = null)
 	{
 		if (position == null)
 			position = {x: 0.0, y: 0.0};
@@ -810,11 +903,20 @@ class BGSprite extends FlxSprite
 
 			if (animArray != null)
 			{
-				frames = Paths.getSparrowAtlas(image.path, image.library);
+				frames = switch (animArray[0].atlas)
+				{
+					case 'packer':
+						Paths.getPackerAtlas(image.path, image.library);
+					default:
+						Paths.getSparrowAtlas(image.path, image.library);
+				}
 
 				for (anim in animArray)
 				{
-					animation.addByPrefix(anim.name, anim.prefix, anim.fps, anim.looped);
+					if (anim.indices.length > 0)
+						animation.addByIndices(anim.name, anim.prefix, anim.indices, "", anim.fps, anim.looped);
+					else
+						animation.addByPrefix(anim.name, anim.prefix, anim.fps, anim.looped);
 				}
 			}
 			else
@@ -838,6 +940,11 @@ typedef ListedPosition =
 	var playerPositions:Array<SimplePoint>;
 	var spectatorPositions:Array<SimplePoint>;
 	var opponentPositions:Array<SimplePoint>;
+}
+
+typedef StageAnimation = Animation &
+{
+	@:optional var atlas:String;
 }
 
 typedef ImagePath =
