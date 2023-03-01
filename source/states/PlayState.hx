@@ -439,7 +439,10 @@ class PlayState extends MusicBeatState
 		addPlayer(opponentStrums);
 		addPlayer(playerStrums);
 
+		var firstTime = openfl.Lib.getTimer();
+
 		generateSong();
+		trace((openfl.Lib.getTimer() - firstTime) + 'ms');
 
 		healthBarBG = new FlxSprite(0, FlxG.height * (Settings.getPref('downscroll', false) ? 0.1 : 0.9)).loadGraphic(Paths.image('game/ui/healthBar'));
 		healthBarBG.screenCenter(X);

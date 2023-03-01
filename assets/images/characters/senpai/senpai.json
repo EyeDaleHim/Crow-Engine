@@ -1,0 +1,83 @@
+{
+    "healthColor": 16755311,
+    "animationList": [
+        {
+            "prefix": "Senpai Idle",
+            "indices": [],
+            "fps": 24,
+            "name": "idle",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "SENPAI LEFT NOTE",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFT",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "SENPAI DOWN NOTE",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "SENPAI UP NOTE",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "SENPAI RIGHT NOTE",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHT",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        }
+    ],
+    "singList": [
+        "singLEFT",
+        "singDOWN",
+        "singUP",
+        "singRIGHT"
+    ],
+    "idleList": [
+        "idle",
+        ""
+    ],
+    "missList": [],
+    "name": "senpai",
+    "flip": {
+        "x": false,
+        "y": false
+    },
+    "scale": {
+        "x": 6,
+        "y": 6
+    },
+    "extraAttributes": [
+        "pixel"
+    ]
+}

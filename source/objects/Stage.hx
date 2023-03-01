@@ -372,39 +372,56 @@ class Stage
 					stageInstance.charPosList.playerPositions[0].x = 1000;
 					stageInstance.charPosList.playerPositions[0].y = 650;
 
-					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week6'}, {x: -12, y: 0}, {x: 0.1, y: 0.1});
+					stageInstance.charPosList.opponentPositions[0].x = 300;
+					stageInstance.charPosList.opponentPositions[0].y = 360;
+
+					stageInstance.camPosList.opponentPositions[0].y = 0;
+
+					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week6'}, {x: 0, y: 0}, {x: 0.1, y: 0.1});
+					var widthData = Std.int(sky.width * 6);
 					sky.antialiasing = false;
-					sky.scale.set(6, 6);
+					sky.setGraphicSize(widthData);
 					sky.updateHitbox();
 					sky.ID = 0;
 					group.set('sky', sky);
 
-					var school:BGSprite = new BGSprite({path: 'school', library: 'week6'}, {x: -216, y: 0}, {x: 0.6, y: 0.9});
+					var school:BGSprite = new BGSprite({path: 'school', library: 'week6'}, {x: -260, y: 0}, {x: 0.6, y: 0.9});
 					school.antialiasing = false;
-					school.scale.set(6, 6);
+					school.setGraphicSize(widthData);
 					school.updateHitbox();
 					school.ID = 1;
 					group.set('school', school);
 
-					var street:BGSprite = new BGSprite({path: 'street', library: 'week6'}, {x: -204, y: 0}, {x: 0.95, y: 0.95});
+					var street:BGSprite = new BGSprite({path: 'street', library: 'week6'}, {x: -200, y: 0}, {x: 0.95, y: 0.95});
 					street.antialiasing = false;
-					street.scale.set(6, 6);
+					street.setGraphicSize(widthData);
 					street.updateHitbox();
 					street.ID = 2;
 					group.set('street', street);
 
 					var bgTrees:BGSprite = new BGSprite({path: 'treesBack', library: 'week6'}, {x: -30, y: 130}, {x: 0.9, y: 0.9});
 					bgTrees.antialiasing = false;
-					bgTrees.scale.set(6, 6);
+					bgTrees.setGraphicSize(Std.int(widthData * 0.8));
 					bgTrees.updateHitbox();
 					bgTrees.ID = 3;
 					group.set('bgTrees', bgTrees);
 
-					var fgTrees:BGSprite = new BGSprite({path: 'trees', library: 'week6'}, {x: -30, y: 130}, {x: 0.9, y: 0.9});
+					var fgTrees:BGSprite = new BGSprite({path: 'trees', library: 'week6'}, {x: -580, y: -800}, {x: 0.9, y: 0.9}, [
+						{
+							name: 'sway',
+							prefix: 'trees_',
+							fps: 24,
+							offset: {x: 0, y: 0},
+							looped: true,
+							indices: [],
+							atlas: 'packer'
+						}
+					]);
 					fgTrees.antialiasing = false;
-					fgTrees.scale.set(6, 6);
+					fgTrees.scale.set(8.4, 8.4);
 					fgTrees.updateHitbox();
-					fgTrees.ID = 3;
+					fgTrees.animation.play('sway', true);
+					fgTrees.ID = 4;
 					group.set('fgTrees', fgTrees);
 				}
 			case 'warzone':
