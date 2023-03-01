@@ -1,7 +1,6 @@
 {
-    "healthColor": -13520687,
-    "animationList": [
-        {
+    "healthColor": -8661258,
+    "animationList": [{
             "prefix": "BF IDLE",
             "indices": [],
             "fps": 24,

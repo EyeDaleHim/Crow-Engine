@@ -1,7 +1,6 @@
 {
-    "healthColor": 16755311,
-    "animationList": [
-        {
+    "healthColor": -21905,
+    "animationList": [{
             "prefix": "Senpai Idle",
             "indices": [],
             "fps": 24,
