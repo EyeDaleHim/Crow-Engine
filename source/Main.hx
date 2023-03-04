@@ -12,6 +12,8 @@ import sys.FileSystem;
 import sys.io.File;
 import haxe.Json;
 import utils.CacheManager;
+import openfl.Assets;
+import openfl.utils.AssetCache;
 
 class Main extends Sprite
 {

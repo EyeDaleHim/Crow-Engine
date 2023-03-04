@@ -21,7 +21,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.system.FlxSound;
-import game.CutsceneHandler;
+import game.cutscenes.CutsceneHandler;
 import openfl.events.KeyboardEvent;
 import states.substates.GameOverSubState;
 import states.substates.PauseSubState;
@@ -228,7 +228,7 @@ class PlayState extends MusicBeatState
 		return (spectatorList[0] = char);
 	}
 
-	// stage stuff, will change because this is overly simple
+	// stage stuff, will change because this is so fucking stupid
 	public var stageData:Stage;
 	public var cutsceneHandler:CutsceneHandler;
 

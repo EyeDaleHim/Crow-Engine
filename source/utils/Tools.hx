@@ -68,10 +68,11 @@ class Tools
 
 	public static function formatAccuracy(value:Float)
 	{
-		var str = Std.string(value);
-		if (str.indexOf(".") == -1)
-			str += ".00";
-		return str.split('.')[0] + '.' + str.split('.')[1].rpad("0", 2);
+		/*var str = Std.string(value);
+			if (str.charAt(3) != '.' || !str.contains('.') || (str.length == 4))
+				str.rpad("0", 2); */
+
+		return Std.string(value);
 	}
 
 	public static function utcToDate(time:Int, format:String):String

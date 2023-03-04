@@ -369,15 +369,19 @@ class Stage
 				}
 			case 'school':
 				{
-					stageInstance.charPosList.playerPositions[0].x = 1000;
-					stageInstance.charPosList.playerPositions[0].y = 650;
+					stageInstance.charPosList.playerPositions[0].x = 970;
+					stageInstance.charPosList.playerPositions[0].y = 670;
 
-					stageInstance.charPosList.opponentPositions[0].x = 300;
-					stageInstance.charPosList.opponentPositions[0].y = 360;
+					stageInstance.charPosList.opponentPositions[0].x = 250;
+					stageInstance.charPosList.opponentPositions[0].y = 460;
+
+					stageInstance.charPosList.spectatorPositions[0].x = 550;
+					stageInstance.charPosList.spectatorPositions[0].y = 500;
 
 					stageInstance.camPosList.opponentPositions[0].y = 0;
+					stageInstance.camPosList.opponentPositions[0].x += 50;
 
-					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week6'}, {x: 0, y: 0}, {x: 0.1, y: 0.1});
+					var sky:BGSprite = new BGSprite({path: 'sky', library: 'week6'}, {x: 0, y: 0}, {x: 0, y: 0});
 					var widthData = Std.int(sky.width * 6);
 					sky.antialiasing = false;
 					sky.setGraphicSize(widthData);
@@ -406,11 +410,11 @@ class Stage
 					bgTrees.ID = 3;
 					group.set('bgTrees', bgTrees);
 
-					var fgTrees:BGSprite = new BGSprite({path: 'trees', library: 'week6'}, {x: -580, y: -800}, {x: 0.9, y: 0.9}, [
+					var fgTrees:BGSprite = new BGSprite({path: 'trees', library: 'week6'}, {x: -1480, y: -1600}, {x: 0.9, y: 0.9}, [
 						{
 							name: 'sway',
 							prefix: 'trees_',
-							fps: 24,
+							fps: 12,
 							offset: {x: 0, y: 0},
 							looped: true,
 							indices: [],
@@ -421,8 +425,79 @@ class Stage
 					fgTrees.scale.set(8.4, 8.4);
 					fgTrees.updateHitbox();
 					fgTrees.animation.play('sway', true);
+					fgTrees.active = true;
 					fgTrees.ID = 4;
 					group.set('fgTrees', fgTrees);
+
+					var petals:BGSprite = new BGSprite({path: 'petals', library: 'week6'}, {x: -200, y: -40}, {x: 0.85, y: 0.85}, [
+						{
+							name: 'petal',
+							prefix: 'PETALS ALL',
+							fps: 24,
+							offset: {x: 0, y: 0},
+							looped: true,
+							indices: []
+						}
+					]);
+					petals.antialiasing = false;
+					petals.scale.set(6, 6);
+					petals.updateHitbox();
+					petals.active = true;
+					petals.animation.play('petal', true);
+					petals.ID = 5;
+					group.set('petals', petals);
+					var animArray:Array<StageAnimation> = [
+						{
+							name: 'danceLeft',
+							prefix: 'BG girls group',
+							fps: 24,
+							offset: {x: 0, y: 0},
+							indices: Tools.numberArray(0, 13),
+							looped: true
+						},
+						{
+							name: 'danceRight',
+							prefix: 'BG girls group',
+							fps: 24,
+							offset: {x: 0, y: 0},
+							indices: Tools.numberArray(14, 29),
+							looped: true
+						}
+					];
+
+					if (Song.currentSong.song.formatToReadable() == 'roses')
+					{
+						animArray = [
+							{
+								name: 'danceLeft',
+								prefix: 'BG fangirls dissuaded',
+								fps: 24,
+								offset: {x: 0, y: 0},
+								indices: Tools.numberArray(0, 13),
+								looped: true
+							},
+							{
+								name: 'danceRight',
+								prefix: 'BG fangirls dissuaded',
+								fps: 24,
+								offset: {x: 0, y: 0},
+								indices: Tools.numberArray(14, 29),
+								looped: true
+							}
+						];
+					}
+
+					var bgGirls:BGSprite = new BGSprite({path: 'bgFreaks', library: 'week6'}, {x: -100, y: 440}, {x: 0.9, y: 0.9}, animArray);
+					bgGirls.scale.set(6, 6);
+					bgGirls.antialiasing = false;
+					bgGirls.ID = 6;
+					bgGirls.active = true;
+					bgGirls.animation.play('danceLeft', true);
+					bgGirls.attributes.set('danceDirection', true);
+					group.set('bgGirls', bgGirls);
+				}
+			case 'dark-school':
+				{
 				}
 			case 'warzone':
 				{
@@ -834,6 +909,15 @@ class Stage
 					spriteGroup['upBoppers'].animation.play('bop', true);
 					spriteGroup['botBoppers'].animation.play('bop', true);
 					spriteGroup['santa'].animation.play('idle', true);
+				}
+			case 'school':
+				{
+					if (spriteGroup['bgGirls'].attributes['danceDirection'])
+						spriteGroup['bgGirls'].animation.play('danceRight', true);
+					else
+						spriteGroup['bgGirls'].animation.play('danceLeft', true);
+
+					spriteGroup['bgGirls'].attributes.set('danceDirection', !spriteGroup['bgGirls'].attributes['danceDirection']);
 				}
 			case 'warzone':
 				{

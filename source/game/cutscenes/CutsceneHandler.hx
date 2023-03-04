@@ -1,4 +1,4 @@
-package game;
+package game.cutscenes;
 
 import flixel.math.FlxPoint;
 import flixel.FlxG;
