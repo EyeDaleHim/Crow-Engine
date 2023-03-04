@@ -77,6 +77,8 @@ class Note extends FlxSprite
 				animPlay = _noteFile.sustainAnimDirections[direction].body;
 		}
 
+		moves = false;
+
 		animation.play(animPlay, true);
 		scale.set(0.7, 0.7);
 		updateHitbox();
