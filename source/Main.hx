@@ -102,6 +102,7 @@ class Main extends Sprite
 		FlxG.console.registerClass(utils.Tools);
 		FlxG.console.registerClass(backend.data.Settings);
 		FlxG.console.registerClass(music.Song);
+		FlxG.console.registerClass(objects.notes.Note);
 		FlxG.console.registerClass(Main);
 
 		FlxG.console.registerFunction('checkCache', function()

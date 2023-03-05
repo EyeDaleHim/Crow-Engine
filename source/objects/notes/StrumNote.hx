@@ -59,6 +59,8 @@ class StrumNote extends FlxSprite
 		pressAnim = _strumFile.pressAnim[direction];
 		staticAnim = _strumFile.staticAnim[direction];
 
+		moves = false;
+
 		playAnim(staticAnim);
 
 		scale.set(0.7, 0.7);

@@ -35,6 +35,8 @@ class HealthIcon extends FlxSprite
 
 		changeState('neutral');
 
+		moves = false;
+
 		updateHitbox();
 		centerOffsets();
 	}
