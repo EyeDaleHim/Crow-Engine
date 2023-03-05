@@ -5,6 +5,7 @@
     <SubTexture name="spirit-neutral" x="369" y="233" width="71" height="142"></SubTexture>
     <SubTexture name="dad-neutral" x="254" y="0" width="111" height="129"></SubTexture>
     <SubTexture name="senpai-neutral" x="369" y="0" width="121" height="118"></SubTexture>
+    <SubTexture name="senpai-angry-neutral" x="369" y="0" width="121" height="118"></SubTexture>
     <SubTexture name="parents-neutral" x="0" y="0" width="134" height="125"></SubTexture>
     <SubTexture name="tankman-neutral" x="255" y="392" width="95" height="80"></SubTexture>
     <SubTexture name="mom-neutral" x="254" y="133" width="108" height="120"></SubTexture>

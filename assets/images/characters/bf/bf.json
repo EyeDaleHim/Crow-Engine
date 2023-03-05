@@ -121,6 +121,36 @@
                 "y": 0
             },
             "looped": false
+        },
+        {
+            "name": "firstDeath",
+            "prefix": "BF dies",
+            "fps": 24,
+            "offset": {
+                "x": -5,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "name": "deathLoop",
+            "prefix": "BF Dead Loop",
+            "fps": 24,
+            "offset": {
+                "x": -5,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "name": "confirmDeath",
+            "prefix": "BF Dead confirm",
+            "fps": 24,
+            "offset": {
+                "x": -5,
+                "y": 0
+            },
+            "looped": false
         }
     ],
     "singList": [

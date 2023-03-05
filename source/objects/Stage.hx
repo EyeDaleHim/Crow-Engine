@@ -260,9 +260,14 @@ class Stage
 					limo.ID = 7;
 					group.set('limo', limo);
 
-					var car:BGSprite = new BGSprite({path: 'fastCarLol', library: 'week4'}, {x: -300, y: 160});
+					var car:BGSprite = new BGSprite({path: 'fastCarLol', library: 'week4'}, {x: -12600, y: 160});
 					car.ID = 8;
+					car.active = true;
 					group.set('car', car);
+
+					stageInstance.attributes.set('carTime', 14.0);
+					stageInstance.attributes.set('carActive', false);
+					stageInstance.attributes.set('carPrepare', false);
 				}
 			case 'mall':
 				{
@@ -802,6 +807,31 @@ class Stage
 				}
 			case 'limo':
 				{
+					if (!attributes['carActive'])
+					{
+						if (attributes['carPrepare'])
+							attributes.set('carActive', FlxG.random.bool(10));
+						else if (attributes['carTime'] >= 0.0)
+							attributes['carTime'] -= elapsed;
+						else
+							attributes.set('carPrepare', true);
+					}
+					else
+					{
+						spriteGroup['car'].x = -12600;
+						spriteGroup['car'].y = FlxG.random.int(140, 250);
+
+						FlxG.sound.play(Paths.sound('carPass' + FlxG.random.int(0, 1)), 0.7);
+
+						spriteGroup['car'].velocity.x = (FlxG.random.int(170, 220) / FlxG.elapsed) * 3;
+
+						attributes.set('carActive', false);
+						attributes.set('carPrepare', false);
+						attributes.set('carTime', FlxG.random.float(12, 28));
+					}
+
+					if (spriteGroup['car'].x > FlxG.width * 4)
+						spriteGroup['car'].velocity.x = 0.0;
 				}
 			case 'warzone':
 				{

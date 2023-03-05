@@ -1,0 +1,148 @@
+{
+    "animDirections": [
+        "purpleScroll",
+        "blueScroll",
+        "greenScroll",
+        "redScroll"
+    ],
+    "sustainAnimDirections": [
+        {
+            "body": "purplehold",
+            "end": "purpleholdend"
+        },
+        {
+            "body": "bluehold",
+            "end": "blueholdend"
+        },
+        {
+            "body": "greenhold",
+            "end": "greenholdend"
+        },
+        {
+            "body": "redhold",
+            "end": "redholdend"
+        }
+    ],
+    "animationData": [
+        {
+            "name": "purpleScroll",
+            "prefix": "purple0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "blueScroll",
+            "prefix": "blue0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "greenScroll",
+            "prefix": "green0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "redScroll",
+            "prefix": "red0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "purplehold",
+            "prefix": "purple hold piece",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "bluehold",
+            "prefix": "blue hold piece",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "greenhold",
+            "prefix": "green hold piece",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "redhold",
+            "prefix": "red hold piece",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "purpleholdend",
+            "prefix": "pruple end hold",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "blueholdend",
+            "prefix": "blue hold end",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "greenholdend",
+            "prefix": "green hold end",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "redholdend",
+            "prefix": "red hold end",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ]
+}

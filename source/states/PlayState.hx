@@ -31,6 +31,7 @@ import music.EventManager;
 import objects.HealthIcon;
 import objects.Stage;
 import objects.Stage.BGSprite;
+import objects.ComboSprite;
 import objects.stageParts.TankmenUnit;
 import objects.character.Character;
 import objects.character.Player;
@@ -440,10 +441,7 @@ class PlayState extends MusicBeatState
 		addPlayer(opponentStrums);
 		addPlayer(playerStrums);
 
-		var firstTime = openfl.Lib.getTimer();
-
 		generateSong();
-		trace((openfl.Lib.getTimer() - firstTime) + 'ms');
 
 		healthBarBG = new FlxSprite(0, FlxG.height * (Settings.getPref('downscroll', false) ? 0.1 : 0.9)).loadGraphic(Paths.image('game/ui/healthBar'));
 		healthBarBG.screenCenter(X);
@@ -541,6 +539,10 @@ class PlayState extends MusicBeatState
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
 
+		CacheManager.setAudio(Paths.music('gameOver'));
+		CacheManager.setAudio(Paths.music('gameOverEnd'));
+		CacheManager.setAudio(Paths.sound('game/death/fnf_loss_sfx'));
+
 		super.create();
 	}
 
@@ -569,9 +571,7 @@ class PlayState extends MusicBeatState
 			for (note in pendingNotes)
 			{
 				if (note.strumTime - Conductor.songPosition > 1500)
-				{
 					break;
-				}
 
 				if (note.mustPress)
 				{
@@ -581,7 +581,10 @@ class PlayState extends MusicBeatState
 						_isolatedNotes.note[note.direction].push(note);
 				}
 
-				renderedNotes.add(note);
+				if (note.isSustainNote)
+					renderedNotes.insert(0, note);
+				else
+					renderedNotes.add(note);
 				pendingNotes.splice(pendingNotes.indexOf(note), 1);
 			}
 		}
@@ -667,6 +670,14 @@ class PlayState extends MusicBeatState
 						_songTime = (_songTime + Conductor.songPosition) / 2;
 					Conductor.lastSongPos = Conductor.songPosition;
 				}
+			}
+
+			if (gameInfo.health <= 0)
+			{
+				paused = true;
+				persistentUpdate = persistentDraw = false;
+
+				openSubState(new GameOverSubState());
 			}
 
 			inputQueries.update(elapsed);
@@ -874,9 +885,7 @@ class PlayState extends MusicBeatState
 					countdownSpr.alpha = 0.0;
 					countdownSpr.scrollFactor.set();
 					countdownSpr.screenCenter();
-					countdownSpr.cameras = [hudCamera];
-
-					add(countdownSpr);
+					addToHUD(countdownSpr);
 				}
 
 				var countdownSound:FlxSound = FlxG.sound.list.recycle(FlxSound);
@@ -963,7 +972,9 @@ class PlayState extends MusicBeatState
 					else
 					{
 						ScoreContainer.setWeek(Paths.currentLibrary, PlayState.songDiff, CurrentGame.weekScores);
+						trace('set week');
 						CurrentGame.weekScores = [];
+						trace('killed week');
 						MusicBeatState.switchState(new states.menus.StoryMenuState());
 					}
 				case FREEPLAY:
@@ -1473,67 +1484,76 @@ class PlayState extends MusicBeatState
 	public var showCombo:Bool = true;
 	public var showNumbers:Bool = true;
 
+	// apparently perf is shit whenever i make a new combo sprite, do this for now
+	public var comboSpr:ComboSprite;
+	public var lastNums:Map<String, ComboSprite> = [];
+	public var numScores:Array<ComboSprite> = [];
+
 	public function popCombo(rating:String = 'sick')
 	{
 		var xPos:Float = FlxG.width * 0.35;
 
 		if (showCombo && rating != 'miss')
 		{
-			var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('game/combo/ratings/' + rating));
+			if (comboSpr == null || !comboSpr.alive)
+				comboSpr = new ComboSprite();
+			if (comboSpr.attributes.get('lastRating') != rating)
+			{
+				comboSpr.attributes.set('lastRating', rating);
+				comboSpr.loadGraphic(Paths.image('game/combo/ratings/' + rating));
+			}
 			comboSpr.scale.set(0.7, 0.7);
 			comboSpr.updateHitbox();
 			comboSpr.screenCenter();
 			comboSpr.setPosition(xPos - 40, comboSpr.y - 60);
 
 			comboSpr.acceleration.y = 550;
-			comboSpr.velocity.y -= FlxG.random.int(140, 175);
+			comboSpr.velocity.y = -FlxG.random.int(140, 175);
 			comboSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
 
-			addToHUD(comboSpr, members.indexOf(globalStrums));
+			comboSpr.delay = Conductor.crochet * 0.002;
+			comboSpr.alpha = 1.0;
+			comboSpr.active = true;
 
-			___trackedTweenObjects.push(FlxTween.tween(comboSpr, {alpha: 0}, 0.2, {
-				onComplete: function(tween:FlxTween)
-				{
-					remove(comboSpr);
-					FlxDestroyUtil.destroy(comboSpr);
-				},
-				startDelay: Conductor.crochet * 0.001
-			}));
+			addToHUD(comboSpr, members.indexOf(globalStrums));
 		}
 
 		if (showNumbers)
 		{
 			var comboString:String = Std.string(gameInfo.combo).lpad("0", 3);
-
 			var loop:Int = 0;
+
+			FlxDestroyUtil.destroyArray(numScores);
 
 			for (num in comboString.split(""))
 			{
 				if (num != '')
 				{
-					var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('game/combo/numbers/num' + num));
+					if (!lastNums.exists(num))
+					{
+						var createNum:ComboSprite = new ComboSprite();
+						createNum.loadGraphic(Paths.image('game/combo/numbers/num' + num));
+						lastNums.set(num, createNum);
+					}
+					var numScore:ComboSprite = lastNums.get(num).cloneCombo();
 					numScore.scale.set(0.5, 0.5);
 					numScore.updateHitbox();
 					numScore.screenCenter();
 					numScore.setPosition(xPos + (43 * loop) - 90, numScore.y + 80);
 
 					numScore.acceleration.y = FlxG.random.int(200, 300);
-					numScore.velocity.y -= FlxG.random.int(140, 160);
+					numScore.velocity.y = -FlxG.random.int(140, 160);
 					numScore.velocity.x = FlxG.random.float(-5, 5);
+
+					numScore.delay = Conductor.crochet * 0.001;
+					numScore.alpha = 1.0;
+					numScore.active = true;
+					numScores.push(numScore);
 
 					addToHUD(numScore, members.indexOf(globalStrums));
 
-					___trackedTweenObjects.push(FlxTween.tween(numScore, {alpha: 0}, 0.2, {
-						onComplete: function(tween:FlxTween)
-						{
-							remove(numScore);
-							FlxDestroyUtil.destroy(numScore);
-						},
-						startDelay: Conductor.crochet * 0.002
-					}));
+					loop++;
 				}
-
-				loop++;
 			}
 		}
 	}
