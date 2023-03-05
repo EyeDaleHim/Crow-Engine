@@ -32,17 +32,17 @@ class StrumNote extends FlxSprite
 
 		this.direction = direction;
 
-		var path:String = Paths.imagePath('game/ui/STRUM_$currentSkin').replace('png', 'json');
+		var path:String = Paths.imagePath('game/ui/noteSkins/STRUM_$currentSkin').replace('png', 'json');
 
 		if (!FileSystem.exists(path))
 		{
 			path = path.replace(currentSkin, 'NOTE_assets');
-			FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/$currentSkin"!');
+			FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins/$currentSkin"!');
 		}
 
 		_strumFile = Json.parse(Assets.getText(path));
 
-		frames = Paths.getSparrowAtlas('game/ui/$currentSkin');
+		frames = Paths.getSparrowAtlas('game/ui/noteSkins/$currentSkin');
 
 		for (animData in _strumFile.animationData)
 		{

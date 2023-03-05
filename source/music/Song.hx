@@ -17,7 +17,6 @@ class Song
 
 	public static function loadSong(song:String, diff:Int = 2):SongInfo
 	{
-		var firstTime = openfl.Lib.getTimer();
 		var diffString:String = SongHandler.PLACEHOLDER_DIFF[Std.int(FlxMath.bound(diff, 0, 2))];
 
 		try
@@ -36,7 +35,7 @@ class Song
 				+ diffString.toLowerCase());
 
 			// do this in case i fockin add new things to the meta.json thing
-			var meta:{format:String} = null;
+			var meta:SongMetaChart = null;
 
 			if (Assets.exists(Paths.data('charts/${song.formatToReadable()}/meta')))
 				meta = Json.parse(Assets.getText(Paths.data('charts/${song.formatToReadable()}/meta')));
@@ -44,7 +43,6 @@ class Song
 				currentSong = backend.compat.ChartConvert.convertType(meta.format, Assets.getText(path));
 			else
 				currentSong = Json.parse(fixData(Assets.getText(path)));
-			trace((openfl.Lib.getTimer() - firstTime) + 'ms');
 
 			return currentSong;
 		} catch (e)

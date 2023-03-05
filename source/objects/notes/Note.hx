@@ -33,18 +33,18 @@ class Note extends FlxSprite
 
 		if (_noteFile == null)
 		{
-			var path = Paths.imagePath('game/ui/$currentSkin').replace('png', 'json');
+			var path = Paths.imagePath('game/ui/noteSkins/$currentSkin').replace('png', 'json');
 
 			if (!FileSystem.exists(path))
 			{
 				path = path.replace(currentSkin, 'NOTE_assets');
-				FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/$currentSkin"!');
+				FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins$currentSkin"!');
 			}
 
 			_noteFile = Json.parse(Assets.getText(path));
 		}
 
-		frames = Paths.getSparrowAtlas('game/ui/$currentSkin');
+		frames = Paths.getSparrowAtlas('game/ui/noteSkins/$currentSkin');
 
 		for (animData in _noteFile.animationData)
 		{
