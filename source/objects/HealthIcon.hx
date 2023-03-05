@@ -22,6 +22,8 @@ class HealthIcon extends FlxSprite
 		// ill redo this in a later update, this isn't exactly >0.2.0 yet
 		frames = Paths.getSparrowAtlas('characters/icons/sprite');
 
+		char = char.replace('-holding-gf', ''); // we need a better way to do this
+
 		char = char.replace('-car', '');
 		char = char.replace('-christmas', '');
 		char = char.replace('-tankmen', '');
