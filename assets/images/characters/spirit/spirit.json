@@ -1,0 +1,82 @@
+{
+    "healthColor": -50066,
+    "animationList": [{
+            "prefix": "idle spirit_",
+            "indices": [],
+            "fps": 24,
+            "name": "idle",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "left_",
+            "indices": [],
+            "fps": 24,
+            "name": "singLEFT",
+            "offset": {
+                "x": 3,
+                "y": 0
+            },
+            "looped": false
+        },
+        {
+            "prefix": "spirit down_",
+            "indices": [],
+            "fps": 24,
+            "name": "singDOWN",
+            "offset": {
+                "x": 65,
+                "y": 65
+            },
+            "looped": false
+        },
+        {
+            "prefix": "up_",
+            "indices": [],
+            "fps": 24,
+            "name": "singUP",
+            "offset": {
+                "x": 0,
+                "y": 7
+            },
+            "looped": false
+        },
+        {
+            "prefix": "right_",
+            "indices": [],
+            "fps": 24,
+            "name": "singRIGHT",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": false
+        }
+    ],
+    "singList": [
+        "singLEFT",
+        "singDOWN",
+        "singUP",
+        "singRIGHT"
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "missList": [],
+    "name": "spirit",
+    "flip": {
+        "x": false,
+        "y": false
+    },
+    "scale": {
+        "x": 6,
+        "y": 6
+    },
+    "extraAttributes": [
+        "pixel"
+    ],
+    "atlasType": "packer"
+}
