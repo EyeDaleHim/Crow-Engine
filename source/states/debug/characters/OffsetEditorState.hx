@@ -166,6 +166,8 @@ class OffsetEditorState extends MusicBeatState
 					{
 						if (keyList[i])
 						{
+							if (!character.animOffsets.exists(animationList[selected]))
+								character.animOffsets.set(animationList[selected], FlxPoint.get(0, 0));
 							character.animOffsets[animationList[selected]].subtractPoint(valueKeys[i]);
 							character.offset.subtractPoint(valueKeys[i]);
 						}

@@ -1,0 +1,155 @@
+{
+    "animDirections": [
+        "purpleScroll",
+        "blueScroll",
+        "greenScroll",
+        "redScroll"
+    ],
+    "sustainAnimDirections": [
+        {
+            "body": "purplehold",
+            "end": "purpleholdend"
+        },
+        {
+            "body": "bluehold",
+            "end": "blueholdend"
+        },
+        {
+            "body": "greenhold",
+            "end": "greenholdend"
+        },
+        {
+            "body": "redhold",
+            "end": "redholdend"
+        }
+    ],
+    "animationData": [
+        {
+            "name": "purpleScroll",
+            "prefix": "arrow0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "blueScroll",
+            "prefix": "arrow1",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "greenScroll",
+            "prefix": "arrow2",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "redScroll",
+            "prefix": "arrow3",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "purplehold",
+            "prefix": "hold0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "bluehold",
+            "prefix": "hold1",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "greenhold",
+            "prefix": "hold2",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "redhold",
+            "prefix": "hold3",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "purpleholdend",
+            "prefix": "end0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "blueholdend",
+            "prefix": "end1",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "greenholdend",
+            "prefix": "end2",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "redholdend",
+            "prefix": "end3",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ],
+    "atlasType": "packer",
+    "forcedAntialias": false,
+
+    "scale": {"x": 6.0, "y": 6.0},
+    "scaledArrow": {"x": 1.0, "y": 1.0, "type": "multi"},
+    "scaledHold": {"x": 1.0, "y": 1.0, "type": "multi"},
+    "scaledEnd": {"x": 1.0, "y": 1.0, "type": "multi"}
+}

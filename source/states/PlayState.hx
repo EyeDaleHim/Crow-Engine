@@ -22,6 +22,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.system.FlxSound;
+import game.SkinManager;
 import game.cutscenes.CutsceneHandler;
 import openfl.events.KeyboardEvent;
 import states.substates.GameOverSubState;
@@ -880,11 +881,13 @@ class PlayState extends MusicBeatState
 
 				if (list[i] != '')
 				{
-					countdownSpr.loadGraphic(Paths.image('game/countdown/${list[i]}'));
+					countdownSpr.loadGraphic(Paths.image('game/countdown/${Song.metaData.countdownSkin}/${list[i]}'));
 					countdownSpr.visible = true;
 					countdownSpr.alpha = 0.0;
 					countdownSpr.scrollFactor.set();
 					countdownSpr.screenCenter();
+					countdownSpr.scale.set(SkinManager.countdownSkin.scale.x, SkinManager.countdownSkin.scale.y);
+					countdownSpr.antialiasing = SkinManager.countdownSkin.forcedAntialias;
 					addToHUD(countdownSpr);
 				}
 
@@ -892,7 +895,7 @@ class PlayState extends MusicBeatState
 
 				if (sound[i] != '')
 				{
-					countdownSound.loadEmbedded(Paths.sound('game/countdown/intro-${sound[i]}'));
+					countdownSound.loadEmbedded(Paths.sound('game/countdown/${Song.metaData.countdownSkin}/intro-${sound[i]}'));
 					countdownSound.onComplete = function()
 					{
 						FlxG.sound.list.remove(countdownSound);
@@ -1500,12 +1503,14 @@ class PlayState extends MusicBeatState
 			if (comboSpr.attributes.get('lastRating') != rating)
 			{
 				comboSpr.attributes.set('lastRating', rating);
-				comboSpr.loadGraphic(Paths.image('game/combo/ratings/' + rating));
+				comboSpr.loadGraphic(Paths.image('game/combo/${Song.metaData.comboSkin}/ratings/' + rating));
 			}
-			comboSpr.scale.set(0.7, 0.7);
+			comboSpr.scale.set(0.7 * SkinManager.comboSkin.scale.x, 0.7 * SkinManager.comboSkin.scale.y);
 			comboSpr.updateHitbox();
 			comboSpr.screenCenter();
 			comboSpr.setPosition(xPos - 40, comboSpr.y - 60);
+
+			comboSpr.antialiasing = SkinManager.comboSkin.forcedAntialias;
 
 			comboSpr.acceleration.y = 550;
 			comboSpr.velocity.y = -FlxG.random.int(140, 175);
@@ -1532,14 +1537,19 @@ class PlayState extends MusicBeatState
 					if (!lastNums.exists(num))
 					{
 						var createNum:ComboSprite = new ComboSprite();
-						createNum.loadGraphic(Paths.image('game/combo/numbers/num' + num));
+						createNum.loadGraphic(Paths.image('game/combo/${Song.metaData.comboSkin}/numbers/num' + num));
 						lastNums.set(num, createNum);
 					}
 					var numScore:ComboSprite = lastNums.get(num).cloneCombo();
-					numScore.scale.set(0.5, 0.5);
+					if (SkinManager.comboSkin.useActualScale)
+						numScore.scale.set(SkinManager.comboSkin.scale.x, SkinManager.comboSkin.scale.y);
+					else
+						numScore.scale.set(0.5 * SkinManager.comboSkin.scale.x, 0.5 * SkinManager.comboSkin.scale.y);
 					numScore.updateHitbox();
 					numScore.screenCenter();
 					numScore.setPosition(xPos + (43 * loop) - 90, numScore.y + 80);
+
+					numScore.antialiasing = SkinManager.comboSkin.forcedAntialias;
 
 					numScore.acceleration.y = FlxG.random.int(200, 300);
 					numScore.velocity.y = -FlxG.random.int(140, 160);

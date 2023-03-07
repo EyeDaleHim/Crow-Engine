@@ -1,5 +1,6 @@
 package objects.notes;
 
+import music.Song;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
@@ -33,18 +34,31 @@ class Note extends FlxSprite
 
 		if (_noteFile == null)
 		{
-			var path = Paths.imagePath('game/ui/noteSkins/$currentSkin').replace('png', 'json');
+			var path = Paths.imagePath('game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin').replace('png', 'json');
 
 			if (!FileSystem.exists(path))
 			{
 				path = path.replace(currentSkin, 'NOTE_assets');
-				FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins$currentSkin"!');
+				FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin"!');
 			}
 
 			_noteFile = Json.parse(Assets.getText(path));
 		}
 
-		frames = Paths.getSparrowAtlas('game/ui/noteSkins/$currentSkin');
+		if (_noteFile.scale == null)
+			_noteFile.scale = {x: 0.7, y: 0.7};
+		if (_noteFile.scaledHold == null)
+			_noteFile.scaledHold = {x: 0, y: 0, type: "add"};
+		if (_noteFile.scaledEnd == null)
+			_noteFile.scaledEnd = {x: 0, y: 0, type: "add"};
+
+		frames = switch (_noteFile.atlasType)
+		{
+			case 'packer':
+				Paths.getPackerAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin');
+			default:
+				Paths.getSparrowAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin');
+		}
 
 		for (animData in _noteFile.animationData)
 		{
@@ -78,8 +92,21 @@ class Note extends FlxSprite
 		moves = false;
 
 		animation.play(animPlay, true);
-		scale.set(0.7, 0.7);
+		scale.set(_noteFile.scale.x, _noteFile.scale.y);
+		
+		if (isSustainNote)
+		{
+			if (isEndNote)
+				scale = modifyScale(scale, _noteFile.scaledEnd);
+			else
+				scale = modifyScale(scale, _noteFile.scaledHold);
+		}
+		else
+			scale = modifyScale(scale, _noteFile.scaledArrow);
 		updateHitbox();
+
+		if (_noteFile.forcedAntialias != null)
+			antialiasing = _noteFile.forcedAntialias;
 
 		if (animation.curAnim.numFrames <= 1)
 			animation.pause();
@@ -133,6 +160,17 @@ class Note extends FlxSprite
 		}
 
 		super.update(elapsed);
+	}
+
+	private function modifyScale(point:FlxPoint, newPoint:{x:Float, y:Float, type:String}):FlxPoint
+	{
+		return switch (newPoint.type)
+		{
+			case 'multi':
+				point.scale(newPoint.x, newPoint.y);
+			default:
+				point.add(newPoint.x, newPoint.y);
+		};
 	}
 
 	function get__lastNote():Note

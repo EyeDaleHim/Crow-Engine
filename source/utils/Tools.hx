@@ -71,7 +71,11 @@ class Tools
 		var str = Std.string(value);
 		if (str.indexOf(".") == -1)
 			str += ".00";
-		return str.split('.')[0] + '.' + str.split('.')[1].rpad("0", 2);
+		else
+		{
+			str = str.rpad('0', str.indexOf('.') + 3);
+		}
+		return str;
 	}
 
 	public static function utcToDate(time:Int, format:String):String

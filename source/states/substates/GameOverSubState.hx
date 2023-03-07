@@ -80,7 +80,6 @@ class GameOverSubState extends MusicBeatSubState
 		}
 		else if (controls.getKey('BACK', JUST_PRESSED))
 		{
-			FlxTween.tween(FlxG.camera.alpha, {alpha: 0.0}, 0.5, {ease: FlxEase.quadOut});
 			if (PlayState.playMode == STORY)
 				MusicBeatState.switchState(new states.menus.StoryMenuState());
 			else

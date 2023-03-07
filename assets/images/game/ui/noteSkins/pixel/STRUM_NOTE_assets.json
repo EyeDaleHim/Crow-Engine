@@ -1,0 +1,146 @@
+{
+    "pressAnim": [
+        "pressLEFT",
+        "pressDOWN",
+        "pressUP",
+        "pressRIGHT"
+    ],
+    "confirmAnim": [
+        "confirmLEFT",
+        "confirmDOWN",
+        "confirmUP",
+        "confirmRIGHT"
+    ],
+    "staticAnim": [
+        "staticLEFT",
+        "staticDOWN",
+        "staticUP",
+        "staticRIGHT"
+    ],
+    "animationData": [
+        {
+            "name": "staticLEFT",
+            "prefix": "static0",
+            "indices": [],
+            "looped": true,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "staticDOWN",
+            "prefix": "static1",
+            "indices": [],
+            "looped": true,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "staticUP",
+            "prefix": "static2",
+            "indices": [],
+            "looped": true,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "staticRIGHT",
+            "prefix": "static3",
+            "indices": [],
+            "looped": true,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "pressLEFT",
+            "prefix": "press0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "pressDOWN",
+            "prefix": "press1",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "pressUP",
+            "prefix": "press2",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "pressRIGHT",
+            "prefix": "press3",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirmLEFT",
+            "prefix": "confirm0",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirmDOWN",
+            "prefix": "confirm1",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirmUP",
+            "prefix": "confirm2",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirmRIGHT",
+            "prefix": "confirm3",
+            "indices": [],
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ],
+    "atlasType": "packer",
+    "forcedAntialias": false,
+
+    "scale": {"x":6.0, "y": 6.0}
+}

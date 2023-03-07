@@ -1,5 +1,6 @@
 package objects.character;
 
+import states.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
@@ -7,6 +8,7 @@ import flixel.math.FlxMath;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxSort;
+import flixel.addons.effects.FlxTrail;
 import haxe.Json;
 import openfl.Assets;
 import sys.FileSystem;
@@ -41,6 +43,8 @@ class Character extends FlxSprite
 	public var singList:Array<String> = [];
 	public var behaviorType:String = '';
 
+	public var trails:Array<FlxTrail> = [];
+
 	// handled by this class
 	private var _idleIndex:Int = 0;
 	private var _animationTimer:Float = 0.0;
@@ -60,10 +64,22 @@ class Character extends FlxSprite
 
 		var imageExists:Bool = FileSystem.exists(calledPath);
 		var xmlExists:Bool = FileSystem.exists(calledPath.replace('png', 'xml'));
+		var txtExists:Bool = FileSystem.exists(calledPath.replace('png', 'txt'));
 		var jsonExists:Bool = FileSystem.exists(calledPath.replace('png', 'json'));
 		var failedChar:Bool = false;
 
-		if (!imageExists || !xmlExists || !jsonExists)
+		if ((xmlExists && !txtExists) || (!xmlExists && txtExists))
+		{
+			if (!(txtExists && xmlExists)) // why the hell do you have an xml and txt at same time bro
+			{
+				if (txtExists && !xmlExists)
+					xmlExists = true;
+				if (xmlExists && !txtExists)
+					txtExists = true;
+			}
+		}
+
+		if (!imageExists || !xmlExists || !txtExists || !jsonExists)
 		{
 			FlxG.log.error('Character $name doesn\'t exist! Please check your files!');
 			failedChar = true;
@@ -97,7 +113,14 @@ class Character extends FlxSprite
 			{
 				if (attribute.toLowerCase() == "pixel")
 					antialiasing = false;
+				if (attribute.toLowerCase() == "trail")
+					trails.push(new FlxTrail(this, null, 4, 8, 0.3, 0.069));
 			}
+		}
+
+		for (trail in trails)
+		{
+			FlxG.state.add(trail);
 		}
 
 		for (script in scripts)

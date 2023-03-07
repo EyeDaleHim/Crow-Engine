@@ -1,9 +1,7 @@
 {
     "format": "psych",
-    "defaultData": [
-        {
-            "noteSkin": "pixel"
-        }
-    ],
+    "countdownSkin": "pixel",
+    "comboSkin": "pixel",
+    "noteSkin": "pixel",
     "overrideCountdownStory": true
 }

@@ -1,6 +1,7 @@
 {
     "healthColor": -50066,
-    "animationList": [{
+    "animationList": [
+        {
             "prefix": "idle spirit_",
             "indices": [],
             "fps": 24,
@@ -20,7 +21,7 @@
                 "x": 3,
                 "y": 0
             },
-            "looped": false
+            "looped": true
         },
         {
             "prefix": "spirit down_",
@@ -28,10 +29,10 @@
             "fps": 24,
             "name": "singDOWN",
             "offset": {
-                "x": 65,
-                "y": 65
+                "x": 395,
+                "y": 425
             },
-            "looped": false
+            "looped": true
         },
         {
             "prefix": "up_",
@@ -42,7 +43,7 @@
                 "x": 0,
                 "y": 7
             },
-            "looped": false
+            "looped": true
         },
         {
             "prefix": "right_",
@@ -53,7 +54,7 @@
                 "x": 0,
                 "y": 0
             },
-            "looped": false
+            "looped": true
         }
     ],
     "singList": [
@@ -76,7 +77,8 @@
         "y": 6
     },
     "extraAttributes": [
-        "pixel"
+        "pixel",
+        "trail"
     ],
     "atlasType": "packer"
 }

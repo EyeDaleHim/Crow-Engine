@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.math.FlxMath;
 import openfl.utils.Assets;
 import haxe.Json;
+import game.SkinManager;
 import music.Section.SectionInfo;
 import weeks.SongHandler;
 
@@ -13,14 +14,16 @@ using utils.Tools;
 class Song
 {
 	public static var currentSong:SongInfo;
+	public static var metaData:SongMetaChart;
+
 	public static final chartFormats:Array<String> = ['base'];
 
 	public static function loadSong(song:String, diff:Int = 2):SongInfo
 	{
 		var diffString:String = SongHandler.PLACEHOLDER_DIFF[Std.int(FlxMath.bound(diff, 0, 2))];
 
-		try
-		{
+		/*try
+		{*/
 			var fixData:String->String = function(str:String)
 			{
 				while (!str.endsWith("}"))
@@ -44,11 +47,25 @@ class Song
 			else
 				currentSong = Json.parse(fixData(Assets.getText(path)));
 
+			metaData = meta;
+
+			if (metaData.comboSkin == null)
+				metaData.comboSkin = 'default';
+			if (metaData.countdownSkin == null)
+				metaData.countdownSkin = 'default';
+			if (metaData.noteSkin == null)
+				metaData.noteSkin = 'default';
+
+			SkinManager.parseComboSkin(metaData.comboSkin);
+			SkinManager.parseCountdownSkin(metaData.countdownSkin);
+
 			return currentSong;
-		} catch (e)
+		/*} catch (e)
 		{
+			
 			FlxG.log.warn('Couldn\'t load song $song with difficulty $diffString (${Paths.data('charts/' + song.toLowerCase().replace(' ', '-') + '/' + song.toLowerCase().replace(' ', '-') + '-' + diffString.toLowerCase())})');
-		}
+			trace('Catched Error loading $song-$diffString: ${e.message}');
+		}*/
 
 		return {
 			song: song,
@@ -73,6 +90,9 @@ class Song
 typedef SongMetaChart =
 {
 	var format:String;
+	@:optional var countdownSkin:String;
+	@:optional var comboSkin:String;
+	@:optional var noteSkin:String;
 	@:optional var defaultData:Map<String, Dynamic>;
 }
 

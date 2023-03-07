@@ -503,6 +503,32 @@ class Stage
 				}
 			case 'dark-school':
 				{
+					stageInstance.charPosList.playerPositions[0].x = 970;
+					stageInstance.charPosList.playerPositions[0].y = 640;
+
+					stageInstance.charPosList.spectatorPositions[0].x = 580;
+					stageInstance.charPosList.spectatorPositions[0].y = 430;
+
+					stageInstance.charPosList.opponentPositions[0].x = 140;
+					stageInstance.charPosList.opponentPositions[0].y = 340;
+
+					stageInstance.camPosList.opponentPositions[0].x = 150;
+					stageInstance.camPosList.opponentPositions[0].y = 0;
+
+					var school:BGSprite = new BGSprite({path: 'animatedEvilSchool', library: 'week6'}, {x: 400, y: 200}, {x: 0.80, y: 0.90}, [{
+						name: 'idle',
+						prefix: 'background 2',
+						fps: 24,
+						offset: {x: 0, y: 0},
+						indices: [],
+						looped: true
+					}]);
+					school.scale.set(6 ,6);
+					school.active = true;
+					school.ID = 0;
+					school.antialiasing = false;
+					school.animation.play('idle', true);
+					group.set('school', school);
 				}
 			case 'warzone':
 				{
@@ -1057,6 +1083,7 @@ class BGSprite extends FlxSprite
 		}
 
 		active = false;
+		moves = false;
 	}
 }
 

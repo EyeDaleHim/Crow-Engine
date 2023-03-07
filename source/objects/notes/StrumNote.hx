@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import objects.notes.NoteFile;
+import music.Song;
 import sys.FileSystem;
 import openfl.Assets;
 import haxe.Json;
@@ -32,17 +33,23 @@ class StrumNote extends FlxSprite
 
 		this.direction = direction;
 
-		var path:String = Paths.imagePath('game/ui/noteSkins/STRUM_$currentSkin').replace('png', 'json');
+		var path:String = Paths.imagePath('game/ui/noteSkins/${Song.metaData.noteSkin}/STRUM_$currentSkin').replace('png', 'json');
 
 		if (!FileSystem.exists(path))
 		{
 			path = path.replace(currentSkin, 'NOTE_assets');
-			FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins/$currentSkin"!');
+			FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin"!');
 		}
 
 		_strumFile = Json.parse(Assets.getText(path));
 
-		frames = Paths.getSparrowAtlas('game/ui/noteSkins/$currentSkin');
+		frames = switch (_strumFile.atlasType)
+		{
+			case 'packer':
+				Paths.getPackerAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin');
+			default: 
+				Paths.getSparrowAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin');
+		}
 
 		for (animData in _strumFile.animationData)
 		{
@@ -63,8 +70,11 @@ class StrumNote extends FlxSprite
 
 		playAnim(staticAnim);
 
-		scale.set(0.7, 0.7);
+		scale.set(_strumFile.scale.x, _strumFile.scale.y);
 		updateHitbox();
+
+		if (_strumFile.forcedAntialias != null)
+			antialiasing = _strumFile.forcedAntialias;
 	}
 
 	public var animationTime:Float = 0.0;
