@@ -22,7 +22,7 @@ class CutsceneHandler
 	public var cutscene:String;
 
 	public var endCallback:Void->Void = null;
-	public var cutsceneIsFinished:Bool = false;
+	public var cutsceneFinished:Bool = false;
 
 	public var cutsceneActions:Array<CutsceneAction> = [];
 	public var lockedUpdateLoops:Map<String, Void->Void> = [];
@@ -42,6 +42,18 @@ class CutsceneHandler
 				{
 					if (cutscene.split('-cutscene-')[1] == 'end')
 					{
+						FlxG.sound.play(Paths.sound('Lights_Shut_off'), 0.8);
+
+						endTime = 1.8;
+
+						cutsceneActions.push({
+							action: function()
+							{
+								FlxG.camera.visible = false;
+								PlayState.current.hudCamera.visible = false;
+							},
+							time: 0.0
+						});
 					}
 				}
 			case 'winter-horrorland':
@@ -626,14 +638,14 @@ class CutsceneHandler
 				break;
 		}
 
-		if (time >= endTime && !cutsceneIsFinished)
+		if (time >= endTime && !cutsceneFinished)
 		{
 			if (endCallback != null)
 				endCallback();
 
 			lockedUpdateLoops.clear();
 
-			cutsceneIsFinished = true;
+			cutsceneFinished = true;
 		}
 	}
 

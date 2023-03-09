@@ -47,6 +47,8 @@ class Note extends FlxSprite
 
 		if (_noteFile.scale == null)
 			_noteFile.scale = {x: 0.7, y: 0.7};
+		if (_noteFile.scaledArrow == null)
+			_noteFile.scaledArrow = {x: 0, y: 0, type: "add"};
 		if (_noteFile.scaledHold == null)
 			_noteFile.scaledHold = {x: 0, y: 0, type: "add"};
 		if (_noteFile.scaledEnd == null)

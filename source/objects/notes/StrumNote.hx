@@ -11,6 +11,7 @@ import haxe.Json;
 
 using StringTools;
 
+@:allow(states.PlayState)
 class StrumNote extends FlxSprite
 {
 	public static var currentSkin:String = 'NOTE_assets';
@@ -23,7 +24,8 @@ class StrumNote extends FlxSprite
 	public var downScroll:Bool = false;
 
 	private var animOffsets:Map<String, FlxPoint> = [];
-	private var _strumFile:NoteFile.StrumNoteFile;
+
+	private static var _strumFile:NoteFile.StrumNoteFile;
 
 	public override function new(direction:Int = 0)
 	{
@@ -41,7 +43,11 @@ class StrumNote extends FlxSprite
 			FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin"!');
 		}
 
-		_strumFile = Json.parse(Assets.getText(path));
+		if (_strumFile == null)
+			_strumFile = Json.parse(Assets.getText(path));
+
+		if (_strumFile.scale == null)
+			_strumFile.scale = {x: 0.7, y: 0.7};
 
 		frames = switch (_strumFile.atlasType)
 		{

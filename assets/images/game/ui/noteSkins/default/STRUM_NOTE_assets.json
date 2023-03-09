@@ -138,5 +138,7 @@
                 "y": 0
             }
         }
-    ]
+    ],
+    "scale": {"x": 0.7, "y": 0.7},
+    "atlasType": "sparrow"
 }

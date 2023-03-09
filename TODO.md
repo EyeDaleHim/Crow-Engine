@@ -5,8 +5,6 @@
 Issues that happen in-game, scripts or modification of the engine
 don't count as an issue.
 
-* Philly Train has unintended behavior
-
 ## Game Behavior
 
 Odd behaviors that did not work out as intended.

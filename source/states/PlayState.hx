@@ -24,6 +24,7 @@ import flixel.tweens.FlxEase;
 import flixel.system.FlxSound;
 import game.SkinManager;
 import game.cutscenes.CutsceneHandler;
+import game.cutscenes.DialogueBox;
 import openfl.events.KeyboardEvent;
 import states.substates.GameOverSubState;
 import states.substates.PauseSubState;
@@ -41,6 +42,7 @@ import objects.notes.StrumNote;
 import utils.CacheManager;
 import weeks.ScoreContainer;
 import weeks.SongHandler;
+import backend.Transitions;
 import backend.query.ControlQueries;
 
 using StringTools;
@@ -234,6 +236,7 @@ class PlayState extends MusicBeatState
 	// stage stuff, will change because this is so fucking stupid
 	public var stageData:Stage;
 	public var cutsceneHandler:CutsceneHandler;
+	public var dialogueHandler:DialogueBox;
 
 	public var preStageRender:FlxTypedGroup<BGSprite>;
 	public var postStageRender:FlxTypedGroup<BGSprite>;
@@ -487,55 +490,75 @@ class PlayState extends MusicBeatState
 
 		Conductor.songPosition = -500;
 
-		if (#if !debug playMode == STORY && #end CutsceneHandler.checkCutscene(Song.currentSong.song.formatToReadable()))
+		var countdownCallback:Void->Void = initCountdown.bind(null, null, 1000, function(e)
 		{
-			cutsceneHandler = new CutsceneHandler(Song.currentSong.song.formatToReadable());
-			cutsceneHandler.endCallback = initCountdown.bind(null, null, 1000, function(e)
+			for (charList in [playerList, opponentList, spectatorList])
 			{
-				for (charList in [playerList, opponentList, spectatorList])
+				if (charList != null)
 				{
-					if (charList != null)
+					for (char in charList)
 					{
-						for (char in charList)
+						if (char != null)
 						{
-							if (char != null)
-							{
-								char.dance(true);
+							char.dance(true);
 
-								if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
-									char.forceIdle = true;
-							}
+							if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
+								char.forceIdle = true;
 						}
 					}
 				}
+			}
 
-				stageData.countdownTick();
-			});
+			stageData.countdownTick();
+		});
+
+		if (#if !debug playMode == STORY #else true #end)
+		{
+			if (DialogueBox.songs.contains(Song.currentSong.song.formatToReadable()))
+			{
+				player.active = false;
+				opponent.active = false;
+				spectator.active = false;
+
+				for (animated in stageData.spriteGroup.iterator())
+				{
+					if (animated.animation.frames > 0)
+						animated.active = false;
+				}
+
+				dialogueHandler = new DialogueBox(Song.currentSong.song.formatToReadable());
+				dialogueHandler.endCallback = function()
+				{
+					player.active = true;
+					opponent.active = true;
+					spectator.active = true;
+	
+					for (animated in stageData.spriteGroup.iterator())
+					{
+						if (animated.animation.frames > 0)
+							animated.active = true;
+					}
+
+					new FlxTimer().start(0.35, function(tmr:FlxTimer)
+					{
+						hudCamera.alpha += 0.1;
+					}, 10);
+
+					countdownCallback();
+				};
+				dialogueHandler.camera = pauseCamera;
+				add(dialogueHandler);
+
+				Transitions.transOut = false;
+			}
+			else if (CutsceneHandler.checkCutscene(Song.currentSong.song.formatToReadable()))
+			{
+				cutsceneHandler = new CutsceneHandler(Song.currentSong.song.formatToReadable());
+				cutsceneHandler.endCallback = countdownCallback;
+			}
 		}
 		else
-		{
-			initCountdown(null, null, 1000, function(e)
-			{
-				for (charList in [playerList, opponentList, spectatorList])
-				{
-					if (charList != null)
-					{
-						for (char in charList)
-						{
-							if (char != null)
-							{
-								char.dance(true);
-
-								if (char.attributes.exists('isForced') && char.attributes.get('isForced'))
-									char.forceIdle = true;
-							}
-						}
-					}
-				}
-
-				stageData.countdownTick();
-			});
-		}
+			countdownCallback();
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
@@ -941,8 +964,19 @@ class PlayState extends MusicBeatState
 			if (vocals != null && vocals.attributes.get('isPlaying'))
 				vocals.play();
 
-			FlxG.sound.music.onComplete = endSong;
+			FlxG.sound.music.onComplete = decideEnding;
 		}
+	}
+
+	public function decideEnding():Void
+	{
+		if (#if !debug playMode == STORY && #end CutsceneHandler.checkCutscene(Song.currentSong.song.formatToReadable()))
+		{
+			cutsceneHandler = new CutsceneHandler(Song.currentSong.song.formatToReadable() + '-cutscene-end');
+			cutsceneHandler.endCallback = endSong;
+		}
+		else
+			endSong();
 	}
 
 	public function endSong()
@@ -969,6 +1003,9 @@ class PlayState extends MusicBeatState
 
 					if (PlayState.storyPlaylist.length > 0)
 					{
+						Transitions.transIn = false;
+						Transitions.transOut = false;
+
 						Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
 						MusicBeatState.switchState(new PlayState());
 					}
@@ -1593,6 +1630,12 @@ class PlayState extends MusicBeatState
 	{
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, keyRelease);
+
+		if (PlayState.playMode == FREEPLAY)
+		{
+			Note._noteFile = null;
+			StrumNote._strumFile = null;
+		}
 
 		super.destroy();
 	}

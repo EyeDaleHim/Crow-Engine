@@ -130,6 +130,12 @@ class Main extends Sprite
 		Settings.init();
 		weeks.ScoreContainer.init();
 
+		for (persistents in CacheManager.persistentAssets)
+		{
+			CacheManager.setBitmap(persistents);
+			CacheManager.cachedAssets[BITMAP].get(persistents).special = true;
+		}
+
 		try
 		{
 			@:privateAccess

@@ -15,6 +15,9 @@ using StringTools;
 
 class Transitions
 {
+	public static var transIn:Bool = true;
+	public static var transOut:Bool = true;
+
 	public static function transition(duration:Null<Float>, fade:Easing, ease:Null<EaseFunction>, type:TransitionType, callbacks:Callbacks)
 	{
 		if (duration == null)
@@ -28,6 +31,9 @@ class Transitions
 		var camera:FlxCamera = new FlxCamera();
 		camera.bgColor = 0;
 		FlxG.cameras.add(camera, false);
+
+		if ((!transIn && fade == In) || (!transOut && fade == Out))
+			type = None;
 
 		var group:FlxTypedGroup<FlxSprite> = new FlxTypedGroup<FlxSprite>();
 		group.cameras = [camera];
@@ -196,7 +202,7 @@ class Transitions
 
 					new FlxTimer().start(duration / 12, function(tmr:FlxTimer)
 					{
-						black.alpha = (black.alpha + ((1 / 12) * (fade == Out ? -1.0 : 1.0)));
+						black.alpha += (1 / 12) * (fade == Out ? -1.0 : 1.0);
 					}, 12);
 				}
 			default: // null
@@ -207,6 +213,9 @@ class Transitions
 						callbacks.endCallback();
 				}
 		}
+
+		transIn = true;
+		transOut = true;
 	}
 
 	public static function fromString(string:String):TransitionType
@@ -248,13 +257,14 @@ class Transitions
 
 typedef Callbacks =
 {
-	var startCallback:Void->Void;
-	var updateCallback:Void->Void;
-	var endCallback:Void->Void;
+	@:optional var startCallback:Void->Void;
+	@:optional var updateCallback:Void->Void;
+	@:optional var endCallback:Void->Void;
 }
 
 enum TransitionType
 {
+	None;
 	Fade;
 	Slider_Down;
 	Slider_Up;

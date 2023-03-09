@@ -125,7 +125,10 @@ class Paths
 		if (CacheManager.cachedAssets[AUDIO].exists(fullPath))
 			return CacheManager.getAudio(fullPath);
 
-		return CacheManager.setAudio(fullPath);
+		CacheManager.setAudio(fullPath);
+		CacheManager.cachedAssets[AUDIO].get(fullPath).special = true;
+
+		return CacheManager.getAudio(fullPath);
 	}
 
 	public static function instPath(song:String):String
@@ -140,7 +143,10 @@ class Paths
 		if (CacheManager.cachedAssets[AUDIO].exists(fullPath))
 			return CacheManager.getAudio(fullPath);
 
-		return CacheManager.setAudio(fullPath);
+		CacheManager.setAudio(fullPath);
+		CacheManager.cachedAssets[AUDIO].get(fullPath).special = true;
+
+		return CacheManager.getAudio(fullPath);
 	}
 
 	public static function vocalsPath(song:String):String

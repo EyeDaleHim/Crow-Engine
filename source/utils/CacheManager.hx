@@ -148,6 +148,7 @@ class CacheManager
 
 typedef CachedAsset =
 {
+	@:optional var special:Bool; // even "freeMemory" won't work, you'd have to define this "false" to wipe it
 	var type:AssetTypeData;
 	var data:Dynamic;
 }

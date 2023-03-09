@@ -142,5 +142,5 @@
     "atlasType": "packer",
     "forcedAntialias": false,
 
-    "scale": {"x":6.0, "y": 6.0}
+    "scale": {"x": 6.0, "y": 6.0}
 }

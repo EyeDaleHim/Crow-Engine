@@ -861,7 +861,7 @@ class Stage
 				}
 			case 'warzone':
 				{
-					if (states.PlayState.current.cutsceneHandler == null || states.PlayState.current.cutsceneHandler.cutsceneIsFinished)
+					if (states.PlayState.current.cutsceneHandler == null || states.PlayState.current.cutsceneHandler.cutsceneFinished)
 						attributes['tankAngle'] += elapsed * attributes['tankSpeed'];
 
 					spriteGroup['tank'].angle = attributes['tankAngle'] - 90 + 15;
