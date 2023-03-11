@@ -10,25 +10,25 @@ import states.PlayState;
 import backend.Transitions;
 
 // to swick:
+
 /*
 	do the senpai transformation scene here
 	feel free to copy from base FNF shit ill uhh look when you finish
-*/
-
+ */
 class DialogueBox extends FlxTypedGroup<FlxSprite>
 {
-    public var dialogue:Array<DialogueText> = [];
+	public var dialogue:Array<DialogueText> = [];
 
-    public static var songs:Array<String> = ['senpai', 'roses', 'thorns'];
+	public static var songs:Array<String> = ['senpai', 'roses', 'thorns'];
 
 	public var song:String;
 	public var endCallback:Void->Void;
 
 	private var background:FlxSprite;
-    private var dialogueBox:FlxSprite;
+	private var dialogueBox:FlxSprite;
 
-    private var portraitLeft:FlxSprite;
-    private var portraitRight:FlxSprite;
+	private var portraitLeft:FlxSprite;
+	private var portraitRight:FlxSprite;
 
 	public override function new(song:String)
 	{
@@ -59,52 +59,56 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 		}
 
 		background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFFB3DFD8);
-        if (song == 'thorns')
-            background.color = 0xFF000000;
+		if (song == 'thorns')
+			background.color = 0xFFFF0000;
 		background.scrollFactor.set();
 		background.alpha = 0;
 		background.active = false;
 		add(background);
 
-        dialogueBox = new FlxSprite(-20, -45);
+		dialogueBox = new FlxSprite(-20, -45);
 
-        var openingBox:String = switch (song)
-        {
-            default:
-                'Text Box Appear';
-            case 'roses':
-                'SENPAI ANGRY IMPACT SPEECH';
-            case 'thorns':
-                'Spirit Textbox spawn';
-        };
+		var openingBox:String = switch (song)
+		{
+			default:
+				'Text Box Appear';
+			case 'roses':
+				'SENPAI ANGRY IMPACT SPEECH';
+			case 'thorns':
+				'Spirit Textbox spawn';
+		};
 
-        dialogueBox.frames = Paths.getSparrowAtlas('cutscenes/$song/dialogueBox');
-        dialogueBox.animation.addByPrefix('open', openingBox, 24, false);
-        dialogueBox.animation.finishCallback = function(name)
-        {
-            dialogueBox.animation.pause();
-        }
-        dialogueBox.animation.play('open');
-        dialogueBox.scale.set(6 * 0.9, 6 * 0.9);
-        dialogueBox.antialiasing = false;
-        dialogueBox.screenCenter(X);
-        add(dialogueBox);
-
+		dialogueBox.frames = Paths.getSparrowAtlas('cutscenes/$song/dialogueBox');
+		dialogueBox.animation.addByPrefix('open', openingBox, 24, false);
+		dialogueBox.animation.finishCallback = function(name)
+		{
+			dialogueBox.animation.pause();
+		}
+		dialogueBox.animation.play('open');
+		dialogueBox.scale.set(6 * 0.9, 6 * 0.9);
+		dialogueBox.antialiasing = false;
+		dialogueBox.screenCenter(X);
+		add(dialogueBox);
 
 		PlayState.current.hudCamera.alpha = 0.0;
 
-		new FlxTimer().start(0.8, function(tmr:FlxTimer)
+		if (song != 'thorns')
 		{
-			background.alpha += (1 / 5) * 0.7;
+			new FlxTimer().start(0.8, function(tmr:FlxTimer)
+			{
+				background.alpha += (1 / 5) * 0.7;
 
-			if (background.alpha > 0.7)
-				background.alpha = 0.7;
-		}, 5);
+				if (background.alpha > 0.7)
+					background.alpha = 0.7;
+			}, 5);
+		}
+		else
+			background.alpha = 1;
 	}
 }
 
 typedef DialogueText =
 {
-    var char:String;
-    var dialog:String;
+	var char:String;
+	var dialog:String;
 }
