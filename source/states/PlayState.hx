@@ -1013,9 +1013,9 @@ class PlayState extends MusicBeatState
 						Transitions.transOut = false;
 
 						if (CacheManager.cachedAssets[AUDIO].exists(Paths.instPath(Song.currentSong.song)))
-							CacheManager.cachedAssets[AUDIO].get(Paths.instPath(Song.currentSong.song));
+							CacheManager.cachedAssets[AUDIO].get(Paths.instPath(Song.currentSong.song)).special = false;
 						if (CacheManager.cachedAssets[AUDIO].exists(Paths.vocalsPath(Song.currentSong.song)))
-							CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song));
+							CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song)).special = false;
 
 						Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
 						MusicBeatState.switchState(new PlayState());
