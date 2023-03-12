@@ -95,7 +95,7 @@ class Note extends FlxSprite
 
 		animation.play(animPlay, true);
 		scale.set(_noteFile.scale.x, _noteFile.scale.y);
-		
+
 		if (isSustainNote)
 		{
 			if (isEndNote)
@@ -110,8 +110,11 @@ class Note extends FlxSprite
 		if (_noteFile.forcedAntialias != null)
 			antialiasing = _noteFile.forcedAntialias;
 
-		if (animation.curAnim.numFrames <= 1)
-			animation.pause();
+		if (animation.curAnim != null)
+		{
+			if (animation.curAnim.numFrames <= 1)
+				animation.pause();
+		}
 	}
 
 	public var noteType:String = '';

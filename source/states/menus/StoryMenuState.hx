@@ -108,8 +108,13 @@ class StoryMenuState extends MusicBeatState
 		difficultySelectors.add(arrowLeft);
 		difficultySelectors.add(arrowRight);
 
+		songList = new FlxText(FlxG.width * 0.05, backgroundBox.y + backgroundBox.height + 50, 0, "TRACKS", 32);
+		songList.setFormat(Paths.font("vcr.ttf"), 32, CENTER);
+		songList.color = 0xFFe55777;
+
 		add(weekSprites);
 		add(backgroundBox);
+		add(songList);
 		add(difficultySelectors);
 		add(diffSprite);
 
@@ -193,6 +198,18 @@ class StoryMenuState extends MusicBeatState
 			}
 		}
 
+		songList.text = "TRACKS\n";
+
+		for (song in sortedWeeks[curSelected].songs)
+		{
+			songList.text += '\n' + song;
+		}
+		songList.text += '\n';
+		songList.text = songList.text.toUpperCase();
+
+		songList.screenCenter(X);
+		songList.x -= FlxG.width * 0.35;
+
 		changeDiff();
 	}
 
@@ -254,8 +271,8 @@ class StoryMenuState extends MusicBeatState
 			{
 				tempArray.push(sortedWeeks[curSelected].songs[song]);
 			}
-			PlayState.storyPlaylist = tempArray;
 
+			PlayState.storyPlaylist = tempArray;
 			PlayState.songDiff = curDifficulty;
 
 			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), curDifficulty);

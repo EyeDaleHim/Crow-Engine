@@ -532,14 +532,14 @@ class PlayState extends MusicBeatState
 					player.active = true;
 					opponent.active = true;
 					spectator.active = true;
-	
+
 					for (animated in stageData.spriteGroup.iterator())
 					{
 						if (animated.animation.frames > 0)
 							animated.active = true;
 					}
 
-					new FlxTimer().start(0.35, function(tmr:FlxTimer)
+					new FlxTimer().start(0.05, function(tmr:FlxTimer)
 					{
 						hudCamera.alpha += 0.1;
 					}, 10);
@@ -556,6 +556,8 @@ class PlayState extends MusicBeatState
 				cutsceneHandler = new CutsceneHandler(Song.currentSong.song.formatToReadable());
 				cutsceneHandler.endCallback = countdownCallback;
 			}
+			else
+				countdownCallback();
 		}
 		else
 			countdownCallback();
@@ -1631,11 +1633,8 @@ class PlayState extends MusicBeatState
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, keyRelease);
 
-		if (PlayState.playMode == FREEPLAY)
-		{
-			Note._noteFile = null;
-			StrumNote._strumFile = null;
-		}
+		Note._noteFile = null;
+		StrumNote._strumFile = null;
 
 		super.destroy();
 	}

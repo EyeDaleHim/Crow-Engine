@@ -156,7 +156,7 @@ class Paths
 
 	public static function music(song:String, ?library:String = null):String
 	{
-		return getPreloadPath(extensionHelper('music/${song}.$SOUND_EXT'));
+		return getPath(extensionHelper('music/${song}.$SOUND_EXT'), SOUND, library);
 	}
 
 	public static function font(file:String):String
