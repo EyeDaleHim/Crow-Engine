@@ -262,6 +262,8 @@ class PlayState extends MusicBeatState
 	private var ___trackedTimerObjects:FlxTimerManager = new FlxTimerManager();
 	private var ___trackedTweenObjects:Array<FlxTween> = [];
 
+	private static var _finishedCutscene:Bool = false;
+
 	private var botplay:Bool = false;
 
 	private static var _cameraPos:FlxPoint;
@@ -492,6 +494,8 @@ class PlayState extends MusicBeatState
 
 		var countdownCallback:Void->Void = initCountdown.bind(null, null, 1000, function(e)
 		{
+			_finishedCutscene = true;
+
 			for (charList in [playerList, opponentList, spectatorList])
 			{
 				if (charList != null)
@@ -512,7 +516,7 @@ class PlayState extends MusicBeatState
 			stageData.countdownTick();
 		});
 
-		if (#if !debug playMode == STORY #else true #end)
+		if (playMode == STORY && !_finishedCutscene)
 		{
 			if (DialogueBox.songs.contains(Song.currentSong.song.formatToReadable()))
 			{
@@ -1008,6 +1012,11 @@ class PlayState extends MusicBeatState
 						Transitions.transIn = false;
 						Transitions.transOut = false;
 
+						if (CacheManager.cachedAssets[AUDIO].exists(Paths.instPath(Song.currentSong.song)))
+							CacheManager.cachedAssets[AUDIO].get(Paths.instPath(Song.currentSong.song));
+						if (CacheManager.cachedAssets[AUDIO].exists(Paths.vocalsPath(Song.currentSong.song)))
+							CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song));
+
 						Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
 						MusicBeatState.switchState(new PlayState());
 					}
@@ -1284,6 +1293,8 @@ class PlayState extends MusicBeatState
 						if (!note.isEndNote)
 						{
 							note.scale.y = 1 * attributes['startedCrochet'] / 100 * 1.05;
+							if (Note._noteFile.scaledHold.type == 'multi')
+								note.scale.y *= Note._noteFile.scaledHold.y;
 							note.scale.y *= songSpeed;
 							note.updateHitbox();
 						}
@@ -1635,6 +1646,8 @@ class PlayState extends MusicBeatState
 
 		Note._noteFile = null;
 		StrumNote._strumFile = null;
+
+		_finishedCutscene = false;
 
 		super.destroy();
 	}

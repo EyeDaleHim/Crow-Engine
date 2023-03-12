@@ -336,49 +336,6 @@ class Character extends FlxSprite
 
 		_characterData = null;
 	}
-
-	private function quickCharacterMaker()
-	{
-		var data:CharacterData;
-
-		var idleList:Array<String> = ['idle'];
-		var missList:Array<String> = [];
-		var singList:Array<String> = ['shoot1', 'shoot2', 'shoot3', 'shoot4'];
-
-		var animationList:Array<Animation> = [];
-		var quickAnimAdd:(String, String, Array<Int>, Int, Bool,
-			{x:Int, y:Int}) -> Void = function(name:String, prefix:String, indices:Array<Int>, fps:Int, looped:Bool, offset:{x:Int, y:Int})
-			{
-				animationList.push({
-					name: name,
-					prefix: prefix,
-					indices: indices,
-					fps: fps,
-					looped: looped,
-					offset: offset
-				});
-			};
-
-		quickAnimAdd('shoot1', 'Pico shoot 1', [], 24, false, {x: 0, y: 0});
-		quickAnimAdd('shoot2', 'Pico shoot 2', [], 24, false, {x: -1, y: -128});
-		quickAnimAdd('shoot3', 'Pico shoot 3', [], 24, false, {x: 412, y: -64});
-		quickAnimAdd('shoot4', 'Pico shoot 4', [], 24, false, {x: 439, y: -19});
-
-		quickAnimAdd('idle', 'Pico shoot 2', [4, 5, 6], 24, true, {x: -1, y: -128});
-
-		data = {
-			name: 'picoSpeaker',
-			healthColor: -4728747,
-			animationList: animationList,
-			idleList: idleList,
-			missList: missList,
-			singList: singList,
-			flip: {x: false, y: false},
-			scale: {x: 1.0, y: 1.0}
-		}
-
-		trace(Json.stringify(data, "\t"));
-	}
 }
 
 typedef CharacterSingTask =

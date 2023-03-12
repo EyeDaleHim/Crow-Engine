@@ -154,7 +154,10 @@ class FreeplayState extends MusicBeatState
 				canPress = false;
 				MusicBeatState.switchState(new MainMenuState());
 
-				playSong(true);
+				FlxG.sound.music.fadeOut(0.5, 0.0, function(twn)
+				{
+					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				});
 			}
 			else if (controls.getKey('ACCEPT', JUST_PRESSED))
 			{

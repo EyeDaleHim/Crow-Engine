@@ -1,0 +1,39 @@
+{
+    "scale": {
+        "x": 0.9,
+        "y": 0.9
+    },
+    "flip": {
+        "x": false,
+        "y": false
+    },
+    "animationList": [
+        {
+            "name": "idle",
+            "prefix": "boyfriend idle",
+            "indices": [],
+            "fps": 24,
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "name": "confirm",
+            "prefix": "boyfriend confirm",
+            "indices": [],
+            "fps": 24,
+            "looped": false,
+            "offset": {
+                "x": 4,
+                "y": 6
+            }
+        }
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "confirmPose": "confirm",
+    "atlasType": "sparrow"
+}

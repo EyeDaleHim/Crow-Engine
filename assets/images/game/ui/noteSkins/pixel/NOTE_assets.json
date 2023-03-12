@@ -148,8 +148,8 @@
     "atlasType": "packer",
     "forcedAntialias": false,
 
-    "scale": {"x": 6.0, "y": 6.0},
-    "scaledArrow": {"x": 1.0, "y": 1.0, "type": "multi"},
-    "scaledHold": {"x": 1.0, "y": 1.0, "type": "multi"},
-    "scaledEnd": {"x": 1.0, "y": 1.0, "type": "multi"}
+    "scale": {"x": 1.0, "y": 1.0},
+    "scaledArrow": {"x": 6.0, "y": 6.0, "type": "multi"},
+    "scaledHold": {"x": 6.0, "y": 6.0, "type": "multi"},
+    "scaledEnd": {"x": 6.0, "y": 6.0, "type": "multi"}
 }

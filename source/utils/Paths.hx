@@ -126,7 +126,8 @@ class Paths
 			return CacheManager.getAudio(fullPath);
 
 		CacheManager.setAudio(fullPath);
-		CacheManager.cachedAssets[AUDIO].get(fullPath).special = true;
+		if (CacheManager.cachedAssets[AUDIO].exists(fullPath))
+			CacheManager.cachedAssets[AUDIO].get(fullPath).special = true;
 
 		return CacheManager.getAudio(fullPath);
 	}
@@ -144,7 +145,8 @@ class Paths
 			return CacheManager.getAudio(fullPath);
 
 		CacheManager.setAudio(fullPath);
-		CacheManager.cachedAssets[AUDIO].get(fullPath).special = true;
+		if (CacheManager.cachedAssets[AUDIO].exists(fullPath))
+			CacheManager.cachedAssets[AUDIO].get(fullPath).special = true;
 
 		return CacheManager.getAudio(fullPath);
 	}

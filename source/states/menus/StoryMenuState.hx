@@ -1,6 +1,7 @@
 package states.menus;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -9,6 +10,7 @@ import flixel.math.FlxMath;
 import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSort;
+import flixel.util.FlxSpriteUtil;
 import objects.WeekSprite;
 import objects.character.WeekCharacter;
 import weeks.SongHandler;
@@ -20,6 +22,8 @@ using utils.Tools;
 
 class StoryMenuState extends MusicBeatState
 {
+	private var __midPoints:Array<FlxObject> = [];
+
 	public static var curSelected:Int = 0;
 	public static var curDifficulty:Int = Std.int(Math.max(0, SongHandler.PLACEHOLDER_DIFF.indexOf(SongHandler.defaultDifficulty)));
 
@@ -30,7 +34,7 @@ class StoryMenuState extends MusicBeatState
 	public var backgroundBox:FlxSprite;
 	public var weekSprites:FlxTypedGroup<WeekSprite>;
 	public var difficultySelectors:FlxTypedGroup<FlxSprite>;
-	public var characters:Array<WeekCharacter> = [];
+	public var characters:FlxTypedGroup<WeekCharacter>;
 
 	public var songList:FlxText;
 	public var diffSprite:FlxSprite;
@@ -44,6 +48,16 @@ class StoryMenuState extends MusicBeatState
 		CacheManager.freeMemory(BITMAP, true);
 
 		backgroundBox = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
+
+		for (i in 0...3)
+		{
+			var midPoint:FlxObject = new FlxObject(0, 0, 1, 1);
+			midPoint.centerOverlay(backgroundBox, Y);
+			__midPoints.push(midPoint);
+			add(midPoint);
+		}
+
+		FlxSpriteUtil.space(__midPoints, FlxG.width * 0.15, 0, FlxG.width * 0.35, null, false);
 
 		weekSprites = new FlxTypedGroup<WeekSprite>();
 		difficultySelectors = new FlxTypedGroup<FlxSprite>();
@@ -69,6 +83,8 @@ class StoryMenuState extends MusicBeatState
 			weekSprite.attributes.set('weekY', 0.0);
 			weekSprites.add(weekSprite);
 		}
+
+		characters = new FlxTypedGroup<WeekCharacter>();
 
 		diffSprite = new FlxSprite(FlxG.width * 0.8, 480);
 
@@ -114,6 +130,7 @@ class StoryMenuState extends MusicBeatState
 
 		add(weekSprites);
 		add(backgroundBox);
+		add(characters);
 		add(songList);
 		add(difficultySelectors);
 		add(diffSprite);
@@ -161,6 +178,14 @@ class StoryMenuState extends MusicBeatState
 			}
 		}
 
+		for (char in characters.members)
+		{
+			if (char != null)
+			{
+				char.centerOverlay(__midPoints[char.ID], XY);
+			}
+		}
+
 		for (week in weekSprites.members)
 		{
 			// do this to prevent a barely noticeable visual bug
@@ -196,6 +221,27 @@ class StoryMenuState extends MusicBeatState
 			{
 				weekSpr.alpha = 0.6;
 			}
+		}
+
+		var i:Int = 0;
+		for (char in SongHandler.weekCharacters[SongHandler.getWeekName(curSelected)])
+		{
+			if (char != '')
+			{
+				var lastFrame:Int = 0;
+
+				if (characters.members[i] != null && characters.members[i].animation.curAnim != null)
+					lastFrame = characters.members[i].animation.curAnim.curFrame;
+				characters.remove(characters.members[i], true);
+
+				var character:WeekCharacter = new WeekCharacter(0, 0, char);
+				character.ID = i;
+				character.centerOverlay(__midPoints[character.ID], XY);
+				character.animation.play(character.idleList[0], true, false, lastFrame);
+				characters.insert(i, character);
+			}
+
+			i++;
 		}
 
 		songList.text = "TRACKS\n";
@@ -257,8 +303,19 @@ class StoryMenuState extends MusicBeatState
 		allowControl = false;
 
 		InternalHelper.playSound(CONFIRM, 0.75);
-
 		weekSprites.members[curSelected].isFlashing = true;
+
+		for (character in characters.members)
+		{
+			if (character.animation.curAnim != null)
+			{
+				if (character.confirmPose != '')
+				{
+					character.animation.finishCallback = null;
+					character.animation.play(character.confirmPose, true);
+				}
+			}
+		}
 
 		new FlxTimer().start(1.5, function(tmr:FlxTimer)
 		{
@@ -276,7 +333,14 @@ class StoryMenuState extends MusicBeatState
 			PlayState.songDiff = curDifficulty;
 
 			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), curDifficulty);
-			MusicBeatState.switchState(new PlayState());
+			MusicBeatState.switchState(new PlayState(), function()
+			{
+				for (song in tempArray)
+				{
+					Paths.inst(song);
+					Paths.vocals(song);
+				}
+			});
 		});
 
 		for (character in characters)

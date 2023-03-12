@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="dad.png">
+	<!-- Created with Adobe Flash CS6 version 12.0.0.481 -->
+	<!-- http://www.adobe.com/products/flash.html -->
+	<SubTexture name="dad idle0000" x="0" y="0" width="429" height="768" />
+	<SubTexture name="dad idle0001" x="0" y="0" width="429" height="768" />
+	<SubTexture name="dad idle0002" x="429" y="0" width="429" height="768" />
+	<SubTexture name="dad idle0003" x="429" y="0" width="429" height="768" />
+	<SubTexture name="dad idle0004" x="858" y="0" width="429" height="768" />
+	<SubTexture name="dad idle0005" x="858" y="0" width="429" height="768" />
+	<SubTexture name="dad idle0006" x="1287" y="0" width="429" height="768" />
+	<SubTexture name="dad idle0007" x="1287" y="0" width="429" height="768" />
+	<SubTexture name="dad idle0008" x="0" y="768" width="429" height="768" />
+	<SubTexture name="dad idle0009" x="0" y="768" width="429" height="768" />
+	<SubTexture name="dad idle0010" x="429" y="768" width="429" height="768" />
+	<SubTexture name="dad idle0011" x="429" y="768" width="429" height="768" />
+	<SubTexture name="dad idle0012" x="429" y="768" width="429" height="768" />
+	<SubTexture name="dad idle0013" x="429" y="768" width="429" height="768" />
+</TextureAtlas>
