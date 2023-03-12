@@ -998,7 +998,7 @@ class PlayState extends MusicBeatState
 		ScoreContainer.setSong(Song.currentSong.song.formatToReadable(), songDiff,
 			{score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
 
-		persistentUpdate = false;
+			_finishedCutscene = false;
 		if (PlayState.playMode != CHARTING)
 		{
 			switch (PlayState.playMode)
@@ -1646,8 +1646,6 @@ class PlayState extends MusicBeatState
 
 		Note._noteFile = null;
 		StrumNote._strumFile = null;
-
-		_finishedCutscene = false;
 
 		super.destroy();
 	}
