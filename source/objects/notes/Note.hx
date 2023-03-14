@@ -6,7 +6,6 @@ import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import backend.NoteStorageFunction;
 import objects.notes.NoteFile;
-import sys.FileSystem;
 import openfl.Assets;
 import haxe.Json;
 
@@ -36,7 +35,7 @@ class Note extends FlxSprite
 		{
 			var path = Paths.imagePath('game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin').replace('png', 'json');
 
-			if (!FileSystem.exists(path))
+			if (!Tools.fileExists(path))
 			{
 				path = path.replace(currentSkin, 'NOTE_assets');
 				FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin"!');
@@ -181,5 +180,19 @@ class Note extends FlxSprite
 	function get__lastNote():Note
 	{
 		return _lastNote == null ? this : _lastNote;
+	}
+}
+
+class NoteRenderer extends FlxSprite
+{
+	public var sustainNote:FlxSprite;
+	public var endNote:FlxSprite;
+
+	public override function draw():Void
+	{
+		sustainNote.draw();
+		endNote.draw();
+
+		super.draw();
 	}
 }

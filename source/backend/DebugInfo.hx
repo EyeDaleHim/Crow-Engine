@@ -9,7 +9,9 @@ import openfl.text.TextFormat;
 import openfl.text.TextField;
 import openfl.utils.Assets;
 import openfl.utils.Timer;
+#if sys
 import cpp.vm.Gc;
+#end
 
 using StringTools;
 
@@ -101,7 +103,7 @@ class DebugInfo extends TextField
 
 	private function updateFPS():Void
 	{
-		var memory = Math.floor(Gc.memInfo64(Gc.MEM_INFO_USAGE));
+		var memory = #if sys Math.floor(Gc.memInfo64(Gc.MEM_INFO_USAGE)) #else System.totalMemory #end;
 
 		for (text in outlines)
 			text.visible = false;

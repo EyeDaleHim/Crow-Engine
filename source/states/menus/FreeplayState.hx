@@ -252,8 +252,8 @@ class FreeplayState extends MusicBeatState
 					});
 				});
 			}
-		#end
 		}
+		#end
 	}
 
 	private function updateScore(elapsed:Float = 1):Void

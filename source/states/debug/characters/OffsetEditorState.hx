@@ -10,7 +10,9 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+#if sys
 import sys.FileSystem;
+#end
 import objects.character.Character;
 import music.Song;
 

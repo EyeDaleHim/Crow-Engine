@@ -11,7 +11,6 @@ import flixel.util.FlxSort;
 import flixel.addons.effects.FlxTrail;
 import haxe.Json;
 import openfl.Assets;
-import sys.FileSystem;
 import objects.character.CharacterData;
 import music.Song;
 import music.Song.SongInfo;
@@ -48,7 +47,10 @@ class Character extends FlxSprite
 	// handled by this class
 	private var _idleIndex:Int = 0;
 	private var _animationTimer:Float = 0.0;
+	private var _stunnedTimer:Float = 0.0;
 	private var _characterData:CharacterData;
+
+	private var __TYPE:CharacterType = NORMAL;
 
 	public function new(x:Float, y:Float, name:String, isPlayer:Bool)
 	{
@@ -62,10 +64,10 @@ class Character extends FlxSprite
 		var charPath:String = 'characters/${this.name}/${this.name}';
 		var calledPath:String = Paths.imagePath(charPath);
 
-		var imageExists:Bool = FileSystem.exists(calledPath);
-		var xmlExists:Bool = FileSystem.exists(calledPath.replace('png', 'xml'));
-		var txtExists:Bool = FileSystem.exists(calledPath.replace('png', 'txt'));
-		var jsonExists:Bool = FileSystem.exists(calledPath.replace('png', 'json'));
+		var imageExists:Bool = Tools.fileExists(calledPath);
+		var xmlExists:Bool = Tools.fileExists(calledPath.replace('png', 'xml'));
+		var txtExists:Bool = Tools.fileExists(calledPath.replace('png', 'txt'));
+		var jsonExists:Bool = Tools.fileExists(calledPath.replace('png', 'json'));
 		var failedChar:Bool = false;
 
 		if ((xmlExists && !txtExists) || (!xmlExists && txtExists))
@@ -148,7 +150,21 @@ class Character extends FlxSprite
 
 		if (animation.curAnim != null && controlIdle)
 		{
-			_animationTimer += elapsed;
+			if (__TYPE == PLAYER)
+			{
+				if (missList.contains(animation.curAnim.name))
+				{
+					if (_animationTimer >= 1.35)
+						playAnim(idleList[_idleIndex], true, false, 10);
+				}
+
+				if (_stunnedTimer > 0)
+					_stunnedTimer -= elapsed;
+				else
+					_animationTimer += elapsed;
+			}
+			else
+				_animationTimer += elapsed;
 		}
 
 		if (singSchedules.length > 0)
@@ -298,7 +314,7 @@ class Character extends FlxSprite
 	{
 		var path:String = Paths.data('charts/$song/charSchedule/$name');
 
-		if (FileSystem.exists(path))
+		if (Tools.fileExists(path))
 		{
 			containsSchedule = true;
 
@@ -336,6 +352,12 @@ class Character extends FlxSprite
 
 		_characterData = null;
 	}
+}
+
+@:enum abstract CharacterType(Int)
+{
+	var NORMAL:CharacterType = 0;
+	var PLAYER:CharacterType = 1;
 }
 
 typedef CharacterSingTask =

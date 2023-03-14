@@ -9,7 +9,9 @@ import flixel.util.FlxStringUtil;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
+#if sys
 import sys.FileSystem;
+#end
 import lime.utils.Assets;
 
 using StringTools;
