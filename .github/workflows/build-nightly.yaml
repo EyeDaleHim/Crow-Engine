@@ -74,7 +74,7 @@ jobs:
           sudo apt-get install libidn-dev
 
       - name: Install haxelibs
-        run: haxe -cp update -D analyzer-optimize -main Update --interp
+        run: haxe -cp dev -D analyzer-optimize -main Update --interp
 
       - name: Compile (32-bit)
         if: ${{ matrix.build == '32bit' }}
