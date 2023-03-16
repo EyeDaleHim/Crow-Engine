@@ -1,0 +1,42 @@
+name: Publish Nightly Builds
+on:
+  workflow_run:
+    workflows:
+      - Build Nightly
+    types:
+      - completed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - name: Download artifacts
+      uses: dawidd6/action-download-artifact@v2.26.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        run_id: ${{ github.event.workflow_run.id }}
+        skip_unpack: true
+        path: ./artifacts
+
+    - name: Delete tag and release
+      uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      with:
+        delete_release: true
+        tag_name: nightly
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: nightly
+        name: Nightly Builds
+        prerelease: false
+        files: ./artifacts/*
+        body: |
+          This is an automatic nightly release of Crow Engine
+          if you encounter any bugs in this release, please report it to the Discord Server #bug-reports AND/OR Make an issue in the github repo
+          thank you for using Crow Engine!
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
