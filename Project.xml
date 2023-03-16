@@ -7,7 +7,8 @@
 	<define name="32bits" if="32bit"/>
 	<define name="64" unless="32bit"/>
 
-	<haxeflag name="--dce" value="no"/>
+	<!-- <haxeflag name="__dce" value="no"/> Disable this for now, scripting isn't a thing atm -->
+
 	<haxedef name="HXCPP_GC_BIG_BLOCKS"/>
 
 	<haxedef name="HSCRIPT_ALLOWED"/>
@@ -18,6 +19,12 @@
 	<app title="Friday Night Funkin' (Crow Engine)" file="CrowEngine" main="Main" company="EyeDaleHim"/>
 	<app main="Main" preloader="flixel.system.FlxPreloader"/>
 	<language name="en-US"/>
+
+	<!-- Crow Engine Options -->
+	<haxedef name="PRELOAD_CHARACTER_JSON" /> <!-- Preloads all character .json files at startup, reducing load time -->
+
+	<!-- If a Flixel object remains unchanged in velocity for a specified amount of time, it will set `moves` property to false, only enable -->
+	<haxedef name="ALLOW_FLIXEL_SLEEPING" />
 
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8"/>

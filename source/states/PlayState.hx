@@ -1129,9 +1129,7 @@ class PlayState extends MusicBeatState
 		{
 			if (direction != -1 && FlxG.keys.checkStatus(e.keyCode, JUST_PRESSED))
 			{
-				currentKeys[direction] = true;
-
-				if (currentKeys[direction])
+				if (currentKeys[direction] = true)
 				{
 					var lastTime:Float = Conductor.songPosition;
 					Conductor.songPosition = FlxG.sound.music.time;
@@ -1184,13 +1182,13 @@ class PlayState extends MusicBeatState
 
 					Conductor.songPosition = lastTime;
 				}
-			}
 
-			var strum:StrumNote = playerStrums.members[direction];
-			if (strum != null && strum.animation.curAnim.name != strum.confirmAnim && strum.animation.curAnim.name != strum.pressAnim)
-			{
-				strum.playAnim(strum.pressAnim);
-				strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
+				var strum:StrumNote = playerStrums.members[direction];
+				if (strum != null && strum.animation.curAnim.name != strum.confirmAnim && strum.animation.curAnim.name != strum.pressAnim)
+				{
+					strum.playAnim(strum.pressAnim);
+					strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
+				}
 			}
 		}
 	}
@@ -1375,10 +1373,11 @@ class PlayState extends MusicBeatState
 
 				if (!botplay && currentKeys.contains(true))
 				{
-					player._animationTimer = 0.0;
-
 					if (currentKeys[note.direction] && note.mustPress && note.isSustainNote && note.canBeHit)
+					{
+						player._animationTimer = 0.0;
 						hitNote(note);
+					}
 				}
 			});
 		}
@@ -1483,7 +1482,7 @@ class PlayState extends MusicBeatState
 		{
 			if (player != null)
 			{
-				player._animationTimer = Conductor.stepCrochet * 0.001;
+				player._animationTimer = -Conductor.stepCrochet * 0.001;
 				player.playAnim(note.missAnim, true);
 			}
 
@@ -1510,7 +1509,7 @@ class PlayState extends MusicBeatState
 		}
 
 		player._stunnedTimer = 0.5;
-		player._animationTimer = 0;
+		player._animationTimer = -2.5;
 
 		scoreText.text = '[Score] ${FlxStringUtil.formatMoney(gameInfo.score, false)} // [Misses] ${FlxStringUtil.formatMoney(gameInfo.misses, false)} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);
@@ -1533,7 +1532,7 @@ class PlayState extends MusicBeatState
 		}
 
 		player._stunnedTimer = 0.5;
-		player._animationTimer = 0;
+		player._animationTimer = -2.5;
 
 		scoreText.text = '[Score] ${FlxStringUtil.formatMoney(gameInfo.score, false)} // [Misses] ${FlxStringUtil.formatMoney(gameInfo.misses, false)} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);

@@ -335,6 +335,9 @@ class StoryMenuState extends MusicBeatState
 			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), curDifficulty);
 			MusicBeatState.switchState(new PlayState(), function()
 			{
+				persistentDraw = false;
+				CacheManager.freeMemory(BITMAP, true);
+
 				for (song in tempArray)
 				{
 					Paths.inst(song);

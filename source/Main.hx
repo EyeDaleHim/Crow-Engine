@@ -6,6 +6,10 @@ import flixel.FlxGame;
 import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import haxe.Timer;
+import sys.thread.Thread;
+import sys.thread.ElasticThreadPool;
+import sys.thread.Mutex;
 import lime.ui.Window;
 import lime.app.Application;
 #if sys
@@ -74,6 +78,12 @@ class Main extends Sprite
 		setupGame();
 	}
 
+	#if ALLOW_FLIXEL_SLEEPING
+	private var _SLEEP_TIMER:Timer;
+	private var _THREADPOOL:ElasticThreadPool;
+	private var _MUTEX:Mutex;
+	#end
+
 	private function setupGame():Void
 	{
 		var stageWidth:Int = Lib.current.stage.stageWidth;
@@ -93,6 +103,44 @@ class Main extends Sprite
 			game.skipSplash, game.startFullscreen);
 
 		addChild(game);
+
+		#if ALLOW_FLIXEL_SLEEPING
+		_MUTEX = new Mutex();
+
+		_THREADPOOL = new ElasticThreadPool(4, 20);
+
+		_SLEEP_TIMER = new Timer(10000);
+		_SLEEP_TIMER.run = function()
+		{
+			@:privateAccess
+			{
+				_THREADPOOL.run(function()
+				{
+					_MUTEX.acquire();
+					var i:Int = 0;
+
+					if (FlxG.state != null)
+					{
+						FlxG.state.forEachOfType(flixel.FlxObject, function(object)
+						{
+							if (object != null && object.exists)
+							{
+								if (object.moves && object.velocity.x == 0 && object.velocity.y == 0)
+								{
+									object.moves = false;
+									i++;
+								}
+							}
+						}, true);
+						trace('Over $i Flixel objects sleeping');
+					}
+					_MUTEX.release();
+				});
+			}
+		};
+		#end
+
+		FlxG.fixedTimestep = false;
 
 		#if (flixel >= "5.1.0")
 		FlxG.game.soundTray.volumeDownSound = Paths.sound('backend/volume');

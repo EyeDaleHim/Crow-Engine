@@ -169,36 +169,15 @@ class OptionsMenu extends MusicBeatState
 		disableControlTimer = 0.25;
 	}
 
-	private var manualLerpPoint:FlxPoint = FlxPoint.get();
-	private var _lerpTarget:Int = 0;
-
 	override function update(elapsed:Float)
 	{
-		var lerpValue:Float = elapsed * 7.725;
-		var lerpTowards:FlxPoint = FlxPoint.get();
-
-		switch (_lerpTarget)
-		{
-			case 0:
-				lerpTowards = FlxPoint.get(Math.min(FlxG.mouse.screenX + 24, FlxG.width - description.width - 8),
-					Math.min(FlxG.mouse.screenY + 32, FlxG.height - description.height - 8));
-
-				lerpTowards.set(Math.max(8, lerpTowards.x), Math.max(8, lerpTowards.y));
-
-				lerpValue = elapsed * Math.max(FlxMath.remapToRange(FlxPoint.get(description.x, description.y).distanceTo(lerpTowards), 150, 450, 7.725,
-					15.775), 7.725);
-			case 1:
-				manualLerpPoint.copyTo(lerpTowards);
-		}
-
-		description.setPosition(Tools.lerpBound(description.x, lerpTowards.x, lerpValue), Tools.lerpBound(description.y, lerpTowards.y, lerpValue));
+		description.setPosition(Math.min(FlxG.mouse.screenX + 24, FlxG.width - description.width - 8),
+			Math.min(FlxG.mouse.screenY + 32, FlxG.height - description.height - 8));
 
 		if (disableControlTimer <= 0.0)
 		{
 			if (FlxG.mouse.justMoved && (categoryID != 2 || (categoryID == 2 && FlxG.mouse.justPressed)))
 			{
-				_lerpTarget = 0;
-
 				for (category in globalGroupManager.members)
 				{
 					if (category.ID != curSelected[categoryID + 1])
@@ -423,12 +402,6 @@ class OptionsMenu extends MusicBeatState
 						{
 							description.text = textObj.attributes['description'];
 							textObj.alpha = 1.0;
-
-							if (!mouse)
-							{
-								manualLerpPoint.set(textObj.x + 100, textObj.y + textObj.height + 10);
-								_lerpTarget = 1;
-							}
 						}
 						else
 							textObj.alpha = 0.6;
@@ -441,15 +414,7 @@ class OptionsMenu extends MusicBeatState
 						var textObj:OptionsSprite = cast(text, OptionsSprite);
 
 						if (textObj.isSelected = ((mouse && FlxG.mouse.overlaps(textObj)) || (!mouse && textObj.ID == curSelection)))
-						{
 							description.text = textObj.description;
-
-							if (!mouse)
-							{
-								manualLerpPoint.set(textObj.x + 100, textObj.y + textObj.height + 10);
-								_lerpTarget = 1;
-							}
-						}
 					}
 				}
 		}
