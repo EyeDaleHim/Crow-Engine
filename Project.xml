@@ -2,79 +2,89 @@
 <project xmlns="http://lime.software/project/1.0.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://lime.software/project/1.0.2 http://lime.software/xsd/project-1.0.2.xsd">
 
+	<define name="HXCPP_M32" if="32bit || 32"/>
+	<define name="32bit" if="HXCPP_M32"/>
+	<define name="32bits" if="32bit"/>
+	<define name="64" unless="32bit"/>
+
+	<haxeflag name="--dce" value="no"/>
+	<haxedef name="HXCPP_GC_BIG_BLOCKS"/>
+
+	<haxedef name="HSCRIPT_ALLOWED"/>
+	<haxedef name="EDITORS_ALLOWED"/> <!-- Whether or not the editor should be enabled -->
+
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' (Crow Engine)" file="CrowEngine" main="Main" company="EyeDaleHim" />
-
-	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
-		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
-	<app preloader="flixel.system.FlxPreloader" />
-
-	<haxedef name="HXCPP_GC_BIG_BLOCKS" />
+	<app title="Friday Night Funkin' (Crow Engine)" file="CrowEngine" main="Main" company="EyeDaleHim"/>
+	<app main="Main" preloader="flixel.system.FlxPreloader"/>
+	<language name="en-US"/>
 
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
-	<set name="SWF_VERSION" value="11.8" />
-
-	<language name="en-US" />
+	<set name="SWF_VERSION" value="11.8"/>
 
 	<!-- ____________________________ Window Settings ___________________________ -->
 
-	<!--These window settings apply to all targets-->
-	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" />
+	<window width="1280" height="720" hardware="true" vsync="false" fps="" background=""/>
 
-	<!--HTML5-specific-->
+	<window if="desktop" fullscreen="false" resizable="true" vsync="false" allowHighDPI="true" allow-shaders="true"/>
+	<window if="mobile" fullscreen="true" resizable="false"/>
 	<window if="html5" resizable="false" />
-
-	<!--Desktop-specific-->
-	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false" hardware="true" allow-shaders="true" />
-
-	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
-	<set name="BUILD_DIR" value="export/debug" if="debug" />
-	<set name="BUILD_DIR" value="export/release" unless="debug" />
-	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
+	<section if="32bit">
+		<set name="BUILD_DIR" value="export/32bit" unless="debug"/>
+		<set name="BUILD_DIR" value="export/32bit-debug" if="debug"/>
+	</section>
+	<section unless="32bit">
+		<set name="BUILD_DIR" value="export/release" unless="debug"/>
+		<set name="BUILD_DIR" value="export/debug" if="debug"/>
+	</section>
 
-	<source path="source" />
+	<source path="source"/>
+
+	<!-- ____________________________ Assets Settings ___________________________ -->
 
 	<assets path="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets" exclude="*.mp3" unless="web"/>
 
-	<define name="PRELOAD_ALL" unless="web" />
+	<define name="PRELOAD_ALL" unless="web"/>
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
 
-	<set name="preloadValue" value="true" if="PRELOAD_ALL" />
-	<set name="preloadValue" value="false" if="NO_PRELOAD_ALL" />
-	
-<!--<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
-	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/> -->  <!--I recommend keeping this here just incase. I'd also add it for the titlescreen and main menu-->
-	
+	<set name="preloadValue" value="true" if="PRELOAD_ALL"/>
+	<set name="preloadValue" value="false" if="NO_PRELOAD_ALL"/>
+
+	<!-- I recommend keeping this here just incase. I'd also add it for the titlescreen and main menu
+	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
+	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/>
+	-->
+
 	<section if="PRELOAD_ALL">
-<!-- <library name="tutorial" preload="true" />  -->
-		<library name="week1"    preload="true" />
-	    <library name="week2"    preload="true" />
-		<library name="week3"    preload="true" />
-		<library name="week4"    preload="true" />
-		<library name="week5"    preload="true" />
-		<library name="week6"    preload="true" /> 
-		<library name="week7"    preload="true" /> 
+		<!-- <library name="tutorial" preload="true"/> -->
+		<library name="week1"    preload="true"/>
+	    <library name="week2"    preload="true"/>
+		<library name="week3"    preload="true"/>
+		<library name="week4"    preload="true"/>
+		<library name="week5"    preload="true"/>
+		<library name="week6"    preload="true"/> 
+		<library name="week7"    preload="true"/> 
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
-<!--    <library name="tutorial" preload="false" /> -->
-		<library name="week1"    preload="false" /> 
-		<library name="week2"    preload="false" />
-		<library name="week3"    preload="false" />
-		<library name="week4"    preload="false" />
-		<library name="week5"    preload="false" />
-		<library name="week6"    preload="false" />
-		<library name="week7"    preload="false" /> 
+		<!-- <library name="tutorial" preload="false"/> -->
+		<library name="week1"    preload="false"/> 
+		<library name="week2"    preload="false"/>
+		<library name="week3"    preload="false"/>
+		<library name="week4"    preload="false"/>
+		<library name="week5"    preload="false"/>
+		<library name="week6"    preload="false"/>
+		<library name="week7"    preload="false"/> 
 	</section>
-	
-<!-- <assets path="assets/tutorial" library="tutorial" exclude="*.ogg" if="web"/> 
-	 <assets path="assets/tutorial" library="tutorial" exclude="*.mp3" unless="web"/> def not needed especially because of week 1 -->
+
+	<!-- def not needed especially because of week 1
+	<assets path="assets/tutorial" library="tutorial" exclude="*.ogg" if="web"/>
+	<assets path="assets/tutorial" library="tutorial" exclude="*.mp3" unless="web"/>
+	-->
 	<assets path="assets/week1"    library="week1"    exclude="*.ogg" if="web"/>
 	<assets path="assets/week1"    library="week1"    exclude="*.mp3" unless="web"/>      
 	<assets path="assets/week2"    library="week2"    exclude="*.ogg" if="web"/>
@@ -92,80 +102,55 @@
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
-	<haxelib name="flixel" />
+	<haxelib name="flixel"/>
+	<haxelib name="flixel-addons"/>
+	<haxelib name="flixel-ui"/>
+
+	<haxelib name="hscript"/>
 
 	<!--Incase you wanna use adobe spritemaps with 2019+-->
-	<haxelib name="flxAnimate" />
-
-	<!--In case you want to use the addons package-->
-	<haxelib name="flixel-addons" />
-
-	<!--In case you want to use the ui package-->
-	<haxelib name="flixel-ui" />
-
-	<haxelib name="lime" />
-	<haxelib name="openfl" />
-	<!-- <haxelib name="trax" /> -->
-	<haxelib name="hscript" />
+	<haxelib name="flxanimate"/>
 
 	<!-- haxelib git hxCodec https://github.com/EliteMasterEric/hxCodec -->
-	<haxelib name="hxCodec" /> <!-- Should probably use Eric's hxCodec instead -->
+	<haxelib name="hxCodec"/> <!-- Should probably use Eric's hxCodec instead -->
 
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="hxcpp-debug-server" if="debug"/>
 
-	<!--In case you want to use nape with flixel-->
-	<!--<haxelib name="nape-haxe4" />-->
-
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
-	<haxedef name="HSCRIPT_ALLOWED" />
-	<haxedef name="EDITORS_ALLOWED" /> <!-- Whether or not the editor should be enabled -->
-
-	<!--Enable the Flixel core recording system-->
-	<!--<haxedef name="FLX_RECORD" />-->
-
-	<!--Disable the right and middle mouse buttons-->
-	<!--<haxedef name="FLX_NO_MOUSE_ADVANCED" />-->
-
-	<!--Disable the native cursor API on Flash-->
-	<!--<haxedef name="FLX_NO_NATIVE_CURSOR" />-->
-
 	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
-	<haxedef name="FLX_NO_MOUSE" if="mobile" />
-	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
-	<haxedef name="FLX_NO_TOUCH" if="desktop" />
-	<!--<haxedef name="FLX_NO_GAMEPAD" />-->
+	<haxedef name="FLX_NO_MOUSE" if="mobile"/>
+	<haxedef name="FLX_NO_KEYBOARD" if="mobile"/>
+	<!-- <haxedef name="FLX_NO_TOUCH" if="desktop"/> for touchscreens -->
+	<!--<haxedef name="FLX_NO_GAMEPAD"/>-->
 
 	<!--Disable the Flixel core sound tray-->
-	<!--<haxedef name="FLX_NO_SOUND_TRAY" />-->
-
-	<!--Disable the Flixel sound management code-->
-	<!--<haxedef name="FLX_NO_SOUND_SYSTEM" />-->
+	<!--<haxedef name="FLX_NO_SOUND_TRAY"/>-->
 
 	<!--Disable the Flixel core focus lost screen-->
-	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
+	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN"/>
 
 	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
-	<haxedef name="FLX_NO_DEBUG" unless="debug" />
+	<haxedef name="FLX_NO_DEBUG" unless="debug"/>
 
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
-	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+	<haxedef name="NAPE_RELEASE_BUILD" unless="debug"/>
 
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
-	
+
 	<icon path="assets/icons/icon16.png" size='16'/>
 	<icon path="assets/icons/icon32.png" size='24'/>
 	<icon path="assets/icons/icon32.png" size='32'/>
 	<icon path="assets/icons/icon64.png" size='40'/>
 	<icon path="assets/icons/icon64.png" size='48'/>
 	<icon path="assets/icons/icon64.png" size='64'/>
-	<icon path="assets/icons/iconOG.png" size='96' />
-	<icon path="assets/icons/iconOG.png" size='128' />
-	<icon path="assets/icons/iconOG.png" size='196' />
-	<icon path="assets/icons/iconOG.png" size='256' />
-	<icon path="assets/icons/iconOG.png" size='512' />
-	<icon path="assets/icons/iconOG.png" size='768' />
+	<icon path="assets/icons/iconOG.png" size='96'/>
+	<icon path="assets/icons/iconOG.png" size='128'/>
+	<icon path="assets/icons/iconOG.png" size='196'/>
+	<icon path="assets/icons/iconOG.png" size='256'/>
+	<icon path="assets/icons/iconOG.png" size='512'/>
+	<icon path="assets/icons/iconOG.png" size='768'/>
 </project>
