@@ -72,15 +72,20 @@ class SongHandler
 	];
 
 	public static var weekCharacters:Map<String, Array<String>> = [
-		'tutorial' => ["", "bf", "gf"],
-		'week1' => ["dad", "bf", "gf"],
-		"week2" => ["spooky", "bf", "gf"],
-		"week3" => ["pico", "bf", "gf"],
-		"week4" => ["mom", "bf", "gf"],
-		"week5" => ["parents", "bf", "gf"],
-		"week6" => ["pixel", "bf", "gf"],
-		"week7" => ["tankman", "bf", "gf"]
+		'tutorial' => ["", "boyfriend", "gf"],
+		'week1' => ["dad", "boyfriend", "gf"],
+		"week2" => ["spooky", "boyfriend", "gf"],
+		"week3" => ["pico", "boyfriend", "gf"],
+		"week4" => ["mom", "boyfriend", "gf"],
+		"week5" => ["parents", "boyfriend", "gf"],
+		"week6" => ["pixel", "boyfriend", "gf"],
+		"week7" => ["tankman", "boyfriend", "gf"]
 	];
+
+	public static function getWeekName(index:Int):String
+	{
+		return ['tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7'][index];
+	}
 
 	public static function getWeek(week:String):WeekList
 	{

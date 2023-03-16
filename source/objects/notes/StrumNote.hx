@@ -5,7 +5,6 @@ import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import objects.notes.NoteFile;
 import music.Song;
-import sys.FileSystem;
 import openfl.Assets;
 import haxe.Json;
 
@@ -37,7 +36,7 @@ class StrumNote extends FlxSprite
 
 		var path:String = Paths.imagePath('game/ui/noteSkins/${Song.metaData.noteSkin}/STRUM_$currentSkin').replace('png', 'json');
 
-		if (!FileSystem.exists(path))
+		if (!Tools.fileExists(path))
 		{
 			path = path.replace(currentSkin, 'NOTE_assets');
 			FlxG.log.error('Couldn\'t find $currentSkin in "game/ui/noteSkins/${Song.metaData.noteSkin}/$currentSkin"!');

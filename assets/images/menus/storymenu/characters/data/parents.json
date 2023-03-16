@@ -1,0 +1,28 @@
+{
+    "scale": {
+        "x": 0.4,
+        "y": 0.4
+    },
+    "flip": {
+        "x": false,
+        "y": false
+    },
+    "animationList": [
+        {
+            "name": "idle",
+            "prefix": "parents idle",
+            "indices": [],
+            "fps": 24,
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "confirmPose": "confirm",
+    "atlasType": "sparrow"
+}

@@ -9,7 +9,9 @@ import flixel.util.FlxStringUtil;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
+#if sys
 import sys.FileSystem;
+#end
 import lime.utils.Assets;
 
 using StringTools;
@@ -110,6 +112,9 @@ class Tools
 
 	public static function centerOverlay(object:FlxObject, base:FlxObject, axes:FlxAxes = XY):FlxObject
 	{
+		if (object == null || base == null)
+			return object;
+
 		if (axes.x)
 			object.x = base.x + (base.width / 2) - (object.width / 2);
 

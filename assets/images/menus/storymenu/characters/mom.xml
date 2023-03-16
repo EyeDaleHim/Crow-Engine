@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="mom.png">
+	<!-- Created with Adobe Flash CS6 version 12.0.0.481 -->
+	<!-- http://www.adobe.com/products/flash.html -->
+	<SubTexture name="mom idle0000" x="0" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0001" x="0" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0002" x="391" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0003" x="391" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0004" x="782" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0005" x="782" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0006" x="1173" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0007" x="1173" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0008" x="1564" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0009" x="1564" y="0" width="391" height="830" />
+	<SubTexture name="mom idle0010" x="0" y="830" width="391" height="830" />
+	<SubTexture name="mom idle0011" x="0" y="830" width="391" height="830" />
+	<SubTexture name="mom idle0012" x="391" y="830" width="391" height="830" />
+	<SubTexture name="mom idle0013" x="391" y="830" width="391" height="830" />
+</TextureAtlas>

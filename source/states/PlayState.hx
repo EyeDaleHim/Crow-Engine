@@ -36,7 +36,6 @@ import objects.Stage.BGSprite;
 import objects.ComboSprite;
 import objects.stageParts.TankmenUnit;
 import objects.character.Character;
-import objects.character.Player;
 import objects.notes.Note;
 import objects.notes.StrumNote;
 import utils.CacheManager;
@@ -262,6 +261,8 @@ class PlayState extends MusicBeatState
 	private var ___trackedTimerObjects:FlxTimerManager = new FlxTimerManager();
 	private var ___trackedTweenObjects:Array<FlxTween> = [];
 
+	private static var _finishedCutscene:Bool = false;
+
 	private var botplay:Bool = false;
 
 	private static var _cameraPos:FlxPoint;
@@ -392,7 +393,8 @@ class PlayState extends MusicBeatState
 		add(stageData.spriteGroup['ground']);
 		add(spectator);
 
-		player = new Player(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
+		player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
+		player.__TYPE = PLAYER;
 		player.scrollFactor.set(0.95, 0.95);
 		add(player);
 
@@ -492,6 +494,8 @@ class PlayState extends MusicBeatState
 
 		var countdownCallback:Void->Void = initCountdown.bind(null, null, 1000, function(e)
 		{
+			_finishedCutscene = true;
+
 			for (charList in [playerList, opponentList, spectatorList])
 			{
 				if (charList != null)
@@ -512,7 +516,7 @@ class PlayState extends MusicBeatState
 			stageData.countdownTick();
 		});
 
-		if (#if !debug playMode == STORY #else true #end)
+		if (playMode == STORY && !_finishedCutscene)
 		{
 			if (DialogueBox.songs.contains(Song.currentSong.song.formatToReadable()))
 			{
@@ -994,7 +998,7 @@ class PlayState extends MusicBeatState
 		ScoreContainer.setSong(Song.currentSong.song.formatToReadable(), songDiff,
 			{score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
 
-		persistentUpdate = false;
+		_finishedCutscene = false;
 		if (PlayState.playMode != CHARTING)
 		{
 			switch (PlayState.playMode)
@@ -1007,6 +1011,11 @@ class PlayState extends MusicBeatState
 					{
 						Transitions.transIn = false;
 						Transitions.transOut = false;
+
+						if (CacheManager.cachedAssets[AUDIO].exists(Paths.instPath(Song.currentSong.song)))
+							CacheManager.cachedAssets[AUDIO].get(Paths.instPath(Song.currentSong.song)).special = false;
+						if (CacheManager.cachedAssets[AUDIO].exists(Paths.vocalsPath(Song.currentSong.song)))
+							CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song)).special = false;
 
 						Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
 						MusicBeatState.switchState(new PlayState());
@@ -1169,7 +1178,7 @@ class PlayState extends MusicBeatState
 
 					if (!Settings.getPref('ghost_tap', true) && allowGhost)
 					{
-						if (cast(player, Player).stunnedTimer <= 0.0)
+						if (player._stunnedTimer <= 0.0)
 							ghostMiss(direction);
 					}
 
@@ -1284,6 +1293,8 @@ class PlayState extends MusicBeatState
 						if (!note.isEndNote)
 						{
 							note.scale.y = 1 * attributes['startedCrochet'] / 100 * 1.05;
+							if (Note._noteFile.scaledHold.type == 'multi')
+								note.scale.y *= Note._noteFile.scaledHold.y;
 							note.scale.y *= songSpeed;
 							note.updateHitbox();
 						}
@@ -1498,7 +1509,8 @@ class PlayState extends MusicBeatState
 			reductionRate += FlxMath.roundDecimal(Math.min(reductionRate * 0.1, 0.5), 2) * (note.isSustainNote ? 0.25 : 1.0);
 		}
 
-		cast(player, Player).stunnedTimer = 5 / 60;
+		player._stunnedTimer = 0.5;
+		player._animationTimer = 0;
 
 		scoreText.text = '[Score] ${FlxStringUtil.formatMoney(gameInfo.score, false)} // [Misses] ${FlxStringUtil.formatMoney(gameInfo.misses, false)} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);
@@ -1513,11 +1525,15 @@ class PlayState extends MusicBeatState
 
 			if (player != null)
 			{
-				player.playAnim(player.missList[direction], true);
+				if (player.animOffsets.exists(player.missList[direction]))
+					player.playAnim(player.missList[direction], true);
+				else
+					player.playAnim(['singLEFTmiss', 'singDOWNmiss', 'singUPmiss', 'singRIGHTmiss'][direction]);
 			}
 		}
 
-		cast(player, Player).stunnedTimer = 5 / 60;
+		player._stunnedTimer = 0.5;
+		player._animationTimer = 0;
 
 		scoreText.text = '[Score] ${FlxStringUtil.formatMoney(gameInfo.score, false)} // [Misses] ${FlxStringUtil.formatMoney(gameInfo.misses, false)} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);

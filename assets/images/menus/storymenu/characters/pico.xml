@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="pico.png">
+	<!-- Created with Adobe Flash CS6 version 12.0.0.481 -->
+	<!-- http://www.adobe.com/products/flash.html -->
+	<SubTexture name="pico idle0000" x="0" y="0" width="453" height="475" />
+	<SubTexture name="pico idle0001" x="0" y="0" width="453" height="475" />
+	<SubTexture name="pico idle0002" x="453" y="0" width="453" height="475" />
+	<SubTexture name="pico idle0003" x="453" y="0" width="453" height="475" />
+	<SubTexture name="pico idle0004" x="0" y="475" width="453" height="475" />
+	<SubTexture name="pico idle0005" x="453" y="475" width="453" height="475" />
+	<SubTexture name="pico idle0006" x="0" y="950" width="453" height="475" />
+	<SubTexture name="pico idle0007" x="453" y="950" width="453" height="475" />
+	<SubTexture name="pico idle0008" x="0" y="1425" width="453" height="475" />
+	<SubTexture name="pico idle0009" x="0" y="1425" width="453" height="475" />
+	<SubTexture name="pico idle0010" x="0" y="1425" width="453" height="475" />
+	<SubTexture name="pico idle0011" x="0" y="1425" width="453" height="475" />
+	<SubTexture name="pico idle0012" x="0" y="1425" width="453" height="475" />
+	<SubTexture name="pico idle0013" x="0" y="1425" width="453" height="475" />
+</TextureAtlas>

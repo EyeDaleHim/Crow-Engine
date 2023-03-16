@@ -4,7 +4,6 @@ import Main.VersionScheme;
 import hscript.Parser;
 import hscript.Interp;
 import hscript.Expr;
-import sys.FileSystem;
 import lime.utils.Assets;
 
 class Script
@@ -24,7 +23,7 @@ class Script
 		scriptData.resumeErrors = true;
 		scriptData.allowTypes = true;
 
-		if (FileSystem.exists(Paths.file('assets/$path/$script', 'hx', TEXT)))
+		if (Tools.fileExists(Paths.file('assets/$path/$script', 'hx', TEXT)))
 		{
 			try
 			{

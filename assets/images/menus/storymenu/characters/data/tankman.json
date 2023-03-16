@@ -1,0 +1,28 @@
+{
+    "scale": {
+        "x": 1.0,
+        "y": 1.0
+    },
+    "flip": {
+        "x": false,
+        "y": false
+    },
+    "animationList": [
+        {
+            "name": "idle",
+            "prefix": "Tankman Idle Dance",
+            "indices": [],
+            "fps": 24,
+            "looped": false,
+            "offset": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ],
+    "idleList": [
+        "idle"
+    ],
+    "confirmPose": "confirm",
+    "atlasType": "sparrow"
+}

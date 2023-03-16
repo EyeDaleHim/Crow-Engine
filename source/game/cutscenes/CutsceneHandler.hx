@@ -99,6 +99,9 @@ class CutsceneHandler
 								PlayState.current.opponent._animationTimer = 0.0;
 							});
 
+							FlxG.sound.playMusic(Paths.music('DISTORTO', 'week7'), 0);
+							FlxG.sound.music.fadeIn(5, 0, 0.5);
+
 							var savedSounds:Map<String, FlxSound> = [];
 							var listOfSounds:Array<{name:String, file:String}> = [
 								{name: 'well', file: 'wellWellWell'},
@@ -225,6 +228,9 @@ class CutsceneHandler
 								PlayState.current.spectator._animationTimer = 0.0;
 								PlayState.current.opponent._animationTimer = 0.0;
 							});
+
+							FlxG.sound.playMusic(Paths.music('DISTORTO', 'week7'), 0);
+							FlxG.sound.music.fadeIn(5, 0, 0.5);
 
 							var savedSounds:Map<String, FlxSound> = [];
 							var listOfSounds:Array<{name:String, file:String}> = [{name: 'tightBars', file: 'tightBars'}];

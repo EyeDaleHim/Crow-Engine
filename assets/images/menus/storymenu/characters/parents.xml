@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="parents.png">
+	<!-- Created with Adobe Flash CS6 version 12.0.0.481 -->
+	<!-- http://www.adobe.com/products/flash.html -->
+	<SubTexture name="parents idle0000" x="0" y="0" width="885" height="782" />
+	<SubTexture name="parents idle0001" x="0" y="0" width="885" height="782" />
+	<SubTexture name="parents idle0002" x="885" y="0" width="885" height="782" />
+	<SubTexture name="parents idle0003" x="885" y="0" width="885" height="782" />
+	<SubTexture name="parents idle0004" x="0" y="782" width="885" height="782" />
+	<SubTexture name="parents idle0005" x="0" y="782" width="885" height="782" />
+	<SubTexture name="parents idle0006" x="885" y="782" width="885" height="782" />
+	<SubTexture name="parents idle0007" x="885" y="782" width="885" height="782" />
+	<SubTexture name="parents idle0008" x="0" y="1564" width="885" height="782" />
+	<SubTexture name="parents idle0009" x="0" y="1564" width="885" height="782" />
+	<SubTexture name="parents idle0010" x="885" y="1564" width="885" height="782" />
+	<SubTexture name="parents idle0011" x="885" y="1564" width="885" height="782" />
+	<SubTexture name="parents idle0012" x="885" y="1564" width="885" height="782" />
+	<SubTexture name="parents idle0013" x="885" y="1564" width="885" height="782" />
+</TextureAtlas>

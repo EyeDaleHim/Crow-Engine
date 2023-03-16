@@ -8,8 +8,10 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import lime.ui.Window;
 import lime.app.Application;
+#if sys
 import sys.FileSystem;
 import sys.io.File;
+#end
 import haxe.Json;
 import utils.CacheManager;
 import openfl.Assets;
@@ -105,6 +107,7 @@ class Main extends Sprite
 		FlxG.console.registerClass(objects.notes.Note);
 		FlxG.console.registerClass(Main);
 
+		#if sys
 		FlxG.console.registerFunction('checkCache', function()
 		{
 			var listOfCache:String = '---[BITMAP]---\n\n';
@@ -126,6 +129,7 @@ class Main extends Sprite
 			File.saveContent('listedCache.txt', listOfCache + '\n');
 			trace('saved cache');
 		});
+		#end
 
 		Settings.init();
 		weeks.ScoreContainer.init();
