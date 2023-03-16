@@ -1,0 +1,17 @@
+{
+	"dependencies": [
+		{"name": "lime", "type": "haxelib"},
+		{"name": "openfl", "type": "haxelib"},
+		{"name": "flixel", "type": "haxelib", "version": "5.2.2"},
+		{"name": "flixel-tools", "type": "haxelib"},
+		{"name": "flixel-ui", "type": "haxelib"},
+		{"name": "flixel-addons", "type": "haxelib"},
+		{"name": "flxanimate", "type": "haxelib"},
+		{"name": "discord_rpc", "type": "git", "dir": "discord_rpc",
+			"ref": "master",
+			"url": "https://github.com/Aidan63/linc_discord-rpc"
+		},
+		{"name": "hxCodec", "type": "haxelib"},
+		{"name": "hscript", "type": "haxelib"}
+	]
+}
