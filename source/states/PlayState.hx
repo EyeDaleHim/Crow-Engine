@@ -823,6 +823,7 @@ class PlayState extends MusicBeatState
 
 		events = new EventManager(Song.currentSong.song.formatToReadable(), true);
 
+		var generatedTime = openfl.Lib.getTimer();
 		for (sections in Song.currentSong.sectionList)
 		{
 			for (note in sections.notes)
@@ -872,6 +873,7 @@ class PlayState extends MusicBeatState
 				pendingNotes.push(newNote);
 			}
 		}
+		trace((openfl.Lib.getTimer() - generatedTime) + 'ms GENERATING NOTES');
 
 		pendingNotes.sort(function(note1:Note, note2:Note)
 		{
@@ -1461,7 +1463,7 @@ class PlayState extends MusicBeatState
 			if (strum != null)
 			{
 				strum.playAnim(strum.confirmAnim, true);
-				strum.animationTime = Conductor.stepCrochet * 0.001 * (note.isEndNote ? 1.5 : 1.25);
+				strum.animationTime = Conductor.stepCrochet * 0.001 * (note.isEndNote ? 2.5 : 1.25);
 			}
 
 			if (!note.isSustainNote)
@@ -1546,7 +1548,7 @@ class PlayState extends MusicBeatState
 	public var lastNums:Map<String, ComboSprite> = [];
 	public var numScores:Array<ComboSprite> = [];
 
-	public function popCombo(rating:String = 'sick')
+	public function popCombo(rating:String = 'sick', ?optionalCombo:Null<Int>)
 	{
 		var xPos:Float = FlxG.width * 0.35;
 
@@ -1579,7 +1581,7 @@ class PlayState extends MusicBeatState
 
 		if (showNumbers)
 		{
-			var comboString:String = Std.string(gameInfo.combo).lpad("0", 3);
+			var comboString:String = Std.string(optionalCombo != null ? optionalCombo : gameInfo.combo).lpad("0", 3);
 			var loop:Int = 0;
 
 			FlxDestroyUtil.destroyArray(numScores);

@@ -14,11 +14,56 @@ using StringTools;
 @:allow(states.PlayState)
 class Note extends FlxSprite
 {
+	private static var __POOLED_NOTES:Array<Note> = [];
+
 	public var earlyMult:Float = 0.5;
 
 	public static var currentSkin:String = 'NOTE_assets';
 
 	public static var transformedWidth:Float = 160 * 0.7;
+
+	private var __POOL_INFO__:PoolInfo = null;
+
+	public static function CHECK_POOL(strumTime:Float = 0, direction:Int = 0, mustPress:Bool = false, sustainIndex:Float = 0, sustainLength:Float = 0,
+			singAnim:String = ''):Note
+	{
+		for (_pool in __POOLED_NOTES)
+		{
+			if (_pool.__POOL_INFO__.direction == direction
+				&& _pool.__POOL_INFO__.mustPress == mustPress
+				&& _pool.__POOL_INFO__.singAnim == singAnim
+				&& _pool.__POOL_INFO__.sustainIndex == sustainIndex
+				&& _pool.__POOL_INFO__.sustainLength == sustainLength)
+			{
+				var _newPool:Note = _pool;
+
+				return _pool;
+			}
+		}
+
+		return new Note(strumTime, direction, mustPress, sustainIndex, sustainLength, singAnim);
+	}
+
+	public static function PUT_POOL(note:Note):Void
+	{
+		var none:Bool = false;
+
+		for (_pool in __POOLED_NOTES)
+			{
+				if (_pool.__POOL_INFO__.direction == note.direction
+					&& _pool.__POOL_INFO__.mustPress == note.mustPress
+					&& _pool.__POOL_INFO__.singAnim == note.singAnim
+					&& _pool.__POOL_INFO__.sustainIndex == note.sustainIndex
+					&& _pool.__POOL_INFO__.sustainLength == note.sustainLength)
+				{
+					none = true;
+					break;
+				}
+			}
+
+		if (!none)
+			__POOLED_NOTES.push(cast note);
+	}
 
 	public override function new(strumTime:Float = 0, direction:Int = 0, mustPress:Bool = false, sustainIndex:Float = 0, sustainLength:Float = 0,
 			singAnim:String = '')
@@ -28,6 +73,7 @@ class Note extends FlxSprite
 		this.strumTime = strumTime;
 		this.direction = direction;
 		this.mustPress = mustPress;
+		this.sustainIndex = sustainIndex;
 		this.isSustainNote = sustainIndex > 0;
 		this.singAnim = singAnim;
 
@@ -114,6 +160,16 @@ class Note extends FlxSprite
 			if (animation.curAnim.numFrames <= 1)
 				animation.pause();
 		}
+
+		/*__POOL_INFO__ = {
+			direction: direction,
+			mustPress: mustPress,
+			singAnim: singAnim,
+			sustainIndex: sustainIndex,
+			sustainLength: sustainLength
+		}
+
+		Note.PUT_POOL(this);*/
 	}
 
 	public var noteType:String = '';
@@ -122,6 +178,7 @@ class Note extends FlxSprite
 
 	public var direction:Int = 0;
 	public var strumTime:Float = 0;
+	public var sustainIndex:Float = 0;
 	public var sustainLength:Float = 0;
 	public var mustPress:Bool = false;
 	public var isSustainNote:Bool = false;
@@ -195,4 +252,13 @@ class NoteRenderer extends FlxSprite
 
 		super.draw();
 	}
+}
+
+typedef PoolInfo =
+{
+	var direction:Int;
+	var mustPress:Bool;
+	var sustainIndex:Float;
+	var sustainLength:Float;
+	var singAnim:String;
 }

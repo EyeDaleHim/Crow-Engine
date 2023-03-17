@@ -112,31 +112,23 @@ class Main extends Sprite
 		_SLEEP_TIMER = new Timer(10000);
 		_SLEEP_TIMER.run = function()
 		{
-			@:privateAccess
+			_THREADPOOL.run(function()
 			{
-				_THREADPOOL.run(function()
-				{
-					_MUTEX.acquire();
-					var i:Int = 0;
+				_MUTEX.acquire();
 
-					if (FlxG.state != null)
+				if (FlxG.state != null)
+				{
+					FlxG.state.forEachOfType(flixel.FlxObject, function(object)
 					{
-						FlxG.state.forEachOfType(flixel.FlxObject, function(object)
+						if (object != null && object.exists)
 						{
-							if (object != null && object.exists)
-							{
-								if (object.moves && object.velocity.x == 0 && object.velocity.y == 0)
-								{
-									object.moves = false;
-									i++;
-								}
-							}
-						}, true);
-						trace('Over $i Flixel objects sleeping');
-					}
-					_MUTEX.release();
-				});
-			}
+							if (object.moves && object.velocity.x == 0 && object.velocity.y == 0)
+								object.moves = false;
+						}
+					}, true);
+				}
+				_MUTEX.release();
+			});
 		};
 		#end
 
