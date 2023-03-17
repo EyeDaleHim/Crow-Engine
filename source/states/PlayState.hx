@@ -1310,11 +1310,6 @@ class PlayState extends MusicBeatState
 					{
 						if (!renderer.note.isEndNote)
 							renderer.y -= (Note.transformedWidth / 2) * (songSpeed * 0.5);
-						else
-						{
-							if (renderer.attributes.exists('gapOffset'))
-								renderer.y += renderer.attributes['gapOffset'] + (6 * songSpeed);
-						}
 					}
 					else if (renderer.note.isSustainNote)
 					{
@@ -1644,7 +1639,6 @@ class PlayState extends MusicBeatState
 
 		note.noteRenderer.exists = false;
 		renderedNotes.remove(note.noteRenderer, true);
-		NoteRenderer.__pool.put(note.noteRenderer);
 	}
 
 	override function destroy()
