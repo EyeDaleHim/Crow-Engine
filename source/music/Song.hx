@@ -49,6 +49,11 @@ class Song
 
 			metaData = meta;
 
+			currentSong.noteLength = 0;
+
+			for (section in currentSong.sectionList)
+				currentSong.noteLength += section.length;
+
 			if (metaData.comboSkin == null)
 				metaData.comboSkin = 'default';
 			if (metaData.countdownSkin == null)
@@ -109,4 +114,6 @@ typedef SongInfo =
 	var player:String;
 	var opponent:String;
 	var spectator:String; // fancy term for gf
+
+	@:optional var noteLength:Int; // this is not going to be parsed, just a little helper
 }
