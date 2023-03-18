@@ -837,7 +837,7 @@ class PlayState extends MusicBeatState
 		new Note();
 
 		NoteRenderer.__pool = new FlxPool<NoteRenderer>(NoteRenderer);
-		NoteRenderer.__pool.preAllocate(Std.int(Math.min(Song.currentSong.noteLength, 128)));
+		NoteRenderer.__pool.preAllocate(32);
 
 		for (sections in Song.currentSong.sectionList)
 		{

@@ -1,5 +1,6 @@
 package objects.character;
 
+import utils.CacheManager;
 import states.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -26,12 +27,9 @@ class Character extends FlxSprite
 	public var isPlayer:Bool = true;
 	public var healthColor:Int = 0;
 	public var scripts:Array<Script> = [];
-
-	// ok i removed some of the variables because i got lazier over time
 	// simple controls for your character
 	public var controlIdle:Bool = true; // Whether or not your character should keep playing the idle when it finishes an animation.
 	public var forceIdle:Bool = false;
-	// public var singAnimsUsesMulti:Bool = false; // If this is enabled, the sing animation will hold for (Conductor.crochet / 1000) * idleDuration, else, it'll just be idleDuration
 	public var _animationOffset:Float = 0.3;
 	public var overridePlayer:Bool = false; // If you set this to true, the enemy will be treated as a player
 
@@ -90,7 +88,11 @@ class Character extends FlxSprite
 
 		charPath = 'characters/${this.name}/${this.name}';
 
-		_characterData = Json.parse(Assets.getText(Paths.imagePath(charPath).replace('png', 'json')));
+		_characterData = #if PRELOAD_CHARACTER
+		CacheManager.getDynamic('${this.name}-jsonFile');
+		#else 
+		Json.parse(Assets.getText(Paths.imagePath(charPath).replace('png', 'json')));
+		#end
 
 		frames = switch (_characterData == null ? 'sparrow' : _characterData.atlasType)
 		{

@@ -22,6 +22,7 @@ class CacheManager
 	public static var cachedAssets:Map<AssetTypeData, StringMap<CachedAsset>> = [
 		BITMAP => new Map<String, CachedAsset>(),
 		AUDIO => new Map<String, CachedAsset>(),
+		XML => new Map<String, CachedAsset>(),
 		DYNAMIC => new Map<String, CachedAsset>()
 	];
 
@@ -96,51 +97,53 @@ class CacheManager
 		}
 	}
 
+	public static function getDynamic(dynamicKey:String):Dynamic
+	{
+		if (cachedAssets[DYNAMIC].exists(dynamicKey))
+			return cachedAssets[DYNAMIC].get(dynamicKey);
+		return null;
+	}
+
+	public static function setDynamic(dynamicKey:String, data:Dynamic):Dynamic
+	{
+		if (getDynamic(dynamicKey) == null)
+			cachedAssets[DYNAMIC].set(dynamicKey, data);
+
+		return getDynamic(dynamicKey);
+	}
+
+	public static function clearDynamic(dynamicKey:String, ?destroyFunction:Void->Void)
+	{
+		if (cachedAssets[DYNAMIC].exists(dynamicKey))
+		{
+			if (destroyFunction != null)
+				destroyFunction();
+			cachedAssets[DYNAMIC].remove(dynamicKey);
+		}
+	}
+
 	public static function freeMemory(type:AssetTypeData = DYNAMIC, keepPersistence:Bool = true):Void
 	{
-		if (type != DYNAMIC)
+		for (cache in cachedAssets[type].keys())
 		{
-			for (cache in cachedAssets[type].keys())
-			{
-				if (keepPersistence && persistentAssets.contains(cache))
-					continue;
+			if (keepPersistence && persistentAssets.contains(cache))
+				continue;
 
-				switch (type)
-				{
-					case AUDIO:
-						{
-							clearAudio(cache);
-						}
-					case BITMAP:
-						{
-							clearBitmap(cache);
-						}
-					case _:
-				}
-			}
-		}
-		else
-		{
-			for (eachType in cachedAssets)
+			switch (type)
 			{
-				for (cache in eachType.keys())
-				{
-					if (keepPersistence && persistentAssets.contains(cache))
-						continue;
-
-					switch (type)
+				case AUDIO:
 					{
-						case AUDIO:
-							{
-								clearAudio(cache);
-							}
-						case BITMAP:
-							{
-								clearBitmap(cache);
-							}
-						case _:
+						clearAudio(cache);
 					}
-				}
+				case BITMAP:
+					{
+						clearBitmap(cache);
+					}
+				case DYNAMIC:
+					{
+						clearDynamic(cache);
+					}
+				case _:
 			}
 		}
 	}
@@ -155,8 +158,9 @@ typedef CachedAsset =
 
 @:enum abstract AssetTypeData(Int)
 {
-	var BITMAP:AssetTypeData = 0x00;
-	var AUDIO:AssetTypeData = 0x01;
-	var FRAME:AssetTypeData = 0x10;
-	var DYNAMIC:AssetTypeData = 0x11;
+	var BITMAP:AssetTypeData = 0;
+	var AUDIO:AssetTypeData = 1;
+	var XML:AssetTypeData = 2;
+	var DYNAMIC:AssetTypeData = 3;
+	var ANY:AssetTypeData = -1;
 }

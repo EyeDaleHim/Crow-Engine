@@ -10,6 +10,7 @@ import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 import utils.CacheManager;
 import utils.CacheManager.AssetTypeData;
+import utils.FramesManager;
 
 using StringTools;
 using utils.Tools;
@@ -179,7 +180,7 @@ class Paths
 	public static function getSparrowAtlas(file:String, ?library:String = null):FlxAtlasFrames
 	{
 		var xmlPath:String = Paths.imagePath(file, library).replace('png', 'xml');
-		return FlxAtlasFrames.fromSparrow(Paths.image(file, library), OpenFlAssets.getText(xmlPath));
+		return #if PRELOAD_CHARACTER FramesManager #else FlxAtlasFrames #end.fromSparrow(Paths.image(file, library), OpenFlAssets.getText(xmlPath));
 	}
 
 	public static function getPackerAtlas(file:String, ?library:String = null):FlxAtlasFrames

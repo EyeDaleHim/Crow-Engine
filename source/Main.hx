@@ -7,7 +7,8 @@ import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import haxe.Timer;
-import sys.thread.Thread;
+import haxe.Json;
+import sys.FileSystem;
 import sys.thread.ElasticThreadPool;
 import sys.thread.Mutex;
 import lime.ui.Window;
@@ -131,6 +132,42 @@ class Main extends Sprite
 			});
 		};
 		#end
+
+		#if PRELOAD_CHARACTER
+		var time = Lib.getTimer();
+
+		_THREADPOOL.run(function()
+		{
+			_MUTEX.acquire();
+
+			if (FileSystem.exists(Paths.getPath('images/characters', null, null)))
+			{
+				var characterList:Array<String> = FileSystem.readDirectory(Paths.getPath('images/characters', null, null));
+				characterList.remove('icons');
+
+				for (char in characterList)
+				{
+					var path:String = Paths.getPath('images/characters/' + char + '/' + char + '.json', TEXT, null);
+
+					if (Assets.exists(path))
+					{
+						CacheManager.setDynamic('$char-jsonFile', Json.parse(Assets.getText(path)));
+						if (Assets.exists(path.replace('json', 'xml')))
+							CacheManager.cachedAssets[XML].set('$char-xmlFile', {type: XML, data: Xml.parse(Assets.getText(path.replace('json', 'xml'))), special: true});
+
+						CacheManager.cachedAssets[DYNAMIC].get('$char-jsonFile').special = true;
+
+						trace('took ${Lib.getTimer() - time}ms to load character');
+
+						time = Lib.getTimer();
+					}
+				}
+			}
+
+			_MUTEX.release();
+		});
+		#end
+
 
 		FlxG.fixedTimestep = false;
 

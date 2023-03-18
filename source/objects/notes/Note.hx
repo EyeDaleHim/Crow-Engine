@@ -33,7 +33,7 @@ class Note
 		this.isSustainNote = sustainIndex > 0;
 		this.singAnim = singAnim;
 
-		if (isSustainNote)
+		if (!isSustainNote)
 			earlyMult = 1.0;
 
 		if (Note._noteFile == null)
@@ -146,6 +146,7 @@ class NoteRenderer extends FlxSprite
 
 			if (note.isSustainNote)
 			{
+				alpha = 0.6;
 				flipY = Settings.getPref('downscroll', false);
 
 				if (note.sustainIndex > note.sustainLength)
@@ -155,29 +156,6 @@ class NoteRenderer extends FlxSprite
 				}
 				else
 					animPlay = Note._noteFile.sustainAnimDirections[note.direction].body;
-			}
-		}
-
-		if (animation == null)
-		{
-			frames = switch (Note._noteFile.atlasType)
-			{
-				case 'packer':
-					Paths.getPackerAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/${Note.currentSkin}');
-				default:
-					Paths.getSparrowAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/${Note.currentSkin}');
-			}
-
-			for (animData in Note._noteFile.animationData)
-			{
-				if (animData.indices != null && animData.indices.length > 0)
-					animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
-				else
-					animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
-
-				if (animData.offset.x != 0 || animData.offset.y != 0)
-					animOffsets.set(animData.name, FlxPoint.get(animData.offset.x, animData.offset.y));
-				animForces.set(animData.name, animData.looped);
 			}
 		}
 
