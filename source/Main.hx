@@ -38,7 +38,7 @@ class Main extends Sprite
 
 	// game version's number is 7 because of week 6
 	public static final gameVersion:VersionScheme = {display: "0.2.7.1", number: 7}; // Version Of The Base Game (Friday Night Funkin')
-	public static final engineVersion:VersionScheme = {display: "0.1.0A", number: 1}; // Version Of The Engine (Crow Engine)
+	public static final engineVersion:VersionScheme = {display: "0.1.0A-1", number: 2}; // Version Of The Engine (Crow Engine)
 
 	public static var fps:DebugInfo;
 
@@ -117,16 +117,23 @@ class Main extends Sprite
 			{
 				_MUTEX.acquire();
 
-				if (FlxG.state != null)
+				try
 				{
-					FlxG.state.forEachOfType(flixel.FlxObject, function(object)
+					if (FlxG.state != null)
 					{
-						if (object != null && object.exists)
+						FlxG.state.forEachOfType(flixel.FlxObject, function(object)
 						{
-							if (object.moves && object.velocity.x == 0 && object.velocity.y == 0)
-								object.moves = false;
-						}
-					}, true);
+							if (object != null && object.exists)
+							{
+								if (object.moves && object.velocity.x == 0 && object.velocity.y == 0)
+									object.moves = false;
+							}
+						}, true);
+					}
+				}
+				catch (e)
+				{
+					trace('whoops! prevented crash.');
 				}
 				_MUTEX.release();
 			});
@@ -153,11 +160,10 @@ class Main extends Sprite
 					{
 						CacheManager.setDynamic('$char-jsonFile', Json.parse(Assets.getText(path)));
 						if (Assets.exists(path.replace('json', 'xml')))
-							CacheManager.cachedAssets[XML].set('$char-xmlFile', {type: XML, data: Xml.parse(Assets.getText(path.replace('json', 'xml'))), special: true});
+							CacheManager.cachedAssets[XML].set('$char-xmlFile',
+								{type: XML, data: Xml.parse(Assets.getText(path.replace('json', 'xml'))), special: true});
 
 						CacheManager.cachedAssets[DYNAMIC].get('$char-jsonFile').special = true;
-
-						trace('took ${Lib.getTimer() - time}ms to load character');
 
 						time = Lib.getTimer();
 					}
@@ -167,7 +173,6 @@ class Main extends Sprite
 			_MUTEX.release();
 		});
 		#end
-
 
 		FlxG.fixedTimestep = false;
 

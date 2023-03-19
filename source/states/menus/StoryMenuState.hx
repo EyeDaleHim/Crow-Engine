@@ -336,7 +336,6 @@ class StoryMenuState extends MusicBeatState
 			MusicBeatState.switchState(new PlayState(), function()
 			{
 				persistentDraw = false;
-				CacheManager.freeMemory(BITMAP, true);
 
 				for (song in tempArray)
 				{

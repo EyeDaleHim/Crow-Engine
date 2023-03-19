@@ -27,6 +27,7 @@ import game.SkinManager;
 import game.cutscenes.CutsceneHandler;
 import game.cutscenes.DialogueBox;
 import openfl.events.KeyboardEvent;
+import openfl.Assets;
 import states.substates.GameOverSubState;
 import states.substates.PauseSubState;
 import music.Song;
@@ -271,6 +272,8 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{
+		CacheManager.freeMemory(BITMAP, true);
+
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
@@ -303,7 +306,7 @@ class PlayState extends MusicBeatState
 		vocals = FlxG.sound.list.recycle(FlxSound);
 		vocals.looped = false;
 		vocals.attributes.set('isPlaying', false);
-		if (vocals != null)
+		if (Assets.exists(Paths.vocalsPath(Song.currentSong.song)))
 		{
 			vocals.loadEmbedded(Paths.vocals(Song.currentSong.song));
 			vocals.attributes.set('isPlaying', true);
@@ -384,7 +387,12 @@ class PlayState extends MusicBeatState
 		spectator = new Character(specPos[0].x, specPos[0].y, Song.currentSong.spectator, true);
 		spectator.scrollFactor.set(0.95, 0.95);
 
-		if (Song.currentSong.song.formatToReadable() == 'stress')
+		if (Song.currentSong.song.formatToReadable() == 'tutorial')
+		{
+			spectator.visible = spectator.active = false;
+			oppPos = stageData.charPosList.spectatorPositions;
+		}
+		else if (Song.currentSong.song.formatToReadable() == 'stress')
 		{
 			preStageRender.remove(stageData.spriteGroup['ground'], true);
 
@@ -395,15 +403,15 @@ class PlayState extends MusicBeatState
 		add(stageData.spriteGroup['ground']);
 		add(spectator);
 
-		player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
-		player.__TYPE = PLAYER;
-		player.scrollFactor.set(0.95, 0.95);
-		add(player);
-
 		opponent = new Character(oppPos[0].x, oppPos[0].y, Song.currentSong.opponent, false);
 		opponent.scrollFactor.set(0.95, 0.95);
 		opponent.overridePlayer = true;
 		add(opponent);
+
+		player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
+		player.__TYPE = PLAYER;
+		player.scrollFactor.set(0.95, 0.95);
+		add(player);
 
 		add(postStageRender);
 
@@ -520,6 +528,7 @@ class PlayState extends MusicBeatState
 
 		if (playMode == STORY && !_finishedCutscene)
 		{
+			trace(DialogueBox.songs.contains(Song.currentSong.song.formatToReadable()));
 			if (DialogueBox.songs.contains(Song.currentSong.song.formatToReadable()))
 			{
 				player.active = false;
@@ -598,7 +607,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		if (pendingNotes.length != 0)
+		if (countdownState != 0 && pendingNotes.length != 0)
 		{
 			for (note in pendingNotes)
 			{
@@ -786,10 +795,13 @@ class PlayState extends MusicBeatState
 	{
 		super.stepHit();
 
-		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 30
-			|| (Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 30))
+		if (vocals.attributes.get('isPlaying'))
 		{
-			resyncVocals();
+			if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 30
+				|| (Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > 30))
+			{
+				resyncVocals();
+			}
 		}
 	}
 
@@ -1326,7 +1338,8 @@ class PlayState extends MusicBeatState
 					if (strumNote.downScroll)
 					{
 						if (renderer.y - renderer.offset.y * renderer.scale.y + renderer.height >= center
-							&& (!renderer.note.mustPress || (renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit))))
+							&& (!renderer.note.mustPress
+								|| (renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit))))
 						{
 							var swagRect = new FlxRect(0, 0, renderer.frameWidth, renderer.frameHeight);
 							swagRect.height = (center - renderer.y) / renderer.scale.y;
@@ -1338,7 +1351,8 @@ class PlayState extends MusicBeatState
 					else
 					{
 						if (renderer.y + renderer.offset.y * renderer.scale.y <= center
-							&& (!renderer.note.mustPress || (renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit))))
+							&& (!renderer.note.mustPress
+								|| (renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit))))
 						{
 							var swagRect = new FlxRect(0, 0, renderer.width / renderer.scale.x, renderer.height / renderer.scale.y);
 							swagRect.y = (center - renderer.y) / renderer.scale.y;
@@ -1372,9 +1386,11 @@ class PlayState extends MusicBeatState
 
 				if (!botplay && currentKeys.contains(true))
 				{
-					if (currentKeys[renderer.note.direction] && renderer.note.mustPress && renderer.note.isSustainNote && renderer.note.canBeHit)
+					if (currentKeys[renderer.note.direction]
+						&& renderer.note.mustPress
+						&& renderer.note.isSustainNote
+						&& renderer.note.canBeHit)
 					{
-						player._animationTimer = 0.0;
 						hitNote(renderer.note);
 					}
 				}
@@ -1481,7 +1497,7 @@ class PlayState extends MusicBeatState
 		{
 			if (player != null)
 			{
-				player._animationTimer = -Conductor.stepCrochet * 0.001;
+				player._animationTimer = -Conductor.stepCrochet * 0.002;
 				player.playAnim(note.missAnim, true);
 			}
 
@@ -1508,7 +1524,6 @@ class PlayState extends MusicBeatState
 		}
 
 		player._stunnedTimer = 0.5;
-		player._animationTimer = -2.5;
 
 		scoreText.text = '[Score] ${FlxStringUtil.formatMoney(gameInfo.score, false)} // [Misses] ${FlxStringUtil.formatMoney(gameInfo.misses, false)} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);
@@ -1531,7 +1546,7 @@ class PlayState extends MusicBeatState
 		}
 
 		player._stunnedTimer = 0.5;
-		player._animationTimer = -2.5;
+		player._animationTimer = -Conductor.stepCrochet * 0.002;
 
 		scoreText.text = '[Score] ${FlxStringUtil.formatMoney(gameInfo.score, false)} // [Misses] ${FlxStringUtil.formatMoney(gameInfo.misses, false)} // [Rank] (${Tools.formatAccuracy(FlxMath.roundDecimal(gameInfo.accuracy * 100, 2))}% - ${gameInfo.rank})';
 		scoreText.screenCenter(X);
