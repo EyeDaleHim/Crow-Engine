@@ -1,6 +1,9 @@
 Crow Engine
 ======
 
+![Size](https://img.shields.io/github/repo-size/EyeDaleHim/Crow-Engine?style=flat-square)
+[![Contributor Covenant](https://img.shields.io/twitter/url?label=Crow%20Engine&style=social&url=https%3A%2F%2Ftwitter.com%2FCrow-Engine)](https://twitter.com/CrowEngineFNF)
+
 ![Crow Engine](crow_engine_logo.png)
 
 ## Info
