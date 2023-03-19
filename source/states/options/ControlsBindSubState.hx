@@ -31,26 +31,16 @@ class ControlsBindSubState extends MusicBeatSubState
 		background.alpha = 0.6;
 		add(background);
 
-		instructions = new Alphabet(0, 175, "Hold the Key to Change Bind", true);
+		instructions = new Alphabet(0, 175, "Press any key", true);
 		instructions.screenCenter(X);
 		add(instructions);
 
 		@:privateAccess
-		key = new FlxText(0, 175, 0, InputFormat.format(Controls.instance.LIST_CONTROLS.get(bind).__keys[keyIndex]).toUpperCase(), 82);
+		key = new FlxText(0, 175, 0, "_", 82);
 		key.setFormat(Paths.font("vcr.ttf"), 82, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		key.borderSize = 4;
 		key.screenCenter(XY);
 		add(key);
-
-		acceptKey = new FlxText(0, 0, 0, "CONFIRM", 36);
-		acceptKey.setFormat(Paths.font("vcr.ttf"), 36, FlxColor.WHITE);
-		acceptKey.setPosition(FlxG.width - acceptKey.width - 30, FlxG.height * 0.85);
-		add(acceptKey);
-
-		backKey = new FlxText(0, 0, 0, "BACK", 36);
-		backKey.setFormat(Paths.font("vcr.ttf"), 36, FlxColor.WHITE);
-		backKey.setPosition(acceptKey.x - acceptKey.width - 30, FlxG.height * 0.85);
-		add(backKey);
 	}
 
 	public var selectedBind:FlxKey = 0;
@@ -80,21 +70,8 @@ class ControlsBindSubState extends MusicBeatSubState
 				@:privateAccess
 				key.text = InputFormat.format(selectedBind).toUpperCase();
 				key.screenCenter(XY);
+				acceptControls();
 			}
-		}
-
-		if (Std.int(selectedBind) > 0)
-		{
-			if (FlxG.keys.anyPressed([selectedBind]))
-				heldBind += elapsed * 2;
-		}
-
-		if (FlxG.keys.justPressed.ESCAPE && FlxG.keys.pressed.SHIFT)
-			closeControls();
-		else if (heldBind >= 1.25)
-		{
-			acceptControls();
-			closeControls();
 		}
 	}
 
