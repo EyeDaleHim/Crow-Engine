@@ -45,6 +45,17 @@
                 "y": -19
             },
             "looped": false
+        },
+        {
+            "prefix": "Pico shoot 1",
+            "indices": [23, 24, 25],
+            "fps": 24,
+            "name": "default",
+            "offset": {
+                "x": 0,
+                "y": 0
+            },
+            "looped": true
         }
     ],
     "singList": [
@@ -53,7 +64,7 @@
         "shoot3",
         "shoot4"
     ],
-    "idleList": [],
+    "idleList": ["default"],
     "flip": {
         "x": false,
         "y": false
