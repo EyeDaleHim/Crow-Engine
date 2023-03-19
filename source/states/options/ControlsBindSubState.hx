@@ -32,15 +32,8 @@ class ControlsBindSubState extends MusicBeatSubState
 		add(background);
 
 		instructions = new Alphabet(0, 175, "Press any key", true);
-		instructions.screenCenter(X);
+		instructions.screenCenter(XY);
 		add(instructions);
-
-		@:privateAccess
-		key = new FlxText(0, 175, 0, "_", 82);
-		key.setFormat(Paths.font("vcr.ttf"), 82, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
-		key.borderSize = 4;
-		key.screenCenter(XY);
-		add(key);
 	}
 
 	public var selectedBind:FlxKey = 0;
@@ -52,24 +45,12 @@ class ControlsBindSubState extends MusicBeatSubState
 
 		heldBind = Math.max(0, heldBind - elapsed);
 
-		if (FlxG.mouse.justPressed)
-		{
-			if (FlxG.mouse.overlaps(backKey))
-				closeControls();
-			else if (FlxG.mouse.overlaps(acceptKey))
-				acceptControls();
-		}
-
 		if (FlxG.keys.firstJustPressed() != -1)
 		{
 			if (InputFormat.matchesInput(FlxG.keys.firstJustPressed()))
 			{
 				selectedBind = FlxG.keys.firstJustPressed();
-
-				// note to self: rewrite this
-				@:privateAccess
-				key.text = InputFormat.format(selectedBind).toUpperCase();
-				key.screenCenter(XY);
+				FlxG.sound.play("assets/sounds/menu/scrollMenu.ogg");
 				acceptControls();
 			}
 		}
