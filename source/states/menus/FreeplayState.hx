@@ -143,7 +143,8 @@ class FreeplayState extends MusicBeatState
 
 	// no you dingdong don't judge me
 	private static var lastSelected:Int = 0;
-	private static var lastPlayed:String = '';
+
+	private var lastPlayed:String = '';
 
 	override public function update(elapsed:Float)
 	{
@@ -154,10 +155,13 @@ class FreeplayState extends MusicBeatState
 				canPress = false;
 				MusicBeatState.switchState(new MainMenuState());
 
-				FlxG.sound.music.fadeOut(0.5, 0.0, function(twn)
+				if (lastPlayed != '')
 				{
-					FlxG.sound.playMusic(Paths.music('freakyMenu'));
-				});
+					FlxG.sound.music.fadeOut(0.5, 0.0, function(twn)
+					{
+						FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					});
+				}
 			}
 			else if (controls.getKey('ACCEPT', JUST_PRESSED))
 			{
@@ -352,7 +356,9 @@ class FreeplayState extends MusicBeatState
 
 		changeSelection();
 	}
-} class SongMetadata
+}
+
+class SongMetadata
 {
 	public var name:String;
 	public var weekName:String;

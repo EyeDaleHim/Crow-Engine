@@ -109,7 +109,7 @@ class ScoreContainer
 			}
 			else
 			{
-				weekScores.set(week, []);
+				weekScores[week].set(diff, {addedScore: 0, averageAccuracy: 0.00, addedMisses: 0});
 				return setWeek(week, diff, results);
 			}
 		}

@@ -47,6 +47,12 @@ class StoryMenuState extends MusicBeatState
 	{
 		CacheManager.freeMemory(BITMAP, true);
 
+		if (FlxG.sound.music != null &&!FlxG.sound.music.playing)
+		{
+			FlxG.sound.music.play();
+			FlxG.sound.music.volume = 0.6;
+		}
+
 		backgroundBox = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
 
 		for (i in 0...3)

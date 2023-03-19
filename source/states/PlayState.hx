@@ -528,7 +528,6 @@ class PlayState extends MusicBeatState
 
 		if (playMode == STORY && !_finishedCutscene)
 		{
-			trace(DialogueBox.songs.contains(Song.currentSong.song.formatToReadable()));
 			if (DialogueBox.songs.contains(Song.currentSong.song.formatToReadable()))
 			{
 				player.active = false;
@@ -1016,62 +1015,65 @@ class PlayState extends MusicBeatState
 			{score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
 
 		_finishedCutscene = false;
-		if (PlayState.playMode != CHARTING)
+		try
 		{
-			switch (PlayState.playMode)
+			if (PlayState.playMode != CHARTING)
 			{
-				case STORY:
-					CurrentGame.weekScores.push({score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
-					PlayState.storyPlaylist.shift();
+				trace('playmode');
+				switch (PlayState.playMode)
+				{
+					case STORY:
+						trace('story');
+						CurrentGame.weekScores.push({score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
+						PlayState.storyPlaylist.shift();
 
-					if (PlayState.storyPlaylist.length > 0)
-					{
-						Transitions.transIn = false;
-						Transitions.transOut = false;
+						if (PlayState.storyPlaylist.length > 0)
+						{
+							trace('existing playlist');
+							Transitions.transIn = false;
+							Transitions.transOut = false;
 
-						if (CacheManager.cachedAssets[AUDIO].exists(Paths.instPath(Song.currentSong.song)))
-							CacheManager.cachedAssets[AUDIO].get(Paths.instPath(Song.currentSong.song)).special = false;
-						if (CacheManager.cachedAssets[AUDIO].exists(Paths.vocalsPath(Song.currentSong.song)))
-							CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song)).special = false;
+							if (CacheManager.cachedAssets[AUDIO].exists(Paths.instPath(Song.currentSong.song)))
+								CacheManager.cachedAssets[AUDIO].get(Paths.instPath(Song.currentSong.song)).special = false;
+							if (CacheManager.cachedAssets[AUDIO].exists(Paths.vocalsPath(Song.currentSong.song)))
+								CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song)).special = false;
 
-						Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
-						MusicBeatState.switchState(new PlayState());
-					}
-					else
-					{
-						ScoreContainer.setWeek(Paths.currentLibrary, PlayState.songDiff, CurrentGame.weekScores);
-						trace('set week');
-						CurrentGame.weekScores = [];
-						trace('killed week');
-						MusicBeatState.switchState(new states.menus.StoryMenuState());
-					}
-				case FREEPLAY:
-					MusicBeatState.switchState(new states.menus.FreeplayState());
-				default:
-					MusicBeatState.switchState(new states.menus.MainMenuState());
-			}
+							Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
+							MusicBeatState.switchState(new PlayState());
+						}
+						else
+						{
+							ScoreContainer.setWeek(Paths.currentLibrary, PlayState.songDiff, CurrentGame.weekScores);
+							CurrentGame.weekScores = [];
 
-			if (PlayState.playMode == FREEPLAY)
-			{
-				FlxG.sound.playMusic(Paths.music('freakyMenu'));
-				Conductor.changeBPM(102);
+							FlxG.sound.playMusic(Paths.music('freakyMenu'));
+							Conductor.changeBPM(102);
+
+							MusicBeatState.switchState(new states.menus.StoryMenuState());
+						}
+					case FREEPLAY:
+						MusicBeatState.switchState(new states.menus.FreeplayState());
+					default:
+						MusicBeatState.switchState(new states.menus.MainMenuState());
+				}
+
+				if (PlayState.playMode == FREEPLAY)
+				{
+					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+					Conductor.changeBPM(102);
+				}
+				else
+				{
+					FlxG.sound.music.volume = 0;
+					FlxG.sound.music.stop();
+				}
 			}
 			else
-			{
-				FlxG.sound.music.volume = 0;
-				FlxG.sound.music.stop();
+			{ // i dont have a fucking charting state yet moron
+				PlayState.playMode = FREEPLAY;
+				endSong();
 			}
 		}
-		else
-		{ // i dont have a fucking charting state yet moron
-			PlayState.playMode = FREEPLAY;
-			endSong();
-		}
-	}
-
-	private function getPlaylist()
-	{
-		return PlayState.storyPlaylist;
 	}
 
 	override function openSubState(state:FlxSubState)
