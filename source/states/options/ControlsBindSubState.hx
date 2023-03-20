@@ -32,8 +32,15 @@ class ControlsBindSubState extends MusicBeatSubState
 		add(background);
 
 		instructions = new Alphabet(0, 175, "Press any key", true);
-		instructions.screenCenter(XY);
+		instructions.screenCenter(X);
 		add(instructions);
+
+		@:privateAccess
+		key = new FlxText(0, 175, 0, InputFormat.format(Controls.instance.LIST_CONTROLS.get(bind).__keys[keyIndex]).toUpperCase(), 82);
+		key.setFormat(Paths.font("vcr.ttf"), 82, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		key.borderSize = 4;
+		key.screenCenter(XY);
+		add(key);
 	}
 
 	public var selectedBind:FlxKey = 0;
@@ -47,13 +54,23 @@ class ControlsBindSubState extends MusicBeatSubState
 
 		if (FlxG.keys.firstJustPressed() != -1)
 		{
-			if (InputFormat.matchesInput(FlxG.keys.firstJustPressed()))
+			if (InputFormat.matchesInput(FlxG.keys.firstJustPressed()) && FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]) != true)
 			{
 				selectedBind = FlxG.keys.firstJustPressed();
+				
+				@:privateAccess
+				key.text = InputFormat.format(selectedBind).toUpperCase();
+				key.screenCenter(XY);
+
 				FlxG.sound.play("assets/sounds/menu/scrollMenu.ogg");
-				acceptControls();
 			}
 		}
+
+		if (FlxG.keys.justPressed.ESCAPE)
+			acceptControls();
+
+		if(FlxG.keys.justPressed.BACKSPACE)
+			closeControls();
 	}
 
 	private function closeControls():Void
@@ -70,7 +87,6 @@ class ControlsBindSubState extends MusicBeatSubState
 		Settings.changeKey(bind, originalKeys);
 		@:privateAccess
 		Controls.instance.LIST_CONTROLS.get(bind).__keys[keyIndex] = (Std.int(selectedBind) <= 0 ? NONE : selectedBind);
-
 		closeControls();
 	}
 }
