@@ -31,7 +31,7 @@ class ControlsBindSubState extends MusicBeatSubState
 		background.alpha = 0.6;
 		add(background);
 
-		instructions = new Alphabet(0, 175, "Hold the Key to Change Bind", true);
+		instructions = new Alphabet(0, 175, "Press any key", true);
 		instructions.screenCenter(X);
 		add(instructions);
 
@@ -41,16 +41,6 @@ class ControlsBindSubState extends MusicBeatSubState
 		key.borderSize = 4;
 		key.screenCenter(XY);
 		add(key);
-
-		acceptKey = new FlxText(0, 0, 0, "CONFIRM", 36);
-		acceptKey.setFormat(Paths.font("vcr.ttf"), 36, FlxColor.WHITE);
-		acceptKey.setPosition(FlxG.width - acceptKey.width - 30, FlxG.height * 0.85);
-		add(acceptKey);
-
-		backKey = new FlxText(0, 0, 0, "BACK", 36);
-		backKey.setFormat(Paths.font("vcr.ttf"), 36, FlxColor.WHITE);
-		backKey.setPosition(acceptKey.x - acceptKey.width - 30, FlxG.height * 0.85);
-		add(backKey);
 	}
 
 	public var selectedBind:FlxKey = 0;
@@ -62,40 +52,25 @@ class ControlsBindSubState extends MusicBeatSubState
 
 		heldBind = Math.max(0, heldBind - elapsed);
 
-		if (FlxG.mouse.justPressed)
-		{
-			if (FlxG.mouse.overlaps(backKey))
-				closeControls();
-			else if (FlxG.mouse.overlaps(acceptKey))
-				acceptControls();
-		}
-
 		if (FlxG.keys.firstJustPressed() != -1)
 		{
-			if (InputFormat.matchesInput(FlxG.keys.firstJustPressed()))
+			if (InputFormat.matchesInput(FlxG.keys.firstJustPressed()) && FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]) != true)
 			{
 				selectedBind = FlxG.keys.firstJustPressed();
-
-				// note to self: rewrite this
+				
 				@:privateAccess
 				key.text = InputFormat.format(selectedBind).toUpperCase();
 				key.screenCenter(XY);
+
+				FlxG.sound.play("assets/sounds/menu/scrollMenu.ogg");
 			}
 		}
 
-		if (Std.int(selectedBind) > 0)
-		{
-			if (FlxG.keys.anyPressed([selectedBind]))
-				heldBind += elapsed * 2;
-		}
-
-		if (FlxG.keys.justPressed.ESCAPE && FlxG.keys.pressed.SHIFT)
-			closeControls();
-		else if (heldBind >= 1.25)
-		{
+		if (FlxG.keys.justPressed.ESCAPE)
 			acceptControls();
+
+		if(FlxG.keys.justPressed.BACKSPACE)
 			closeControls();
-		}
 	}
 
 	private function closeControls():Void
@@ -112,7 +87,6 @@ class ControlsBindSubState extends MusicBeatSubState
 		Settings.changeKey(bind, originalKeys);
 		@:privateAccess
 		Controls.instance.LIST_CONTROLS.get(bind).__keys[keyIndex] = (Std.int(selectedBind) <= 0 ? NONE : selectedBind);
-
 		closeControls();
 	}
 }
