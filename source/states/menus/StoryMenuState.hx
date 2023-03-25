@@ -1,5 +1,6 @@
 package states.menus;
 
+import backend.LoadingManager;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -339,16 +340,7 @@ class StoryMenuState extends MusicBeatState
 			PlayState.songDiff = curDifficulty;
 
 			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), curDifficulty);
-			MusicBeatState.switchState(new PlayState(), function()
-			{
-				persistentDraw = false;
-
-				for (song in tempArray)
-				{
-					Paths.inst(song);
-					Paths.vocals(song);
-				}
-			});
+			LoadingManager.startGame();
 		});
 
 		for (character in characters)

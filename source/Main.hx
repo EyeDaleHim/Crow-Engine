@@ -35,6 +35,7 @@ class Main extends Sprite
 	};
 
 	public static var instance:Main;
+	public static var gameInstance:FlxGame;
 
 	// game version's number is 7 because of week 6
 	public static final gameVersion:VersionScheme = {display: "0.2.7.1", number: 7}; // Version Of The Base Game (Friday Night Funkin')
@@ -100,10 +101,10 @@ class Main extends Sprite
 			game.height = Math.ceil(stageHeight / game.zoom);
 		}
 
-		var game:FlxGame = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
+		gameInstance = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
 			game.skipSplash, game.startFullscreen);
 
-		addChild(game);
+		addChild(gameInstance);
 
 		#if ALLOW_FLIXEL_SLEEPING
 		_MUTEX = new Mutex();
@@ -219,7 +220,8 @@ class Main extends Sprite
 		for (persistents in CacheManager.persistentAssets)
 		{
 			CacheManager.setBitmap(persistents);
-			CacheManager.cachedAssets[BITMAP].get(persistents).special = true;
+			if (CacheManager.cachedAssets[BITMAP].exists(persistents))
+				CacheManager.cachedAssets[BITMAP].get(persistents).special = true;
 		}
 
 		try

@@ -15,7 +15,8 @@ class CacheManager
 		'assets/images/menus/mainBG.png',
 		'assets/images/menus/freeplayBG.png',
 		'assets/images/menus/flickerBG.png',
-		'assets/images/menus/settingsBG.png'
+		'assets/images/menus/settingsBG.png',
+		'assets/images/loading.png'
 	];
 
 	// permaneant cache thing, useful for a "caching-ahead" situation

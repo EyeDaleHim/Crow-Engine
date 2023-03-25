@@ -1,0 +1,238 @@
+package backend;
+
+import backend.Transitions;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.util.FlxPool;
+import flixel.util.FlxSort;
+import sys.thread.FixedThreadPool;
+import sys.FileSystem;
+import states.PlayState;
+import music.Song;
+import objects.Stage;
+import objects.character.Character;
+import objects.notes.Note;
+import objects.notes.Note.NoteRenderer;
+import utils.CacheManager;
+
+// only loads to playstate
+@:access(objects.notes.Note)
+class LoadingManager extends MusicBeatState
+{
+	public static var activated:Bool = false;
+	public static var __THREADPOOLS:FixedThreadPool = new FixedThreadPool(8);
+	private static var _GAME_VARS:Map<ItemRequest, Array<Dynamic>> = [];
+
+	public static var time:Int = 0;
+
+	private var finishedItems:Array<ItemRequest> = [];
+
+	private var loadingSprite:FlxSprite;
+
+	public static function getItem(item:ItemRequest)
+	{
+		if (_GAME_VARS.exists(item))
+		{
+			var returnedItem = _GAME_VARS.get(item);
+			_GAME_VARS.remove(item);
+			return returnedItem;
+		}
+
+		return null;
+	}
+
+	public static function startGame():Void
+	{
+		MusicBeatState.switchState(new LoadingManager());
+	}
+
+	public override function new()
+	{
+		Transitions.transOut = false;
+
+		super();
+	}
+
+	override function create():Void
+	{
+		activated = true;
+
+		time = openfl.Lib.getTimer();
+
+		__THREADPOOLS.run(loadStage);
+		__THREADPOOLS.run(loadSong);
+		__THREADPOOLS.run(loadCharacters);
+		__THREADPOOLS.run(loadImages);
+		__THREADPOOLS.run(loadSounds);
+
+		loadingSprite = new FlxSprite().loadGraphic(Paths.image('loading'));
+		loadingSprite.antialiasing = true;
+		loadingSprite.angle = Math.random() * 360;
+		loadingSprite.angularVelocity = 360;
+		loadingSprite.setPosition(FlxG.width - 128, FlxG.height - 128);
+		add(loadingSprite);
+
+		super.create();
+	}
+
+	override function update(elapsed:Float)
+	{
+		if (activated && finishedItems.length >= 3)
+		{
+			trace(finishedItems.length);
+			activated = false;
+			persistentUpdate = false;
+			MusicBeatState.switchState(new PlayState());
+        }
+
+		super.update(elapsed);
+	}
+
+	private function loadImages():Void
+	{
+		for (spr in FileSystem.readDirectory(Paths.imagePath('game/countdown/${Song.metaData.countdownSkin}').replace('.png', '')))
+		{
+			if (!spr.endsWith('json'))
+				Paths.image('game/countdown/${Song.metaData.countdownSkin}/$spr');
+		}
+
+		Paths.image('game/ui/healthBar');
+	}
+
+	private function loadSounds():Void
+	{
+		CacheManager.setAudio(Paths.music('gameOver'));
+		CacheManager.setAudio(Paths.music('gameOverEnd'));
+		CacheManager.setAudio(Paths.sound('game/death/fnf_loss_sfx'));
+	}
+
+	private function loadCharacters():Void
+	{
+		var player = new Character(Song.currentSong.player, true);
+		player.__TYPE = PLAYER;
+		player.scrollFactor.set(0.95, 0.95);
+
+		var opponent = new Character(Song.currentSong.opponent, false);
+		opponent.scrollFactor.set(0.95, 0.95);
+		opponent.overridePlayer = true;
+		for (trail in opponent.trails)
+			trail.visible = false;
+
+		var spectator = new Character(Song.currentSong.spectator, true);
+		spectator.scrollFactor.set(0.95, 0.95);
+
+		_GAME_VARS.set(CHARS, [player, opponent, spectator]);
+
+		finishedItems.push(CHARS);
+	}
+
+	private function loadSong():Void
+	{
+		Paths.inst(Song.currentSong.song);
+		Paths.vocals(Song.currentSong.song);
+
+        var noteList:Array<Note> = [];
+
+		// initialize note
+		new Note();
+
+		NoteRenderer.__pool = new FlxPool<NoteRenderer>(NoteRenderer);
+		NoteRenderer.__pool.preAllocate(32);
+
+		for (sections in Song.currentSong.sectionList)
+		{
+			for (note in sections.notes)
+			{
+				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
+
+				var oldNote:Note = newNote;
+				if (noteList.length > 0)
+					oldNote = noteList[Std.int(noteList.length - 1)];
+
+				newNote._lastNote = oldNote;
+				newNote.missAnim = newNote.singAnim + 'miss';
+
+				if (note.sustain > 0)
+				{
+					var sustainAmounts:Int = Math.floor(Math.max(2, note.sustain / Conductor.stepCrochet));
+
+					for (i in 0...sustainAmounts)
+					{
+						var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i + 1), note.direction, note.mustPress, i + 1,
+							sustainAmounts - 1, note.noteAnim);
+						oldNote = sustainNote;
+						if (noteList.length > 0)
+							oldNote = noteList[Std.int(noteList.length - 1)];
+
+						sustainNote._lastNote = oldNote;
+						sustainNote.sustainLength = sustainAmounts - 1;
+						sustainNote.singAnim = newNote.singAnim;
+						sustainNote.missAnim = newNote.missAnim;
+
+						noteList.push(sustainNote);
+					}
+				}
+
+				noteList.push(newNote);
+			}
+		}
+
+		noteList.sort(function(note1:Note, note2:Note)
+		{
+			return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
+		});
+
+		finishedItems.push(SONGS);
+        _GAME_VARS.set(SONGS, [noteList]);
+	}
+
+	private function loadStage():Void
+	{
+		var stageName:String = 'stage';
+
+		if (Song.currentSong != null)
+		{
+			stageName = switch (Song.currentSong.song.toLowerCase().replace(' ', '-'))
+			{
+				case 'tutorial' | 'bopeebo' | 'fresh' | 'dad-battle' | 'dadbattle':
+					'stage';
+				case 'spookeez' | 'south' | 'monster':
+					'spooky';
+				case 'pico' | 'philly-nice' | 'blammed':
+					'philly';
+				case 'satin-panties' | 'high' | 'milf':
+					'limo';
+				case 'cocoa' | 'eggnog':
+					'mall';
+				case 'winter-horrorland':
+					'red-mall';
+				case 'senpai' | 'roses':
+					'school';
+				case 'thorns':
+					'dark-school';
+				case 'ugh' | 'guns' | 'stress':
+					'warzone';
+				default:
+					'stage-error';
+			};
+
+			trace(Song.currentSong.song.formatToReadable());
+		}
+
+		_GAME_VARS.set(STAGE, [
+			Stage.getStage(stageName),
+			new FlxTypedGroup<BGSprite>(),
+			new FlxTypedGroup<BGSprite>()
+		]);
+
+		finishedItems.push(STAGE);
+	}
+}
+
+@:enum abstract ItemRequest(Int)
+{
+	var STAGE:ItemRequest = 0;
+	var SONGS:ItemRequest = 1;
+	var CHARS:ItemRequest = 2;
+}

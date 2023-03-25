@@ -15,6 +15,7 @@ import weeks.ScoreContainer;
 import weeks.SongHandler;
 import objects.HealthIcon;
 import utils.CacheManager;
+import backend.LoadingManager;
 #if PRELOAD_ALL
 import sys.thread.Thread;
 import openfl.utils.Assets;
@@ -185,11 +186,7 @@ class FreeplayState extends MusicBeatState
 
 				Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
 
-				MusicBeatState.switchState(new PlayState(), function()
-				{
-					Paths.inst(Song.currentSong.song);
-					Paths.vocals(Song.currentSong.song);
-				});
+				LoadingManager.startGame();
 			}
 			else
 			{

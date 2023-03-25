@@ -44,6 +44,7 @@ import objects.notes.StrumNote;
 import utils.CacheManager;
 import weeks.ScoreContainer;
 import weeks.SongHandler;
+import backend.LoadingManager;
 import backend.Transitions;
 import backend.query.ControlQueries;
 
@@ -152,6 +153,7 @@ class CurrentGame
 	}
 }
 
+@:allow(backend.LoadingManager)
 class PlayState extends MusicBeatState
 { // important variables
 	public static var current:PlayState;
@@ -272,7 +274,7 @@ class PlayState extends MusicBeatState
 
 	override public function create()
 	{
-		CacheManager.freeMemory(BITMAP, true);
+		// CacheManager.freeMemory(BITMAP, true); temporarily remove this
 
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -293,6 +295,9 @@ class PlayState extends MusicBeatState
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
+		var loadedStage = LoadingManager.getItem(STAGE);
+		var loadedChars = LoadingManager.getItem(CHARS);
+
 		gameInfo = new CurrentGame();
 
 		FlxG.mouse.visible = false;
@@ -312,41 +317,51 @@ class PlayState extends MusicBeatState
 			vocals.attributes.set('isPlaying', true);
 			FlxG.sound.list.add(vocals);
 		}
-		var stageName:String = 'stage';
 
-		if (Song.currentSong != null)
+		if (loadedStage == null)
 		{
-			stageName = switch (Song.currentSong.song.toLowerCase().replace(' ', '-'))
+			var stageName:String = 'stage';
+
+			if (Song.currentSong != null)
 			{
-				case 'tutorial' | 'bopeebo' | 'fresh' | 'dad-battle' | 'dadbattle':
-					'stage';
-				case 'spookeez' | 'south' | 'monster':
-					'spooky';
-				case 'pico' | 'philly-nice' | 'blammed':
-					'philly';
-				case 'satin-panties' | 'high' | 'milf':
-					'limo';
-				case 'cocoa' | 'eggnog':
-					'mall';
-				case 'winter-horrorland':
-					'red-mall';
-				case 'senpai' | 'roses':
-					'school';
-				case 'thorns':
-					'dark-school';
-				case 'ugh' | 'guns' | 'stress':
-					'warzone';
-				default:
-					'stage-error';
-			};
+				stageName = switch (Song.currentSong.song.toLowerCase().replace(' ', '-'))
+				{
+					case 'tutorial' | 'bopeebo' | 'fresh' | 'dad-battle' | 'dadbattle':
+						'stage';
+					case 'spookeez' | 'south' | 'monster':
+						'spooky';
+					case 'pico' | 'philly-nice' | 'blammed':
+						'philly';
+					case 'satin-panties' | 'high' | 'milf':
+						'limo';
+					case 'cocoa' | 'eggnog':
+						'mall';
+					case 'winter-horrorland':
+						'red-mall';
+					case 'senpai' | 'roses':
+						'school';
+					case 'thorns':
+						'dark-school';
+					case 'ugh' | 'guns' | 'stress':
+						'warzone';
+					default:
+						'stage-error';
+				};
 
-			trace(Song.currentSong.song.formatToReadable());
+				trace(Song.currentSong.song.formatToReadable());
+			}
+
+			stageData = Stage.getStage(stageName);
+
+			preStageRender = new FlxTypedGroup<BGSprite>();
+			postStageRender = new FlxTypedGroup<BGSprite>();
 		}
-
-		stageData = Stage.getStage(stageName);
-
-		preStageRender = new FlxTypedGroup<BGSprite>();
-		postStageRender = new FlxTypedGroup<BGSprite>();
+		else
+		{
+			stageData = loadedStage[0];
+			preStageRender = loadedStage[1];
+			postStageRender = loadedStage[2];
+		}
 
 		var sortedGroup:Array<BGSprite> = [];
 
@@ -384,8 +399,30 @@ class PlayState extends MusicBeatState
 		var specPos = stageData.charPosList.spectatorPositions;
 		var oppPos = stageData.charPosList.opponentPositions;
 
-		spectator = new Character(specPos[0].x, specPos[0].y, Song.currentSong.spectator, true);
-		spectator.scrollFactor.set(0.95, 0.95);
+		if (loadedChars == null)
+		{
+			spectator = new Character(specPos[0].x, specPos[0].y, Song.currentSong.spectator, true);
+			spectator.scrollFactor.set(0.95, 0.95);
+
+			opponent = new Character(oppPos[0].x, oppPos[0].y, Song.currentSong.opponent, false);
+			opponent.scrollFactor.set(0.95, 0.95);
+			opponent.overridePlayer = true;
+
+			player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
+			player.__TYPE = PLAYER;
+			player.scrollFactor.set(0.95, 0.95);
+		}
+		else
+		{
+			spectator = loadedChars[2];
+			spectator.setPosition(specPos[0].x, specPos[0].y);
+
+			opponent = loadedChars[1];
+			opponent.setPosition(oppPos[0].x, oppPos[0].y);
+
+			player = loadedChars[0];
+			player.setPosition(playerPos[0].x, playerPos[0].y);
+		}
 
 		if (Song.currentSong.song.formatToReadable() == 'tutorial')
 		{
@@ -399,18 +436,11 @@ class PlayState extends MusicBeatState
 			tankmenSoldiers = new TankmenUnit();
 			add(tankmenSoldiers);
 		}
+		else
+			add(stageData.spriteGroup['ground']);
 
-		add(stageData.spriteGroup['ground']);
 		add(spectator);
-
-		opponent = new Character(oppPos[0].x, oppPos[0].y, Song.currentSong.opponent, false);
-		opponent.scrollFactor.set(0.95, 0.95);
-		opponent.overridePlayer = true;
 		add(opponent);
-
-		player = new Character(playerPos[0].x, playerPos[0].y, Song.currentSong.player, true);
-		player.__TYPE = PLAYER;
-		player.scrollFactor.set(0.95, 0.95);
 		add(player);
 
 		add(postStageRender);
@@ -584,6 +614,8 @@ class PlayState extends MusicBeatState
 		CacheManager.setAudio(Paths.sound('game/death/fnf_loss_sfx'));
 
 		super.create();
+
+		trace('game took ' + (openfl.Lib.getTimer() - LoadingManager.time) + 'ms to load');
 	}
 
 	private function addToHUD(obj:FlxBasic, index:Int = null, ?group:FlxTypedGroup<FlxBasic> = null)
@@ -823,6 +855,8 @@ class PlayState extends MusicBeatState
 
 	public function generateSong():Void
 	{
+		var loadedNotes = LoadingManager.getItem(SONGS);
+
 		renderedNotes = new FlxTypedGroup<NoteRenderer>();
 		addToHUD(renderedNotes);
 
@@ -842,57 +876,60 @@ class PlayState extends MusicBeatState
 
 		events = new EventManager(Song.currentSong.song.formatToReadable(), true);
 
-		var generatedTime = openfl.Lib.getTimer();
-
-		// initialize note
-		new Note();
-
-		NoteRenderer.__pool = new FlxPool<NoteRenderer>(NoteRenderer);
-		NoteRenderer.__pool.preAllocate(32);
-
-		for (sections in Song.currentSong.sectionList)
+		if (loadedNotes == null)
 		{
-			for (note in sections.notes)
+			// initialize note
+
+			new Note();
+
+			NoteRenderer.__pool = new FlxPool<NoteRenderer>(NoteRenderer);
+			NoteRenderer.__pool.preAllocate(32);
+
+			for (sections in Song.currentSong.sectionList)
 			{
-				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
-
-				var oldNote:Note = newNote;
-				if (pendingNotes.length > 0)
-					oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
-
-				newNote._lastNote = oldNote;
-				newNote.missAnim = newNote.singAnim + 'miss';
-
-				if (note.sustain > 0)
+				for (note in sections.notes)
 				{
-					var sustainAmounts:Int = Math.floor(Math.max(2, note.sustain / Conductor.stepCrochet));
+					var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
 
-					for (i in 0...sustainAmounts)
+					var oldNote:Note = newNote;
+					if (pendingNotes.length > 0)
+						oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
+
+					newNote._lastNote = oldNote;
+					newNote.missAnim = newNote.singAnim + 'miss';
+
+					if (note.sustain > 0)
 					{
-						var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i + 1), note.direction, note.mustPress, i + 1,
-							sustainAmounts - 1, note.noteAnim);
-						oldNote = sustainNote;
-						if (pendingNotes.length > 0)
-							oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
+						var sustainAmounts:Int = Math.floor(Math.max(2, note.sustain / Conductor.stepCrochet));
 
-						sustainNote._lastNote = oldNote;
-						sustainNote.sustainLength = sustainAmounts - 1;
-						sustainNote.singAnim = newNote.singAnim;
-						sustainNote.missAnim = newNote.missAnim;
+						for (i in 0...sustainAmounts)
+						{
+							var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i + 1), note.direction, note.mustPress, i + 1,
+								sustainAmounts - 1, note.noteAnim);
+							oldNote = sustainNote;
+							if (pendingNotes.length > 0)
+								oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
 
-						pendingNotes.push(sustainNote);
+							sustainNote._lastNote = oldNote;
+							sustainNote.sustainLength = sustainAmounts - 1;
+							sustainNote.singAnim = newNote.singAnim;
+							sustainNote.missAnim = newNote.missAnim;
+
+							pendingNotes.push(sustainNote);
+						}
 					}
+
+					pendingNotes.push(newNote);
 				}
-
-				pendingNotes.push(newNote);
 			}
-		}
-		trace((openfl.Lib.getTimer() - generatedTime) + 'ms GENERATING NOTES');
 
-		pendingNotes.sort(function(note1:Note, note2:Note)
-		{
-			return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
-		});
+			pendingNotes.sort(function(note1:Note, note2:Note)
+			{
+				return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
+			});
+		}
+		else
+			pendingNotes = loadedNotes[0];
 
 		generatedMusic = true;
 	}
@@ -1039,7 +1076,7 @@ class PlayState extends MusicBeatState
 								CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song)).special = false;
 
 							Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
-							MusicBeatState.switchState(new PlayState());
+							LoadingManager.startGame();
 						}
 						else
 						{

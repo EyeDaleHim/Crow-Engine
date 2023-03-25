@@ -1,5 +1,6 @@
 package states.substates;
 
+import backend.LoadingManager;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -33,7 +34,7 @@ class PauseSubState extends MusicBeatSubState
 			callback: function()
 			{
 				FlxTween.tween(PlayState.current.pauseCamera, {alpha: 0.0}, 0.5, {ease: FlxEase.quadOut});
-				MusicBeatState.switchState(new states.PlayState());
+				LoadingManager.startGame();
 			}
 		},
 		{

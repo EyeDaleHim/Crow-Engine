@@ -110,7 +110,8 @@ class Stage
 					vignetteFlash.updateHitbox();
 					vignetteFlash.screenCenter();
 
-					vignetteFlash.cameras = [PlayState.current.hudCamera];
+					if (PlayState.current != null)
+						vignetteFlash.cameras = [PlayState.current.hudCamera];
 
 					vignetteFlash.ID = 1;
 					group.set('vignette', vignetteFlash);
@@ -881,6 +882,8 @@ class Stage
 					{
 						if (FlxG.random.bool(10) && beat > attributes['strikeBeat'] + attributes['lightningOffset'])
 						{
+							spriteGroup['vignette'].cameras = [PlayState.current.hudCamera];
+
 							var thunder:FlxSound = stageSoundObjects.get('thunder');
 							thunder.onComplete = function()
 							{

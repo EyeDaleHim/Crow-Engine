@@ -20,6 +20,7 @@ import backend.Script;
 using StringTools;
 
 @:allow(states.PlayState)
+@:allow(backend.LoadingManager)
 class Character extends FlxSprite
 {
 	// basic info
@@ -50,7 +51,7 @@ class Character extends FlxSprite
 
 	private var __TYPE:CharacterType = NORMAL;
 
-	public function new(x:Float, y:Float, name:String, isPlayer:Bool)
+	public function new(?x:Float = 0, ?y:Float = 0, name:String, isPlayer:Bool)
 	{
 		super(x, y);
 
