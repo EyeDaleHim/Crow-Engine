@@ -1,1 +1,0 @@
-* `assets/images/weekcharacters/CHARACTER/CHARACTERSTUFF(.png, .xml, .json)

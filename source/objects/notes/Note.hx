@@ -159,7 +159,8 @@ class NoteRenderer extends FlxSprite
 			}
 		}
 
-		animation.play(animPlay, true);
+		if (animPlay != '')
+			animation.play(animPlay, true);
 		scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y);
 
 		if (note != null)
