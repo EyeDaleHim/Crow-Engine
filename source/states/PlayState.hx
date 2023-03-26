@@ -39,7 +39,7 @@ import objects.ComboSprite;
 import objects.stageParts.TankmenUnit;
 import objects.character.Character;
 import objects.notes.Note;
-import objects.notes.Note.NoteRenderer;
+import objects.notes.Note.NoteSprite;
 import objects.notes.StrumNote;
 import utils.CacheManager;
 import weeks.ScoreContainer;
@@ -177,7 +177,7 @@ class PlayState extends MusicBeatState
 	public var vocals:FlxSound;
 
 	// notes
-	public var renderedNotes:FlxTypedGroup<NoteRenderer>;
+	public var renderedNotes:FlxTypedGroup<NoteSprite>;
 	public var pendingNotes:Array<Note> = [];
 
 	// strums
@@ -435,6 +435,8 @@ class PlayState extends MusicBeatState
 
 			tankmenSoldiers = new TankmenUnit();
 			add(tankmenSoldiers);
+
+			add(stageData.spriteGroup['ground']);
 		}
 		else
 			add(stageData.spriteGroup['ground']);
@@ -653,11 +655,11 @@ class PlayState extends MusicBeatState
 						_isolatedNotes.note[note.direction].push(note);
 				}
 
-				var currentNote:NoteRenderer = NoteRenderer.__pool.get();
+				var currentNote:NoteSprite = NoteSprite.__pool.get();
 				currentNote.exists = true;
 				currentNote.refreshNote(note);
 				if (currentNote.note.isEndNote && Settings.getPref('downscroll', false))
-					currentNote.attributes.set('gapOffset', (currentNote.note._lastNote.noteRenderer.y - (currentNote.y + currentNote.height)));
+					currentNote.attributes.set('gapOffset', (currentNote.note._lastNote.noteSprite.y - (currentNote.y + currentNote.height)));
 
 				if (note.isSustainNote)
 					renderedNotes.insert(0, currentNote);
@@ -857,7 +859,7 @@ class PlayState extends MusicBeatState
 	{
 		var loadedNotes = LoadingManager.getItem(SONGS);
 
-		renderedNotes = new FlxTypedGroup<NoteRenderer>();
+		renderedNotes = new FlxTypedGroup<NoteSprite>();
 		addToHUD(renderedNotes);
 
 		if (Song.currentSong == null)
@@ -874,16 +876,14 @@ class PlayState extends MusicBeatState
 
 		songSpeed = FlxMath.roundDecimal(Song.currentSong.speed, 2);
 
-		events = new EventManager(Song.currentSong.song.formatToReadable(), true);
-
 		if (loadedNotes == null)
 		{
 			// initialize note
 
 			new Note();
 
-			NoteRenderer.__pool = new FlxPool<NoteRenderer>(NoteRenderer);
-			NoteRenderer.__pool.preAllocate(32);
+			NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
+			NoteSprite.__pool.preAllocate(32);
 
 			for (sections in Song.currentSong.sectionList)
 			{
@@ -915,6 +915,7 @@ class PlayState extends MusicBeatState
 							sustainNote.singAnim = newNote.singAnim;
 							sustainNote.missAnim = newNote.missAnim;
 
+							newNote.noteChildrens.push(sustainNote);
 							pendingNotes.push(sustainNote);
 						}
 					}
@@ -930,6 +931,8 @@ class PlayState extends MusicBeatState
 		}
 		else
 			pendingNotes = loadedNotes[0];
+
+		events = new EventManager(Song.currentSong.song.formatToReadable(), true);
 
 		generatedMusic = true;
 	}
@@ -1323,7 +1326,7 @@ class PlayState extends MusicBeatState
 		{
 			var center = strumLine.y + (Note.transformedWidth / 2);
 
-			renderedNotes.forEachAlive(function(renderer:NoteRenderer)
+			renderedNotes.forEachAlive(function(renderer:NoteSprite)
 			{
 				var strumGroup:FlxTypedGroup<StrumNote> = renderer.note.mustPress ? playerStrums : opponentStrums;
 				var strumNote:StrumNote = strumGroup.members[renderer.note.direction];
@@ -1402,33 +1405,43 @@ class PlayState extends MusicBeatState
 					}
 				}
 
-				if (!renderer.note.mustPress && renderer.note.wasGoodHit)
+				var skipCheck:Bool = (renderer.note == null);
+
+				if (!skipCheck && !renderer.note.mustPress && renderer.note.wasGoodHit)
 				{
 					if (renderer.note.strumTime <= Conductor.songPosition && !renderer.note._hitSustain)
+					{
 						hitNote(renderer.note, true);
+					}
+				}
+				else if (!skipCheck && renderer.note.isSustainNote)
+				{
+					if (renderer.note.mustPress
+						&& Conductor.songPosition >= renderer.note.strumTime
+						&& renderer.note.parentNote.wasGoodHit
+						&& botplay)
+						hitNote(renderer.note);
+				}
+				else if (!skipCheck && renderer.note.strumTime - Conductor.songPosition < -300)
+				{
+					if (renderer.note.mustPress && !renderer.note.isSustainNote)
+						missNote(renderer.note);
 				}
 
-				if (renderer.note.isSustainNote)
+				if (!skipCheck && renderer.note.isSustainNote)
 				{
 					if ((Settings.getPref('downscroll', false) && renderer.y > FlxG.height * (1.0 + songSpeed))
 						|| (!Settings.getPref('downscroll', false) && renderer.y < -renderer.height * (1.0 + songSpeed)))
 						killNote(renderer.note);
 				}
 
-				if (renderer.note.mustPress && Conductor.songPosition >= renderer.note.strumTime && botplay)
-					hitNote(renderer.note);
-				else if (renderer.note.strumTime - Conductor.songPosition < -300)
-				{
-					if (renderer.note.mustPress)
-						noteMiss(renderer.note);
-				}
-
-				if (!botplay && currentKeys.contains(true))
+				if (!skipCheck && !botplay && currentKeys.contains(true))
 				{
 					if (currentKeys[renderer.note.direction]
 						&& renderer.note.mustPress
 						&& renderer.note.isSustainNote
-						&& renderer.note.canBeHit)
+						&& renderer.note.canBeHit
+						&& !renderer.note.tooLate)
 					{
 						hitNote(renderer.note);
 					}
@@ -1530,7 +1543,7 @@ class PlayState extends MusicBeatState
 
 	public var reductionRate:Float = 1.0;
 
-	public function noteMiss(note:Note)
+	public function missNote(note:Note)
 	{
 		if (!note.wasGoodHit)
 		{
@@ -1546,8 +1559,6 @@ class PlayState extends MusicBeatState
 			gameInfo.misses++;
 			gameInfo.playerHitMods++;
 
-			gameInfo.health -= FlxMath.remapToRange(2, 0, 100, 0, 2) * reductionRate;
-
 			var lastCombo = gameInfo.combo;
 
 			gameInfo.combo = 0;
@@ -1555,11 +1566,25 @@ class PlayState extends MusicBeatState
 			if (lastCombo != 0 && !note.isSustainNote)
 				popCombo('miss');
 
-			gameInfo.score -= 25;
+			var lossRate:Int = 1;
+			if (note.noteChildrens.length > 0)
+			{
+				for (child in note.noteChildrens)
+				{
+					child.tooLate = true;
+					lossRate++;
+
+					gameInfo.health -= FlxMath.remapToRange(1, 0, 100, 0, 2) * reductionRate;
+				}
+			}
+
+			gameInfo.health -= FlxMath.remapToRange(2, 0, 100, 0, 2) * reductionRate;
+
+			gameInfo.score -= 25 * note.noteChildrens.length;
+
+			reductionRate += (FlxMath.roundDecimal(Math.min(reductionRate * 0.1, 0.5), 2) * (note.isSustainNote ? 0.25 : 1.0)) * lossRate;
 
 			killNote(note);
-
-			reductionRate += FlxMath.roundDecimal(Math.min(reductionRate * 0.1, 0.5), 2) * (note.isSustainNote ? 0.25 : 1.0);
 		}
 
 		player._stunnedTimer = 0.5;
@@ -1691,8 +1716,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		note.noteRenderer.exists = false;
-		renderedNotes.remove(note.noteRenderer, true);
+		note.noteSprite.exists = false;
+		renderedNotes.remove(note.noteSprite, true);
 	}
 
 	override function destroy()
@@ -1703,7 +1728,7 @@ class PlayState extends MusicBeatState
 		Note._noteFile = null;
 		StrumNote._strumFile = null;
 
-		NoteRenderer.__pool = null;
+		NoteSprite.__pool = null;
 
 		super.destroy();
 	}

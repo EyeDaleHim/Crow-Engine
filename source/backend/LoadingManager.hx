@@ -13,7 +13,7 @@ import music.Song;
 import objects.Stage;
 import objects.character.Character;
 import objects.notes.Note;
-import objects.notes.Note.NoteRenderer;
+import objects.notes.Note.NoteSprite;
 import utils.CacheManager;
 
 // only loads to playstate
@@ -80,7 +80,6 @@ class LoadingManager extends MusicBeatState
 	{
 		if (activated && finishedItems.length >= 3)
 		{
-			trace(finishedItems.length);
 			activated = false;
 			persistentUpdate = false;
 			MusicBeatState.switchState(new PlayState());
@@ -111,20 +110,22 @@ class LoadingManager extends MusicBeatState
 	{
 		var player = new Character(Song.currentSong.player, true);
 		player.__TYPE = PLAYER;
-		player.scrollFactor.set(0.95, 0.95);
 
 		var opponent = new Character(Song.currentSong.opponent, false);
-		opponent.scrollFactor.set(0.95, 0.95);
 		opponent.overridePlayer = true;
 		for (trail in opponent.trails)
 			trail.visible = false;
 
 		var spectator = new Character(Song.currentSong.spectator, true);
-		spectator.scrollFactor.set(0.95, 0.95);
 
 		_GAME_VARS.set(CHARS, [player, opponent, spectator]);
 
 		finishedItems.push(CHARS);
+	}
+
+	private function loadStrums():Void
+	{
+
 	}
 
 	private function loadSong():Void
@@ -137,8 +138,8 @@ class LoadingManager extends MusicBeatState
 		// initialize note
 		new Note();
 
-		NoteRenderer.__pool = new FlxPool<NoteRenderer>(NoteRenderer);
-		NoteRenderer.__pool.preAllocate(32);
+		NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
+		NoteSprite.__pool.preAllocate(32);
 
 		for (sections in Song.currentSong.sectionList)
 		{
@@ -170,6 +171,7 @@ class LoadingManager extends MusicBeatState
 						sustainNote.singAnim = newNote.singAnim;
 						sustainNote.missAnim = newNote.missAnim;
 
+						newNote.noteChildrens.push(sustainNote);
 						noteList.push(sustainNote);
 					}
 				}

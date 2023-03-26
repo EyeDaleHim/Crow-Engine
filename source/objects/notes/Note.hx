@@ -13,7 +13,7 @@ import haxe.Json;
 using StringTools;
 
 @:allow(states.PlayState)
-@:allow(objects.notes.NoteRenderer)
+@:allow(objects.notes.NoteSprite)
 class Note
 {
 	public var earlyMult:Float = 0.5;
@@ -22,7 +22,7 @@ class Note
 
 	public static var transformedWidth:Float = 160 * 0.7;
 
-	public var noteRenderer:NoteRenderer;
+	public var noteSprite:NoteSprite;
 
 	public function new(strumTime:Float = 0, direction:Int = 0, mustPress:Bool = false, sustainIndex:Float = 0, sustainLength:Float = 0, singAnim:String = '')
 	{
@@ -59,13 +59,16 @@ class Note
 	public var sustainIndex:Float = 0;
 	public var sustainLength:Float = 0;
 	public var mustPress:Bool = false;
-	public var isSustainNote:Bool = false;
-	public var isEndNote:Bool = false;
 
 	private var _lastNote:Note;
 	private var _hitSustain:Bool = false; // FOR GOD'S SAKE
 
 	private static var _noteFile:NoteFile;
+
+	public var noteChildrens:Array<Note> = [];
+	public var parentNote:Note;
+	public var isSustainNote:Bool = false;
+	public var isEndNote:Bool = false;
 
 	// public var strumOwner:Int = 0; // enemy = 0, player = 1, useful if you wanna make a pasta night / bonedoggle gimmick thing
 	public var canBeHit:Bool;
@@ -82,9 +85,9 @@ class Note
 // for now, repurpose this class so i can do a pool thing
 
 @:allow(states.PlayState)
-class NoteRenderer extends FlxSprite
+class NoteSprite extends FlxSprite
 {
-	public static var __pool:FlxPool<NoteRenderer>;
+	public static var __pool:FlxPool<NoteSprite>;
 
 	public var note:Note;
 
@@ -97,7 +100,7 @@ class NoteRenderer extends FlxSprite
 		this.note = note;
 
 		if (note != null)
-			note.noteRenderer = this;
+			note.noteSprite = this;
 
 		frames = switch (Note._noteFile.atlasType)
 		{
@@ -142,7 +145,7 @@ class NoteRenderer extends FlxSprite
 			animPlay = Note._noteFile.animDirections[note == null ? 0 : note.direction];
 
 			this.note = note;
-			this.note.noteRenderer = this;
+			this.note.noteSprite = this;
 
 			if (note.isSustainNote)
 			{
@@ -206,7 +209,10 @@ class NoteRenderer extends FlxSprite
 				note.canBeHit = (note.strumTime > Conductor.songPosition - NoteStorageFunction.safeZoneOffset
 					&& note.strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * note.earlyMult));
 
-				note.tooLate = (note.strumTime < Conductor.songPosition - NoteStorageFunction.safeZoneOffset && !note.wasGoodHit);
+				if (!note.tooLate)
+					note.tooLate = (note.strumTime < Conductor.songPosition - NoteStorageFunction.safeZoneOffset && !note.wasGoodHit);
+				else
+					alpha = 0.3;
 			}
 			else
 			{

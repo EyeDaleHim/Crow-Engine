@@ -96,10 +96,8 @@ class DebugInfo extends TextField
 		addEventListener(Event.ENTER_FRAME, onEnter);
 	}
 
-	private var _updateMS:Int = 0;
-	private var _storedLastMS:Float = 0.0;
-	private var lastChangedPeak:Float = 0.0;
 	private var frameCount:Int = 0;
+	private var currentTime:Int = 0;
 
 	private function updateFPS():Void
 	{
@@ -109,18 +107,7 @@ class DebugInfo extends TextField
 			text.visible = false;
 
 		if (memory > memoryPeak)
-		{
 			memoryPeak = memory;
-			lastChangedPeak = 0.0;
-		}
-
-		if ((lastChangedPeak += FlxG.elapsed) >= 7.5)
-		{
-			lastChangedPeak = 0.0;
-
-			memoryPeak = Math.floor(memoryPeak - memoryPeak / 10);
-			memoryPeak = Math.floor(Math.max(memory, memoryPeak));
-		}
 
 		if (visible = !(Settings.getPref("fpsInfo", "default") == 'disable'))
 		{
@@ -141,6 +128,9 @@ class DebugInfo extends TextField
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 2)
 							text += " / " + Tools.abbreviateNumber(memoryPeak, dataSizes) + "\n";
+
+						if (Settings.getPref("fpsInfo_display", 0) >= 3)
+							text +=  Tools.abbreviateNumber(FlxG.stage.context3D.totalGPUMemory, dataSizes) + "\n";
 						else
 							text += '\n';
 					}
@@ -154,6 +144,9 @@ class DebugInfo extends TextField
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 2)
 							text += " / " + Tools.abbreviateNumber(memoryPeak, dataSizes) + "\n";
+
+						if (Settings.getPref("fpsInfo_display", 0) >= 3)
+							text +=  "GPU: " + Tools.abbreviateNumber(FlxG.stage.context3D.totalGPUMemory, dataSizes) + "\n";
 						else
 							text += '\n';
 					}
@@ -162,18 +155,18 @@ class DebugInfo extends TextField
 			for (text in outlines)
 				text.text = this.text;
 		}
-
-		frameCount = 0;
 	}
 
 	private function onEnter(_:Event)
 	{
-		frameCount++;
+		frameCount = Math.floor((1 / (openfl.Lib.getTimer() - currentTime)) * 1000);
+
+		currentTime = openfl.Lib.getTimer();
 
 		if (FlxG.keys.justPressed.F4)
 		{
 			if (FlxG.keys.pressed.F3)
-				Settings.setPref("fpsInfo_display", Std.int((Settings.getPref("fpsInfo_display") + 1) % 3));
+				Settings.setPref("fpsInfo_display", Std.int((Settings.getPref("fpsInfo_display") + 1) % 4));
 			else
 			{
 				switch (Settings.getPref("fpsInfo", "default"))
