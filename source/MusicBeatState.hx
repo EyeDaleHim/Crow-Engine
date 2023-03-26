@@ -118,7 +118,7 @@ class MusicBeatState extends FlxUIState
 
 				for (asset in cast(state, MusicBeatState).callAssetsToCache())
 				{
-					utils.CacheManager.setBitmap(asset);
+					backend.graphic.CacheManager.setBitmap(asset);
 				}
 				FlxG.switchState(state);
 			}

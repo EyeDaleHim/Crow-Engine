@@ -5,7 +5,7 @@ import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
-import objects.Alphabet;
+import objects.ui.Alphabet;
 import utils.InputFormat;
 
 class ControlsBindSubState extends MusicBeatSubState

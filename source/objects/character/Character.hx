@@ -1,6 +1,6 @@
 package objects.character;
 
-import utils.CacheManager;
+import backend.graphic.CacheManager;
 import states.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;

@@ -6,7 +6,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.util.FlxColor;
-import objects.Alphabet;
+import objects.ui.Alphabet;
 import states.debug.*;
 import states.debug.characters.*;
 import states.debug.game.*;

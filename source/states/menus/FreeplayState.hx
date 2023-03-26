@@ -13,8 +13,8 @@ import flixel.util.FlxSort;
 import states.menus.MainMenuState;
 import weeks.ScoreContainer;
 import weeks.SongHandler;
-import objects.HealthIcon;
-import utils.CacheManager;
+import objects.ui.HealthIcon;
+import backend.graphic.CacheManager;
 import backend.LoadingManager;
 #if PRELOAD_ALL
 import sys.thread.Thread;

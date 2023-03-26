@@ -14,7 +14,7 @@ import objects.Stage;
 import objects.character.Character;
 import objects.notes.Note;
 import objects.notes.Note.NoteSprite;
-import utils.CacheManager;
+import backend.graphic.CacheManager;
 
 // only loads to playstate
 @:access(objects.notes.Note)

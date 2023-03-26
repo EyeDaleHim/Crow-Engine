@@ -9,7 +9,7 @@ import flixel.system.FlxSound;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.util.FlxTimer;
-import utils.CacheManager;
+import backend.graphic.CacheManager;
 import objects.character.CharacterAnimate;
 import states.PlayState;
 

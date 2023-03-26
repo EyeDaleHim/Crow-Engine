@@ -9,8 +9,8 @@ import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
-import objects.Alphabet;
-import utils.CacheManager;
+import objects.ui.Alphabet;
+import backend.graphic.CacheManager;
 
 using StringTools;
 

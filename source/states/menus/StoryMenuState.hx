@@ -12,12 +12,12 @@ import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSort;
 import flixel.util.FlxSpriteUtil;
-import objects.WeekSprite;
+import objects.ui.WeekSprite;
 import objects.character.WeekCharacter;
 import weeks.SongHandler;
 import weeks.SongHandler.WeekList;
 import states.PlayState;
-import utils.CacheManager;
+import backend.graphic.CacheManager;
 
 using utils.Tools;
 

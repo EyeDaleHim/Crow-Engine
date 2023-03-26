@@ -18,7 +18,7 @@ import states.options.DescriptionHolder;
 import states.options.categories.CategoryOptions;
 import states.options.categories.GameplayOptions;
 import states.options.categories.GraphicsOptions;
-import objects.Alphabet;
+import objects.ui.Alphabet;
 
 using StringTools;
 using utils.Tools;

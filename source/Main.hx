@@ -18,7 +18,7 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 import haxe.Json;
-import utils.CacheManager;
+import backend.graphic.CacheManager;
 import openfl.Assets;
 import openfl.utils.AssetCache;
 

@@ -8,9 +8,9 @@ import openfl.display.BitmapData;
 import flash.media.Sound;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
-import utils.CacheManager;
-import utils.CacheManager.AssetTypeData;
-import utils.FramesManager;
+import backend.graphic.CacheManager;
+import backend.graphic.CacheManager.AssetTypeData;
+import backend.graphic.FramesManager;
 
 using StringTools;
 using utils.Tools;

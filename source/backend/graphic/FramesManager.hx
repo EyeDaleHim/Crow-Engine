@@ -14,7 +14,7 @@ import flixel.system.FlxAssets.FlxTexturePackerSource;
 import openfl.Assets;
 import haxe.Json;
 import haxe.xml.Access;
-import utils.CacheManager;
+import backend.graphic.CacheManager;
 
 class FramesManager extends FlxAtlasFrames
 {
