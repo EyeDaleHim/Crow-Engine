@@ -35,8 +35,9 @@ jobs:
         prerelease: false
         files: ./artifacts/*
         body: |
-          This is an automatic nightly release of Crow Engine
-          if you encounter any bugs in this release, please report it to the Discord Server #bug-reports AND/OR Make an issue in the github repo
-          thank you for using Crow Engine!
+          This is an automatic nightly release of Crow Engine.
+          Note that Nightly Builds are unstable, and you may experience bugs, crashes, unintended behavior, or unfinished products.
+
+          Please report any bugs to the [Issues](https://github.com/EyeDaleHim/Crow-Engine/issues) tab, or report them in the [Discord Server](https://discord.gg/QVHSdbzZmy).
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
