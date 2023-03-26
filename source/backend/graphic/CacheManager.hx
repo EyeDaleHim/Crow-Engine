@@ -1,4 +1,4 @@
-package utils;
+package backend.graphic;
 
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
