@@ -885,8 +885,8 @@ class PlayState extends MusicBeatState
 			NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
 			NoteSprite.__pool.preAllocate(16);
 
-			NoteSprite.__tiledPool = new FlxPool<SustainNote>(SustainNote);
-			NoteSprite.__tiledPool.preAllocate(16);
+			/*SustainNote.__pool = new FlxPool<SustainNote>(SustainNote);
+			SustainNote.__pool.preAllocate(16);*/
 
 			for (sections in Song.currentSong.sectionList)
 			{
