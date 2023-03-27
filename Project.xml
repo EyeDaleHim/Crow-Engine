@@ -17,10 +17,12 @@
 	<language name="en-US"/>
 
 	<!-- Crow Engine Options -->
-	<haxedef name="HSCRIPT_ALLOWED"/>
+	<haxedef name="HSCRIPT_ALLOWED"/> <!-- Whether or not scripts should be enabled -->
 	<haxedef name="EDITORS_ALLOWED"/> <!-- Whether or not the editor should be enabled -->
+	<haxedef name="MODS_ENABLED"/> <!-- Whether or not mods should be enabled -->
 
 
+	<!-- Advanced -->
 	<haxedef name="PRELOAD_CHARACTER" /> <!-- Preloads all character .json and .xml files at startup, reducing load time, does not preload bitmaps -->
 
 	<haxedef name="ALLOW_FLIXEL_SLEEPING" /> <!-- If a Flixel object remains unchanged in velocity for a specified amount of time, it will set `moves` property to false -->
@@ -56,11 +58,11 @@
 	<assets path="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets" exclude="*.mp3" unless="web"/>
 
+	<assets path="mods" exclude="*.ogg" if="web"/>
+	<assets path="mods" exclude="*.mp3" unless="web"/>
+
 	<define name="PRELOAD_ALL" unless="web"/>
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
-
-	<set name="preloadValue" value="true" if="PRELOAD_ALL"/>
-	<set name="preloadValue" value="false" if="NO_PRELOAD_ALL"/>
 
 	<!-- I recommend keeping this here just incase. I'd also add it for the titlescreen and main menu
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>

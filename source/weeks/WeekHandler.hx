@@ -1,6 +1,6 @@
 package weeks;
 
-class SongHandler
+class WeekHandler
 {
 	// whatever better alternative to holding it in freeplay
 	public static var songs:Map<String, Map<String, WeekList>> = [

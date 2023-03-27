@@ -1390,7 +1390,7 @@ class PlayState extends MusicBeatState
 							var swagRect = new FlxRect(0, 0, renderer.frameWidth, renderer.frameHeight);
 							swagRect.height = (center - renderer.y) / renderer.scale.y;
 							swagRect.y = renderer.frameHeight - swagRect.height;
-							swagRect.floor();
+							swagRect.ceil();
 
 							renderer.clipRect = swagRect;
 						}
@@ -1402,7 +1402,7 @@ class PlayState extends MusicBeatState
 							var swagRect = new FlxRect(0, 0, renderer.width / renderer.scale.x, renderer.height / renderer.scale.y);
 							swagRect.y = (center - renderer.y) / renderer.scale.y;
 							swagRect.height -= swagRect.y;
-							swagRect.floor();
+							swagRect.ceil();
 
 							renderer.clipRect = swagRect;
 						}

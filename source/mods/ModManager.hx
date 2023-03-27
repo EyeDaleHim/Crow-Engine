@@ -1,7 +1,7 @@
 package mods;
 
-import game.mods.ModData;
-import openfl.Assets;;
+import mods.ModData;
+import openfl.Assets;
 import sys.FileSystem;
 import haxe.Json;
 
@@ -34,6 +34,11 @@ class ModManager
                     }
 				}
 			}
+
+            for (mod in mods)
+            {
+
+            }
 		}
 	}
 }
