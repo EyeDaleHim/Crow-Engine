@@ -89,11 +89,12 @@ class Character extends FlxSprite
 
 		charPath = 'characters/${this.name}/${this.name}';
 
-		_characterData = #if PRELOAD_CHARACTER
-		CacheManager.getDynamic('${this.name}-jsonFile');
-		#else 
-		Json.parse(Assets.getText(Paths.imagePath(charPath).replace('png', 'json')));
-		#end
+		_characterData =
+			#if PRELOAD_CHARACTER
+			CacheManager.getDynamic('${this.name}-jsonFile');
+			#else
+			Json.parse(Assets.getText(Paths.imagePath(charPath).replace('png', 'json')));
+			#end
 
 		frames = switch (_characterData == null ? 'sparrow' : _characterData.atlasType)
 		{
@@ -197,14 +198,21 @@ class Character extends FlxSprite
 			if (animation.curAnim != null)
 			{
 				// 0.3 offset
-				var playIdleAnim:Bool = (singList.contains(animation.curAnim.name)
-					&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 4.5 * 0.001);
+				var timePassed:Float = -_animationOffset + _animationTimer;
+				var isSinging:Bool = singList.contains(animation.curAnim.name);
+				var isMissing:Bool = missList.contains(animation.curAnim.name);
+
+				var playIdleAnim:Bool = false;
+
+				if (isSinging && timePassed >= Conductor.stepCrochet * 4.5 * 0.001)
+					playIdleAnim = true;
 
 				if (overridePlayer)
-					playIdleAnim = ((singList.contains(animation.curAnim.name)
-						&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 1.15 * 0.001)
-						|| (missList.contains(animation.curAnim.name)
-							&& (-_animationOffset + _animationTimer) >= Conductor.stepCrochet * 4 * 0.001));
+				{
+					if ((isSinging && timePassed >= Conductor.stepCrochet * 1.15 * 0.001)
+						|| (isMissing && timePassed >= Conductor.stepCrochet * 4 * 0.001))
+						playIdleAnim = true;
+				}
 
 				if ((playIdleAnim || !singList.contains(animation.curAnim.name)) || forceIdle)
 				{

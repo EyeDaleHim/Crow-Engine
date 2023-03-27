@@ -53,25 +53,23 @@ class ScoreContainer
 	// set the song results, if the score result is higher than current
 	public static function setSong(song:String, diff:Int, result:SongScore):SongScore
 	{
-		if (songScores.exists(song))
-		{
-			if (songScores[song].exists(diff))
-			{
-				var savedPerformance:Float = songScores[song][diff].score * songScores[song][diff].accuracy;
+		var songScore = songScores.get(song);
 
-				if (result.score * result.accuracy > savedPerformance)
-					songScores[song].set(diff, result);
-			}
-			else
-				songScores[song].set(diff, result);
-		}
-		else
+		if (songScore == null)
 		{
-			songScores.set(song, []);
-			return setSong(song, diff, result);
+			songScore = new Map<Int, SongScore>();
+			songScores.set(song, songScore);
 		}
 
-		_save.flush();
+		var currentSongScore = songScore.get(diff);
+		var currentPerformance = currentSongScore != null ? currentSongScore.score * currentSongScore.accuracy : -1;
+		var newPerformance = result.score * result.accuracy;
+
+		if (newPerformance > currentPerformance)
+		{
+			songScore.set(diff, result);
+			_save.flush();
+		}
 
 		return result;
 	}
@@ -89,38 +87,26 @@ class ScoreContainer
 
 	public static function setWeek(week:String, diff:Int, results:Array<SongScore>):WeekScore
 	{
-		if (weekScores.exists(week))
+		var weekScoresValue = weekScores.get(week);
+		if (weekScoresValue == null)
 		{
-			if (weekScores[week].exists(diff))
-			{
-				var weekResult:WeekScore = {addedScore: 0, averageAccuracy: 0.0, addedMisses: 0};
-
-				for (result in results)
-				{
-					weekResult.addedScore += result.score;
-					weekResult.averageAccuracy += result.accuracy;
-					weekResult.addedMisses += result.misses;
-				}
-
-				weekResult.averageAccuracy /= results.length;
-
-				if (weekResult.addedScore > weekScores[week][diff].addedScore)
-					weekScores[week].set(diff, weekResult);
-			}
-			else
-			{
-				weekScores[week].set(diff, {addedScore: 0, averageAccuracy: 0.00, addedMisses: 0});
-				return setWeek(week, diff, results);
-			}
+			weekScoresValue = new Map<Int, WeekScore>();
+			weekScores.set(week, weekScoresValue);
 		}
-		else
+		var weekResult = {addedScore: 0, averageAccuracy: 0.0, addedMisses: 0};
+		for (result in results)
 		{
-			weekScores.set(week, []);
-			return setWeek(week, diff, results);
+			weekResult.addedScore += result.score;
+			weekResult.averageAccuracy += result.accuracy;
+			weekResult.addedMisses += result.misses;
 		}
-
-		_save.flush();
-
+		weekResult.averageAccuracy /= results.length;
+		var diffValue = weekScoresValue.get(diff);
+		if (diffValue == null || weekResult.addedScore > diffValue.addedScore)
+		{
+			weekScoresValue.set(diff, weekResult);
+			_save.flush();
+		}
 		return getWeek(week, diff);
 	}
 }

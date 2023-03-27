@@ -883,7 +883,10 @@ class PlayState extends MusicBeatState
 			new Note();
 
 			NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
-			NoteSprite.__pool.preAllocate(32);
+			NoteSprite.__pool.preAllocate(16);
+
+			NoteSprite.__tiledPool = new FlxPool<SustainNote>(SustainNote);
+			NoteSprite.__tiledPool.preAllocate(16);
 
 			for (sections in Song.currentSong.sectionList)
 			{
@@ -1372,70 +1375,61 @@ class PlayState extends MusicBeatState
 				}
 
 				if (renderer.note.isSustainNote)
-				{ // temporary fix because monster dies
+				{
 					var _lastNote:Note = renderer.note._lastNote;
 					if (_lastNote == null)
 						_lastNote = renderer.note;
 
+					var checkHit:Bool = renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit);
+					var shouldPress:Bool = !renderer.note.mustPress || checkHit;
+
 					if (strumNote.downScroll)
 					{
-						if (renderer.y - renderer.offset.y * renderer.scale.y + renderer.height >= center
-							&& (!renderer.note.mustPress
-								|| (renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit))))
+						if (renderer.y - renderer.offset.y * renderer.scale.y + renderer.height >= center && shouldPress)
 						{
 							var swagRect = new FlxRect(0, 0, renderer.frameWidth, renderer.frameHeight);
 							swagRect.height = (center - renderer.y) / renderer.scale.y;
 							swagRect.y = renderer.frameHeight - swagRect.height;
+							swagRect.floor();
 
 							renderer.clipRect = swagRect;
 						}
 					}
 					else
 					{
-						if (renderer.y + renderer.offset.y * renderer.scale.y <= center
-							&& (!renderer.note.mustPress
-								|| (renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit))))
+						if (renderer.y + renderer.offset.y * renderer.scale.y <= center && shouldPress)
 						{
 							var swagRect = new FlxRect(0, 0, renderer.width / renderer.scale.x, renderer.height / renderer.scale.y);
 							swagRect.y = (center - renderer.y) / renderer.scale.y;
 							swagRect.height -= swagRect.y;
+							swagRect.floor();
 
 							renderer.clipRect = swagRect;
 						}
 					}
 				}
 
-				var skipCheck:Bool = (renderer.note == null);
-
-				if (!skipCheck && !renderer.note.mustPress && renderer.note.wasGoodHit)
+				if (!renderer.note.mustPress && renderer.note.wasGoodHit)
 				{
 					if (renderer.note.strumTime <= Conductor.songPosition && !renderer.note._hitSustain)
 					{
 						hitNote(renderer.note, true);
 					}
 				}
-				else if (!skipCheck && renderer.note.isSustainNote)
-				{
-					if (renderer.note.mustPress
-						&& Conductor.songPosition >= renderer.note.strumTime
-						&& renderer.note.parentNote.wasGoodHit
-						&& botplay)
-						hitNote(renderer.note);
-				}
-				else if (!skipCheck && renderer.note.strumTime - Conductor.songPosition < -300)
+				else if (renderer.note.strumTime - Conductor.songPosition < -300)
 				{
 					if (renderer.note.mustPress && !renderer.note.isSustainNote)
 						missNote(renderer.note);
 				}
 
-				if (!skipCheck && renderer.note.isSustainNote)
+				if (renderer.note.isSustainNote)
 				{
 					if ((Settings.getPref('downscroll', false) && renderer.y > FlxG.height * (1.0 + songSpeed))
 						|| (!Settings.getPref('downscroll', false) && renderer.y < -renderer.height * (1.0 + songSpeed)))
 						killNote(renderer.note);
 				}
 
-				if (!skipCheck && !botplay && currentKeys.contains(true))
+				if (!botplay && currentKeys.contains(true))
 				{
 					if (currentKeys[renderer.note.direction]
 						&& renderer.note.mustPress
@@ -1559,12 +1553,10 @@ class PlayState extends MusicBeatState
 			gameInfo.misses++;
 			gameInfo.playerHitMods++;
 
-			var lastCombo = gameInfo.combo;
+			if (gameInfo.combo >= 10 && !note.isSustainNote)
+				popCombo('miss');
 
 			gameInfo.combo = 0;
-
-			if (lastCombo != 0 && !note.isSustainNote)
-				popCombo('miss');
 
 			var lossRate:Int = 1;
 			if (note.noteChildrens.length > 0)
@@ -1628,7 +1620,7 @@ class PlayState extends MusicBeatState
 	{
 		var xPos:Float = FlxG.width * 0.35;
 
-		if (showCombo && rating != 'miss')
+		if (showCombo)
 		{
 			if (comboSpr == null || !comboSpr.alive)
 				comboSpr = new ComboSprite();

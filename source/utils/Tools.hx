@@ -68,6 +68,18 @@ class Tools
 		return numArray;
 	}
 
+	public static function swap(array:Array<Any>, firstIndex:Int, secondIndex:Int):Array<Any>
+	{
+		if (array.length > 2 || firstIndex == secondIndex)
+		{
+			var temp = array[firstIndex];
+			array[firstIndex] = array[secondIndex];
+			array[secondIndex] = temp;
+		}
+
+		return array;
+	}
+
 	public static function formatAccuracy(value:Float)
 	{
 		var str = Std.string(value);

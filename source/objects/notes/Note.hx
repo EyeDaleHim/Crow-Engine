@@ -3,6 +3,7 @@ package objects.notes;
 import music.Song;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.addons.display.FlxTiledSprite;
 import flixel.math.FlxPoint;
 import flixel.util.FlxPool;
 import backend.NoteStorageFunction;
@@ -88,8 +89,12 @@ class Note
 class NoteSprite extends FlxSprite
 {
 	public static var __pool:FlxPool<NoteSprite>;
+	public static var __tiledPool:FlxPool<SustainNote>;
 
 	public var note:Note;
+
+	public var sustainNote:SustainNote;
+	public var endNote:FlxSprite;
 
 	override public function new(?note:Note = null)
 	{
@@ -239,4 +244,9 @@ class NoteSprite extends FlxSprite
 				point.add(newPoint.x, newPoint.y);
 		};
 	}
+}
+
+class SustainNote extends FlxTiledSprite
+{
+	
 }

@@ -66,7 +66,6 @@ class Alphabet extends FlxTypedSpriteGroup<AlphaCharacter> implements IFunkinSpr
 	{
 		doSplitWords();
 
-		var xPos:Float = 0;
 		for (character in splitWords)
 		{
 			// if (character.fastCodeAt() == " ")
@@ -78,26 +77,17 @@ class Alphabet extends FlxTypedSpriteGroup<AlphaCharacter> implements IFunkinSpr
 				lastWasSpace = true;
 			}
 
-			var isLetter:Bool = AlphaCharacter.alphabet.match(character.toLowerCase());
-			var isNumber:Bool = AlphaCharacter.numbers.match(character.toLowerCase());
-			var isSymbol:Bool = AlphaCharacter.symbols.match(character.toLowerCase());
+			var isLetter = AlphaCharacter.alphabet.match(character.toLowerCase());
+			var isNumber = AlphaCharacter.numbers.match(character.toLowerCase());
+			var isSymbol = AlphaCharacter.symbols.match(character.toLowerCase());
 
 			if (isLetter || isNumber || isSymbol)
-				// if (AlphaCharacter.alphabet.contains(character.toLowerCase()))
 			{
-				if (lastSprite != null)
-				{
-					xPos = lastSprite.x + lastSprite.width;
-				}
+				var xPos = lastSprite != null ? lastSprite.x + lastSprite.width : 0;
+				xPos += lastWasSpace ? 40 : 0;
+				lastWasSpace = false;
 
-				if (lastWasSpace)
-				{
-					xPos += 40;
-					lastWasSpace = false;
-				}
-
-				// var letter:AlphaCharacter = new AlphaCharacter(30 * loopNum, 0);
-				var letter:AlphaCharacter = new AlphaCharacter(xPos, 0);
+				var letter = new AlphaCharacter(xPos, 0);
 				if (isLetter)
 					letter.createLetter(character, isBold);
 				else if (isNumber)

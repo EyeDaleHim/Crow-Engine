@@ -32,37 +32,25 @@ class Paths
 		hasInit = true;
 	}
 
-	// format manifesting
-	private static function resolveManifest(file:String = '', ?library:String = null):String
+	private static function resolveManifest(file:String = '', library:String = ''):String
 	{
-		var middle:String = '-';
-
-		if (library == null || (library != null && library == ''))
-		{
-			library = '';
-			middle = '';
-		}
-
-		if (file == null)
-			file = '';
-
-		return library + middle + file;
+		var separator:String = library == '' ? '' : '-';
+		return library + separator + file;
 	}
 
-	// format paths
-	private static function formatPath(file:String, library:Null<String>)
+	private static function formatPath(file:String, library:String = null):String
 	{
+		var path:String = 'assets/' + file;
 		if (library != null && library != '')
-			return '${library}:assets/${library}/${file}';
-		return 'assets/${file}';
+			path = library + ':assets/' + library + '/' + file;
+		
+		return path;
 	}
 
-	private static function extensionHelper(name:String)
+	private static function extensionHelper(name:String):String
 	{
-		if (name.split('.')[2] != null)
-			return name.split('.')[0] + '.' + name.split('.')[1];
-
-		return name;
+		var parts:Array<String> = name.split('.');
+		return parts.length > 2 ? parts[0] + '.' + parts[1] : name;
 	}
 
 	public static function getPath(file:String, type:AssetType, library:Null<String>)

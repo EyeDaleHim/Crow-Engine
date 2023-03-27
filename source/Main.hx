@@ -37,9 +37,8 @@ class Main extends Sprite
 	public static var instance:Main;
 	public static var gameInstance:FlxGame;
 
-	// game version's number is 7 because of week 6
-	public static final gameVersion:VersionScheme = {display: "0.2.7.1", number: 7}; // Version Of The Base Game (Friday Night Funkin')
-	public static final engineVersion:VersionScheme = {display: "0.1.0A-1", number: 2}; // Version Of The Engine (Crow Engine)
+	public static final gameVersion:VersionScheme = {display: "0.2.8", number: 8}; // Version Of The Base Game (Friday Night Funkin')
+	public static final engineVersion:VersionScheme = {display: "0.1.0B", number: 3}; // Version Of The Engine (Crow Engine)
 
 	public static var fps:DebugInfo;
 
