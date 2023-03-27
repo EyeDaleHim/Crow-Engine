@@ -20,7 +20,7 @@ class HealthIcon extends FlxSprite
 		super(x, y);
 
 		// ill redo this in a later update, this isn't exactly >0.2.0 yet
-		frames = Paths.getSparrowAtlas('characters/icons/sprite');
+		frames = Paths.getSparrowAtlas('icons/sprite');
 
 		char = char.replace('-holding-gf', ''); // we need a better way to do this
 
