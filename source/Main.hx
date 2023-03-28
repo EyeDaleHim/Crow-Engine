@@ -181,6 +181,8 @@ class Main extends Sprite
 		FlxG.game.soundTray.volumeUpSound = Paths.sound('backend/volume');
 		#end
 
+		FlxG.console.registerClass(mods.ModManager);
+
 		weeks.WeekHandler.resetWeeks();
 		ModManager.initalize();
 

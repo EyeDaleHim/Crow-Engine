@@ -11,6 +11,8 @@ import openfl.utils.Assets as OpenFlAssets;
 import backend.graphic.CacheManager;
 import backend.graphic.CacheManager.AssetTypeData;
 import backend.graphic.FramesManager;
+import mods.ModManager;
+import mods.ModPaths;
 
 using StringTools;
 using utils.Tools;
@@ -43,7 +45,7 @@ class Paths
 		var path:String = 'assets/' + file;
 		if (library != null && library != '')
 			path = library + ':assets/' + library + '/' + file;
-		
+
 		return path;
 	}
 
@@ -95,6 +97,24 @@ class Paths
 	public static function image(file:String, ?library:String = null):FlxGraphic
 	{
 		var fullPath:String = imagePath(file, library);
+
+		#if MODS_ENABLED
+		var failedCurrentMod:Bool = ModPaths.currentMod.length == 0 || !OpenFlAssets.exists(ModPaths.image(ModPaths.currentMod, file));
+
+		if (failedCurrentMod)
+		{
+			for (mod in ModManager.mods)
+			{
+				if (OpenFlAssets.exists(ModPaths.image(mod.folderName, file)))
+				{
+					fullPath = ModPaths.image(mod.folderName, file);
+					break;
+				}
+			}
+		}
+		else
+			fullPath = ModPaths.image(ModPaths.currentMod, file);
+		#end
 
 		if (CacheManager.cachedAssets[BITMAP].exists(fullPath))
 			return CacheManager.getBitmap(fullPath);

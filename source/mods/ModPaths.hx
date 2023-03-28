@@ -5,6 +5,8 @@ import openfl.Assets;
 #if MODS_ENABLED
 class ModPaths
 {
+	public static var currentMod:String = "";
+
 	public static function getPath(mod:String, path:String, types:Array<String>):String
 	{
 		var realPath:String = 'mods/$mod/$path';

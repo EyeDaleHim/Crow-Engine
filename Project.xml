@@ -58,8 +58,9 @@
 	<assets path="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets" exclude="*.mp3" unless="web"/>
 
-	<assets path="mods" exclude="*.ogg" if="web"/>
-	<assets path="mods" exclude="*.mp3" unless="web"/>
+	<section if="MODS_ENABLED">
+		<assets path="mods" embed="false" />
+	</section>
 
 	<define name="PRELOAD_ALL" unless="web"/>
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
