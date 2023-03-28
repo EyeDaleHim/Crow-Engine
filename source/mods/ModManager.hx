@@ -35,10 +35,12 @@ class ModManager
 				}
 			}
 
-            for (mod in mods)
+           /* for (mod in mods)
             {
-
-            }
+                // find weeks
+                if (FileSystem.exists(ModPaths.getPath(mod.folderName, )))
+                for (week in FileSystem.)
+            }*/
 		}
 	}
 }

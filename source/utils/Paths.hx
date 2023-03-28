@@ -72,7 +72,12 @@ class Paths
 		return getPreloadPath(file);
 	}
 
-	static public function getLibraryPath(file:String, library = "preload")
+	public static function getPathAsFolder(folder:String, library:String = "preload"):String
+	{
+		return if (library == "preload" || library == "default") 'assets/$folder' else '$library:assets/$library/$folder';
+	}
+
+	public static function getLibraryPath(file:String, library = "preload")
 	{
 		return if (library == "preload" || library == "default") getPreloadPath(file); else getLibraryPathForce(file, library);
 	}

@@ -43,7 +43,7 @@ import objects.notes.Note.NoteSprite;
 import objects.notes.StrumNote;
 import backend.graphic.CacheManager;
 import weeks.ScoreContainer;
-import weeks.SongHandler;
+import weeks.WeekHandler;
 import backend.LoadingManager;
 import backend.Transitions;
 import backend.query.ControlQueries;
@@ -306,7 +306,7 @@ class PlayState extends MusicBeatState
 		persistentUpdate = true;
 
 		if (Song.currentSong == null)
-			Song.loadSong('tutorial', 2);
+			Song.loadSong('tutorial', 'hard');
 
 		vocals = FlxG.sound.list.recycle(FlxSound);
 		vocals.looped = false;
@@ -866,7 +866,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		songName = Song.currentSong.song;
-		songDiffText = SongHandler.PLACEHOLDER_DIFF[PlayState.songDiff];
+		songDiffText = getAvailableDifficulties()[PlayState.songDiff];
 
 		Conductor.changeBPM(Song.currentSong.bpm);
 
@@ -883,10 +883,10 @@ class PlayState extends MusicBeatState
 			new Note();
 
 			NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
-			NoteSprite.__pool.preAllocate(16);
+			NoteSprite.__pool.preAllocate(32);
 
 			/*SustainNote.__pool = new FlxPool<SustainNote>(SustainNote);
-			SustainNote.__pool.preAllocate(16);*/
+				SustainNote.__pool.preAllocate(16); */
 
 			for (sections in Song.currentSong.sectionList)
 			{
@@ -1081,7 +1081,7 @@ class PlayState extends MusicBeatState
 							if (CacheManager.cachedAssets[AUDIO].exists(Paths.vocalsPath(Song.currentSong.song)))
 								CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song)).special = false;
 
-							Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), songDiff);
+							Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), getAvailableDifficulties()[PlayState.songDiff]);
 							LoadingManager.startGame();
 						}
 						else
@@ -1723,6 +1723,17 @@ class PlayState extends MusicBeatState
 		NoteSprite.__pool = null;
 
 		super.destroy();
+	}
+
+	private function getAvailableDifficulties():Array<String>
+	{
+		@:privateAccess
+		{
+			if (playMode == STORY)
+				return states.menus.StoryMenuState.availableDifficulties;
+
+			return states.menus.FreeplayState.availableDifficulties;
+		}
 	}
 }
 

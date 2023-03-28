@@ -1,75 +1,61 @@
 package weeks;
 
+import haxe.Json;
+import sys.FileSystem;
+import openfl.Assets;
+
 class WeekHandler
 {
-	// whatever better alternative to holding it in freeplay
-	public static var songs:Map<String, Map<String, WeekList>> = [
-		'Base_Game' => [
-			'tutorial' => {
-				songs: ['tutorial'],
-				icons: ['gf'],
-				diffs: PLACEHOLDER_DIFF,
-				color: 0xFFA5004D,
-				index: 0
-			},
-			'week1' => {
-				songs: ['Bopeebo', 'Fresh', 'Dad Battle'],
-				icons: ['dad', 'dad', 'dad'],
-				diffs: PLACEHOLDER_DIFF,
-				color: 0xFFB97BDD,
-				index: 1,
-				description: 'Daddy Dearest'
-			},
-			'week2' => {
-				songs: ['Spookeez', 'South', 'Monster'],
-				icons: ['spooky', 'spooky', 'monster'],
-				diffs: PLACEHOLDER_DIFF,
-				color: 0xFF1D5D7A,
-				index: 2,
-				description: 'Spooky Month'
-			},
-			'week3' => {
-				songs: ['Pico', 'Philly Nice', 'Blammed'],
-				icons: ['pico', 'pico', 'pico'],
-				diffs: PLACEHOLDER_DIFF,
-				color: 0xFF941653,
-				index: 3,
-				description: 'Pico'
-			},
-			'week4' => {
-				songs: ['Satin Panties', 'High', 'Milf'],
-				icons: ['mom', 'mom', 'mom'],
-				diffs: PLACEHOLDER_DIFF,
-				color: 0xFFD8558E,
-				index: 4,
-				description: 'Mommy Must Murder'
-			},
-			'week5' => {
-				songs: ['Cocoa', 'Eggnog', 'Winter Horrorland'],
-				icons: ['parents', 'parents', 'monster'],
-				diffs: PLACEHOLDER_DIFF,
-				color: 0xFFA0D1FF,
-				index: 5,
-				description: 'Red Snow'
-			},
-			'week6' => {
-				songs: ['Senpai', 'Roses', 'Thorns'],
-				icons: ['senpai', 'senpai', 'spirit'],
-				diffs: PLACEHOLDER_DIFF,
-				color: 0xFFFF78BF,
-				index: 6,
-				description: 'Hating Simulator Ft. Moawling'
-			},
-			'week7' => {
-				songs: ['Ugh', 'Guns', 'Stress'],
-				icons: ['tankman', 'tankman', 'tankman'],
-				diffs: PLACEHOLDER_DIFF,
-				color: 0xFFF6B604,
-				index: 7,
-				description: 'Tankman'
+	public static function resetWeeks():Void
+	{
+		weeks = [];
+		songs = [];
+
+		var folder = Paths.getPathAsFolder("data/weeks");
+
+		// grab all weeks in this folder
+		if (FileSystem.exists(folder))
+		{
+			for (week in FileSystem.readDirectory(folder))
+			{
+				try
+				{
+					weeks.push(Json.parse(Assets.getText(Paths.data('weeks/$week'))));
+				}
 			}
-		]
-	];
+
+			folder += '/songs';
+		}
+
+		for (week in weeks)
+		{
+			for (song in week.songs)
+			{
+				songs.push({
+					name: song,
+					color: week.defaultColor,
+					icon: week.defaultIcon,
+					defaultDifficulty: week.defaultDifficulty,
+					difficulties: week.difficulties,
+					parentWeek: week.name
+				});
+			}
+		}
+
+		// we don't expect it to appear anyway
+		if (FileSystem.exists(folder))
+		{
+			for (song in FileSystem.readDirectory(folder))
+			{
+				if (findSongIndex(song) != -1)
+					songs.push(Json.parse(Assets.getText(Paths.data('weeks/songs/$song'))));
+			}
+		}
+	}
+
+	public static var weeks:Array<WeekStructure> = [];
+	public static var songs:Array<SongStructure> = [];
+
 
 	public static var weekCharacters:Map<String, Array<String>> = [
 		'tutorial' => ["", "boyfriend", "gf"],
@@ -82,37 +68,68 @@ class WeekHandler
 		"week7" => ["tankman", "boyfriend", "gf"]
 	];
 
-	public static function getWeekName(index:Int):String
+	public static function findSongIndex(song:String):Int
 	{
-		return ['tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7'][index];
+		for (i in 0...songs.length)
+			{
+				if (songs[i].name == song)
+					return i;
+			}
+	
+			return -1;
 	}
 
-	public static function getWeek(week:String):WeekList
+	public static function findWeekIndex(week:String):Int
 	{
-		if (songs['Base_Game'].exists(week))
-			return songs['Base_Game'].get(week);
+		for (i in 0...weeks.length)
+		{
+			if (weeks[i].name == week)
+				return i;
+		}
 
-		return {
-			songs: [],
-			icons: [],
-			diffs: PLACEHOLDER_DIFF,
-			color: 0xFFFFFFFF,
-			index: -1
-		};
+		return -1;
 	}
 
-	public static final PLACEHOLDER_DIFF:DiffList = ['Easy', 'Normal', 'Hard'];
+	public static function addSongToList(struct:SongStructure)
+	{
+		var weekIndex:Int = findWeekIndex(struct.parentWeek);
+
+		if (weekIndex != -1)
+		{
+			var songList = weeks[weekIndex].songs;
+
+			if (!songList.contains(struct.name))
+				songList.push(struct.name);
+		}
+
+		songs.push(struct);
+	}
+
+	public static final DEFAULT_DIFFICULTIES:Array<String> = ['Easy', 'Normal', 'Hard'];
 	public static var defaultDifficulty:String = 'Normal';
 }
 
-typedef DiffList = Array<String>;
-
-typedef WeekList =
+// if a song file exists, song will overwrite the current week's default values
+typedef SongStructure =
 {
+    var name:String;
+    var color:Int;
+    var icon:String;
+    var difficulties:Array<String>;
+    var defaultDifficulty:String;
+    var parentWeek:String;
+}
+
+typedef WeekStructure =
+{
+	var name:String;
+    var description:String;
 	var songs:Array<String>;
-	var icons:Array<String>;
-	var diffs:DiffList;
-	var color:Int;
-	var index:Int;
-	@:optional var description:String;
+
+    var displayCharacters:Array<String>;
+
+	var defaultDifficulty:String;
+    var difficulties:Array<String>;
+	var defaultColor:Int;
+	var defaultIcon:String;
 }

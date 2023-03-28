@@ -1,0 +1,9 @@
+{
+	"name": "week2",
+	"description": "SPOOKY MONTH",
+	"songs": ["Spookeez", "South", "Monster"],
+	
+	"defaultDifficulty": "Normal",
+	"difficulties": ["Easy", "Normal", "Hard"],
+	"displayCharacters": ["dad", "bf", "gf"]
+}

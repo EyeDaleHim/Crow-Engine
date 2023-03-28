@@ -6,7 +6,7 @@ import openfl.utils.Assets;
 import haxe.Json;
 import game.SkinManager;
 import music.Section.SectionInfo;
-import weeks.SongHandler;
+import weeks.WeekHandler;
 
 using StringTools;
 using utils.Tools;
@@ -18,10 +18,8 @@ class Song
 
 	public static final chartFormats:Array<String> = ['base'];
 
-	public static function loadSong(song:String, diff:Int = 2):SongInfo
+	public static function loadSong(song:String, diff:String):SongInfo
 	{
-		var diffString:String = SongHandler.PLACEHOLDER_DIFF[Std.int(FlxMath.bound(diff, 0, 2))];
-
 		/*try
 		{*/
 			var fixData:String->String = function(str:String)
@@ -35,7 +33,7 @@ class Song
 			};
 
 			var path = Paths.data('charts/' + song.toLowerCase().replace(' ', '-') + '/' + song.toLowerCase().replace(' ', '-') + '-'
-				+ diffString.toLowerCase());
+				+ diff.toLowerCase());
 
 			// do this in case i fockin add new things to the meta.json thing
 			var meta:SongMetaChart = null;

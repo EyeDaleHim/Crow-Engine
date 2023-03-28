@@ -12,7 +12,7 @@ import flixel.util.FlxStringUtil;
 import flixel.util.FlxSort;
 import states.menus.MainMenuState;
 import weeks.ScoreContainer;
-import weeks.SongHandler;
+import weeks.WeekHandler;
 import objects.ui.HealthIcon;
 import backend.graphic.CacheManager;
 import backend.LoadingManager;
@@ -36,8 +36,10 @@ class FreeplayState extends MusicBeatState
 	public var songList:FlxTypedGroup<Alphabet>;
 	public var iconArray:Array<HealthIcon> = [];
 
+	private static var availableDifficulties:Array<String> = [];
+
 	private static var curSelected:Int = 0;
-	private static var curDifficulty:Int = Std.int(Math.max(0, SongHandler.PLACEHOLDER_DIFF.indexOf(SongHandler.defaultDifficulty)));
+	private static var curDifficulty:Int = -1;
 
 	private static var savedScore:Float = 0.0;
 	private static var savedAccuracy:Float = 0.0;
@@ -73,63 +75,44 @@ class FreeplayState extends MusicBeatState
 		diffText.antialiasing = Settings.getPref('antialiasing', true);
 		diffText.centerOverlay(scoreBG, X);
 
-		// bro using them map.keys() is unordered i have to manually sort them AAAAA
-		var weekHolder:Array<{index:Int, week:String}> = [];
-
-		for (week in SongHandler.songs['Base_Game'].keys())
-		{
-			weekHolder.push({index: SongHandler.songs['Base_Game'][week].index, week: week});
-		}
-
-		weekHolder.sort(function(a, b)
-		{
-			return FlxSort.byValues(FlxSort.ASCENDING, a.index, b.index);
-		});
-
 		songList = new FlxTypedGroup<Alphabet>();
 		add(songList);
 
-		for (week in weekHolder)
+		var len:Int = 0;
+		for (song in WeekHandler.songs)
 		{
-			var i:Int = songList.length;
+			var songObject:Alphabet = new Alphabet(0, (70 * len) + 30, song.name, true, false);
+			songObject.isMenuItem = true;
+			songObject.targetY = len;
+			songObject.ID = len;
+			songList.add(songObject);
 
-			var songsList:Array<String> = SongHandler.songs['Base_Game'][week.week].songs;
+			var iconObject:HealthIcon = new HealthIcon(0, 0, song.icon);
+			iconObject.ID = songObject.ID;
+			iconObject.sprTracker = songObject;
+			iconObject.offsetTracker.set(songObject.width + 10, (songObject.height / 2) - (iconObject.height / 2));
+			iconArray.push(iconObject);
+			add(iconObject);
 
-			if (i == 0)
-				background.color = currentColor = SongHandler.songs['Base_Game'][week.week].color;
-			for (song in songsList)
-			{
-				var j:Int = weekHolder.indexOf(week) + songsList.indexOf(song);
+			// we have no reason to update the sprite's animation if it has one frame
+			if (iconObject.animation.curAnim != null && iconObject.animation.curAnim.numFrames <= 1)
+				iconObject.animation.curAnim.paused = true;
 
-				var songObject:Alphabet = new Alphabet(0, (70 * j) + 30, song, true, false);
-				songObject.isMenuItem = true;
-				songObject.targetY = i + j;
-				songObject.ID = Std.int(i + j);
-				songList.add(songObject);
+			var metaData:SongMetadata = new SongMetadata(song.name, Std.int(len + 1), song.difficulties,
+				song.color);
+			// metaData.
+			metaData.weekName = song.parentWeek;
 
-				var iconObject:HealthIcon = new HealthIcon(0, 0, SongHandler.songs['Base_Game'][week.week].icons[songsList.indexOf(song)]);
-				iconObject.ID = songObject.ID;
-				iconObject.sprTracker = songObject;
-				iconObject.offsetTracker.set(songObject.width + 10, (songObject.height / 2) - (iconObject.height / 2));
-				iconArray.push(iconObject);
-				add(iconObject);
+			songs.push(metaData);
 
-				// we have no reason to update the sprite's animation if it has one frame
-				if (iconObject.animation.curAnim != null && iconObject.animation.curAnim.numFrames <= 1)
-					iconObject.animation.curAnim.paused = true;
-
-				var metaData:SongMetadata = new SongMetadata(song, Std.int(i + 1), SongHandler.songs['Base_Game'][week.week].diffs,
-					SongHandler.songs['Base_Game'][week.week].color);
-				// metaData.
-				metaData.weekName = week.week;
-
-				songs.push(metaData);
-			}
+			len++;
 		}
 
 		add(scoreBG);
 		add(scoreText);
 		add(diffText);
+
+		availableDifficulties = songs[curSelected].diffs;
 
 		changeSelection();
 		changeDiff();
@@ -184,7 +167,7 @@ class FreeplayState extends MusicBeatState
 
 				FlxG.sound.music.fadeOut(0.5, 0.0);
 
-				Song.loadSong(songs[curSelected].name.formatToReadable(), curDifficulty);
+				Song.loadSong(songs[curSelected].name.formatToReadable(), availableDifficulties[curDifficulty]);
 
 				LoadingManager.startGame();
 			}
@@ -339,14 +322,14 @@ class FreeplayState extends MusicBeatState
 
 		curDifficulty = FlxMath.wrap(curDifficulty + change, 0, 2);
 
-		diffText.text = switch (SongHandler.PLACEHOLDER_DIFF.length)
+		diffText.text = switch (availableDifficulties.length)
 		{
 			case 0:
 				"";
 			case 1:
-				SongHandler.PLACEHOLDER_DIFF[0].toUpperCase();
+				availableDifficulties[0].toUpperCase();
 			case _:
-				'< ' + SongHandler.PLACEHOLDER_DIFF[curDifficulty].toUpperCase() + ' >';
+				'< ' + availableDifficulties[curDifficulty].toUpperCase() + ' >';
 		}
 
 		diffText.centerOverlay(scoreBG, X);

@@ -1,0 +1,9 @@
+{
+	"name": "week3",
+	"description": "PICO",
+	"songs": ["Pico", "Philly-Nice", "Blammed"],
+	
+	"defaultDifficulty": "Normal",
+	"difficulties": ["Easy", "Normal", "Hard"],
+	"displayCharacters": ["pico", "bf", "gf"]
+}

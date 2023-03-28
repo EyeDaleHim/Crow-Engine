@@ -7,6 +7,7 @@ import utils.Paths;
 import utils.Tools;
 import music.Conductor;
 import music.Conductor.BPMChangeEvent;
+import mods.ModPaths;
 
 using StringTools;
 using utils.Tools;

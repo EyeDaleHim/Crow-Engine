@@ -14,8 +14,7 @@ import flixel.util.FlxSort;
 import flixel.util.FlxSpriteUtil;
 import objects.ui.WeekSprite;
 import objects.character.WeekCharacter;
-import weeks.SongHandler;
-import weeks.SongHandler.WeekList;
+import weeks.WeekHandler;
 import states.PlayState;
 import backend.graphic.CacheManager;
 
@@ -26,11 +25,9 @@ class StoryMenuState extends MusicBeatState
 	private var __midPoints:Array<FlxObject> = [];
 
 	public static var curSelected:Int = 0;
-	public static var curDifficulty:Int = Std.int(Math.max(0, SongHandler.PLACEHOLDER_DIFF.indexOf(SongHandler.defaultDifficulty)));
+	public static var curDifficulty:Int = -1;
 
-	// fuck you
-	public var sortedWeeks:Array<WeekList> = [];
-	public var weekDataNames:Array<String> = [];
+	public static var availableDifficulties:Array<String> = [];
 
 	public var backgroundBox:FlxSprite;
 	public var weekSprites:FlxTypedGroup<WeekSprite>;
@@ -69,37 +66,26 @@ class StoryMenuState extends MusicBeatState
 		weekSprites = new FlxTypedGroup<WeekSprite>();
 		difficultySelectors = new FlxTypedGroup<FlxSprite>();
 
-		for (key in SongHandler.songs["Base_Game"].keys())
-		{
-			var weekData:WeekList = SongHandler.getWeek(key);
-			sortedWeeks[weekData.index] = weekData;
-			weekDataNames[weekData.index] = key;
-		}
-
-		sortedWeeks.sort(function(a, b)
-		{
-			return FlxSort.byValues(FlxSort.ASCENDING, a.index, b.index);
-		});
-
-		for (week in sortedWeeks)
+		var len:Int = 0;
+		for (week in WeekHandler.weeks)
 		{
 			// sprite
-			var weekSprite:WeekSprite = new WeekSprite(0, (week.index * 120) + 480, weekDataNames[week.index]);
+			var weekSprite:WeekSprite = new WeekSprite(0, (len * 120) + 480, week.name);
 			weekSprite.screenCenter(X);
-			weekSprite.targetY = weekSprite.ID = Std.int(week.index);
+			weekSprite.targetY = weekSprite.ID = len;
 			weekSprite.attributes.set('weekY', 0.0);
 			weekSprites.add(weekSprite);
+
+			len++;
 		}
+
+		availableDifficulties = WeekHandler.weeks[0].difficulties;
 
 		characters = new FlxTypedGroup<WeekCharacter>();
 
 		diffSprite = new FlxSprite(FlxG.width * 0.8, 480);
 
-		var diffs:Array<String> = sortedWeeks[curSelected].diffs;
-		if (diffs == null || diffs.length == 0)
-			diffs = ['Easy', 'Normal', 'Hard'];
-
-		diffSprite.loadGraphic(Paths.image('menus/storymenu/difficulties/${diffs[Std.int(FlxMath.bound(curDifficulty, 0, diffs.length - 1))].toLowerCase()}'));
+		diffSprite.loadGraphic(Paths.image('menus/storymenu/difficulties/${availableDifficulties[Std.int(FlxMath.bound(curDifficulty, 0, availableDifficulties.length - 1))].toLowerCase()}'));
 
 		var arrowFrames:FlxAtlasFrames = Paths.getSparrowAtlas('menus/storymenu/menuassets/story_assets');
 
@@ -211,7 +197,7 @@ class StoryMenuState extends MusicBeatState
 		if (change != 0)
 			InternalHelper.playSound(SCROLL, 0.75);
 
-		curSelected = FlxMath.wrap(Std.int(curSelected + change), 0, sortedWeeks.length - 1);
+		curSelected = FlxMath.wrap(Std.int(curSelected + change), 0, WeekHandler.weeks.length - 1);
 
 		var range:Int = 0;
 
@@ -231,7 +217,7 @@ class StoryMenuState extends MusicBeatState
 		}
 
 		var i:Int = 0;
-		for (char in SongHandler.weekCharacters[SongHandler.getWeekName(curSelected)])
+		for (char in WeekHandler.weeks[curSelected].displayCharacters)
 		{
 			if (char != '')
 			{
@@ -253,7 +239,7 @@ class StoryMenuState extends MusicBeatState
 
 		songList.text = "TRACKS\n";
 
-		for (song in sortedWeeks[curSelected].songs)
+		for (song in WeekHandler.weeks[curSelected].songs)
 		{
 			songList.text += '\n' + song;
 		}
@@ -273,9 +259,7 @@ class StoryMenuState extends MusicBeatState
 
 		var lastDiff:Int = curDifficulty;
 
-		var diffs:Array<String> = sortedWeeks[curSelected].diffs;
-		if (diffs == null || diffs.length == 0)
-			diffs = ['Easy', 'Normal', 'Hard'];
+		var diffs:Array<String> = WeekHandler.weeks[curSelected].difficulties;
 
 		curDifficulty = FlxMath.wrap(Std.int(curDifficulty + change), 0, diffs.length - 1);
 
@@ -326,20 +310,20 @@ class StoryMenuState extends MusicBeatState
 
 		new FlxTimer().start(1.5, function(tmr:FlxTimer)
 		{
-			Paths.currentLibrary = weekDataNames[curSelected];
+			Paths.currentLibrary = WeekHandler.weeks[curSelected].name;
 
 			PlayState.playMode = STORY;
 
 			var tempArray:Array<String> = [];
-			for (song in 0...sortedWeeks[curSelected].songs.length)
+			for (song in 0...WeekHandler.weeks[curSelected].songs.length)
 			{
-				tempArray.push(sortedWeeks[curSelected].songs[song]);
+				tempArray.push(WeekHandler.weeks[curSelected].songs[song]);
 			}
 
 			PlayState.storyPlaylist = tempArray;
 			PlayState.songDiff = curDifficulty;
 
-			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), curDifficulty);
+			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), availableDifficulties[curDifficulty]);
 			LoadingManager.startGame();
 		});
 

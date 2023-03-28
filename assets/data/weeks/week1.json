@@ -1,0 +1,9 @@
+{
+	"name": "week1",
+	"description": "DADDY DEAREST",
+	"songs": ["Bopeebo", "Fresh", "Dad-Battle"],
+	
+	"defaultDifficulty": "Normal",
+	"difficulties": ["Easy", "Normal", "Hard"],
+	"displayCharacters": ["dad", "bf", "gf"]
+}

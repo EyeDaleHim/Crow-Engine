@@ -181,6 +181,8 @@ class Main extends Sprite
 		FlxG.game.soundTray.volumeUpSound = Paths.sound('backend/volume');
 		#end
 
+		weeks.WeekHandler.resetWeeks();
+
 		Settings.init();
 		weeks.ScoreContainer.init();
 
