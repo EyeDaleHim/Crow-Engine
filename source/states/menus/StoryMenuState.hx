@@ -128,6 +128,10 @@ class StoryMenuState extends MusicBeatState
 		add(difficultySelectors);
 		add(diffSprite);
 
+		availableDifficulties = WeekHandler.weeks[curSelected].difficulties;
+		if (curDifficulty == -1)
+			curDifficulty = availableDifficulties.indexOf(WeekHandler.songs[curSelected].defaultDifficulty);
+
 		changeWeek();
 
 		super.create();

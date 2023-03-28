@@ -2,8 +2,10 @@
 	"name": "week2",
 	"description": "SPOOKY MONTH",
 	"songs": ["Spookeez", "South", "Monster"],
+	"defaultIcons": ["spooky", "spooky", "monster"],
+	"defaultColors": [-14852742],
 	
 	"defaultDifficulty": "Normal",
 	"difficulties": ["Easy", "Normal", "Hard"],
-	"displayCharacters": ["dad", "bf", "gf"]
+	"displayCharacters": ["spooky", "boyfriend", "gf"]
 }

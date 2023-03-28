@@ -1,0 +1,11 @@
+{
+	"name": "week4",
+	"description": "Mommy Must Murder",
+	"songs": ["Satin Panties", "High", "MILF"],
+    "defaultIcons": ["mom"],
+    "defaultColors": [-2599538],
+	
+	"defaultDifficulty": "Normal",
+	"difficulties": ["Easy", "Normal", "Hard"],
+	"displayCharacters": ["mom", "boyfriend", "gf"]
+}

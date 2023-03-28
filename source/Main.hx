@@ -130,8 +130,7 @@ class Main extends Sprite
 							}
 						}, true);
 					}
-				}
-				catch (e)
+				} catch (e)
 				{
 					trace('whoops! prevented crash.');
 				}

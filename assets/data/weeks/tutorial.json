@@ -2,8 +2,10 @@
 	"name": "tutorial",
 	"description": "",
 	"songs": ["tutorial"],
+	"defaultIcons": ["gf"],
+	"defaultColors": [-5963699],
 	
 	"defaultDifficulty": "Normal",
 	"difficulties": ["Easy", "Normal", "Hard"],
-	"displayCharacters": ["", "bf", "gf"]
+	"displayCharacters": ["", "boyfriend", "gf"]
 }

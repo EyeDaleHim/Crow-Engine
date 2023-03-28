@@ -1,9 +1,11 @@
 {
 	"name": "week1",
 	"description": "DADDY DEAREST",
-	"songs": ["Bopeebo", "Fresh", "Dad-Battle"],
-	
+	"songs": ["Bopeebo", "Fresh", "Dad Battle"],
+	"defaultIcons": ["dad"],
+	"defaultColors": [-4621347],
+
 	"defaultDifficulty": "Normal",
 	"difficulties": ["Easy", "Normal", "Hard"],
-	"displayCharacters": ["dad", "bf", "gf"]
+	"displayCharacters": ["dad", "boyfriend", "gf"]
 }

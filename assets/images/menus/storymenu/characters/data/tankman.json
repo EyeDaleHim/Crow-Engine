@@ -23,6 +23,6 @@
     "idleList": [
         "idle"
     ],
-    "confirmPose": "confirm",
+    "confirmPose": "",
     "atlasType": "sparrow"
 }

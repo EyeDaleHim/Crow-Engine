@@ -113,6 +113,8 @@ class FreeplayState extends MusicBeatState
 		add(diffText);
 
 		availableDifficulties = songs[curSelected].diffs;
+		if (curDifficulty == -1)
+			curDifficulty = availableDifficulties.indexOf(WeekHandler.songs[curSelected].defaultDifficulty);
 
 		changeSelection();
 		changeDiff();

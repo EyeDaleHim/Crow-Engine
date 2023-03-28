@@ -29,12 +29,24 @@ class WeekHandler
 
 		for (week in weeks)
 		{
+			if (week.defaultIcons.length > 0)
+			{
+				while (week.defaultIcons.length < week.songs.length)
+					week.defaultIcons.push(week.defaultIcons[0]);
+			}
+
+			if (week.defaultColors.length > 0)
+			{
+				while (week.defaultColors.length < week.songs.length)
+					week.defaultColors.push(week.defaultColors[0]);
+			}
+
 			for (song in week.songs)
 			{
 				songs.push({
 					name: song,
-					color: week.defaultColor,
-					icon: week.defaultIcon,
+					color: week.defaultColors[week.songs.indexOf(song)],
+					icon: week.defaultIcons[week.songs.indexOf(song)],
 					defaultDifficulty: week.defaultDifficulty,
 					difficulties: week.difficulties,
 					parentWeek: week.name
@@ -56,7 +68,6 @@ class WeekHandler
 	public static var weeks:Array<WeekStructure> = [];
 	public static var songs:Array<SongStructure> = [];
 
-
 	public static var weekCharacters:Map<String, Array<String>> = [
 		'tutorial' => ["", "boyfriend", "gf"],
 		'week1' => ["dad", "boyfriend", "gf"],
@@ -71,12 +82,12 @@ class WeekHandler
 	public static function findSongIndex(song:String):Int
 	{
 		for (i in 0...songs.length)
-			{
-				if (songs[i].name == song)
-					return i;
-			}
-	
-			return -1;
+		{
+			if (songs[i].name == song)
+				return i;
+		}
+
+		return -1;
 	}
 
 	public static function findWeekIndex(week:String):Int
@@ -112,24 +123,23 @@ class WeekHandler
 // if a song file exists, song will overwrite the current week's default values
 typedef SongStructure =
 {
-    var name:String;
-    var color:Int;
-    var icon:String;
-    var difficulties:Array<String>;
-    var defaultDifficulty:String;
-    var parentWeek:String;
+	var name:String;
+	var color:Int;
+	var icon:String;
+	var difficulties:Array<String>;
+	var defaultDifficulty:String;
+	var parentWeek:String;
 }
 
 typedef WeekStructure =
 {
 	var name:String;
-    var description:String;
+	var description:String;
 	var songs:Array<String>;
 
-    var displayCharacters:Array<String>;
-
+	var displayCharacters:Array<String>;
 	var defaultDifficulty:String;
-    var difficulties:Array<String>;
-	var defaultColor:Int;
-	var defaultIcon:String;
+	var difficulties:Array<String>;
+	var defaultColors:Array<Int>;
+	var defaultIcons:Array<String>;
 }

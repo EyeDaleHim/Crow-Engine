@@ -153,6 +153,19 @@ class Tools
 		return false;
 	}
 
+	public static function checkFileIsOfType(file:String, types:Array<String>)
+	{
+		if (types.length == 0)
+			return FileSystem.isDirectory(file);
+
+		for (type in types)
+		{
+			if (file.endsWith(type))
+				return true;
+		}
+		return false;
+	}
+
 	public static function formatToReadable(string:String):String
 	{
 		return string.replace(' ', '-').toLowerCase();
