@@ -181,38 +181,6 @@ class Main extends Sprite
 		FlxG.game.soundTray.volumeUpSound = Paths.sound('backend/volume');
 		#end
 
-		FlxG.console.registerClass(weeks.ScoreContainer);
-		FlxG.console.registerClass(utils.Paths);
-		FlxG.console.registerClass(utils.Tools);
-		FlxG.console.registerClass(backend.data.Settings);
-		FlxG.console.registerClass(music.Song);
-		FlxG.console.registerClass(objects.notes.Note);
-		FlxG.console.registerClass(Main);
-
-		#if sys
-		FlxG.console.registerFunction('checkCache', function()
-		{
-			var listOfCache:String = '---[BITMAP]---\n\n';
-
-			for (bitmapCache in CacheManager.cachedAssets[BITMAP].keys())
-			{
-				listOfCache += 'FILE: "' + bitmapCache + '"';
-				listOfCache += '\n';
-			}
-
-			listOfCache += '\n\n---[AUDIO]---\n\n';
-
-			for (audioCache in CacheManager.cachedAssets[AUDIO].keys())
-			{
-				listOfCache += 'FILE: "' + audioCache + '"';
-				listOfCache += '\n';
-			}
-
-			File.saveContent('listedCache.txt', listOfCache + '\n');
-			trace('saved cache');
-		});
-		#end
-
 		Settings.init();
 		weeks.ScoreContainer.init();
 
