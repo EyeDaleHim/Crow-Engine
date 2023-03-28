@@ -1,5 +1,6 @@
 package;
 
+import mods.ModManager;
 import backend.DebugInfo;
 import flixel.FlxG;
 import flixel.FlxGame;
@@ -181,6 +182,7 @@ class Main extends Sprite
 		#end
 
 		weeks.WeekHandler.resetWeeks();
+		ModManager.initalize();
 
 		Settings.init();
 		weeks.ScoreContainer.init();

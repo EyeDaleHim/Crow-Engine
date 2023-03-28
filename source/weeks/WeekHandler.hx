@@ -18,10 +18,10 @@ class WeekHandler
 		{
 			for (week in FileSystem.readDirectory(folder))
 			{
-				try
-				{
-					weeks.push(Json.parse(Assets.getText(Paths.data('weeks/$week'))));
-				}
+				var filePath:String = Paths.data('weeks/$week');
+
+				if (!FileSystem.isDirectory(filePath))
+					weeks.push(Json.parse(Assets.getText(filePath)));
 			}
 
 			folder += '/songs';
@@ -29,29 +29,7 @@ class WeekHandler
 
 		for (week in weeks)
 		{
-			if (week.defaultIcons.length > 0)
-			{
-				while (week.defaultIcons.length < week.songs.length)
-					week.defaultIcons.push(week.defaultIcons[0]);
-			}
-
-			if (week.defaultColors.length > 0)
-			{
-				while (week.defaultColors.length < week.songs.length)
-					week.defaultColors.push(week.defaultColors[0]);
-			}
-
-			for (song in week.songs)
-			{
-				songs.push({
-					name: song,
-					color: week.defaultColors[week.songs.indexOf(song)],
-					icon: week.defaultIcons[week.songs.indexOf(song)],
-					defaultDifficulty: week.defaultDifficulty,
-					difficulties: week.difficulties,
-					parentWeek: week.name
-				});
-			}
+			addWeek(week);
 		}
 
 		// we don't expect it to appear anyway
@@ -65,19 +43,35 @@ class WeekHandler
 		}
 	}
 
+	public static function addWeek(week:WeekStructure)
+	{
+		if (week.defaultIcons.length > 0)
+		{
+			while (week.defaultIcons.length < week.songs.length)
+				week.defaultIcons.push(week.defaultIcons[0]);
+		}
+
+		if (week.defaultColors.length > 0)
+		{
+			while (week.defaultColors.length < week.songs.length)
+				week.defaultColors.push(week.defaultColors[0]);
+		}
+
+		for (song in week.songs)
+		{
+			songs.push({
+				name: song,
+				color: week.defaultColors[week.songs.indexOf(song)],
+				icon: week.defaultIcons[week.songs.indexOf(song)],
+				defaultDifficulty: week.defaultDifficulty,
+				difficulties: week.difficulties,
+				parentWeek: week.name
+			});
+		}
+	}
+
 	public static var weeks:Array<WeekStructure> = [];
 	public static var songs:Array<SongStructure> = [];
-
-	public static var weekCharacters:Map<String, Array<String>> = [
-		'tutorial' => ["", "boyfriend", "gf"],
-		'week1' => ["dad", "boyfriend", "gf"],
-		"week2" => ["spooky", "boyfriend", "gf"],
-		"week3" => ["pico", "boyfriend", "gf"],
-		"week4" => ["mom", "boyfriend", "gf"],
-		"week5" => ["parents", "boyfriend", "gf"],
-		"week6" => ["pixel", "boyfriend", "gf"],
-		"week7" => ["tankman", "boyfriend", "gf"]
-	];
 
 	public static function findSongIndex(song:String):Int
 	{
@@ -129,6 +123,8 @@ typedef SongStructure =
 	var difficulties:Array<String>;
 	var defaultDifficulty:String;
 	var parentWeek:String;
+
+	@:optional var modParent:String;
 }
 
 typedef WeekStructure =
@@ -142,4 +138,6 @@ typedef WeekStructure =
 	var difficulties:Array<String>;
 	var defaultColors:Array<Int>;
 	var defaultIcons:Array<String>;
+
+	@:optional var modParent:String;
 }

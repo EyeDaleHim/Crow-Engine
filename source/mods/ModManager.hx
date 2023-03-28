@@ -1,5 +1,6 @@
 package mods;
 
+import weeks.WeekHandler;
 import mods.ModData;
 import openfl.Assets;
 import sys.FileSystem;
@@ -15,32 +16,67 @@ class ModManager
 	{
 		if (!initialized)
 		{
-            var path:String = 'mods';
+			var path:String = 'mods';
 
 			if (FileSystem.exists(path))
 			{
 				for (mod in FileSystem.readDirectory(path))
 				{
-                    if (FileSystem.isDirectory('mods/$mod'))
-                    {
-                        path = 'mods/$mod';
-                        if (FileSystem.exists('$path/main.json'))
-                        {
-                            var data:ModData = Json.parse(Assets.getText('$path/main.json'));
-                            data.folderName = mod;
+					if (FileSystem.isDirectory('mods/$mod'))
+					{
+						path = 'mods/$mod';
+						if (FileSystem.exists('$path/main.json'))
+						{
+							var data:ModData = Json.parse(Assets.getText('$path/main.json'));
+							data.folderName = mod;
 
-                            mods.push(data);
-                        }
-                    }
+							mods.push(data);
+						}
+					}
 				}
 			}
 
-           /* for (mod in mods)
-            {
-                // find weeks
-                if (FileSystem.exists(ModPaths.getPath(mod.folderName, )))
-                for (week in FileSystem.)
-            }*/
+			for (mod in mods)
+			{
+				var modWeeks:Array<WeekStructure> = [];
+
+				// find weeks
+				var folder:String = ModPaths.getPathAsFolder(mod.folderName, 'data/weeks');
+				if (FileSystem.exists(folder))
+				{
+					var directory:Array<String> = FileSystem.readDirectory(folder);
+					directory.remove('songs');
+					for (week in directory)
+					{
+						var filePath:String = ModPaths.data(mod.folderName, 'weeks/$week');
+
+						if (!FileSystem.isDirectory(filePath))
+							modWeeks.push(Json.parse(Assets.getText(filePath)));
+					}
+
+					folder += '/songs';
+				}
+
+				for (week in modWeeks)
+				{
+					week.modParent = mod.folderName;
+					WeekHandler.addWeek(week);
+				}
+
+				// we don't expect it to appear anyway
+				if (FileSystem.exists(folder))
+				{
+					for (song in FileSystem.readDirectory(folder))
+					{
+						if (WeekHandler.findSongIndex(song) != -1)
+						{
+							var songStructure:SongStructure = Json.parse(Assets.getText(ModPaths.data(mod.folderName, 'weeks/songs/$song.json')));
+							songStructure.modParent = mod.folderName;
+							WeekHandler.songs.push(songStructure);
+						}
+					}
+				}
+			}
 		}
 	}
 }

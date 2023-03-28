@@ -9,7 +9,7 @@ class ModPaths
 	{
 		var realPath:String = 'mods/$mod/$path';
 
-		if (types == null || types.length > 0)
+		if (types != null || types.length > 0)
 		{
 			for (type in types)
 			{
@@ -20,6 +20,16 @@ class ModPaths
 		}
 
 		return realPath;
+	}
+
+	public static function getPathAsFolder(mod:String, folder:String):String
+	{
+		return 'mods/$mod/$folder';
+	}
+
+	public static function data(mod:String, path:String):String
+	{
+		return getPath(mod, 'data/$path', []);
 	}
 
 	public static function image(mod:String, path:String):String
