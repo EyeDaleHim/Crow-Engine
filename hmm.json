@@ -12,6 +12,7 @@
 			"url": "https://github.com/Aidan63/linc_discord-rpc"
 		},
 		{"name": "hxCodec", "type": "haxelib"},
-		{"name": "hscript", "type": "haxelib"}
+		{"name": "hscript", "type": "haxelib"},
+		{"name": "SScript", "type": "haxelib", "version": "1.0.0"}
 	]
 }

@@ -33,8 +33,6 @@ class ModManager
 					}
 				}
 			}
-
-			trace(FileSystem.exists(path));
 		}
 
 		for (mod in mods)

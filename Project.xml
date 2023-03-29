@@ -7,7 +7,7 @@
 	<define name="32bits" if="32bit"/>
 	<define name="64" unless="32bit"/>
 
-	<!-- <haxeflag name="__dce" value="no"/> Disable this for now, scripting isn't a thing atm -->
+	<haxeflag name="-dce no" />
 
 	<haxedef name="HXCPP_GC_BIG_BLOCKS"/>
 	<!-- _________________________ Application Settings _________________________ -->
@@ -118,6 +118,8 @@
 	<haxelib name="flixel-ui"/>
 
 	<haxelib name="hscript"/>
+	<haxelib name="SScript" if="desktop"/>
+	<define name="hscriptPos"/>
 
 	<!--Incase you wanna use adobe spritemaps with 2019+-->
 	<haxelib name="flxanimate"/>

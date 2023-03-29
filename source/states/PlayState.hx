@@ -44,9 +44,11 @@ import objects.notes.StrumNote;
 import backend.graphic.CacheManager;
 import weeks.ScoreContainer;
 import weeks.WeekHandler;
+import backend.Script;
 import backend.LoadingManager;
 import backend.Transitions;
 import backend.query.ControlQueries;
+import sys.FileSystem;
 
 using StringTools;
 using utils.Tools;
@@ -261,6 +263,9 @@ class PlayState extends MusicBeatState
 	public var paused:Bool = false;
 	public var songSpeed:Float = 1.0; // no support for changing speed yet
 
+	// scripts
+	private var scripts:Array<Script> = [];
+
 	// various internal things
 	private var ___trackedSoundObjects:Array<FlxSound> = [];
 	private var ___trackedTimerObjects:FlxTimerManager = new FlxTimerManager();
@@ -275,6 +280,22 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		// CacheManager.freeMemory(BITMAP, true); temporarily remove this
+
+		var directory:String = Paths.getPathAsFolder('scripts');
+
+		if (FileSystem.exists(directory))
+		{
+			for (scriptFile in FileSystem.readDirectory(directory))
+			{
+				if (scriptFile.contains('.hx'))
+				{
+					var script:Script = new Script(directory + '/$scriptFile');
+					scripts.push(script);
+				}
+			}
+		}
+
+		callScripts("create", [false]);
 
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -617,6 +638,8 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
+		callScripts("create", [false]);
+
 		trace('game took ' + (openfl.Lib.getTimer() - LoadingManager.time) + 'ms to load');
 	}
 
@@ -640,6 +663,8 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
+		callScripts("update", [false]);
+
 		if (countdownState != 0 && pendingNotes.length != 0)
 		{
 			for (note in pendingNotes)
@@ -774,6 +799,8 @@ class PlayState extends MusicBeatState
 					break;
 			}
 		}
+
+		callScripts("update", [true]);
 	}
 
 	override function beatHit():Void
@@ -1318,6 +1345,14 @@ class PlayState extends MusicBeatState
 		}
 
 		_totalPlayers++;
+	}
+
+	public function callScripts(func:String, args:Array<Dynamic>):Void
+	{
+		for (script in scripts)
+		{
+			script.call(func, args);
+		}
 	}
 
 	public function manageNotes():Void

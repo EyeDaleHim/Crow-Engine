@@ -129,11 +129,6 @@ class Character extends FlxSprite
 			FlxG.state.add(trail);
 		}
 
-		for (script in scripts)
-		{
-			script.executeFunction("create", [false]);
-		}
-
 		flipX = _characterData.flip.x;
 		flipY = _characterData.flip.y;
 
@@ -145,11 +140,6 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		for (script in scripts)
-		{
-			script.executeFunction("update", [elapsed, false]);
-		}
-
 		super.update(elapsed);
 
 		if (animation.curAnim != null && controlIdle)
@@ -183,11 +173,6 @@ class Character extends FlxSprite
 				else
 					break;
 			}
-		}
-
-		for (script in scripts)
-		{
-			script.executeFunction("update", [elapsed, true]);
 		}
 	}
 
@@ -238,11 +223,6 @@ class Character extends FlxSprite
 		}
 
 		forceIdle = false;
-
-		for (script in scripts)
-		{
-			script.executeFunction("dance", []);
-		}
 	}
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
