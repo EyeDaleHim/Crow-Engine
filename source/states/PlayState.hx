@@ -1062,17 +1062,14 @@ class PlayState extends MusicBeatState
 		{
 			if (PlayState.playMode != CHARTING)
 			{
-				trace('playmode');
 				switch (PlayState.playMode)
 				{
 					case STORY:
-						trace('story');
 						CurrentGame.weekScores.push({score: gameInfo.score, misses: gameInfo.misses, accuracy: gameInfo.accuracy});
 						PlayState.storyPlaylist.shift();
 
 						if (PlayState.storyPlaylist.length > 0)
 						{
-							trace('existing playlist');
 							Transitions.transIn = false;
 							Transitions.transOut = false;
 
@@ -1191,59 +1188,59 @@ class PlayState extends MusicBeatState
 		{
 			if (direction != -1 && FlxG.keys.checkStatus(e.keyCode, JUST_PRESSED))
 			{
-				if (currentKeys[direction] = true)
+				currentKeys[direction] = true;
+
+				var lastTime = Conductor.songPosition;
+				Conductor.songPosition = FlxG.sound.music.time;
+
+				var sortedNotesList:Array<Note> = [];
+				var pressNotes:Array<Note> = [];
+
+				for (note in _isolatedNotes.note[direction])
 				{
-					var lastTime:Float = Conductor.songPosition;
-					Conductor.songPosition = FlxG.sound.music.time;
-
-					var sortedNotesList:Array<Note> = [];
-					var allowGhost:Bool = true;
-
-					var pressNotes:Array<Note> = [];
-					var notesStopped:Bool = false;
-
-					for (note in _isolatedNotes.note[direction])
+					if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
 					{
-						if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
-						{
-							sortedNotesList.push(note);
-							allowGhost = false;
-						}
+						sortedNotesList.push(note);
 					}
-
-					if (sortedNotesList.length > 0)
-					{
-						sortedNotesList.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-
-						for (epicNote in sortedNotesList)
-						{
-							for (doubleNote in pressNotes)
-							{
-								if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1)
-									killNote(doubleNote);
-								else
-									notesStopped = true;
-							}
-
-							if (!notesStopped)
-							{
-								if (!epicNote.wasGoodHit)
-								{
-									hitNote(epicNote);
-									pressNotes.push(epicNote);
-								}
-							}
-						}
-					}
-
-					if (!Settings.getPref('ghost_tap', true) && allowGhost)
-					{
-						if (player._stunnedTimer <= 0.0)
-							ghostMiss(direction);
-					}
-
-					Conductor.songPosition = lastTime;
 				}
+
+				if (sortedNotesList.length > 0)
+				{
+					sortedNotesList.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+
+					for (epicNote in sortedNotesList)
+					{
+						var notesStopped = false;
+
+						for (doubleNote in pressNotes)
+						{
+							if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1)
+							{
+								killNote(doubleNote);
+							}
+							else
+							{
+								notesStopped = true;
+							}
+						}
+
+						if (!notesStopped && !epicNote.wasGoodHit)
+						{
+							hitNote(epicNote);
+							pressNotes.push(epicNote);
+						}
+					}
+				}
+
+				if (!Settings.getPref('ghost_tap', true) && sortedNotesList.length == 0)
+				{
+					if (player._stunnedTimer <= 0.0)
+					{
+						ghostMiss(direction);
+					}
+				}
+
+				Conductor.songPosition = lastTime;
 
 				var strum:StrumNote = playerStrums.members[direction];
 				if (strum != null && strum.animation.curAnim.name != strum.confirmAnim && strum.animation.curAnim.name != strum.pressAnim)
