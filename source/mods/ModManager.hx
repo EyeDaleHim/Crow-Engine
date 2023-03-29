@@ -4,6 +4,7 @@ import weeks.WeekHandler;
 import mods.ModData;
 import openfl.Assets;
 import sys.FileSystem;
+import sys.io.File;
 import haxe.Json;
 
 class ModManager
@@ -16,23 +17,24 @@ class ModManager
 	{
 		if (!initialized)
 		{
-			var path:String = FileSystem.absolutePath('mods/');
+			var path:String = 'mods/';
 
-			trace(path);
-			for (mod in FileSystem.readDirectory(path))
+			if (FileSystem.exists(path))
 			{
-				trace('check1');
-				path += mod;
-                trace(path);
-				if (FileSystem.exists('$path/main.json'))
+				for (mod in FileSystem.readDirectory(path))
 				{
-					trace('check2');
-					var data:ModData = Json.parse(Assets.getText('$path/main.json'));
-					data.folderName = mod;
+					var modPath = haxe.io.Path.join([path, mod]);
+					if (FileSystem.isDirectory(modPath))
+					{
+						var data:ModData = Json.parse(File.getContent(haxe.io.Path.join([modPath, 'main.json'])));
+						data.folderName = mod;
 
-					mods.push(data);
+						mods.push(data);
+					}
 				}
 			}
+
+			trace(FileSystem.exists(path));
 		}
 
 		for (mod in mods)
@@ -50,7 +52,7 @@ class ModManager
 					var filePath:String = ModPaths.data(mod.folderName, 'weeks/$week');
 
 					if (!FileSystem.isDirectory(filePath))
-						modWeeks.push(Json.parse(Assets.getText(filePath)));
+						modWeeks.push(Json.parse(File.getContent(filePath)));
 				}
 
 				folder += '/songs';
@@ -69,7 +71,7 @@ class ModManager
 				{
 					if (WeekHandler.findSongIndex(song) != -1)
 					{
-						var songStructure:SongStructure = Json.parse(Assets.getText(ModPaths.data(mod.folderName, 'weeks/songs/$song.json')));
+						var songStructure:SongStructure = Json.parse(File.getContent(ModPaths.data(mod.folderName, 'weeks/songs/$song.json')));
 						songStructure.modParent = mod.folderName;
 						WeekHandler.songs.push(songStructure);
 					}

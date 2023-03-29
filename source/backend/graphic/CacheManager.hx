@@ -2,8 +2,10 @@ package backend.graphic;
 
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
+import sys.FileSystem;
 import flash.media.Sound;
 import openfl.Assets;
+import openfl.display.BitmapData;
 import haxe.ds.StringMap;
 
 class CacheManager
@@ -40,9 +42,18 @@ class CacheManager
 	// threading is useful if you're making dynamic scenes or some WEIRD shit!
 	public static function setBitmap(key:String = '', thread:Bool = false):FlxGraphic
 	{
-		if (Assets.exists(key, IMAGE))
+		var modsEnabled:Bool = #if MODS_ENABLED FileSystem.exists(key) #else false #end;
+
+		if (modsEnabled || Assets.exists(key, IMAGE))
 		{
-			var graphic:FlxGraphic = FlxGraphic.fromAssetKey(key, false, null, false);
+			var graphic:FlxGraphic = null;
+			if (modsEnabled)
+			{
+				var bitmap:BitmapData = BitmapData.fromFile(key);
+				graphic = FlxGraphic.fromBitmapData(bitmap, false, key);
+			}
+			else if (graphic == null)
+				graphic = FlxGraphic.fromAssetKey(key, false, null, false);
 			graphic.persist = true;
 
 			FlxG.bitmap.addGraphic(graphic);
@@ -77,7 +88,7 @@ class CacheManager
 
 	public static function setAudio(key:String = '', thread:Bool = false):Sound
 	{
-		if (Assets.exists(key, SOUND))
+		if (#if MODS_ENABLED FileSystem.exists(key) || #end Assets.exists(key, SOUND))
 		{
 			var sound:Sound = Sound.fromFile(key);
 

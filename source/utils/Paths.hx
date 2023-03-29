@@ -8,6 +8,8 @@ import openfl.display.BitmapData;
 import flash.media.Sound;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+import sys.FileSystem;
+import sys.io.File;
 import backend.graphic.CacheManager;
 import backend.graphic.CacheManager.AssetTypeData;
 import backend.graphic.FramesManager;
@@ -99,13 +101,13 @@ class Paths
 		var fullPath:String = imagePath(file, library);
 
 		#if MODS_ENABLED
-		var failedCurrentMod:Bool = ModPaths.currentMod.length == 0 || !OpenFlAssets.exists(ModPaths.image(ModPaths.currentMod, file));
+		var failedCurrentMod:Bool = ModPaths.currentMod.length == 0 || !FileSystem.exists(ModPaths.image(ModPaths.currentMod, file));
 
 		if (failedCurrentMod)
 		{
 			for (mod in ModManager.mods)
 			{
-				if (OpenFlAssets.exists(ModPaths.image(mod.folderName, file)))
+				if (FileSystem.exists(ModPaths.image(mod.folderName, file)))
 				{
 					fullPath = ModPaths.image(mod.folderName, file);
 					break;

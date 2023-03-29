@@ -12,6 +12,7 @@ import haxe.Json;
 import sys.FileSystem;
 import sys.thread.ElasticThreadPool;
 import sys.thread.Mutex;
+import lime.utils.Log;
 import lime.ui.Window;
 import lime.app.Application;
 #if sys
@@ -90,6 +91,8 @@ class Main extends Sprite
 	{
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
+
+		Log.throwErrors = false;
 
 		// -1.0 to tell its a Float, instead of having -1 as an Int
 		if (game.zoom == -1.0)
