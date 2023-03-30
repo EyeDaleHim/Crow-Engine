@@ -44,7 +44,7 @@ import objects.notes.StrumNote;
 import backend.graphic.CacheManager;
 import weeks.ScoreContainer;
 import weeks.WeekHandler;
-import backend.Script;
+import backend.ScriptHandler;
 import backend.LoadingManager;
 import backend.Transitions;
 import backend.query.ControlQueries;
@@ -264,7 +264,7 @@ class PlayState extends MusicBeatState
 	public var songSpeed:Float = 1.0; // no support for changing speed yet
 
 	// scripts
-	private var scripts:Array<Script> = [];
+	private var scripts:Array<ScriptHandler> = [];
 
 	// various internal things
 	private var ___trackedSoundObjects:Array<FlxSound> = [];
@@ -280,22 +280,6 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		// CacheManager.freeMemory(BITMAP, true); temporarily remove this
-
-		var directory:String = Paths.getPathAsFolder('scripts');
-
-		if (FileSystem.exists(directory))
-		{
-			for (scriptFile in FileSystem.readDirectory(directory))
-			{
-				if (scriptFile.contains('.hx'))
-				{
-					var script:Script = new Script(directory + '/$scriptFile');
-					scripts.push(script);
-				}
-			}
-		}
-
-		callScripts("create", [false]);
 
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -328,6 +312,16 @@ class PlayState extends MusicBeatState
 
 		if (Song.currentSong == null)
 			Song.loadSong('tutorial', 'hard');
+
+		var directories:Array<String> = ['states/PlayState', 'songs/${Song.currentSong.song}'];
+
+		for (directory in directories)
+		{
+			for (script in ScriptHandler.loadListFromFolder(directory))
+				scripts.push(script);
+		}
+
+		callScripts("create", []);
 
 		vocals = FlxG.sound.list.recycle(FlxSound);
 		vocals.looped = false;
@@ -638,7 +632,7 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
-		callScripts("create", [false]);
+		callScripts("postCreate", []);
 
 		trace('game took ' + (openfl.Lib.getTimer() - LoadingManager.time) + 'ms to load');
 	}
@@ -663,7 +657,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		callScripts("update", [false]);
+		callScripts("update", [elapsed]);
 
 		if (countdownState != 0 && pendingNotes.length != 0)
 		{
@@ -800,7 +794,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		callScripts("update", [true]);
+		callScripts("postUpdate", [elapsed]);
 	}
 
 	override function beatHit():Void
@@ -1419,24 +1413,28 @@ class PlayState extends MusicBeatState
 					{
 						if (renderer.y - renderer.offset.y * renderer.scale.y + renderer.height >= center && shouldPress)
 						{
-							var swagRect = new FlxRect(0, 0, renderer.frameWidth, renderer.frameHeight);
+							var swagRect = FlxRect.get(0, 0, renderer.frameWidth, renderer.frameHeight);
 							swagRect.height = (center - renderer.y) / renderer.scale.y;
 							swagRect.y = renderer.frameHeight - swagRect.height;
 							swagRect.ceil();
 
 							renderer.clipRect = swagRect;
+
+							swagRect.put();
 						}
 					}
 					else
 					{
 						if (renderer.y + renderer.offset.y * renderer.scale.y <= center && shouldPress)
 						{
-							var swagRect = new FlxRect(0, 0, renderer.width / renderer.scale.x, renderer.height / renderer.scale.y);
+							var swagRect = FlxRect.get(0, 0, renderer.width / renderer.scale.x, renderer.height / renderer.scale.y);
 							swagRect.y = (center - renderer.y) / renderer.scale.y;
 							swagRect.height -= swagRect.y;
 							swagRect.ceil();
 
 							renderer.clipRect = swagRect;
+
+							swagRect.put();
 						}
 					}
 				}

@@ -35,7 +35,7 @@ class DescriptionHolder extends FlxTypedSpriteGroup<FlxSprite>
 
 	override function update(elapsed:Float)
 	{
-		if (text != '' || text.length > 0)
+		if (text.length > 0)
 		{
 			_controlledAlpha += (elapsed * 1.175) * (targetAlpha > _controlledAlpha ? 1 : -1);
 			_controlledAlpha = FlxMath.bound(_controlledAlpha, 0, 1);

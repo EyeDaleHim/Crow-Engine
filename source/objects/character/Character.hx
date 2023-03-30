@@ -15,7 +15,6 @@ import openfl.Assets;
 import objects.character.CharacterData;
 import music.Song;
 import music.Song.SongInfo;
-import backend.Script;
 
 using StringTools;
 
@@ -27,7 +26,7 @@ class Character extends FlxSprite
 	public var name:String = 'bf';
 	public var isPlayer:Bool = true;
 	public var healthColor:Int = 0;
-	public var scripts:Array<Script> = [];
+
 	// simple controls for your character
 	public var controlIdle:Bool = true; // Whether or not your character should keep playing the idle when it finishes an animation.
 	public var forceIdle:Bool = false;
