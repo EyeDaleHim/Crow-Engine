@@ -10,24 +10,27 @@
 	<haxeflag name="-dce no" />
 
 	<haxedef name="HXCPP_GC_BIG_BLOCKS"/>
+
+	<!-- _________________________ Crow Engine Settings _________________________ -->
+
+	<define name="SCRIPTS_ALLOWED" if="desktop"/> <!-- Whether or not scripts should be enabled -->
+
+	<define name="EDITORS_ALLOWED"/> <!-- Whether or not the editor should be enabled -->
+
+	<define name="MODS_ENABLED"/> <!-- Whether or not mods should be enabled -->
+
+	<!-- Advanced -->
+	<define name="PRELOAD_CHARACTER"/> <!-- Preloads all character .json and .xml files at startup, reducing load time, does not preload bitmaps -->
+
+	<define name="ALLOW_FLIXEL_SLEEPING"/> <!-- If a Flixel object remains unchanged in velocity for a specified amount of time, it will set `moves` property to false -->
+
+	<define name="NOTE_POOLING"/> <!-- Pools a set amount of note sprites so only the chart is loaded, disable under rare circumstances -->
+
 	<!-- _________________________ Application Settings _________________________ -->
 
 	<app title="Friday Night Funkin' (Crow Engine)" file="CrowEngine" main="Main" company="EyeDaleHim"/>
 	<app main="Main" preloader="flixel.system.FlxPreloader"/>
 	<language name="en-US"/>
-
-	<!-- Crow Engine Options -->
-	<haxedef name="HSCRIPT_ALLOWED"/> <!-- Whether or not scripts should be enabled -->
-	<haxedef name="EDITORS_ALLOWED"/> <!-- Whether or not the editor should be enabled -->
-	<haxedef name="MODS_ENABLED"/> <!-- Whether or not mods should be enabled -->
-
-
-	<!-- Advanced -->
-	<haxedef name="PRELOAD_CHARACTER" /> <!-- Preloads all character .json and .xml files at startup, reducing load time, does not preload bitmaps -->
-
-	<haxedef name="ALLOW_FLIXEL_SLEEPING" /> <!-- If a Flixel object remains unchanged in velocity for a specified amount of time, it will set `moves` property to false -->
-
-	<haxedef name="NOTE_POOLING" /> <!-- Pools a set amount of note sprites so only the chart is loaded, disable under rare circumstances -->
 
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8"/>
@@ -117,9 +120,7 @@
 	<haxelib name="flixel-addons"/>
 	<haxelib name="flixel-ui"/>
 
-	<haxelib name="hscript"/>
-	<haxelib name="SScript" if="desktop"/>
-	<define name="hscriptPos"/>
+	<haxelib name="SScript" if="SCRIPTS_ALLOWED"/>
 
 	<!--Incase you wanna use adobe spritemaps with 2019+-->
 	<haxelib name="flxanimate"/>

@@ -1,3 +1,4 @@
+#if SCRIPTS_ALLOWED
 package mods.states;
 
 import backend.ScriptHandler;
@@ -38,3 +39,4 @@ class ScriptedState extends MusicBeatState
         }
     }
 }
+#end
