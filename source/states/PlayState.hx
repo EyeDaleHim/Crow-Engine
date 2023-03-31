@@ -321,7 +321,7 @@ class PlayState extends MusicBeatState
 				scripts.push(script);
 		}
 
-		callScripts("create", []);
+		callScripts("create", [false]);
 
 		vocals = FlxG.sound.list.recycle(FlxSound);
 		vocals.looped = false;
@@ -632,7 +632,7 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
-		callScripts("postCreate", []);
+		callScripts("create", [true]);
 
 		trace('game took ' + (openfl.Lib.getTimer() - LoadingManager.time) + 'ms to load');
 	}
@@ -657,7 +657,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		callScripts("update", [elapsed]);
+		callScripts("update", [elapsed, false]);
 
 		if (countdownState != 0 && pendingNotes.length != 0)
 		{
@@ -794,12 +794,14 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		callScripts("postUpdate", [elapsed]);
+		callScripts("update", [elapsed, true]);
 	}
 
 	override function beatHit():Void
 	{
 		super.beatHit();
+
+		callScripts("beatHit", [curBeat, false]);
 
 		iconP1.beatHit();
 		iconP2.beatHit();
@@ -843,11 +845,15 @@ class PlayState extends MusicBeatState
 		}
 
 		stageData.beatHit(curBeat);
+
+		callScripts("beatHit", [curBeat, true]);
 	}
 
 	override function stepHit():Void
 	{
 		super.stepHit();
+
+		callScripts("stepHit", [curStep, false]);
 
 		if (vocals.attributes.get('isPlaying'))
 		{
@@ -857,6 +863,8 @@ class PlayState extends MusicBeatState
 				resyncVocals();
 			}
 		}
+
+		callScripts("stepHit", [curStep, true]);
 	}
 
 	private function resyncVocals():Void
@@ -1345,7 +1353,10 @@ class PlayState extends MusicBeatState
 	{
 		for (script in scripts)
 		{
-			script.call(func, args);
+			if (script.exists(func))
+				script.call(func, args);
+			else
+				script.traces = false;
 		}
 	}
 
@@ -1753,6 +1764,11 @@ class PlayState extends MusicBeatState
 		NoteSprite.__pool = null;
 
 		super.destroy();
+	}
+
+	override public function toString():String
+	{
+		return "PlayState";
 	}
 
 	private function getAvailableDifficulties():Array<String>

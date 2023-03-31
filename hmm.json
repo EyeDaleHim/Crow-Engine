@@ -13,6 +13,9 @@
 		},
 		{"name": "hxCodec", "type": "haxelib"},
 		{"name": "hscript", "type": "haxelib"},
-		{"name": "SScript", "type": "haxelib", "version": "1.0.0"}
+		{"name": "SScript", "type": "git", "dir": "SScript",
+			"ref": "testing",
+			"url": "https://github.com/AltronMaxX/SScript"
+		}
 	]
 }

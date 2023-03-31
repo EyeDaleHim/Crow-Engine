@@ -136,6 +136,7 @@ class OptionsMenu extends MusicBeatState
 								member.bound, member.choices, member.type);
 							spriteMember.ID = i;
 							spriteMember.setPosition(40, dimmer.y + 80 + ((spriteMember.height + 10) * i));
+							spriteMember.screenCenter(X);
 							globalGroupManager.add(spriteMember);
 						}
 					}
@@ -158,6 +159,7 @@ class OptionsMenu extends MusicBeatState
 							var spriteMember:OptionsSprite = new OptionsSprite(member, '#CONTROL_$member', '', null, null, null, 3);
 							spriteMember.ID = spriteMember.selectionIndex = i;
 							spriteMember.setPosition(40, dimmer.y + 80 + ((spriteMember.height + 10) * i));
+							spriteMember.screenCenter(X);
 							globalGroupManager.add(spriteMember);
 						}
 					}
@@ -261,6 +263,13 @@ class OptionsMenu extends MusicBeatState
 
 												optionsSprite._holdCooldown = 0.175;
 											}
+											else if (controls.getKey('UI_LEFT', JUST_PRESSED) || controls.getKey('UI_RIGHT', JUST_PRESSED))
+											{
+												if (controls.getKey('UI_LEFT', JUST_PRESSED))
+													optionsSprite.onChange(-1);
+												else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
+													optionsSprite.onChange(1);
+											}
 										}
 									case 3:
 										{
@@ -307,7 +316,8 @@ class OptionsMenu extends MusicBeatState
 			{
 				var controlledSprite = cast(sprite, OptionsSprite);
 
-				controlledSprite.y = Tools.lerpBound(controlledSprite.y, dimmer.y + 80 + ((controlledSprite.height + 10) * controlledSprite.selectionIndex),
+				controlledSprite.y = Tools.lerpBound(controlledSprite.y,
+					dimmer.y + 80 + ((controlledSprite.height + 10) * controlledSprite.selectionIndex),
 					elapsed * 14.8);
 
 				if (controlledSprite.y + controlledSprite.height <= dimmer.y || controlledSprite.y >= dimmer.y + dimmer.height)

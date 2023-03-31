@@ -1,5 +1,6 @@
 package;
 
+import mods.states.ScriptedState;
 import backend.data.Controls;
 import flixel.FlxG;
 import flixel.FlxState;
@@ -11,6 +12,8 @@ import flixel.util.FlxStringUtil;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import backend.Transitions;
+import backend.ScriptHandler;
+import sys.FileSystem;
 
 @:access(MusicBeatState.callAssetsToCache)
 class MusicBeatState extends FlxUIState
@@ -45,7 +48,11 @@ class MusicBeatState extends FlxUIState
 
 		super.create();
 
-		// calling gc to hopefully stop a lag spike between a state starting and the first lag in some cases
+		for (key => script in SScript.global)
+		{
+			script.call("create", []);
+		}
+
 		#if cpp
 		cpp.vm.Gc.run(true);
 		#end
@@ -67,6 +74,11 @@ class MusicBeatState extends FlxUIState
 
 		if (oldStep != curStep && curStep >= 0)
 			stepHit();
+
+		for (key => script in SScript.global)
+		{
+			script.call("update", [elapsed]);
+		}
 
 		super.update(elapsed);
 	}
@@ -105,6 +117,16 @@ class MusicBeatState extends FlxUIState
 
 	public static function switchState(state:FlxState, onFinishTransition:Void->Void = null)
 	{
+		var stateName:String = Std.string(state);
+
+		if (stateName != 'MusicBeatState')
+		{
+			if (FileSystem.exists(Paths.getPathAsFolder('scripts/states/$stateName')))
+			{
+				state = new ScriptedState(stateName);
+			}
+		}
+
 		Transitions.transition(0.5, In, FlxEase.linear, Slider_Down, {
 			// in case you wanna do something, these two aren't useful for now
 			startCallback: null,
@@ -133,18 +155,33 @@ class MusicBeatState extends FlxUIState
 
 	public function stepHit():Void
 	{
+		for (key => script in SScript.global)
+		{
+			script.call("stepHit", [curStep]);
+		}
+
 		if (curStep % 4 == 0)
 			beatHit();
 	}
 
 	public function beatHit():Void
 	{
+		for (key => script in SScript.global)
+		{
+			script.call("beatHit", [curBeat]);
+		}
+
 		if (curBeat % 4 == 0)
 			sectionHit();
 	}
 
 	public function sectionHit():Void
 	{
+	}
+
+	override public function toString():String
+	{
+		return "MusicBeatState";
 	}
 
 	override public function onFocusLost():Void

@@ -86,7 +86,7 @@ class DebugInfo extends TextField
 		if (memory > memoryPeak)
 			memoryPeak = memory;
 
-		if (visible = !(Settings.getPref("fpsInfo", "default") == 'disable'))
+		if (visible)
 		{
 			for (text in outlines)
 				text.visible = true;
@@ -157,6 +157,8 @@ class DebugInfo extends TextField
 				}
 			}
 		}
+
+		visible = (Settings.getPref("fpsInfo", "default") == 'disable');
 	}
 
 	function addOutline(dx:Float, dy:Float):Void
