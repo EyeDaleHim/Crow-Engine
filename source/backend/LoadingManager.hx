@@ -20,6 +20,8 @@ import backend.graphic.CacheManager;
 @:access(objects.notes.Note)
 class LoadingManager extends MusicBeatState
 {
+	static inline var LOADING_SPRITE_TIME:Float = 2.5;
+
 	public static var activated:Bool = false;
 	public static var __THREADPOOLS:FixedThreadPool = new FixedThreadPool(8);
 	private static var _GAME_VARS:Map<ItemRequest, Array<Dynamic>> = [];
@@ -71,13 +73,22 @@ class LoadingManager extends MusicBeatState
 		loadingSprite.angle = Math.random() * 360;
 		loadingSprite.angularVelocity = 360;
 		loadingSprite.setPosition(FlxG.width - 128, FlxG.height - 128);
+		loadingSprite.alpha = 0.0;
+		loadingSprite.active = false;
 		add(loadingSprite);
 
 		super.create();
 	}
 
+	private var TIME_INDEX:Float = 0.0;
+
 	override function update(elapsed:Float)
 	{
+		TIME_INDEX += elapsed;
+
+		if (TIME_INDEX > LOADING_SPRITE_TIME)
+			loadingSprite.alpha = TIME_INDEX - LOADING_SPRITE_TIME;
+
 		if (activated && finishedItems.length >= 3)
 		{
 			activated = false;
