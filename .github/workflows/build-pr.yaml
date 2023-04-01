@@ -1,10 +1,9 @@
 # Hewwo! -Raltyro
 
-name: Build Nightly
+name: Build PR
 on:
+  pull_request:
   workflow_dispatch:
-  push:
-    branches: [dev]
 
 jobs:
   build:
@@ -44,15 +43,6 @@ jobs:
         uses: krdlab/setup-haxe@master
         with:
           haxe-version: 4.2.5
-
-      - name: Restore action cache
-        uses: actions/cache@v3
-        with:
-          key: cache-${{ matrix.compile }}-${{ matrix.build }}
-          path: |
-            export/${{ matrix.build }}/${{ matrix.folder }}/haxe/
-            export/${{ matrix.build }}/${{ matrix.folder }}/obj/
-            .haxelib/
 
       - name: Setup Haxelib
         run: |
@@ -106,31 +96,4 @@ jobs:
         with:
           name: executableOnly-${{ matrix.compile }}-${{ matrix.build }}
           path: export/${{ matrix.build }}/${{ matrix.folder }}/bin/CrowEngine
-
-      - name: Clearing already existing cache
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const caches = await github.rest.actions.getActionsCacheList({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            })
-            for (const cache of caches.data.actions_caches) {
-              if (cache.key == "cache-${{ matrix.compile }}-${{ matrix.build }}") {
-                await github.rest.actions.deleteActionsCacheById({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  cache_id: cache.id,
-                })
-              }
-            }
-
-      - name: Uploading new cache
-        uses: actions/cache@v3
-        with:
-          key: cache-${{ matrix.compile }}-${{ matrix.build }}
-          path: |
-            export/${{ matrix.build }}/${{ matrix.folder }}/haxe/
-            export/${{ matrix.build }}/${{ matrix.folder }}/obj/
-            .haxelib/
     
