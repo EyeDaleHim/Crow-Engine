@@ -44,11 +44,14 @@ import objects.notes.StrumNote;
 import backend.graphic.CacheManager;
 import weeks.ScoreContainer;
 import weeks.WeekHandler;
-import backend.ScriptHandler;
 import backend.LoadingManager;
 import backend.Transitions;
 import backend.query.ControlQueries;
 import sys.FileSystem;
+
+#if SCRIPTS_ALLOWED
+import backend.ScriptHandler;
+#end
 
 using StringTools;
 using utils.Tools;
@@ -263,8 +266,9 @@ class PlayState extends MusicBeatState
 	public var paused:Bool = false;
 	public var songSpeed:Float = 1.0; // no support for changing speed yet
 
-	// scripts
+	#if SCRIPTS_ALLOWED // scripts
 	private var scripts:Array<ScriptHandler> = [];
+	#end
 
 	// various internal things
 	private var ___trackedSoundObjects:Array<FlxSound> = [];
@@ -313,13 +317,14 @@ class PlayState extends MusicBeatState
 		if (Song.currentSong == null)
 			Song.loadSong('tutorial', 'hard');
 
+		#if SCRIPTS_ALLOWED
 		var directories:Array<String> = ['states/PlayState', 'songs/${Song.currentSong.song}'];
 
-		for (directory in directories)
-		{
+		for (directory in directories) {
 			for (script in ScriptHandler.loadListFromFolder(directory))
 				scripts.push(script);
 		}
+		#end
 
 		callScripts("create", [false]);
 
@@ -1349,6 +1354,7 @@ class PlayState extends MusicBeatState
 		_totalPlayers++;
 	}
 
+	#if SCRIPTS_ALLOWED
 	public function callScripts(func:String, args:Array<Dynamic>):Void
 	{
 		for (script in scripts)
@@ -1359,6 +1365,9 @@ class PlayState extends MusicBeatState
 				script.traces = false;
 		}
 	}
+	#else
+	inline public function callScripts(func:String, args:Array<Dynamic>):Void {}
+	#end
 
 	public function manageNotes():Void
 	{

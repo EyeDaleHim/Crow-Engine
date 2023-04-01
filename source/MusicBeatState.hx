@@ -1,7 +1,5 @@
 package;
 
-import mods.states.ScriptedState;
-import backend.data.Controls;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
@@ -11,9 +9,14 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxStringUtil;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
+import backend.data.Controls;
 import backend.Transitions;
-import backend.ScriptHandler;
 import sys.FileSystem;
+
+#if SCRIPTS_ALLOWED
+import mods.states.ScriptedState;
+import backend.ScriptHandler;
+#end
 
 @:access(MusicBeatState.callAssetsToCache)
 class MusicBeatState extends FlxUIState
@@ -48,10 +51,10 @@ class MusicBeatState extends FlxUIState
 
 		super.create();
 
+		#if SCRIPTS_ALLOWED
 		for (key => script in SScript.global)
-		{
 			script.call("create", []);
-		}
+		#end
 
 		#if cpp
 		cpp.vm.Gc.run(true);
@@ -75,10 +78,10 @@ class MusicBeatState extends FlxUIState
 		if (oldStep != curStep && curStep >= 0)
 			stepHit();
 
+		#if SCRIPTS_ALLOWED
 		for (key => script in SScript.global)
-		{
 			script.call("update", [elapsed]);
-		}
+		#end
 
 		super.update(elapsed);
 	}
@@ -117,15 +120,15 @@ class MusicBeatState extends FlxUIState
 
 	public static function switchState(state:FlxState, onFinishTransition:Void->Void = null)
 	{
+		#if SCRIPTS_ALLOWED
 		var stateName:String = Std.string(state);
 
 		if (stateName != 'MusicBeatState')
 		{
 			if (FileSystem.exists(Paths.getPathAsFolder('scripts/states/$stateName')))
-			{
 				state = new ScriptedState(stateName);
-			}
 		}
+		#end
 
 		Transitions.transition(0.5, In, FlxEase.linear, Slider_Down, {
 			// in case you wanna do something, these two aren't useful for now
@@ -155,10 +158,10 @@ class MusicBeatState extends FlxUIState
 
 	public function stepHit():Void
 	{
+		#if SCRIPTS_ALLOWED
 		for (key => script in SScript.global)
-		{
 			script.call("stepHit", [curStep]);
-		}
+		#end
 
 		if (curStep % 4 == 0)
 			beatHit();
@@ -166,10 +169,10 @@ class MusicBeatState extends FlxUIState
 
 	public function beatHit():Void
 	{
+		#if SCRIPTS_ALLOWED
 		for (key => script in SScript.global)
-		{
 			script.call("beatHit", [curBeat]);
-		}
+		#end
 
 		if (curBeat % 4 == 0)
 			sectionHit();

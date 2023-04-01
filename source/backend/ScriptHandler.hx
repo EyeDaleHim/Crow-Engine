@@ -1,3 +1,4 @@
+#if SCRIPTS_ALLOWED
 package backend;
 
 import sys.FileSystem;
@@ -89,3 +90,4 @@ class ScriptHandler extends SScript
         return scriptList;
     }
 }
+#end
