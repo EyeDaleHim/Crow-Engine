@@ -1,0 +1,99 @@
+# Hewwo! -Raltyro
+
+name: Build Other Branch
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        compile: [linux, mac, windows]
+        build: [release, 32bit, debug]
+        exclude:
+          - compile: linux
+            build: 32bit
+
+          - compile: mac
+            build: 32bit
+
+        include:
+          - compile: linux
+            os: ubuntu-latest
+            folder: linux
+
+          - compile: mac
+            os: macOS-latest
+            folder: macos
+
+          - compile: windows
+            os: windows-latest
+            folder: windows
+
+    name: ${{ matrix.compile }}-${{ matrix.build }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.2.5
+
+      - name: Setup Haxelib
+        run: |
+          haxelib setup .haxelib/
+          haxelib --global update haxelib --quiet
+          haxelib install hxcpp --quiet
+          haxelib install format --quiet
+          haxelib install hxp --quiet
+
+      - name: Install hxcpp-debug-server
+        if: ${{ matrix.build == 'debug' }}
+        run: haxelib install hxcpp-debug-server --quiet
+
+      - name: Install platform-specific distributes (linux)
+        if: ${{ matrix.compile == 'linux' }}
+        run: |
+          sudo apt-get install libvlc-dev
+          sudo apt-get install libvlccore-dev
+          sudo apt-get install glibc-source
+          sudo apt-get install libidn12
+          sudo apt-get install libidn-dev
+
+      - name: Install haxelibs
+        run: haxe -cp dev -D analyzer-optimize -main Update --interp
+
+      - name: Compile (32-bit)
+        if: ${{ matrix.build == '32bit' }}
+        run: haxelib run openfl build ${{ matrix.compile }} -${{ matrix.build }} -D HXCPP_M32 -32
+
+      - name: Compile (64-bit)
+        if: ${{ matrix.build != '32bit' }}
+        run: haxelib run openfl build ${{ matrix.compile }} -${{ matrix.build }} -64
+
+      - name: Uploading artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.compile }}-${{ matrix.build }}
+          path: export/${{ matrix.build }}/${{ matrix.folder }}/bin
+          if-no-files-found: error
+
+      - name: Uploading artifact (executable windows)
+        if: ${{ matrix.compile == 'windows' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: executableOnly-${{ matrix.compile }}-${{ matrix.build }}
+          path: export/${{ matrix.build }}/${{ matrix.folder }}/bin/CrowEngine.exe
+
+      - name: Uploading artifact (executable unix)
+        if: ${{ matrix.compile == 'linux' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: executableOnly-${{ matrix.compile }}-${{ matrix.build }}
+          path: export/${{ matrix.build }}/${{ matrix.folder }}/bin/CrowEngine
+    
