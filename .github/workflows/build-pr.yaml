@@ -1,9 +1,9 @@
 # Hewwo! -Raltyro
 
-name: Build Other Branch
+name: Build PR
 on:
+  pull_request:
   workflow_dispatch:
-  push:
 
 jobs:
   build:
