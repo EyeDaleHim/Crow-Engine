@@ -9,6 +9,7 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.math.FlxMath;
+import mods.ModManager;
 
 class MainMenuState extends MusicBeatState
 {
@@ -52,7 +53,9 @@ class MainMenuState extends MusicBeatState
 
 	private var mainBG:FlxSprite;
 	private var flickerBG:FlxSprite;
+
 	private var versionText:FlxText;
+	private var modText:FlxText;
 
 	private var camFollow:FlxObject;
 
@@ -88,6 +91,14 @@ class MainMenuState extends MusicBeatState
 		versionText.updateHitbox();
 		versionText.setPosition(4, FlxG.height - versionText.height - 4);
 		add(versionText);
+
+		modText = new FlxText(0, 0, 0, ModManager.mods.length + " Mod(s) Active");
+		modText.scrollFactor.set();
+		modText.antialiasing = Settings.getPref('antialiasing', true);
+		modText.setFormat(Paths.font('vcr.ttf'), 16, 0xFFFFFFFF, RIGHT, OUTLINE, 0xFF000000);
+		modText.updateHitbox();
+		modText.setPosition(FlxG.width - modText.width - 4, FlxG.height - modText.height - 4);
+		add(modText);
 
 		for (item in menuList)
 		{

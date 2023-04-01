@@ -150,15 +150,16 @@ class DebugInfo extends TextField
 				{
 					case 'minimized':
 						Settings.setPref("fpsInfo", 'default');
+						visible = true;
 					case 'default':
 						Settings.setPref("fpsInfo", "disable");
+						visible = true;
 					case 'disable':
 						Settings.setPref("fpsInfo", 'minimized');
+						visible = false;
 				}
 			}
 		}
-
-		visible = (Settings.getPref("fpsInfo", "default") == 'disable');
 	}
 
 	function addOutline(dx:Float, dy:Float):Void

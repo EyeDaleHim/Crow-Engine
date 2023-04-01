@@ -34,6 +34,9 @@ class ScriptHandler extends SScript
         set('PlayState', states.PlayState);
         set('currentGame', states.PlayState.current);
 
+        set('Settings', backend.data.Settings);
+        set('Controls', backend.data.Controls);
+
         set('Tools', utils.Tools);
         set('Paths', utils.Paths);
 
@@ -69,6 +72,7 @@ class ScriptHandler extends SScript
             for (script in FileSystem.readDirectory(modPath))
             {
                 var newScript:ScriptHandler = new ScriptHandler('$modPath/$script');
+                SScript.global.remove('$modPath/$folder');
                 scriptList.push(newScript);
             }
         }
@@ -78,11 +82,10 @@ class ScriptHandler extends SScript
 
         if (FileSystem.exists(path))
         {
-            trace('check1');
             for (script in FileSystem.readDirectory(path))
             {
-                trace('$script');
                 var newScript:ScriptHandler = new ScriptHandler('$path/$script');
+                SScript.global.remove('$path/$script');
                 scriptList.push(newScript);
             }
         }

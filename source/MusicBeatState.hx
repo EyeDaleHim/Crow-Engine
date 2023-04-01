@@ -125,8 +125,23 @@ class MusicBeatState extends FlxUIState
 
 		if (stateName != 'MusicBeatState')
 		{
-			if (FileSystem.exists(Paths.getPathAsFolder('scripts/states/$stateName')))
-				state = new ScriptedState(stateName);
+			var path:String = Paths.getPathAsFolder('scripts/states/$stateName');
+
+			if (FileSystem.exists(path))
+			{
+				var overrideState:Bool = false;
+				var dir:Array<String> = FileSystem.readDirectory(path);
+				for (file in dir)
+				{
+					if (file.contains('override'))
+					{
+						overrideState = true;
+						break;
+					}
+				}
+				if (overrideState)
+					state = new ScriptedState(stateName);
+			}
 		}
 		#end
 
