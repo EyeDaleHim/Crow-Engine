@@ -4,6 +4,7 @@ name: Build Nightly
 on:
   workflow_dispatch:
   push:
+    branches: [dev]
 
 jobs:
   build:
