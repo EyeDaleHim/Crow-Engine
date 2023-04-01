@@ -17,7 +17,7 @@ typedef Library = {
 
 class Update {
 	public static function main() {
-		var isHMM = false, prevCwd = Sys.getCwd(), mainCwd;
+		var isHMM = getProcessOutput('haxelib', ['run', 'hmm']).contains('help'), prevCwd = Sys.getCwd(), mainCwd;
 		var json:Array<Library> = Json.parse(File.getContent('./hmm.json')).dependencies;
 		if (isHMM) {
 			if (!FileSystem.exists('.haxelib')) FileSystem.createDirectory('.haxelib');
