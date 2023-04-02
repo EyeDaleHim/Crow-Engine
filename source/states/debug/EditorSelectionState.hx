@@ -1,5 +1,6 @@
 package states.debug;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -49,7 +50,19 @@ class EditorSelectionState extends MusicBeatSubState
 			textGroup.add(selectionObject);
 		}
 
-		cameras = [PlayState.current.pauseCamera];
+		if (PlayState.current == null)
+		{
+			if (FlxG.cameras.list.length == 1)
+			{
+				var newCam:FlxCamera = new FlxCamera();
+				newCam.bgColor = FlxColor.TRANSPARENT;
+				FlxG.cameras.add(newCam);
+			}
+
+			cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		}
+		else
+			cameras = [PlayState.current.pauseCamera];
 
 		changeSelection();
 
@@ -89,6 +102,11 @@ class EditorSelectionState extends MusicBeatSubState
 		}
 
 		super.update(elapsed);
+
+		textGroup.forEachExists(function(txt:Alphabet)
+		{
+			txt.screenCenter(X);
+		});
 	}
 
 	public function changeSelection(change:Int = 0)

@@ -141,6 +141,9 @@ class MainMenuState extends MusicBeatState
 				acceptSelection();
 		}
 
+		if (FlxG.keys.justPressed.SEVEN)
+			openSubState(new states.debug.EditorSelectionState());
+
 		camFollow.y = Tools.lerpBound(camFollow.y, FlxMath.remapToRange(curSelected, 0, menuList.length - 1, 20, mainBG.x + mainBG.width - 700),
 			(elapsed * 3.175));
 
