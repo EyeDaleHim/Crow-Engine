@@ -30,6 +30,13 @@ class GameplayOptions extends CategoryOptions
 			defaultValue: true,
 			type: 0
 		});
+		options.push({
+			name: 'Quick Mode',
+			description: 'Animations (title screen, menu screens, transitions) will be faster.',
+			saveHolder: 'quickMode',
+			defaultValue: false,
+			type: 0
+		});
 
 		return options;
 	}
