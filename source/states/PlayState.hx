@@ -48,7 +48,6 @@ import backend.LoadingManager;
 import backend.Transitions;
 import backend.query.ControlQueries;
 import sys.FileSystem;
-
 #if SCRIPTS_ALLOWED
 import backend.ScriptHandler;
 #end
@@ -320,7 +319,8 @@ class PlayState extends MusicBeatState
 		#if SCRIPTS_ALLOWED
 		var directories:Array<String> = ['states/PlayState', 'songs/${Song.currentSong.song}'];
 
-		for (directory in directories) {
+		for (directory in directories)
+		{
 			for (script in ScriptHandler.loadListFromFolder(directory))
 				scripts.push(script);
 		}
@@ -1366,7 +1366,9 @@ class PlayState extends MusicBeatState
 		}
 	}
 	#else
-	inline public function callScripts(func:String, args:Array<Dynamic>):Void {}
+	inline public function callScripts(func:String, args:Array<Dynamic>):Void
+	{
+	}
 	#end
 
 	public function manageNotes():Void
@@ -1672,29 +1674,32 @@ class PlayState extends MusicBeatState
 
 		if (showCombo)
 		{
-			if (comboSpr == null || !comboSpr.alive)
-				comboSpr = new ComboSprite();
-			if (comboSpr.attributes.get('lastRating') != rating)
+			if (rating != 'miss')
 			{
-				comboSpr.attributes.set('lastRating', rating);
-				comboSpr.loadGraphic(Paths.image('game/combo/${Song.metaData.comboSkin}/ratings/' + rating));
+				if (comboSpr == null || !comboSpr.alive)
+					comboSpr = new ComboSprite();
+				if (comboSpr.attributes.get('lastRating') != rating)
+				{
+					comboSpr.attributes.set('lastRating', rating);
+					comboSpr.loadGraphic(Paths.image('game/combo/${Song.metaData.comboSkin}/ratings/' + rating));
+				}
+				comboSpr.scale.set(0.7 * SkinManager.comboSkin.scale.x, 0.7 * SkinManager.comboSkin.scale.y);
+				comboSpr.updateHitbox();
+				comboSpr.screenCenter();
+				comboSpr.setPosition(xPos - 40, comboSpr.y - 60);
+
+				comboSpr.antialiasing = SkinManager.comboSkin.forcedAntialias;
+
+				comboSpr.acceleration.y = 550;
+				comboSpr.velocity.y = -FlxG.random.int(140, 175);
+				comboSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
+
+				comboSpr.delay = Conductor.crochet * 0.002;
+				comboSpr.alpha = 1.0;
+				comboSpr.active = true;
+
+				addToHUD(comboSpr, members.indexOf(globalStrums));
 			}
-			comboSpr.scale.set(0.7 * SkinManager.comboSkin.scale.x, 0.7 * SkinManager.comboSkin.scale.y);
-			comboSpr.updateHitbox();
-			comboSpr.screenCenter();
-			comboSpr.setPosition(xPos - 40, comboSpr.y - 60);
-
-			comboSpr.antialiasing = SkinManager.comboSkin.forcedAntialias;
-
-			comboSpr.acceleration.y = 550;
-			comboSpr.velocity.y = -FlxG.random.int(140, 175);
-			comboSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
-
-			comboSpr.delay = Conductor.crochet * 0.002;
-			comboSpr.alpha = 1.0;
-			comboSpr.active = true;
-
-			addToHUD(comboSpr, members.indexOf(globalStrums));
 		}
 
 		if (showNumbers)
