@@ -14,6 +14,7 @@ import haxe.Json;
 using StringTools;
 
 @:allow(states.PlayState)
+@:allow(states.debug.game.ChartEditorState)
 @:allow(objects.notes.NoteSprite)
 @:allow(objects.notes.SustainNote)
 class Note

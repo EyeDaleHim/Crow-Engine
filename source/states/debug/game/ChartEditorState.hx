@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.input.keyboard.FlxKey;
@@ -13,13 +14,16 @@ import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxTiledSprite;
 import openfl.display.BitmapData;
+import music.Song;
 import objects.notes.Note;
 import backend.graphic.CacheManager;
 
 class ChartEditorState extends MusicBeatState
 {
 	public static var CELL_SIZE:Int = 45;
-	public static var gridTemplate:BitmapData; // for copying
+
+	public var noteFrames:FlxSprite;
+	public var gridTemplate:BitmapData; // for copying
 
 	public static var lastPos:Float = 0.0;
 
@@ -31,6 +35,8 @@ class ChartEditorState extends MusicBeatState
 	public var topBar:FlxSprite;
 
 	public var strumLines:Array<FlxTiledSprite> = [];
+	public var frameSelector:FlxSprite;
+
 	public var infoText:EditorText;
 
 	public var camFollow:FlxObject;
@@ -70,27 +76,46 @@ class ChartEditorState extends MusicBeatState
 		camFollow = new FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter();
 
-		if (FlxG.sound.music != null)
-			FlxG.sound.music.pause();
+		if (Song.currentSong == null)
+			Song.loadSong('tutorial', 'hard');
+		FlxG.sound.music.loadEmbedded(Paths.inst(Song.currentSong.song), true);
+		FlxG.sound.music.play();
+		FlxG.sound.music.pause();
 
 		Conductor.songPosition = lastPos;
 
 		FlxG.mouse.visible = true;
 
-		if (gridTemplate == null)
-		{
-			gridTemplate = FlxGridOverlay.createGrid(CELL_SIZE, CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 16, true, 0xffdee8eb, 0xffa8a1a1);
+		new Note();
 
-			gridTemplate.lock();
-			for (y in 0...2)
-			{
-				for (x in 0...gridTemplate.width)
-				{
-					gridTemplate.setPixel32(x, gridTemplate.height - y, FlxColor.BLACK);
-				}
-			}
-			gridTemplate.unlock();
+		noteFrames = new FlxSprite();
+		noteFrames.frames = switch (Note._noteFile.atlasType)
+		{
+			case 'packer':
+				Paths.getPackerAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/${Note.currentSkin}');
+			default:
+				Paths.getSparrowAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/${Note.currentSkin}');
 		}
+
+		for (animData in Note._noteFile.animationData)
+		{
+			if (animData.indices != null && animData.indices.length > 0)
+				noteFrames.animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
+			else
+				noteFrames.animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
+		}
+
+		gridTemplate = FlxGridOverlay.createGrid(CELL_SIZE, CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 16, true, 0xffd9e2e6, 0xffa8a1a1);
+
+		gridTemplate.lock();
+		for (y in 0...4)
+		{
+			for (x in 0...gridTemplate.width)
+			{
+				gridTemplate.setPixel32(x, gridTemplate.height - y, FlxColor.BLACK);
+			}
+		}
+		gridTemplate.unlock();
 
 		for (i in 0...2)
 		{
@@ -112,7 +137,56 @@ class ChartEditorState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		if (BindKey.getKey(TOGGLE_SONG, JUST_PRESSED))
+		if (FlxG.keys.justPressed.ESCAPE)
+		{
+			super.update(elapsed);
+
+			persistentUpdate = false;
+			MusicBeatState.switchState(new PlayState());
+
+			return;
+		}
+
+		var stopSong:Bool = false;
+
+		var pressedUp:Bool = BindKey.getKey(SONG_UP, PRESSED);
+		var pressedDown:Bool = BindKey.getKey(SONG_DOWN, PRESSED);
+
+		if (pressedUp || pressedDown)
+		{
+			var speed:Float = BindKey.getKey(MULTIPLY_BIND, PRESSED) ? -4 : -1;
+
+			if (pressedDown)
+				speed *= -1;
+
+			Conductor.songPosition += elapsed * (speed * 1500);
+
+			stopSong = true;
+		}
+
+		var pressedLeft:Bool = BindKey.getKey(SECTION_UP, JUST_PRESSED);
+		var pressedRight:Bool = BindKey.getKey(SECTION_DOWN, JUST_PRESSED);
+
+		if (pressedLeft || pressedRight)
+		{
+			var speed:Float = BindKey.getKey(MULTIPLY_BIND, PRESSED) ? -2 : -1;
+
+			if (pressedRight)
+				speed *= -1;
+
+			Conductor.songPosition += Conductor.stepCrochet * 16 * speed;
+
+			stopSong = true;
+		}
+
+		if (Conductor.songPosition < 0 || Conductor.songPosition >= FlxG.sound.music.length)
+			Conductor.songPosition = 0;
+
+		lastPos = Conductor.songPosition;
+
+		if (stopSong)
+			FlxG.sound.music.pause();
+		else if (BindKey.getKey(TOGGLE_SONG, JUST_PRESSED))
 		{
 			FlxG.sound.music.time = Conductor.songPosition;
 
@@ -122,43 +196,8 @@ class ChartEditorState extends MusicBeatState
 				FlxG.sound.music.resume();
 		}
 
-		if (!FlxG.sound.music.playing)
-		{
-			var pressedUp:Bool = BindKey.getKey(SONG_UP, PRESSED);
-			var pressedDown:Bool = BindKey.getKey(SONG_DOWN, PRESSED);
-
-			if (pressedUp || pressedDown)
-			{
-				var speed:Float = BindKey.getKey(MULTIPLY_BIND, PRESSED) ? -4 : -1;
-
-				if (pressedDown)
-					speed *= -1;
-
-				Conductor.songPosition += elapsed * (speed * 1500);
-			}
-		}
-		else
-			Conductor.songPosition = FlxG.sound.music.time;
-
-		var pressedLeft:Bool = BindKey.getKey(SECTION_UP, JUST_PRESSED);
-		var pressedRight:Bool = BindKey.getKey(SECTION_DOWN, JUST_PRESSED);
-
-		if (pressedLeft || pressedRight)
-		{
-			FlxG.sound.music.pause();
-
-			var speed:Float = BindKey.getKey(MULTIPLY_BIND, PRESSED) ? -2 : -1;
-
-			if (pressedRight)
-				speed *= -1;
-
-			Conductor.songPosition += Conductor.stepCrochet * 16 * (speed * 1.5);
-		}
-
-		if (Conductor.songPosition < 0 || Conductor.songPosition >= FlxG.sound.music.length)
-			Conductor.songPosition = 0;
-
-		lastPos = Conductor.songPosition;
+		if (FlxG.sound.music.playing)
+			FlxG.sound.music.time = Conductor.songPosition;
 
 		camFollow.y = Tools.lerpBound(camFollow.y,
 			FlxMath.remapToRange(Conductor.songPosition, 0, FlxG.sound.music.length, strumLines[0].y, strumLines[0].y + strumLines[0].height), 35 * elapsed);
@@ -172,6 +211,8 @@ class ChartEditorState extends MusicBeatState
 		@:privateAccess
 		for (outline in Main.fps.outlines)
 			outline.alpha = 1.0;
+
+		Note._noteFile = null;
 
 		super.destroy();
 	}
