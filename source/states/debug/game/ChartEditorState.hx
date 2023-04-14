@@ -7,6 +7,7 @@ import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.input.keyboard.FlxKey;
@@ -39,7 +40,7 @@ class ChartEditorState extends MusicBeatState
 
 	public var infoText:EditorText;
 
-	public var camFollow:FlxObject;
+	public var strum:FlxSprite;
 
 	override function create()
 	{
@@ -58,6 +59,8 @@ class ChartEditorState extends MusicBeatState
 		FlxG.cameras.reset(mainCamera);
 		FlxG.cameras.add(hudCamera, false);
 
+		strum = new FlxSprite().makeGraphic(1, 4, 0xFF161616);
+
 		background = new FlxSprite().loadGraphic(Paths.image('_debug/background'));
 		background.antialiasing = false;
 		background.alpha = 0.3;
@@ -72,9 +75,6 @@ class ChartEditorState extends MusicBeatState
 		topBar.active = false;
 		topBar.camera = hudCamera;
 		add(topBar);
-
-		camFollow = new FlxObject(0, 0, 1, 1);
-		camFollow.screenCenter();
 
 		if (Song.currentSong == null)
 			Song.loadSong('tutorial', 'hard');
@@ -120,23 +120,41 @@ class ChartEditorState extends MusicBeatState
 		}
 		gridTemplate.unlock();
 
-		for (i in 0...2)
+		for (i in 1...3)
 		{
-			var strumLine:FlxTiledSprite = new FlxTiledSprite(gridTemplate, gridTemplate.width * 2, (FlxG.sound.music.length / Conductor.stepCrochet) * CELL_SIZE);
+			var strumLine:FlxTiledSprite = new FlxTiledSprite(gridTemplate, gridTemplate.width * 2,
+				(FlxG.sound.music.length / Conductor.stepCrochet) * CELL_SIZE);
 			strumLine.x = 50 + ((CELL_SIZE + 4) * (i * 4));
+
+			for (i in 0...4)
+			{
+				strumLine.attributes.set('box$i', strumLine.x + (CELL_SIZE * i));
+			}
 
 			strumLines.push(strumLine);
 			add(strumLine);
 		}
 
-		noteSelector.attributes.set('sineAlpha', 0.0);
-		noteSelector.attributes.set('sineSpeed', 1.5);
+		strum.x = strumLines[0].x;
+		strum.scale.x = new FlxRect(strum.x, 1, gridTemplate.width * 2, 1).union(new FlxRect(strumLines[1].x, 1, gridTemplate.width * 2, 1)).width;
+		strum.updateHitbox();
+		strum.x = strumLines[0].x;
 
+		noteSelector.attributes.set('sineAlpha', 0.0);
+		noteSelector.attributes.set('sineSpeed', 4.5);
+
+		add(strum);
 		add(noteSelector);
 
-		infoText = new EditorText();
+		infoText = new EditorText("", 16);
+		infoText.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5, 0);
+		infoText.y = FlxG.height - infoText.height - 10;
+		infoText.screenCenter(X);
+		infoText.camera = hudCamera;
+		add(infoText);
 
-		FlxG.camera.follow(camFollow, null, 1);
+		FlxG.camera.follow(strum, null, 1);
+		FlxG.camera.targetOffset.x = 400;
 
 		super.create();
 	}
@@ -156,19 +174,38 @@ class ChartEditorState extends MusicBeatState
 		var songControl:Bool = songMovementController();
 		var sectionControl:Bool = sectionMovementController();
 
-		for (strum in strumLines)
+		if (FlxG.mouse.justMoved)
 		{
-			if ((FlxG.mouse.x > strum.x && FlxG.mouse.x < strum.x + strum.width) && (FlxG.mouse.y > strum.y && FlxG.mouse.y < strum.y + strum.height))
+			for (i in 0...strumLines.length)
 			{
-				noteSelector.visible = true;
+				var strum = strumLines[i];
 
-				noteSelector.setGraphicSize(CELL_SIZE, CELL_SIZE);
-				noteSelector.updateHitbox();
-				
-				noteSelector.setPosition(Math.floor(FlxG.mouse.x / CELL_SIZE) * CELL_SIZE, Math.floor(FlxG.mouse.y / CELL_SIZE) * CELL_SIZE);
+				trace(i);
+				if (FlxG.mouse.x > strum.x && FlxG.mouse.x < strum.x + (CELL_SIZE * 4) && FlxG.mouse.y > strum.y && FlxG.mouse.y < strum.y + strum.height)
+				{
+					noteSelector.visible = true;
+
+					noteSelector.setGraphicSize(CELL_SIZE, CELL_SIZE);
+
+					noteSelector.centerOffsets();
+					noteSelector.updateHitbox();
+
+					var cellPos:Float = 0;
+
+					for (i in 0...4)
+					{
+						if (FlxG.mouse.x > strum.attributes['box$i'])
+							cellPos = strum.attributes['box$i'];
+					}
+
+					noteSelector.setPosition(cellPos, Math.floor(FlxG.mouse.y / CELL_SIZE) * CELL_SIZE);
+				}
+				else
+				{
+					noteSelector.visible = false;
+					trace('${FlxG.mouse.x > strum.x} & ${FlxG.mouse.x < strum.x + (CELL_SIZE * 4)} & ${FlxG.mouse.y > strum.y} & ${FlxG.mouse.y < strum.y + strum.height}');
+				}
 			}
-			else
-				noteSelector.visible = false;
 		}
 
 		if (Conductor.songPosition < 0 || Conductor.songPosition >= FlxG.sound.music.length)
@@ -194,10 +231,13 @@ class ChartEditorState extends MusicBeatState
 		if (noteSelector.visible)
 		{
 			noteSelector.attributes['sineAlpha'] += elapsed * noteSelector.attributes['sineSpeed'];
-			noteSelector.alpha = 1 - Math.sin(noteSelector.attributes['sineAlpha'] / Math.PI) * 0.5;
+			noteSelector.alpha = (1 - Math.sin(noteSelector.attributes['sineAlpha'] / Math.PI) * 0.5) * 0.6;
 		}
 
-		camFollow.y = Tools.lerpBound(camFollow.y,
+		infoText.text = 'TIME: ${Tools.formatAccuracy(FlxMath.roundDecimal(Conductor.songPosition * 0.001, 2))} / ${(Tools.formatAccuracy(FlxMath.roundDecimal(FlxG.sound.music.length * 0.001, 2)))} [BEAT: ${curBeat}] [STEP: ${curStep}]';
+		infoText.screenCenter(X);
+
+		strum.y = Tools.lerpBound(strum.y,
 			FlxMath.remapToRange(Conductor.songPosition, 0, FlxG.sound.music.length, strumLines[0].y, strumLines[0].y + strumLines[0].height), 35 * elapsed);
 
 		super.update(elapsed);
