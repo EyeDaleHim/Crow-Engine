@@ -21,13 +21,6 @@
             "dir": "SScript",
             "ref": "testing",
             "url": "https://github.com/AltronMaxX/SScript"
-        },
-        {
-            "name": "hxcpp",
-            "type": "git",
-            "dir": "hxcpp",
-            "ref": "master",
-            "url": "https://github.com/EyeDaleHim/hxcpp"
         }
     ]
 }
