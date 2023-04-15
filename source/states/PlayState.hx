@@ -682,8 +682,6 @@ class PlayState extends MusicBeatState
 				var currentNote:NoteSprite = NoteSprite.__pool.get();
 				currentNote.exists = true;
 				currentNote.refreshNote(note);
-				if (currentNote.note.isEndNote && Settings.getPref('downscroll', false))
-					currentNote.attributes.set('gapOffset', (currentNote.note._lastNote.noteSprite.y - (currentNote.y + currentNote.height)));
 
 				if (note.isSustainNote)
 					renderedNotes.insert(0, currentNote);
