@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxFramesCollection;
 import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
 import flixel.util.FlxPool;
 import backend.NoteStorageFunction;
 import objects.notes.NoteFile;
@@ -242,6 +243,18 @@ class NoteSprite extends FlxSprite
 				point.add(newPoint.x, newPoint.y);
 		};
 	}
+
+	@:noCompletion
+	override function set_clipRect(rect:FlxRect):FlxRect
+	{
+		clipRect = rect;
+
+		if (frames != null)
+			frame = frames.frames[animation.frameIndex];
+
+		return rect;
+	}
+
 }
 
 /*class SustainNote extends NoteSprite
