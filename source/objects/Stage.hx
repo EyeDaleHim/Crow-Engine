@@ -1090,7 +1090,7 @@ class BGSprite extends FlxSprite
 	}
 }
 
-@:enum abstract RenderPriority(Int)
+enum abstract RenderPriority(Int)
 {
 	var BEFORE_CHAR:RenderPriority = 0;
 	var AFTER_CHAR:RenderPriority = 1;

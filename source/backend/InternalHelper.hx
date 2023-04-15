@@ -10,7 +10,7 @@ class InternalHelper
 	}
 }
 
-@:enum abstract SoundEffects(String)
+enum abstract SoundEffects(String)
 {
 	var CANCEL:SoundEffects = "menu/cancelMenu";
 	var SCROLL:SoundEffects = "menu/scrollMenu";

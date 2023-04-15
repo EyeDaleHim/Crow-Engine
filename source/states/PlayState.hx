@@ -1795,7 +1795,7 @@ class PlayState extends MusicBeatState
 	}
 }
 
-@:enum abstract PlayingMode(Int)
+enum abstract PlayingMode(Int)
 {
 	var STORY:PlayingMode = 0x001;
 	var FREEPLAY:PlayingMode = 0x010;

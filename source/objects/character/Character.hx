@@ -344,7 +344,7 @@ class Character extends FlxSprite
 	}
 }
 
-@:enum abstract CharacterType(Int)
+enum abstract CharacterType(Int)
 {
 	var NORMAL:CharacterType = 0;
 	var PLAYER:CharacterType = 1;

@@ -243,7 +243,7 @@ class LoadingManager extends MusicBeatState
 	}
 }
 
-@:enum abstract ItemRequest(Int)
+enum abstract ItemRequest(Int)
 {
 	var STAGE:ItemRequest = 0;
 	var SONGS:ItemRequest = 1;

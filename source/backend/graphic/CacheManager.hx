@@ -168,7 +168,7 @@ typedef CachedAsset =
 	var data:Dynamic;
 }
 
-@:enum abstract AssetTypeData(Int)
+enum abstract AssetTypeData(Int)
 {
 	var BITMAP:AssetTypeData = 0;
 	var AUDIO:AssetTypeData = 1;
