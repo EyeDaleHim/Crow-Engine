@@ -9,6 +9,7 @@ import flixel.util.FlxStringUtil;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
+import openfl.utils.ByteArray;
 #if sys
 import sys.FileSystem;
 #end
@@ -79,6 +80,12 @@ class Tools
 
 		return array;
 	}
+
+	// https://en.wikipedia.org/wiki/Karatsuba_algorithm
+	//public static function smartMultiply(a:Int, b:Int):Int
+	//{
+
+	// }
 
 	public static function formatAccuracy(value:Float)
 	{

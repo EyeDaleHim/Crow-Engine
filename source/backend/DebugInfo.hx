@@ -15,9 +15,6 @@ import cpp.vm.Gc;
 
 using StringTools;
 
-#if windows
-#end
-
 /**
 	Class That Displays FPS, Memory, & Memory Peak.
 	 
@@ -111,7 +108,7 @@ class DebugInfo extends TextField
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 3)
 						{
-							text += Math.round(getCPUUsage()) + "% | ";
+							text += Math.round(ExternalCode.cpuClock()) + "MHZ | ";
 							text += Tools.abbreviateNumber(FlxG.stage.context3D.totalGPUMemory, dataSizes) + "\n";
 						}
 						else
@@ -130,7 +127,7 @@ class DebugInfo extends TextField
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 3)
 							{
-								text += "CPU: " + Math.round(getCPUUsage()) + "% | ";
+								text += "CPU: " + Math.round(ExternalCode.cpuClock()) + "MHZ | ";
 								text += "GPU: " + Tools.abbreviateNumber(FlxG.stage.context3D.totalGPUMemory, dataSizes) + "\n";
 							}
 						else
@@ -169,16 +166,6 @@ class DebugInfo extends TextField
 				}
 			}
 		}
-	}
-
-	#if windows
-	@:functionCode("
-	return 2;
-	")
-	#end
-	private function getCPUUsage():Float
-	{
-		return 0.0;
 	}
 
 	function addOutline(dx:Float, dy:Float):Void

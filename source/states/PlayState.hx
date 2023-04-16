@@ -638,8 +638,6 @@ class PlayState extends MusicBeatState
 		super.create();
 
 		callScripts("create", [true]);
-
-		trace('game took ' + (openfl.Lib.getTimer() - LoadingManager.time) + 'ms to load');
 	}
 
 	private function addToHUD(obj:FlxBasic, index:Int = null, ?group:FlxTypedGroup<FlxBasic> = null)

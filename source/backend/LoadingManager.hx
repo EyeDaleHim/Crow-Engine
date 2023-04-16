@@ -20,13 +20,12 @@ import backend.graphic.CacheManager;
 @:access(objects.notes.Note)
 class LoadingManager extends MusicBeatState
 {
-	static inline var LOADING_SPRITE_TIME:Float = 2.5;
+	static inline var LOADING_SPRITE_TIME:Float = 2.0;
 
 	public static var activated:Bool = false;
 	public static var __THREADPOOLS:FixedThreadPool = new FixedThreadPool(8);
 	private static var _GAME_VARS:Map<ItemRequest, Array<Dynamic>> = [];
 
-	public static var time:Int = 0;
 
 	private var finishedItems:Array<ItemRequest> = [];
 
@@ -59,8 +58,6 @@ class LoadingManager extends MusicBeatState
 	override function create():Void
 	{
 		activated = true;
-
-		time = openfl.Lib.getTimer();
 
 		__THREADPOOLS.run(loadStage);
 		__THREADPOOLS.run(loadSong);

@@ -110,8 +110,6 @@ class ChartEditorState extends MusicBeatState
 
 		FlxG.sound.list.add(vocals);
 
-		Conductor.songPosition = lastPos;
-
 		FlxG.mouse.visible = true;
 
 		new Note();
@@ -184,9 +182,11 @@ class ChartEditorState extends MusicBeatState
 
 		for (section in Song.currentSong.sectionList)
 		{
+			var globalID:Int = 0;
 			for (note in section.notes)
 			{
 				var chartNote:ChartNote = new ChartNote(new Note(note.strumTime, note.direction, note.mustPress, 0, 0));
+				chartNote.ID = globalID++;
 				chartNote.setGraphicSize(CELL_SIZE, CELL_SIZE);
 				chartNote.updateHitbox();
 				chartNote.x = strumLines[note.mustPress ? 1 : 0].x + (CELL_SIZE * note.direction);
@@ -194,6 +194,8 @@ class ChartEditorState extends MusicBeatState
 				renderedNotes.add(chartNote);
 			}
 		}
+
+		Conductor.songPosition = lastPos;
 
 		FlxG.camera.follow(strum, null, 1);
 		FlxG.camera.targetOffset.x = 400;
@@ -299,27 +301,29 @@ class ChartEditorState extends MusicBeatState
 
 		if (FlxG.mouse.justPressed)
 		{
-			if (FlxG.mouse.overlaps(renderedNotes))
+			if (FlxG.mouse.overlaps(strumLines[noteSelector.attributes.get('strumLine')], mainCamera))
 			{
-				renderedNotes.forEach(function(note:ChartNote)
+				if (FlxG.keys.pressed.CONTROL && FlxG.mouse.overlaps(renderedNotes))
 				{
-					if (note.isOnScreen() && FlxG.mouse.overlaps(note, mainCamera))
+					renderedNotes.forEach(function(note:ChartNote)
 					{
-						/*if (note.attachedNote != null)
+						if (note.isOnScreen() && FlxG.mouse.overlaps(note, mainCamera))
 						{
-							Song.currentSong.sectionList
-						}*/
-						trace('removed a note, ${note.ID}');
-					}
-				});
-			}
-			else
-			{
-				var chartNote:ChartNote = new ChartNote(new Note(transformEitherPosition(noteSelector.y), noteSelector.attributes.get('noteDir'), noteSelector.attributes.get('strumLine'), 0, 0));
+							/*if (note.attachedNote != null)
+								{
+									Song.currentSong.sectionList
+							}*/
+							trace('removed a note, ${note.ID}');
+						}
+					});
+				}
+				else
+				{
+					var chartNote:ChartNote = new ChartNote(new Note(transformEitherPosition(noteSelector.y), noteSelector.attributes.get('noteDir'),
+						noteSelector.attributes.get('strumLine'), 0, 0));
 
-				var note:Note = chartNote.attachedNote;
-				Song.currentSong.sectionList[Math.floor((note.strumTime / Conductor.stepCrochet) / 16)].notes.push(
-					{
+					var note:Note = chartNote.attachedNote;
+					Song.currentSong.sectionList[Math.floor((note.strumTime / Conductor.stepCrochet) / 16)].notes.push({
 						strumTime: note.strumTime,
 						direction: note.direction,
 						sustain: 0,
@@ -328,11 +332,12 @@ class ChartEditorState extends MusicBeatState
 						noteType: ""
 					});
 
-				chartNote.setGraphicSize(CELL_SIZE, CELL_SIZE);
-				chartNote.updateHitbox();
-				chartNote.x = strumLines[note.mustPress ? 1 : 0].x + (CELL_SIZE * note.direction);
-				chartNote.y = FlxMath.remapToRange(note.strumTime, 0, FlxG.sound.music.length, strumLines[0].y, strumLines[0].y + strumLines[0].height);
-				renderedNotes.add(chartNote);
+					chartNote.setGraphicSize(CELL_SIZE, CELL_SIZE);
+					chartNote.updateHitbox();
+					chartNote.x = strumLines[note.mustPress ? 1 : 0].x + (CELL_SIZE * note.direction);
+					chartNote.y = FlxMath.remapToRange(note.strumTime, 0, FlxG.sound.music.length, strumLines[0].y, strumLines[0].y + strumLines[0].height);
+					renderedNotes.add(chartNote);
+				}
 			}
 		}
 
