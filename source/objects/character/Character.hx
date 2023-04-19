@@ -66,18 +66,17 @@ class Character extends FlxSprite
 		var xmlExists:Bool = Tools.fileExists(calledPath.replace('png', 'xml'));
 		var txtExists:Bool = Tools.fileExists(calledPath.replace('png', 'txt'));
 		var jsonExists:Bool = Tools.fileExists(calledPath.replace('png', 'json'));
+
 		var failedChar:Bool = false;
 
-		if ((xmlExists && !txtExists) || (!xmlExists && txtExists))
+		// Ensure that only one of the XML and TXT files exists, or neither exists.
+		if (xmlExists && txtExists)
 		{
-			if (!(txtExists && xmlExists)) // why the hell do you have an xml and txt at same time bro
-			{
-				if (txtExists && !xmlExists)
-					xmlExists = true;
-				if (xmlExists && !txtExists)
-					txtExists = true;
-			}
+			xmlExists = false;
+			txtExists = false;
 		}
+		else if (!xmlExists && !txtExists) // If neither file exists, assume that the XML file exists.
+			xmlExists = true;
 
 		if (!imageExists || !xmlExists || !txtExists || !jsonExists)
 		{
