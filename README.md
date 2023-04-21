@@ -30,3 +30,8 @@ The following have contributed to Crow Engine.
 * [WeldedFlap](https://weldedflap.carrd.co/) - Major Contributor
 
 * [AmeliaTheSharmi](https://www.youtube.com/@AmeliaTheSharmi) - Logo Artist
+
+### Honorable Mentions
+* [Rapper GF](https://twitter.com/Rapper_GF_Dev) - Circular Buffer Suggestion
+
+* **Cherry** - Circular Buffer improvements
