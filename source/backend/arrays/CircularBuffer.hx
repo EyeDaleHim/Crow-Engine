@@ -41,7 +41,10 @@ class BaseCircularBuffer<T>
 
 	inline public function count():Int
 	{
-		return (_endIndex - _startIndex + _array.length) % _array.length;
+		if (_startIndex <= _endIndex)
+			return _endIndex - _startIndex;
+		return _array.length - ( _endIndex - _startIndex);
+			
 	}
 
 	inline public function empty():Bool
