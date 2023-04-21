@@ -194,8 +194,7 @@ class LoadingManager extends MusicBeatState
 			return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
 		});
 
-		var notesBuffer:CircularBuffer<Note> = new CircularBuffer<Note>();
-		notesBuffer.copyFrom(noteList);
+		var notesBuffer:CircularBuffer<Note> = CircularBuffer.fromArray(noteList);
 
 		finishedItems.push(SONGS);
         _GAME_VARS.set(SONGS, [notesBuffer]);

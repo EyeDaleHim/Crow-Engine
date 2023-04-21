@@ -25,13 +25,13 @@ package backend.arrays;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
-class CircularBuffer<T>
+class BaseCircularBuffer<T>
 {
 	// thank fs dev for bringing this to my attention
 	private var _startIndex:Int = 0;
 	private var _endIndex:Int = 0;
 
-	private var _array:Array<T>;
+	public var _array:Array<T>;
 
 	public function new<T>(len:Int = 0)
 	{
@@ -77,6 +77,7 @@ class CircularBuffer<T>
 		return item;
 	}
 
+	// alias for Array.shift()
 	public function dequeue():T
 	{
 		if (!empty())
@@ -132,18 +133,58 @@ class CircularBuffer<T>
 		return (_array[bufferIndex] = item);
 	}
 
-    public function setLength(len:Int):Int
-    {
-       return (_endIndex = Std.int(Math.min(len, _array.length)));
-    }
+	public function setLength(len:Int):Int
+	{
+		return (_endIndex = Std.int(Math.min(len, _array.length)));
+	}
 
-    public function copyFrom(newArray:Array<T>):Array<T>
-    {
-        _array = newArray;
+	public function sort(f:(T, T) -> Int)
+	{
+		return _array.sort(f);
+	}
+}
 
-        _startIndex = 0;
-        _endIndex = newArray.length;
+// thanks cherry
+@:forward
+abstract CircularBuffer<T>(BaseCircularBuffer<T>) to BaseCircularBuffer<T> from BaseCircularBuffer<T>
+{
+	public var length(get, set):Int;
 
-        return _array;
-    }
+	private function get_length()
+	{
+		@:privateAccess return this.count();
+	}
+
+	private function set_length(len:Int):Int
+	{
+		this.setLength(len);
+		return len;
+	}
+
+	public function new(len:Int = 0)
+	{
+		this = new BaseCircularBuffer<T>(len);
+	}
+
+	@:from
+	public static function fromArray<V>(array:Array<V>):CircularBuffer<V>
+	{
+		var circBuf:CircularBuffer<V> = new CircularBuffer<V>(array.length);
+		circBuf._array = array;
+		return circBuf;
+	}
+
+	@:to
+	public function toArray():Array<T>
+	{
+		return this._array;
+	}
+
+	@:arrayAccess
+	public function get(index:Int):T
+		return this.get(index);
+
+	@:arrayAccess
+	public function set(index:Int, value:T):T
+		return this.set(index, value);
 }

@@ -663,9 +663,9 @@ class PlayState extends MusicBeatState
 	{
 		callScripts("update", [elapsed, false]);
 
-		if (countdownState != 0 && pendingNotes.count() > 0)
+		if (countdownState != 0 && pendingNotes.length > 0)
 		{
-			for (i in 0...pendingNotes.count())
+			for (i in 0...pendingNotes.length)
 			{
 				var note:Note = pendingNotes.get(i);
 
@@ -966,9 +966,7 @@ class PlayState extends MusicBeatState
 				return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
 			});
 
-			pendingNotes = new CircularBuffer<Note>(actualNotes.length);
-			@:privateAccess
-			pendingNotes.copyFrom(actualNotes);
+			pendingNotes = CircularBuffer.fromArray(actualNotes);
 		}
 		else
 			pendingNotes = loadedNotes[0];
