@@ -211,8 +211,6 @@ class Main extends Sprite
 		#if !mobile
 		addChild(fps = new DebugInfo(10, 5, 1.5));
 		#end
-
-		FlxG.game.stage.quality = openfl.display.StageQuality.LOW; // try and remove openfl's smoothing??
 	}
 }
 

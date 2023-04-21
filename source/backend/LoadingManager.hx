@@ -14,6 +14,7 @@ import objects.Stage;
 import objects.character.Character;
 import objects.notes.Note;
 import objects.notes.Note.NoteSprite;
+import backend.arrays.CircularBuffer;
 import backend.graphic.CacheManager;
 
 // only loads to playstate
@@ -193,8 +194,11 @@ class LoadingManager extends MusicBeatState
 			return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
 		});
 
+		var notesBuffer:CircularBuffer<Note> = new CircularBuffer<Note>();
+		notesBuffer.copyFrom(noteList);
+
 		finishedItems.push(SONGS);
-        _GAME_VARS.set(SONGS, [noteList]);
+        _GAME_VARS.set(SONGS, [notesBuffer]);
 	}
 
 	private function loadStage():Void

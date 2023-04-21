@@ -44,6 +44,7 @@ import objects.notes.StrumNote;
 import backend.graphic.CacheManager;
 import weeks.ScoreContainer;
 import weeks.WeekHandler;
+import backend.arrays.CircularBuffer;
 import backend.LoadingManager;
 import backend.Transitions;
 import backend.query.ControlQueries;
@@ -182,7 +183,7 @@ class PlayState extends MusicBeatState
 
 	// notes
 	public var renderedNotes:FlxTypedGroup<NoteSprite>;
-	public var pendingNotes:Array<Note> = [];
+	public var pendingNotes:CircularBuffer<Note>;
 
 	// strums
 	public var globalStrums:FlxTypedGroup<StrumNote>;
@@ -662,10 +663,12 @@ class PlayState extends MusicBeatState
 	{
 		callScripts("update", [elapsed, false]);
 
-		if (countdownState != 0 && pendingNotes.length != 0)
+		if (countdownState != 0 && pendingNotes.count() > 0)
 		{
-			for (note in pendingNotes)
+			for (i in 0...pendingNotes.count())
 			{
+				var note:Note = pendingNotes.get(i);
+
 				if (note.strumTime - Conductor.songPosition > 1500)
 					break;
 
@@ -685,7 +688,7 @@ class PlayState extends MusicBeatState
 					renderedNotes.insert(0, currentNote);
 				else
 					renderedNotes.add(currentNote);
-				pendingNotes.splice(pendingNotes.indexOf(note), 1);
+				pendingNotes.remove(pendingNotes.indexOf(note));
 			}
 		}
 
@@ -909,6 +912,7 @@ class PlayState extends MusicBeatState
 		if (loadedNotes == null)
 		{
 			// initialize note
+			var actualNotes:Array<Note> = [];
 
 			new Note();
 
@@ -925,8 +929,8 @@ class PlayState extends MusicBeatState
 					var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
 
 					var oldNote:Note = newNote;
-					if (pendingNotes.length > 0)
-						oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
+					if (actualNotes.length > 0)
+						oldNote = actualNotes[Std.int(actualNotes.length - 1)];
 
 					newNote._lastNote = oldNote;
 					newNote.missAnim = newNote.singAnim + 'miss';
@@ -940,8 +944,8 @@ class PlayState extends MusicBeatState
 							var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i + 1), note.direction, note.mustPress, i + 1,
 								sustainAmounts - 1, note.noteAnim);
 							oldNote = sustainNote;
-							if (pendingNotes.length > 0)
-								oldNote = pendingNotes[Std.int(pendingNotes.length - 1)];
+							if (actualNotes.length > 0)
+								oldNote = actualNotes[Std.int(actualNotes.length - 1)];
 
 							sustainNote._lastNote = oldNote;
 							sustainNote.sustainLength = sustainAmounts - 1;
@@ -949,18 +953,22 @@ class PlayState extends MusicBeatState
 							sustainNote.missAnim = newNote.missAnim;
 
 							newNote.noteChildrens.push(sustainNote);
-							pendingNotes.push(sustainNote);
+							actualNotes.push(sustainNote);
 						}
 					}
 
-					pendingNotes.push(newNote);
+					actualNotes.push(newNote);
 				}
 			}
 
-			pendingNotes.sort(function(note1:Note, note2:Note)
+			actualNotes.sort(function(note1:Note, note2:Note)
 			{
 				return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
 			});
+
+			pendingNotes = new CircularBuffer<Note>(actualNotes.length);
+			@:privateAccess
+			pendingNotes.copyFrom(actualNotes);
 		}
 		else
 			pendingNotes = loadedNotes[0];
