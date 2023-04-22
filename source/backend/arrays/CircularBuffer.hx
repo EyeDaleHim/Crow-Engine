@@ -73,9 +73,9 @@ class BaseCircularBuffer<T>
 	public function enqueue(item:T):T
 	{
 		_array[_endIndex] = item;
-		_endIndex = (++_endIndex) % _array.length;
+		_endIndex = (_endIndex++) % _array.length;
 		if (_endIndex == _startIndex)
-			_startIndex = (++_startIndex) % _array.length;
+			_startIndex = (_startIndex++) % _array.length;
 
 		return item;
 	}
@@ -83,10 +83,12 @@ class BaseCircularBuffer<T>
 	// alias for Array.shift()
 	public function dequeue():T
 	{
-		if (empty())
+		if (!empty())
+		{
 			return null;
+		}
 		var item:T = _array[_startIndex];
-		_startIndex = (++_startIndex) % _array.length;
+		_startIndex = (_startIndex++) % _array.length;
 
 		return item;
 	}
