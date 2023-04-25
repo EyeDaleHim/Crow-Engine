@@ -18,8 +18,7 @@ Crow Engine is a modified version of the game Friday Night Funkin' that has been
 
 ## Notes
 
-### 0.1.0A:
-  * All code used in this project was developed from the ground up, rather than being built upon or modified from preexisting code.
+The only official websites for Crow Engine are [GitHub](https://github.com/EyeDaleHim/Crow-Engine), [GameBanana](https://gamebanana.com/mods/431880), and [Twitter](https://twitter.com/CrowEngineFNF).
 
 ## Credits
 
