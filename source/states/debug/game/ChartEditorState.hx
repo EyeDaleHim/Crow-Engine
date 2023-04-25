@@ -418,8 +418,6 @@ class ChartNote extends FlxSprite
 
 		this.attachedNote = note;
 
-		active = false;
-
 		frames = switch (Note._noteFile.atlasType)
 		{
 			case 'packer':
@@ -429,6 +427,11 @@ class ChartNote extends FlxSprite
 		};
 
 		playAnim();
+	}
+
+	override public function update(elapsed:Float)
+	{
+		alpha = (Conductor.songPosition >= attachedNote.strumTime) ? 0.5 : 1.0;
 	}
 
 	private function playAnim():Void
