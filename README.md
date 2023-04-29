@@ -14,7 +14,7 @@ Crow Engine is a modified version of the game Friday Night Funkin' that has been
 
 * Chill-Sides
 * Undertale Mix Mod (Hypno's Lullaby Cover Mod)
-* Mechanics Mod
+* Mechanics Mod (partially)
 
 ## Notes
 
