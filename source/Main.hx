@@ -24,6 +24,9 @@ import backend.graphic.CacheManager;
 import openfl.Assets;
 import openfl.utils.AssetCache;
 
+#if ("haxe" < "4.3.0")
+@:deprecated("Please update to Haxe version 4.3.0")
+#end
 class Main extends Sprite
 {
 	var game = {
