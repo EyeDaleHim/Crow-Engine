@@ -12,7 +12,7 @@ import flixel.math.FlxRect;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxPool;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.input.keyboard.FlxKey;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;

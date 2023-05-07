@@ -10,7 +10,7 @@ import flixel.util.FlxPool;
 import backend.NoteStorageFunction;
 import objects.notes.NoteFile;
 import openfl.Assets;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 using StringTools;
 

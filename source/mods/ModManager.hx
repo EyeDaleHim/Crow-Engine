@@ -5,7 +5,7 @@ import mods.ModData;
 import openfl.Assets;
 import sys.FileSystem;
 import sys.io.File;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 class ModManager
 {

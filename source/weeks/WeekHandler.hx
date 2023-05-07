@@ -1,6 +1,6 @@
 package weeks;
 
-import haxe.Json;
+import tjson.TJSON as Json;
 import sys.FileSystem;
 import openfl.Assets;
 

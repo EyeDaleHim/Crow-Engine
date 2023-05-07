@@ -1,6 +1,6 @@
 package game;
 
-import haxe.Json;
+import tjson.TJSON as Json;
 import openfl.Assets;
 
 class SkinManager

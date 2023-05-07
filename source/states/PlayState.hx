@@ -589,7 +589,7 @@ class PlayState extends MusicBeatState
 
 				for (animated in stageData.spriteGroup.iterator())
 				{
-					if (animated.animation.frames > 0)
+					if (animated.animation.numFrames > 0)
 						animated.active = false;
 				}
 
@@ -602,7 +602,7 @@ class PlayState extends MusicBeatState
 
 					for (animated in stageData.spriteGroup.iterator())
 					{
-						if (animated.animation.frames > 0)
+						if (animated.animation.numFrames > 0)
 							animated.active = true;
 					}
 

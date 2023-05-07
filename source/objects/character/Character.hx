@@ -10,7 +10,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxSort;
 import flixel.addons.effects.FlxTrail;
-import haxe.Json;
+import tjson.TJSON as Json;
 import openfl.Assets;
 import objects.character.CharacterData;
 import music.Song;

@@ -4,7 +4,7 @@ import flixel.FlxSprite;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import openfl.Assets;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 @:allow(states.menus.StoryMenuState)
 class WeekCharacter extends FlxSprite

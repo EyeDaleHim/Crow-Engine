@@ -12,7 +12,7 @@ import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.system.FlxAssets.FlxTexturePackerSource;
 import openfl.Assets;
-import haxe.Json;
+import tjson.TJSON as Json;
 import haxe.xml.Access;
 import backend.graphic.CacheManager;
 

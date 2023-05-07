@@ -3,7 +3,7 @@ package backend.compat;
 import music.Song;
 import music.Song.SongInfo;
 import music.Section;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 using StringTools;
 

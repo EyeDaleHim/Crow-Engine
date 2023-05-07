@@ -8,7 +8,6 @@ import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import haxe.Timer;
-import haxe.Json;
 import sys.FileSystem;
 import sys.thread.ElasticThreadPool;
 import sys.thread.Mutex;
@@ -19,7 +18,7 @@ import lime.app.Application;
 import sys.FileSystem;
 import sys.io.File;
 #end
-import haxe.Json;
+import tjson.TJSON as Json;
 import backend.graphic.CacheManager;
 import openfl.Assets;
 import openfl.utils.AssetCache;

@@ -3,7 +3,7 @@ package music;
 import flixel.FlxG;
 import flixel.math.FlxMath;
 import openfl.utils.Assets;
-import haxe.Json;
+import tjson.TJSON as Json;
 import game.SkinManager;
 import music.Section.SectionInfo;
 import weeks.WeekHandler;

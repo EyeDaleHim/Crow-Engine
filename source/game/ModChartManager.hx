@@ -9,7 +9,7 @@ import objects.notes.Note;
 import objects.notes.StrumNote;
 import weeks.SongHandler;
 import states.PlayState;
-import haxe.Json;
+import tjson.TJSON as Json;
 import sys.FileSystem;
 import openfl.Assets;
 

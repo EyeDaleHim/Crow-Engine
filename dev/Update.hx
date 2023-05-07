@@ -1,4 +1,4 @@
-import haxe.Json;
+import tjson.TJSON as Json;
 
 import sys.io.File;
 import sys.io.Process;

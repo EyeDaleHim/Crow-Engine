@@ -6,7 +6,7 @@ import flixel.math.FlxPoint;
 import objects.notes.NoteFile;
 import music.Song;
 import openfl.Assets;
-import haxe.Json;
+import tjson.TJSON as Json;
 
 using StringTools;
 
