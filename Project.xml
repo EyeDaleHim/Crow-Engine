@@ -128,6 +128,8 @@
 	<!-- haxelib git hxCodec https://github.com/EliteMasterEric/hxCodec -->
 	<haxelib name="hxCodec"/> <!-- Should probably use Eric's hxCodec instead -->
 
+	<haxelib name="tjson"/>
+
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="hxcpp-debug-server" if="debug"/>
 
@@ -150,6 +152,12 @@
 
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug"/>
+
+	<!-- ______________________________ Misc Defines _____________________________ -->
+
+	<warning value="Haxe 4.2.5 is no longer supported for Crow Engine, use 4.3.0 and above." if="{haxe &lt;= 4.2.4 }"/>
+	<warning value="flixel 4.11.0 is no longer supported for Crow Engine, use 5.2.2 and above." if="{flixel &lt;= 4.11.0 }"/>
+	<warning value="flixel-addons 2.11.0 is no longer supported for Crow Engine, use 3.1.0" if="${flixel-addons &lt;= 2.11.0}"/>
 
 	<!-- _________________________________ Custom _______________________________ -->
 
