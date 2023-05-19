@@ -1413,6 +1413,7 @@ class PlayState extends MusicBeatState
 				if (renderer._lockedToStrumY)
 				{
 					renderer.y = strumNote.y - distance;
+
 					if (renderer.note.isSustainNote && strumNote.downScroll)
 					{
 						if (!renderer.note.isEndNote)
@@ -1420,15 +1421,13 @@ class PlayState extends MusicBeatState
 					}
 					else if (renderer.note.isSustainNote)
 					{
-						renderer.y += (Note.transformedWidth / 2) * (songSpeed * 0.5);
+						renderer.y += ((Note.transformedWidth + 7) / 2) * (songSpeed * 0.5);
 					}
 				}
 
 				if (renderer.note.isSustainNote)
 				{
-					var _lastNote:Note = renderer.note._lastNote;
-					if (_lastNote == null)
-						_lastNote = renderer.note;
+					var _lastNote:Note = renderer.note._lastNote ?? renderer.note;
 
 					var checkHit:Bool = renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit);
 					var shouldPress:Bool = !renderer.note.mustPress || checkHit;
