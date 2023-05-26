@@ -22,7 +22,7 @@ import flixel.util.FlxDestroyUtil;
 import flixel.input.keyboard.FlxKey;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import game.SkinManager;
 import game.cutscenes.CutsceneHandler;
 import game.cutscenes.DialogueBox;

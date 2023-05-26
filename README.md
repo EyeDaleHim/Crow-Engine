@@ -26,7 +26,7 @@ The following have contributed to Crow Engine.
 
 * [EyeDaleHim](https://linktr.ee/eyedalehim) - Lead Maintainer & Owner of Crow Engine
 
-* [WeldedFlap](https://weldedflap.carrd.co/) - Major Contributor
+* [SwickTheGreat](https://weldedflap.carrd.co/) - Major Contributor
 
 * [AmeliaTheSharmi](https://www.youtube.com/@AmeliaTheSharmi) - Logo Artist
 
@@ -34,3 +34,38 @@ The following have contributed to Crow Engine.
 * [Rapper GF](https://twitter.com/Rapper_GF_Dev) - Circular Buffer Suggestion
 
 * **Cherry** - Circular Buffer improvements
+
+<details>
+    <summary><h2>Building Instructions</h2></summary>
+    <p>Select the platform you want to compile on and follow the instructions.</p>
+<details>
+    <summary><h3>Windows</h3></summary>
+
+1. Install the latest version of [Haxe](https://haxe.org/download/).
+2. Download [Visual Studio Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe).
+3. Wait for the installer to install any necessary information.
+4. Once everything has installed, select the `Individual components` tab.
+5. Select these two components:
+    - MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.29-16.11)
+    - Windows 10/11 SDK (Any Version)
+6. Hit install and wait for the components to install. Once finished, close out of the build tools.
+7. Download and install [Git SCM](https://git-scm.com/download/win). Do not change any installation options, just leave them as is.
+8. Navigate to and open your Crow Engine folder. Once in the folder, double-click the `update.bat` file to open it and install the necessary libraries to compile the engine.
+9. After the libraries have been installed, the command prompt should close. Next, click the `File` button at the top-left of your screen. Select `Open Windows PowerShell`.
+10. In the PowerShell window, type `lime build windows` and hit enter. This will start building the game. This will also take a bit of time if you are compiling for the first time.
+11. Navigate to `export/release/windows/bin` to find and open the executable.
+    - If you want to save yourself some time, run `lime test windows` in the prompt to open the game right after compilation.
+</details>
+
+<details>
+    <summary><h3>MacOS</h3></summary>
+
+Coming Soon!
+</details>
+
+<details>
+    <summary><h3>Linux</h3></summary>
+
+Coming Soon!
+</details>
+</details>
