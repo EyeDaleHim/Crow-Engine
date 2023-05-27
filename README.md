@@ -42,7 +42,7 @@ The following have contributed to Crow Engine.
     <summary><h3>Windows</h3></summary>
 
 1. Install the latest version of [Haxe](https://haxe.org/download/).
-2. Download [Visual Studio Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe).
+2. Download the [Visual Studio Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe).
 3. Wait for the installer to install any necessary information.
 4. Once everything has installed, select the `Individual components` tab.
 5. Select these two components:
@@ -60,12 +60,27 @@ The following have contributed to Crow Engine.
 <details>
     <summary><h3>MacOS</h3></summary>
 
-Coming Soon!
+1. Install the latest version of [Haxe](https://haxe.org/download/).
+2. Download and install [Xcode](https://developer.apple.com/xcode/).
+3. Download and install [Git SCM](https://git-scm.com/download/mac). Do not change any installation options, just leave them as is.
+4. Navigate to and open your Crow Engine folder. Once in the folder, double-click the `update.sh` file to open it and install the necessary libraries to compile the engine.
+5. After the libraries have been installed, the terminal should close. Open a new terminal and set the directory to your Crow Engine folder. This can be done by entering `cd [CROW ENGINE FOLDER PATH]`.
+6. Once you have set the directory to your Crow Engine folder, type `lime build mac` and hit enter. This will start building the game. This will also take a bit of time if you are compiling for the first time.
+7. Navigate to `export/release/mac/bin` to find and open the application.
+    - If you want to save yourself some time, run `lime test mac` in the prompt to open the game right after compilation.
 </details>
 
 <details>
     <summary><h3>Linux</h3></summary>
 
-Coming Soon!
+1. Install the latest version of [Haxe](https://haxe.org/download/).
+2. Install `G++`. If you already have it on your device, you can skip this step.
+    - There are many tutorials online and the installion should not be too hard.
+3. Download and install [Git SCM](https://git-scm.com/download/linux). Do not change any installation options, just leave them as is.
+4. Navigate to and open your Crow Engine folder. Once in the folder, double-click the `update.sh` file to open it and install the necessary libraries to compile the engine.
+5. After the libraries have been installed, the terminal should close. Open a new terminal and set the directory to your Crow Engine folder. This can be done by entering `cd [CROW ENGINE FOLDER PATH]`.
+6. Once you have set the directory to your Crow Engine folder, type `lime build linux` and hit enter. This will start building the game. This will also take a bit of time if you are compiling for the first time.
+7. Navigate to `export/release/linux/bin` to find and open the application.
+    - If you want to save yourself some time, run `lime test linux` in the prompt to open the game right after compilation.
 </details>
 </details>
