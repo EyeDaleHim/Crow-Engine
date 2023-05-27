@@ -14,8 +14,9 @@ import backend.Transitions;
 import sys.FileSystem;
 
 #if SCRIPTS_ALLOWED
-import mods.states.ScriptedState;
 import backend.ScriptHandler;
+import mods.states.ScriptedState;
+import tea.TeaScript;
 #end
 
 @:access(MusicBeatState.callAssetsToCache)
@@ -52,7 +53,7 @@ class MusicBeatState extends FlxUIState
 		super.create();
 
 		#if SCRIPTS_ALLOWED
-		for (key => script in SScript.global)
+		for (key => script in TeaScript.global)
 			script.call("create", []);
 		#end
 
@@ -79,7 +80,7 @@ class MusicBeatState extends FlxUIState
 			stepHit();
 
 		#if SCRIPTS_ALLOWED
-		for (key => script in SScript.global)
+		for (key => script in TeaScript.global)
 			script.call("update", [elapsed]);
 		#end
 
@@ -174,7 +175,7 @@ class MusicBeatState extends FlxUIState
 	public function stepHit():Void
 	{
 		#if SCRIPTS_ALLOWED
-		for (key => script in SScript.global)
+		for (key => script in TeaScript.global)
 			script.call("stepHit", [curStep]);
 		#end
 
@@ -185,7 +186,7 @@ class MusicBeatState extends FlxUIState
 	public function beatHit():Void
 	{
 		#if SCRIPTS_ALLOWED
-		for (key => script in SScript.global)
+		for (key => script in TeaScript.global)
 			script.call("beatHit", [curBeat]);
 		#end
 

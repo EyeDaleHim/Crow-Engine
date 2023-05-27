@@ -4,9 +4,9 @@ package backend;
 import sys.FileSystem;
 import sys.io.File;
 import openfl.Assets;
-import SScript;
+import tea.TeaScript;
 
-class ScriptHandler extends SScript
+class ScriptHandler extends TeaScript
 {
     override public function preset():Void
     {
@@ -72,7 +72,7 @@ class ScriptHandler extends SScript
             for (script in FileSystem.readDirectory(modPath))
             {
                 var newScript:ScriptHandler = new ScriptHandler('$modPath/$script');
-                SScript.global.remove('$modPath/$folder');
+                TeaScript.global.remove('$modPath/$folder');
                 scriptList.push(newScript);
             }
         }
@@ -85,7 +85,7 @@ class ScriptHandler extends SScript
             for (script in FileSystem.readDirectory(path))
             {
                 var newScript:ScriptHandler = new ScriptHandler('$path/$script');
-                SScript.global.remove('$path/$script');
+                TeaScript.global.remove('$path/$script');
                 scriptList.push(newScript);
             }
         }
