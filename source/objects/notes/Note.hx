@@ -28,13 +28,12 @@ class Note
 
 	public var noteSprite:NoteSprite;
 
-	public function new(strumTime:Float = 0, direction:Int = 0, mustPress:Bool = false, sustainIndex:Float = 0, sustainLength:Float = 0, singAnim:String = '')
+	public function new(strumTime:Float = 0, direction:Int = 0, mustPress:Bool = false, sustainLength:Float = 0, singAnim:String = '')
 	{
 		this.strumTime = strumTime;
 		this.direction = direction;
 		this.mustPress = mustPress;
-		this.sustainIndex = sustainIndex;
-		this.isSustainNote = sustainIndex > 0;
+		this.isSustainNote = sustainLength > 0;
 		this.singAnim = singAnim;
 
 		if (!isSustainNote)
@@ -72,7 +71,6 @@ class Note
 	public var noteChildrens:Array<Note> = [];
 	public var parentNote:Note;
 	public var isSustainNote:Bool = false;
-	public var isEndNote:Bool = false;
 
 	// public var strumOwner:Int = 0; // enemy = 0, player = 1, useful if you wanna make a pasta night / bonedoggle gimmick thing
 	public var canBeHit:Bool;
@@ -95,11 +93,20 @@ class NoteSprite extends FlxSprite
 
 	public var note:Note;
 
+	// FUCK YOU
+	public var sustain:FlxSprite;
+	public var sustainEnd:FlxSprite;
+
 	override public function new(?note:Note = null)
 	{
 		super();
 
+		sustain = new FlxSprite();
+		sustainEnd = new FlxSprite();
+
 		scrollFactor.set();
+		sustain.scrollFactor.set();
+		sustainEnd.scrollFactor.set();
 
 		this.note = note;
 
@@ -114,39 +121,50 @@ class NoteSprite extends FlxSprite
 				Paths.getSparrowAtlas('game/ui/noteSkins/${Song.metaData.noteSkin}/${Note.currentSkin}');
 		}
 
+		sustain.frames = this.frames;
+		sustainEnd.frames = this.frames;
+
 		for (animData in Note._noteFile.animationData)
 		{
 			if (animData.indices != null && animData.indices.length > 0)
+			{
 				animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
+				sustain.animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
+				sustainEnd.animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
+			}
 			else
+			{
 				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
+				sustain.animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
+				sustainEnd.animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
+			}
 
 			if (animData.offset.x != 0 || animData.offset.y != 0)
 				animOffsets.set(animData.name, FlxPoint.get(animData.offset.x, animData.offset.y));
 			animForces.set(animData.name, animData.looped);
 		}
 
-		if (Note._noteFile.scale == null)
-			Note._noteFile.scale = {x: 0.7, y: 0.7};
-		if (Note._noteFile.scaledArrow == null)
-			Note._noteFile.scaledArrow = {x: 0, y: 0, type: "add"};
-		if (Note._noteFile.scaledHold == null)
-			Note._noteFile.scaledHold = {x: 0, y: 0, type: "add"};
-		if (Note._noteFile.scaledEnd == null)
-			Note._noteFile.scaledEnd = {x: 0, y: 0, type: "add"};
+		Note._noteFile.scale = Note._noteFile.scale ?? {x: 0.7, y: 0.7};
+		Note._noteFile.scaledArrow = Note._noteFile.scaledArrow ?? {x: 0, y: 0, type: "add"};
+		Note._noteFile.scaledHold = Note._noteFile.scaledHold ?? {x: 0, y: 0, type: "add"};
+		Note._noteFile.scaledEnd = Note._noteFile.scaledEnd ?? {x: 0, y: 0, type: "add"};
 
 		refreshNote(note);
 
 		moves = false;
+		sustain.moves = false;
+		sustainEnd.moves = false;
 	}
 
 	public function refreshNote(note:Note)
 	{
 		var animPlay:String = '';
+		var sustainPlay:String = '';
+		var endPlay:String = '';
 
 		if (note != null)
 		{
-			animPlay = Note._noteFile.animDirections[note == null ? 0 : note.direction];
+			animPlay = Note._noteFile.animDirections[note.direction];
 
 			this.note = note;
 			this.note.noteSprite = this;
@@ -156,33 +174,44 @@ class NoteSprite extends FlxSprite
 				alpha = 0.6;
 				flipY = Settings.getPref('downscroll', false);
 
-				if (note.sustainIndex > note.sustainLength)
-				{
-					animPlay = Note._noteFile.sustainAnimDirections[note.direction].end;
-					note.isEndNote = true;
-				}
-				else
-					animPlay = Note._noteFile.sustainAnimDirections[note.direction].body;
+				endPlay = Note._noteFile.sustainAnimDirections[note.direction].end;
+				sustainPlay = Note._noteFile.sustainAnimDirections[note.direction].body;
 			}
 		}
 
 		if (animPlay != '')
 			animation.play(animPlay, true);
+		if (sustainPlay != '')
+			sustain.animation.play(sustainPlay, true);
+		if (endPlay != '')
+			sustainEnd.animation.play(endPlay, true);
+
 		scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y);
 
 		if (note != null)
 		{
 			if (note.isSustainNote)
 			{
-				if (note.isEndNote)
-					scale = modifyScale(scale, Note._noteFile.scaledEnd);
-				else
-					scale = modifyScale(scale, Note._noteFile.scaledHold);
+				sustainEnd.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y);
+				sustain.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y * note.sustainLength);
+
+				sustainEnd.scale = modifyScale(sustainEnd.scale, Note._noteFile.scaledEnd);
+				sustain.scale = modifyScale(sustain.scale, Note._noteFile.scaledHold);
+
+				sustain.camera = this.camera;
+				sustainEnd.camera = this.camera;
 			}
-			else
-				scale = modifyScale(scale, Note._noteFile.scaledArrow);
+
+			scale = modifyScale(scale, Note._noteFile.scaledArrow);
 		}
+
 		updateHitbox();
+
+		if (note?.isSustainNote)
+		{
+			sustain.updateHitbox();
+			sustainEnd.updateHitbox();
+		}
 
 		if (Note._noteFile.forcedAntialias != null)
 			antialiasing = Note._noteFile.forcedAntialias;
@@ -208,6 +237,11 @@ class NoteSprite extends FlxSprite
 	{
 		if (note != null)
 		{
+			if (sustainEnd.exists && sustainEnd.active)
+				sustainEnd.update(elapsed);
+			if (sustain.exists && sustain.active)
+				sustain.update(elapsed);
+
 			if (note.mustPress)
 			{
 				note.canBeHit = (note.strumTime > Conductor.songPosition - NoteStorageFunction.safeZoneOffset
@@ -233,6 +267,19 @@ class NoteSprite extends FlxSprite
 		super.update(elapsed);
 	}
 
+	override public function draw()
+	{
+		if (note?.isSustainNote)
+		{
+			if (sustainEnd.exists && sustainEnd.visible)
+				sustainEnd.draw();
+			if (sustain.exists && sustain.visible)
+				sustain.draw();
+		}
+
+		super.draw();
+	}
+
 	private function modifyScale(point:FlxPoint, newPoint:{x:Float, y:Float, type:String}):FlxPoint
 	{
 		return switch (newPoint.type)
@@ -254,11 +301,9 @@ class NoteSprite extends FlxSprite
 
 		return rect;
 	}
-
 }
-
 /*class SustainNote extends NoteSprite
-{
+	{
 	public static var __pool:FlxPool<SustainNote>;
 
 	override public function new(?note:Note = null)

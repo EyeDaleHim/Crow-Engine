@@ -185,7 +185,7 @@ class ChartEditorState extends MusicBeatState
 			var globalID:Int = 0;
 			for (note in section.notes)
 			{
-				var chartNote:ChartNote = new ChartNote(new Note(note.strumTime, note.direction, note.mustPress, 0, 0));
+				var chartNote:ChartNote = new ChartNote(new Note(note.strumTime, note.direction, note.mustPress, 0));
 				chartNote.ID = globalID++;
 				chartNote.setGraphicSize(CELL_SIZE, CELL_SIZE);
 				chartNote.updateHitbox();
@@ -320,7 +320,7 @@ class ChartEditorState extends MusicBeatState
 				else
 				{
 					var chartNote:ChartNote = new ChartNote(new Note(transformEitherPosition(noteSelector.y), noteSelector.attributes.get('noteDir'),
-						noteSelector.attributes.get('strumLine'), 0, 0));
+						noteSelector.attributes.get('strumLine'), 0));
 
 					var note:Note = chartNote.attachedNote;
 					Song.currentSong.sectionList[Math.floor((note.strumTime / Conductor.stepCrochet) / 16)].notes.push({

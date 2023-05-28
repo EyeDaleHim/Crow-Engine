@@ -926,7 +926,9 @@ class PlayState extends MusicBeatState
 			{
 				for (note in sections.notes)
 				{
-					var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
+					var sustainAmounts:Int = Math.floor(Math.max(1, note.sustain / Conductor.stepCrochet));
+
+					var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts, note.noteAnim);
 
 					var oldNote:Note = newNote;
 					if (actualNotes.length > 0)
@@ -934,28 +936,6 @@ class PlayState extends MusicBeatState
 
 					newNote._lastNote = oldNote;
 					newNote.missAnim = newNote.singAnim + 'miss';
-
-					if (note.sustain > 0)
-					{
-						var sustainAmounts:Int = Math.floor(Math.max(2, note.sustain / Conductor.stepCrochet));
-
-						for (i in 0...sustainAmounts)
-						{
-							var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i + 1), note.direction, note.mustPress, i + 1,
-								sustainAmounts - 1, note.noteAnim);
-							oldNote = sustainNote;
-							if (actualNotes.length > 0)
-								oldNote = actualNotes[Std.int(actualNotes.length - 1)];
-
-							sustainNote._lastNote = oldNote;
-							sustainNote.sustainLength = sustainAmounts - 1;
-							sustainNote.singAnim = newNote.singAnim;
-							sustainNote.missAnim = newNote.missAnim;
-
-							newNote.noteChildrens.push(sustainNote);
-							actualNotes.push(sustainNote);
-						}
-					}
 
 					actualNotes.push(newNote);
 				}
@@ -1391,37 +1371,21 @@ class PlayState extends MusicBeatState
 				if (renderer._lockedToStrumX)
 				{
 					renderer.x = strumNote.x;
-					if (renderer.note.isSustainNote)
-						renderer.centerOverlay(strumNote, X);
-				}
 
-				if (renderer.note.isSustainNote)
-				{
-					if (renderer._lockedScaleY)
+					if (renderer.note.isSustainNote)
 					{
-						if (!renderer.note.isEndNote)
-						{
-							renderer.scale.y = 1 * attributes['startedCrochet'] / 100 * 1.05;
-							if (Note._noteFile.scaledHold.type == 'multi')
-								renderer.scale.y *= Note._noteFile.scaledHold.y;
-							renderer.scale.y *= songSpeed;
-							renderer.updateHitbox();
-						}
+						renderer.sustain.centerOverlay(strumNote, X);
+						renderer.sustainEnd.centerOverlay(strumNote, X);
 					}
 				}
 
 				if (renderer._lockedToStrumY)
 				{
 					renderer.y = strumNote.y - distance;
-
-					if (renderer.note.isSustainNote && strumNote.downScroll)
+					if (renderer.note.isSustainNote)
 					{
-						if (!renderer.note.isEndNote)
-							renderer.y -= (Note.transformedWidth / 2) * (songSpeed * 0.5);
-					}
-					else if (renderer.note.isSustainNote)
-					{
-						renderer.y += ((Note.transformedWidth + 7) / 2) * (songSpeed * 0.5);
+						renderer.sustain.y = strumNote.y - distance;
+						renderer.sustainEnd.y = strumNote.y - distance;
 					}
 				}
 
@@ -1575,7 +1539,7 @@ class PlayState extends MusicBeatState
 			if (strum != null)
 			{
 				strum.playAnim(strum.confirmAnim, true);
-				strum.animationTime = Conductor.stepCrochet * 0.001 * (note.isEndNote ? 2.5 : 1.25);
+				strum.animationTime = Conductor.stepCrochet * 0.001 * 1.75;
 			}
 
 			if (!note.isSustainNote)

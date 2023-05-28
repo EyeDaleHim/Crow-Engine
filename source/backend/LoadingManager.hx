@@ -154,7 +154,9 @@ class LoadingManager extends MusicBeatState
 		{
 			for (note in sections.notes)
 			{
-				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, 0, 0, note.noteAnim);
+				var sustainAmounts:Int = Math.floor(Math.max(1, note.sustain / Conductor.stepCrochet));
+
+				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts, note.noteAnim);
 
 				var oldNote:Note = newNote;
 				if (noteList.length > 0)
@@ -162,28 +164,6 @@ class LoadingManager extends MusicBeatState
 
 				newNote._lastNote = oldNote;
 				newNote.missAnim = newNote.singAnim + 'miss';
-
-				if (note.sustain > 0)
-				{
-					var sustainAmounts:Int = Math.floor(Math.max(2, note.sustain / Conductor.stepCrochet));
-
-					for (i in 0...sustainAmounts)
-					{
-						var sustainNote:Note = new Note(note.strumTime + (Conductor.stepCrochet * i + 1), note.direction, note.mustPress, i + 1,
-							sustainAmounts - 1, note.noteAnim);
-						oldNote = sustainNote;
-						if (noteList.length > 0)
-							oldNote = noteList[Std.int(noteList.length - 1)];
-
-						sustainNote._lastNote = oldNote;
-						sustainNote.sustainLength = sustainAmounts - 1;
-						sustainNote.singAnim = newNote.singAnim;
-						sustainNote.missAnim = newNote.missAnim;
-
-						newNote.noteChildrens.push(sustainNote);
-						noteList.push(sustainNote);
-					}
-				}
 
 				noteList.push(newNote);
 			}
