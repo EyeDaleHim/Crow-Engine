@@ -3,10 +3,13 @@ package backend.graphic;
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
 import sys.FileSystem;
+import sys.io.File;
 import flash.media.Sound;
 import openfl.Assets;
 import openfl.display.BitmapData;
 import haxe.ds.StringMap;
+import openfl.utils.ByteArray;
+import haxe.io.Bytes;
 
 class CacheManager
 {
@@ -49,7 +52,11 @@ class CacheManager
 			var graphic:FlxGraphic = null;
 			if (modsEnabled)
 			{
-				var bitmap:BitmapData = BitmapData.fromFile(key);
+				var bitmap:BitmapData = #if !sys
+				BitmapData.fromFile(key) 
+				#else
+				BitmapData.fromBytes(ByteArray.fromBytes(sys.io.File.getBytes(key)))
+				#end;
 				graphic = FlxGraphic.fromBitmapData(bitmap, false, key);
 			}
 			else if (graphic == null)

@@ -638,6 +638,8 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
+		trace('it took me ${openfl.Lib.getTimer() - LoadingManager.lastTime}ms to load');
+
 		callScripts("create", [true]);
 	}
 
@@ -926,9 +928,17 @@ class PlayState extends MusicBeatState
 			{
 				for (note in sections.notes)
 				{
-					var sustainAmounts:Int = Math.floor(Math.max(1, note.sustain / Conductor.stepCrochet));
+					var sustainAmounts:Float = Math.max(0, note.sustain / Conductor.stepCrochet);
 
-					var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts, note.noteAnim);
+					if (sustainAmounts > 0)
+						sustainAmounts += 2;
+
+					var newNote:Note = null;
+					
+					if (note.sustain > 0)
+						newNote = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts - 1, note.noteAnim);
+					else
+						newNote = new Note(note.strumTime, note.direction, note.mustPress, 0, note.noteAnim);
 
 					var oldNote:Note = newNote;
 					if (actualNotes.length > 0)
@@ -1370,7 +1380,7 @@ class PlayState extends MusicBeatState
 
 				if (renderer._lockedToStrumX)
 				{
-					renderer.x = strumNote.x;
+					renderer.centerOverlay(strumNote, X);
 
 					if (renderer.note.isSustainNote)
 					{
@@ -1384,44 +1394,53 @@ class PlayState extends MusicBeatState
 					renderer.y = strumNote.y - distance;
 					if (renderer.note.isSustainNote)
 					{
-						renderer.sustain.y = strumNote.y - distance;
-						renderer.sustainEnd.y = strumNote.y - distance;
+						if (Settings.getPref('downscroll', false))
+						{
+							renderer.sustain.y = (renderer.y + renderer.height / 2) - renderer.sustain.height;
+							renderer.sustainEnd.y = renderer.sustain.y - renderer.sustainEnd.height;
+						}
+						else
+						{
+							renderer.sustain.y = (renderer.y + renderer.height / 2);
+							renderer.sustainEnd.y = renderer.sustain.y + renderer.sustain.height;
+						}
 					}
 				}
 
 				if (renderer.note.isSustainNote)
 				{
-					var _lastNote:Note = renderer.note._lastNote ?? renderer.note;
+					var _lastNote:Note = renderer.note._lastNote;
 
 					var checkHit:Bool = renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit);
 					var shouldPress:Bool = !renderer.note.mustPress || checkHit;
 
-					if (strumNote.downScroll)
+					for (part in [renderer.sustain, renderer.sustainEnd])
 					{
-						if (renderer.y - renderer.offset.y * renderer.scale.y + renderer.height >= center && shouldPress)
+						if (strumNote.downScroll)
 						{
-							var swagRect = FlxRect.get(0, 0, renderer.frameWidth, renderer.frameHeight);
-							swagRect.height = (center - renderer.y) / renderer.scale.y;
-							swagRect.y = renderer.frameHeight - swagRect.height;
-							swagRect.ceil();
+							if (part.y - part.offset.y * part.scale.y + part.height >= center && shouldPress)
+							{
+								var swagRect = FlxRect.get(0, 0, part.frameWidth, part.frameHeight);
+								swagRect.height = (center - part.y) / part.scale.y;
+								swagRect.y = part.frameHeight - swagRect.height;
 
-							renderer.clipRect = swagRect;
+								part.clipRect = swagRect;
 
-							swagRect.put();
+								swagRect.put();
+							}
 						}
-					}
-					else
-					{
-						if (renderer.y + renderer.offset.y * renderer.scale.y <= center && shouldPress)
+						else
 						{
-							var swagRect = FlxRect.get(0, 0, renderer.width / renderer.scale.x, renderer.height / renderer.scale.y);
-							swagRect.y = (center - renderer.y) / renderer.scale.y;
-							swagRect.height -= swagRect.y;
-							swagRect.ceil();
+							if (part.y + part.offset.y * part.scale.y <= center && shouldPress)
+							{
+								var swagRect = FlxRect.get(0, 0, part.width / part.scale.x, part.height / part.scale.y);
+								swagRect.y = (center - part.y) / part.scale.y;
+								swagRect.height -= swagRect.y;
 
-							renderer.clipRect = swagRect;
+								part.clipRect = swagRect;
 
-							swagRect.put();
+								swagRect.put();
+							}
 						}
 					}
 				}

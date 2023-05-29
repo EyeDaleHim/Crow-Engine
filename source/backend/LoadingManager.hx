@@ -23,6 +23,8 @@ class LoadingManager extends MusicBeatState
 {
 	static inline var LOADING_SPRITE_TIME:Float = 2.0;
 
+	public static var lastTime:Int = 0;
+
 	public static var activated:Bool = false;
 	public static var __THREADPOOLS:FixedThreadPool = new FixedThreadPool(8);
 	private static var _GAME_VARS:Map<ItemRequest, Array<Dynamic>> = [];
@@ -59,6 +61,8 @@ class LoadingManager extends MusicBeatState
 	override function create():Void
 	{
 		activated = true;
+
+		lastTime = openfl.Lib.getTimer();
 
 		__THREADPOOLS.run(loadStage);
 		__THREADPOOLS.run(loadSong);
@@ -154,9 +158,17 @@ class LoadingManager extends MusicBeatState
 		{
 			for (note in sections.notes)
 			{
-				var sustainAmounts:Int = Math.floor(Math.max(1, note.sustain / Conductor.stepCrochet));
+				var sustainAmounts:Float = Math.max(0, note.sustain / Conductor.stepCrochet);
 
-				var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts, note.noteAnim);
+				if (sustainAmounts > 0)
+					sustainAmounts += 2;
+
+				var newNote:Note = null;
+				
+				if (note.sustain > 0)
+					newNote = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts - 1, note.noteAnim);
+				else
+					newNote = new Note(note.strumTime, note.direction, note.mustPress, 0, note.noteAnim);
 
 				var oldNote:Note = newNote;
 				if (noteList.length > 0)

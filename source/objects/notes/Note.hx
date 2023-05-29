@@ -33,8 +33,10 @@ class Note
 		this.strumTime = strumTime;
 		this.direction = direction;
 		this.mustPress = mustPress;
-		this.isSustainNote = sustainLength > 0;
+		this.isSustainNote = Math.floor(Math.abs(sustainLength)) > 0;
 		this.singAnim = singAnim;
+
+		this.sustainLength = sustainLength;
 
 		if (!isSustainNote)
 			earlyMult = 1.0;
@@ -59,7 +61,6 @@ class Note
 
 	public var direction:Int = 0;
 	public var strumTime:Float = 0;
-	public var sustainIndex:Float = 0;
 	public var sustainLength:Float = 0;
 	public var mustPress:Bool = false;
 
@@ -171,8 +172,9 @@ class NoteSprite extends FlxSprite
 
 			if (note.isSustainNote)
 			{
-				alpha = 0.6;
-				flipY = Settings.getPref('downscroll', false);
+				sustainEnd.alpha = sustain.alpha = 0.6;
+
+				sustainEnd.flipY = sustain.flipY = Settings.getPref('downscroll', false);
 
 				endPlay = Note._noteFile.sustainAnimDirections[note.direction].end;
 				sustainPlay = Note._noteFile.sustainAnimDirections[note.direction].body;
@@ -193,13 +195,10 @@ class NoteSprite extends FlxSprite
 			if (note.isSustainNote)
 			{
 				sustainEnd.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y);
-				sustain.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y * note.sustainLength);
+				sustain.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y * (note.sustainLength - 0.5));
 
 				sustainEnd.scale = modifyScale(sustainEnd.scale, Note._noteFile.scaledEnd);
 				sustain.scale = modifyScale(sustain.scale, Note._noteFile.scaledHold);
-
-				sustain.camera = this.camera;
-				sustainEnd.camera = this.camera;
 			}
 
 			scale = modifyScale(scale, Note._noteFile.scaledArrow);
@@ -207,22 +206,23 @@ class NoteSprite extends FlxSprite
 
 		updateHitbox();
 
+		antialiasing = Note._noteFile.forcedAntialias ?? true;
+
 		if (note?.isSustainNote)
 		{
 			sustain.updateHitbox();
 			sustainEnd.updateHitbox();
+
+			sustain.cameras = this.cameras;
+			sustainEnd.cameras = this.cameras;
+
+			sustain.antialiasing = sustainEnd.antialiasing = Note._noteFile.forcedAntialias ?? true;
 		}
 
-		if (Note._noteFile.forcedAntialias != null)
-			antialiasing = Note._noteFile.forcedAntialias;
-
-		if (animation != null)
+		if (animation?.curAnim != null)
 		{
-			if (animation.curAnim != null)
-			{
-				if (animation.curAnim.numFrames <= 1)
-					animation.pause();
-			}
+			if (animation.curAnim.numFrames <= 1)
+				animation.pause();
 		}
 	}
 
@@ -269,15 +269,21 @@ class NoteSprite extends FlxSprite
 
 	override public function draw()
 	{
+		super.draw();
+
 		if (note?.isSustainNote)
 		{
 			if (sustainEnd.exists && sustainEnd.visible)
+			{
+				sustainEnd.cameras = this.cameras;
 				sustainEnd.draw();
+			}
 			if (sustain.exists && sustain.visible)
+			{
+				sustain.cameras = this.cameras;
 				sustain.draw();
+			}
 		}
-
-		super.draw();
 	}
 
 	private function modifyScale(point:FlxPoint, newPoint:{x:Float, y:Float, type:String}):FlxPoint
