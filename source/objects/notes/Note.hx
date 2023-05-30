@@ -33,10 +33,10 @@ class Note
 		this.strumTime = strumTime;
 		this.direction = direction;
 		this.mustPress = mustPress;
-		this.isSustainNote = Math.floor(Math.abs(sustainLength)) > 0;
+		this.isSustainNote = Math.abs(sustainLength) > 0;
 		this.singAnim = singAnim;
 
-		this.sustainLength = sustainLength;
+		this.sustainLength = this._sustainInput = sustainLength;
 
 		if (!isSustainNote)
 			earlyMult = 1.0;
@@ -66,6 +66,9 @@ class Note
 
 	private var _lastNote:Note;
 	private var _hitSustain:Bool = false; // FOR GOD'S SAKE
+	private var _sustainInput:Float = 0;
+
+	public var requiredSustainHit:Bool = false;
 
 	private static var _noteFile:NoteFile;
 
@@ -97,6 +100,8 @@ class NoteSprite extends FlxSprite
 	// FUCK YOU
 	public var sustain:FlxSprite;
 	public var sustainEnd:FlxSprite;
+
+	public var preventDraw:Bool = false; // alternate to "visible"
 
 	override public function new(?note:Note = null)
 	{
@@ -269,7 +274,8 @@ class NoteSprite extends FlxSprite
 
 	override public function draw()
 	{
-		super.draw();
+		if (!preventDraw)
+			super.draw();
 
 		if (note?.isSustainNote)
 		{

@@ -166,7 +166,7 @@ class LoadingManager extends MusicBeatState
 				var newNote:Note = null;
 				
 				if (note.sustain > 0)
-					newNote = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts - 1, note.noteAnim);
+					newNote = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts, note.noteAnim);
 				else
 					newNote = new Note(note.strumTime, note.direction, note.mustPress, 0, note.noteAnim);
 

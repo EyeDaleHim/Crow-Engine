@@ -675,21 +675,13 @@ class PlayState extends MusicBeatState
 					break;
 
 				if (note.mustPress)
-				{
-					if (note.isSustainNote)
-						_isolatedNotes.sustains[note.direction].push(note);
-					else
-						_isolatedNotes.note[note.direction].push(note);
-				}
+					_isolatedNotes[note.direction].push(note);
 
 				var currentNote:NoteSprite = NoteSprite.__pool.get();
 				currentNote.exists = true;
 				currentNote.refreshNote(note);
 
-				if (note.isSustainNote)
-					renderedNotes.insert(0, currentNote);
-				else
-					renderedNotes.add(currentNote);
+				renderedNotes.add(currentNote);
 				pendingNotes.remove(pendingNotes.indexOf(note));
 			}
 		}
@@ -934,7 +926,7 @@ class PlayState extends MusicBeatState
 						sustainAmounts += 2;
 
 					var newNote:Note = null;
-					
+
 					if (note.sustain > 0)
 						newNote = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts - 1, note.noteAnim);
 					else
@@ -1197,10 +1189,8 @@ class PlayState extends MusicBeatState
 		super.closeSubState();
 	}
 
-	private var _isolatedNotes:{sustains:Map<Int, Array<Note>>, note:Map<Int, Array<Note>>} = {
-		note: [0 => [], 1 => [], 2 => [], 3 => []],
-		sustains: [0 => [], 1 => [], 2 => [], 3 => []]
-	};
+	private var _isolatedNotes:Map<Int, Array<Note>> = [0 => [], 1 => [], 2 => [], 3 => []];
+	private var _currentHeldSustains:Map<Int, Array<Note>> = [0 => [], 1 => [], 2 => [], 3 => []];
 
 	private var currentKeys:Array<Bool> = [];
 
@@ -1222,7 +1212,7 @@ class PlayState extends MusicBeatState
 				var sortedNotesList:Array<Note> = [];
 				var pressNotes:Array<Note> = [];
 
-				for (note in _isolatedNotes.note[direction])
+				for (note in _isolatedNotes[direction])
 				{
 					if (note.canBeHit && !note.tooLate && !note.wasGoodHit)
 					{
@@ -1240,7 +1230,7 @@ class PlayState extends MusicBeatState
 
 						for (doubleNote in pressNotes)
 						{
-							if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 1)
+							if (Math.abs(doubleNote.strumTime - epicNote.strumTime) < 5)
 							{
 								killNote(doubleNote);
 							}
@@ -1251,11 +1241,14 @@ class PlayState extends MusicBeatState
 						}
 
 						if (!notesStopped && !epicNote.wasGoodHit)
-						{
-							hitNote(epicNote);
 							pressNotes.push(epicNote);
-						}
 					}
+				}
+
+				for (note in pressNotes)
+				{
+					hitNote(note);
+
 				}
 
 				if (!Settings.getPref('ghost_tap', true) && sortedNotesList.length == 0)
@@ -1369,7 +1362,7 @@ class PlayState extends MusicBeatState
 		{
 			var center = strumLine.y + (Note.transformedWidth / 2);
 
-			renderedNotes.forEachAlive(function(renderer:NoteSprite)
+			renderedNotes.forEachExists(function(renderer:NoteSprite)
 			{
 				var strumGroup:FlxTypedGroup<StrumNote> = renderer.note.mustPress ? playerStrums : opponentStrums;
 				var strumNote:StrumNote = strumGroup.members[renderer.note.direction];
@@ -1447,9 +1440,22 @@ class PlayState extends MusicBeatState
 
 				if (!renderer.note.mustPress && renderer.note.wasGoodHit)
 				{
-					if (renderer.note.strumTime <= Conductor.songPosition && !renderer.note._hitSustain)
+					if (renderer.note.isSustainNote)
 					{
-						hitNote(renderer.note, true);
+						if (renderer.note.requiredSustainHit && renderer.note._sustainInput > 0)
+							renderer.note._sustainInput -= FlxG.elapsed;
+						else
+						{
+							trace('note was out');
+
+							renderer.note.requiredSustainHit = false;
+							killNote(renderer.note);
+						}
+					}
+					else
+					{
+						if (renderer.note.strumTime <= Conductor.songPosition)
+							hitNote(renderer.note, true);
 					}
 				}
 				else if (renderer.note.strumTime - Conductor.songPosition < -300)
@@ -1458,22 +1464,20 @@ class PlayState extends MusicBeatState
 						missNote(renderer.note);
 				}
 
-				if (renderer.note.isSustainNote)
-				{
-					if ((Settings.getPref('downscroll', false) && renderer.y > FlxG.height * (1.0 + songSpeed))
-						|| (!Settings.getPref('downscroll', false) && renderer.y < -renderer.height * (1.0 + songSpeed)))
-						killNote(renderer.note);
-				}
-
 				if (!botplay && currentKeys.contains(true))
 				{
-					if (currentKeys[renderer.note.direction]
-						&& renderer.note.mustPress
-						&& renderer.note.isSustainNote
-						&& renderer.note.canBeHit
-						&& !renderer.note.tooLate)
+					if (currentKeys[renderer.note.direction])
 					{
-						hitNote(renderer.note);
+						if (renderer.note.mustPress && renderer.note.isSustainNote && renderer.note.wasGoodHit && !renderer.note.tooLate)
+						{
+							if (renderer.note.requiredSustainHit && renderer.note._sustainInput > 0)
+								renderer.note._sustainInput -= FlxG.elapsed;
+							else
+							{
+								renderer.note.requiredSustainHit = false;
+								killNote(renderer.note);
+							}
+						}
 					}
 				}
 			});
@@ -1519,20 +1523,25 @@ class PlayState extends MusicBeatState
 				if (vocals.attributes.get('isPlaying'))
 					vocals.volume = 1.0;
 
+				gameInfo.playerHits += rate[judgement.judge];
+				gameInfo.playerHitMods += 1.0;
+
+				if (gameInfo.judgementList.exists(judgement.judge))
+					gameInfo.judgementList[judgement.judge]++;
+
+				gameInfo.score += scoreRate[judgement.judge];
+
+				gameInfo.combo++;
+
 				if (!note.isSustainNote)
 				{
-					gameInfo.playerHits += rate[judgement.judge];
-					gameInfo.playerHitMods += 1.0;
-
-					if (gameInfo.judgementList.exists(judgement.judge))
-						gameInfo.judgementList[judgement.judge]++;
-
-					gameInfo.score += scoreRate[judgement.judge];
-
-					gameInfo.combo++;
-
 					killNote(note);
 					popCombo(judgement.judge);
+				}
+				else
+				{
+					note.noteSprite.preventDraw = true;
+					note.requiredSustainHit = true;
 				}
 
 				gameInfo.health += FlxMath.remapToRange(0.45, 0, 100, 0, 2) * rate[judgement.judge];
@@ -1561,10 +1570,13 @@ class PlayState extends MusicBeatState
 				strum.animationTime = Conductor.stepCrochet * 0.001 * 1.75;
 			}
 
-			if (!note.isSustainNote)
-				killNote(note);
+			if (note.isSustainNote)
+			{
+				note.noteSprite.preventDraw = true;
+				note.requiredSustainHit = true;
+			}
 			else
-				note._hitSustain = true;
+				killNote(note);
 
 			if (vocals.attributes.get('isPlaying'))
 				vocals.volume = 1.0;
@@ -1735,16 +1747,8 @@ class PlayState extends MusicBeatState
 	{
 		if (note.mustPress)
 		{
-			if (note.isSustainNote)
-			{
-				if (_isolatedNotes.sustains[note.direction].contains(note))
-					_isolatedNotes.sustains[note.direction].splice(_isolatedNotes.sustains[note.direction].indexOf(note), 1);
-			}
-			else
-			{
-				if (_isolatedNotes.note[note.direction].contains(note))
-					_isolatedNotes.note[note.direction].splice(_isolatedNotes.note[note.direction].indexOf(note), 1);
-			}
+			if (_isolatedNotes[note.direction].contains(note))
+				_isolatedNotes[note.direction].splice(_isolatedNotes[note.direction].indexOf(note), 1);
 		}
 
 		note.noteSprite.exists = false;
