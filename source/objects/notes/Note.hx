@@ -30,13 +30,14 @@ class Note
 
 	public function new(strumTime:Float = 0, direction:Int = 0, mustPress:Bool = false, sustainLength:Float = 0, singAnim:String = '')
 	{
-		this.strumTime = strumTime;
+		this.strumTime = this.sustainEndTime = strumTime;
 		this.direction = direction;
 		this.mustPress = mustPress;
 		this.isSustainNote = Math.abs(sustainLength) > 0;
 		this.singAnim = singAnim;
 
-		this.sustainLength = this._sustainInput = sustainLength;
+		this.sustainLength = sustainLength;
+		this.sustainEndTime += sustainLength * Conductor.stepCrochet;
 
 		if (!isSustainNote)
 			earlyMult = 1.0;
@@ -61,6 +62,7 @@ class Note
 
 	public var direction:Int = 0;
 	public var strumTime:Float = 0;
+	public var sustainEndTime:Float = 0;
 	public var sustainLength:Float = 0;
 	public var mustPress:Bool = false;
 
@@ -215,6 +217,8 @@ class NoteSprite extends FlxSprite
 
 		if (note?.isSustainNote)
 		{
+			note.requiredSustainHit = false;
+
 			sustain.updateHitbox();
 			sustainEnd.updateHitbox();
 
@@ -234,7 +238,6 @@ class NoteSprite extends FlxSprite
 	private var animOffsets:Map<String, FlxPoint> = [];
 	private var animForces:Map<String, Bool> = [];
 
-	private var _lockedScaleY:Bool = true;
 	private var _lockedToStrumX:Bool = true;
 	private var _lockedToStrumY:Bool = true; // if you disable this, the notes won't ever go, if you want a modchart controlling notes, here u go
 
@@ -250,12 +253,15 @@ class NoteSprite extends FlxSprite
 			if (note.mustPress)
 			{
 				note.canBeHit = (note.strumTime > Conductor.songPosition - NoteStorageFunction.safeZoneOffset
-					&& note.strumTime < Conductor.songPosition + (NoteStorageFunction.safeZoneOffset * note.earlyMult));
+					&& note.strumTime < Conductor.songPosition + NoteStorageFunction.safeZoneOffset);
 
-				if (!note.tooLate)
-					note.tooLate = (note.strumTime < Conductor.songPosition - NoteStorageFunction.safeZoneOffset && !note.wasGoodHit);
-				else
-					alpha = 0.3;
+				if (!note.wasGoodHit)
+				{
+					if (!note.tooLate)
+						note.tooLate = (note.strumTime < Conductor.songPosition - NoteStorageFunction.safeZoneOffset && !note.wasGoodHit);
+					else
+						alpha = 0.3;
+				}
 			}
 			else
 			{

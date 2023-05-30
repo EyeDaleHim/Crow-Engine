@@ -923,12 +923,12 @@ class PlayState extends MusicBeatState
 					var sustainAmounts:Float = Math.max(0, note.sustain / Conductor.stepCrochet);
 
 					if (sustainAmounts > 0)
-						sustainAmounts += 2;
+						sustainAmounts += 3;
 
 					var newNote:Note = null;
 
 					if (note.sustain > 0)
-						newNote = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts - 1, note.noteAnim);
+						newNote = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts, note.noteAnim);
 					else
 						newNote = new Note(note.strumTime, note.direction, note.mustPress, 0, note.noteAnim);
 
@@ -1248,7 +1248,8 @@ class PlayState extends MusicBeatState
 				for (note in pressNotes)
 				{
 					hitNote(note);
-
+					if (note.isSustainNote)
+						_currentHeldSustains[note.direction].push(note);
 				}
 
 				if (!Settings.getPref('ghost_tap', true) && sortedNotesList.length == 0)
@@ -1276,6 +1277,14 @@ class PlayState extends MusicBeatState
 		var direction:Int = getKeyDirection(e.keyCode);
 		if (!paused && direction != -1)
 		{
+			if (_currentHeldSustains[direction].length > 0)
+			{
+				for (note in _currentHeldSustains[direction])
+					missNote(note);
+
+				_currentHeldSustains[direction].splice(0, _currentHeldSustains[direction].length);
+			}
+
 			var strum:StrumNote = playerStrums.members[direction];
 			if (strum != null)
 			{
@@ -1404,7 +1413,8 @@ class PlayState extends MusicBeatState
 				{
 					var _lastNote:Note = renderer.note._lastNote;
 
-					var checkHit:Bool = renderer.note.wasGoodHit || (_lastNote.wasGoodHit && !renderer.note.canBeHit);
+					var checkHit:Bool = (currentKeys[renderer.note.direction] && renderer.note.wasGoodHit)
+						|| (_lastNote.wasGoodHit && !renderer.note.canBeHit);
 					var shouldPress:Bool = !renderer.note.mustPress || checkHit;
 
 					for (part in [renderer.sustain, renderer.sustainEnd])
@@ -1442,45 +1452,56 @@ class PlayState extends MusicBeatState
 				{
 					if (renderer.note.isSustainNote)
 					{
-						if (renderer.note.requiredSustainHit && renderer.note._sustainInput > 0)
-							renderer.note._sustainInput -= FlxG.elapsed;
-						else
+						if (!renderer.note.requiredSustainHit
+							&& Conductor.songPosition >= renderer.note.strumTime) // oh the main note ain't hit yet? hit it first
+							hitNote(renderer.note, true);
+						else if (renderer.note.requiredSustainHit
+							&& renderer.note.sustainEndTime - (Conductor.crochet * renderer.note.earlyMult) > Conductor.songPosition + (backend.NoteStorageFunction.safeZoneOffset * renderer.note.earlyMult))
 						{
-							trace('note was out');
+							var strum = opponentStrums.members[renderer.note.direction];
 
-							renderer.note.requiredSustainHit = false;
-							killNote(renderer.note);
+							if (strum.animation.curAnim.name != strum.confirmAnim || strum.animation.curAnim.finished)
+								strum.playAnim(strum.confirmAnim, true);
 						}
+						else
+							killNote(renderer.note);
 					}
 					else
-					{
-						if (renderer.note.strumTime <= Conductor.songPosition)
-							hitNote(renderer.note, true);
-					}
+						hitNote(renderer.note, true);
 				}
 				else if (renderer.note.strumTime - Conductor.songPosition < -300)
 				{
 					if (renderer.note.mustPress && !renderer.note.isSustainNote)
 						missNote(renderer.note);
 				}
+			});
 
-				if (!botplay && currentKeys.contains(true))
+			if (!botplay && currentKeys.contains(true))
+			{
+				for (i in 0...4)
 				{
-					if (currentKeys[renderer.note.direction])
+					var strum = playerStrums.members[i];
+
+					for (note in _currentHeldSustains[i])
 					{
-						if (renderer.note.mustPress && renderer.note.isSustainNote && renderer.note.wasGoodHit && !renderer.note.tooLate)
+						if (note.mustPress && note.isSustainNote)
 						{
-							if (renderer.note.requiredSustainHit && renderer.note._sustainInput > 0)
-								renderer.note._sustainInput -= FlxG.elapsed;
+							if (note.requiredSustainHit
+								&& note.sustainEndTime - (Conductor.crochet * note.earlyMult) > Conductor.songPosition + (backend.NoteStorageFunction.safeZoneOffset * note.earlyMult))
+							{
+								if (strum.animation.curAnim.name != strum.confirmAnim || strum.animation.curAnim.finished)
+									strum.playAnim(strum.confirmAnim, true);
+							}
 							else
 							{
-								renderer.note.requiredSustainHit = false;
-								killNote(renderer.note);
+								note.requiredSustainHit = false;
+								_currentHeldSustains[i].remove(note);
+								killNote(note);
 							}
 						}
 					}
 				}
-			});
+			}
 		}
 	}
 
@@ -1532,12 +1553,10 @@ class PlayState extends MusicBeatState
 				gameInfo.score += scoreRate[judgement.judge];
 
 				gameInfo.combo++;
+				popCombo(judgement.judge);
 
 				if (!note.isSustainNote)
-				{
 					killNote(note);
-					popCombo(judgement.judge);
-				}
 				else
 				{
 					note.noteSprite.preventDraw = true;
@@ -1572,8 +1591,8 @@ class PlayState extends MusicBeatState
 
 			if (note.isSustainNote)
 			{
-				note.noteSprite.preventDraw = true;
 				note.requiredSustainHit = true;
+				note.noteSprite.preventDraw = true;
 			}
 			else
 				killNote(note);
@@ -1587,8 +1606,11 @@ class PlayState extends MusicBeatState
 
 	public function missNote(note:Note)
 	{
-		if (!note.wasGoodHit)
+		if (note.isSustainNote || !note.wasGoodHit)
 		{
+			if (note.isSustainNote && Math.abs(Conductor.songPosition - note.sustainEndTime) < Math.min(450, Conductor.stepCrochet * 4))
+				return;
+
 			if (player != null)
 			{
 				player._animationTimer = -Conductor.stepCrochet * 0.002;
@@ -1606,25 +1628,22 @@ class PlayState extends MusicBeatState
 
 			gameInfo.combo = 0;
 
-			var lossRate:Int = 1;
-			if (note.noteChildrens.length > 0)
+			var lossRate:Float = 1;
+			if (note.isSustainNote)
 			{
-				for (child in note.noteChildrens)
-				{
-					child.tooLate = true;
-					lossRate++;
+				lossRate += note.sustainLength / 2;
 
-					gameInfo.health -= FlxMath.remapToRange(1, 0, 100, 0, 2) * reductionRate;
-				}
+				gameInfo.health -= FlxMath.remapToRange(1, 0, 100, 0, 2) * lossRate;
 			}
 
 			gameInfo.health -= FlxMath.remapToRange(2, 0, 100, 0, 2) * reductionRate;
 
-			gameInfo.score -= 25 * note.noteChildrens.length;
+			gameInfo.score -= 25 * Math.floor(lossRate);
 
 			reductionRate += (FlxMath.roundDecimal(Math.min(reductionRate * 0.1, 0.5), 2) * (note.isSustainNote ? 0.25 : 1.0)) * lossRate;
 
 			killNote(note);
+			_currentHeldSustains[note.direction].remove(note);
 		}
 
 		player._stunnedTimer = 0.5;
