@@ -31,8 +31,7 @@ class TankmenUnit extends FlxTypedGroup<TankmenSoldier>
 			}
 		}
 
-		remove(tempTankman, true);
-		tempTankman.destroy();
+		tempTankman.kill();
 	}
 
 	override function update(elapsed:Float)
@@ -68,8 +67,7 @@ class TankmenUnit extends FlxTypedGroup<TankmenSoldier>
 					}
 					else if (soldier.animation.curAnim.finished)
 					{
-						remove(soldier, true);
-						soldier.destroy();
+						soldier.kill();
 					}
 
 					soldier.visible = (soldier.x > (-0.7 * FlxG.width) && soldier.x < (1.4 * FlxG.width));
