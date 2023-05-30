@@ -923,7 +923,7 @@ class PlayState extends MusicBeatState
 					var sustainAmounts:Float = Math.max(0, note.sustain / Conductor.stepCrochet);
 
 					if (sustainAmounts > 0)
-						sustainAmounts += 3;
+						sustainAmounts += 1;
 
 					var newNote:Note = null;
 
@@ -1277,14 +1277,6 @@ class PlayState extends MusicBeatState
 		var direction:Int = getKeyDirection(e.keyCode);
 		if (!paused && direction != -1)
 		{
-			if (_currentHeldSustains[direction].length > 0)
-			{
-				for (note in _currentHeldSustains[direction])
-					missNote(note);
-
-				_currentHeldSustains[direction].splice(0, _currentHeldSustains[direction].length);
-			}
-
 			var strum:StrumNote = playerStrums.members[direction];
 			if (strum != null)
 			{
@@ -1455,15 +1447,27 @@ class PlayState extends MusicBeatState
 						if (!renderer.note.requiredSustainHit
 							&& Conductor.songPosition >= renderer.note.strumTime) // oh the main note ain't hit yet? hit it first
 							hitNote(renderer.note, true);
-						else if (renderer.note.requiredSustainHit
-							&& renderer.note.sustainEndTime - (Conductor.crochet * renderer.note.earlyMult) > Conductor.songPosition + (backend.NoteStorageFunction.safeZoneOffset * renderer.note.earlyMult))
+						else if (renderer.note.requiredSustainHit && renderer.note.sustainEndTime > Conductor.songPosition)
 						{
 							var strum = opponentStrums.members[renderer.note.direction];
 
-							if (strum.animation.curAnim.name != strum.confirmAnim || strum.animation.curAnim.finished)
+							if (strum.animationTime <= 0.0)
+							{
 								strum.playAnim(strum.confirmAnim, true);
+								strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
+							}
+
+							if (opponent != null && opponent.animation.curAnim.curFrame >= 4)
+							{
+								if (!opponent.animOffsets.exists(renderer.note.singAnim))
+									opponent.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(renderer.note.direction % 4))]);
+								else
+									opponent.playAnim(renderer.note.singAnim, true);
+
+								opponent._animationTimer = 0.0;
+							}
 						}
-						else
+						else if (!renderer.note.requiredSustainHit && renderer.note.sustainEndTime < Conductor.songPosition)
 							killNote(renderer.note);
 					}
 					else
@@ -1487,10 +1491,24 @@ class PlayState extends MusicBeatState
 						if (note.mustPress && note.isSustainNote)
 						{
 							if (note.requiredSustainHit
-								&& note.sustainEndTime - (Conductor.crochet * note.earlyMult) > Conductor.songPosition + (backend.NoteStorageFunction.safeZoneOffset * note.earlyMult))
+								&& note.sustainEndTime - (Conductor.crochet * note.earlyMult) > Conductor.songPosition +
+									(backend.NoteStorageFunction.safeZoneOffset * note.earlyMult))
 							{
-								if (strum.animation.curAnim.name != strum.confirmAnim || strum.animation.curAnim.finished)
+								if (currentKeys[note.direction] && strum.animationTime <= 0.0)
+								{
 									strum.playAnim(strum.confirmAnim, true);
+									strum.animationTime = Conductor.stepCrochet * 1.5 / 1000;
+								}
+
+								if (player != null && player.animation.curAnim.curFrame >= 4)
+								{
+									if (!player.animOffsets.exists(note.singAnim))
+										player.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))]);
+									else
+										player.playAnim(note.singAnim, true);
+
+									player._animationTimer = 0.0;
+								}
 							}
 							else
 							{
@@ -1608,9 +1626,6 @@ class PlayState extends MusicBeatState
 	{
 		if (note.isSustainNote || !note.wasGoodHit)
 		{
-			if (note.isSustainNote && Math.abs(Conductor.songPosition - note.sustainEndTime) < Math.min(450, Conductor.stepCrochet * 4))
-				return;
-
 			if (player != null)
 			{
 				player._animationTimer = -Conductor.stepCrochet * 0.002;

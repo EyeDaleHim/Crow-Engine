@@ -161,7 +161,7 @@ class LoadingManager extends MusicBeatState
 				var sustainAmounts:Float = Math.max(0, note.sustain / Conductor.stepCrochet);
 
 				if (sustainAmounts > 0)
-					sustainAmounts += 3;
+					sustainAmounts += 1;
 
 				var newNote:Note = null;
 				

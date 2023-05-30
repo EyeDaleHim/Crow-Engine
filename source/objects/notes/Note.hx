@@ -202,7 +202,7 @@ class NoteSprite extends FlxSprite
 			if (note.isSustainNote)
 			{
 				sustainEnd.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y);
-				sustain.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y * (note.sustainLength - 0.5));
+				sustain.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y * ((note.sustainLength * Song.currentSong.speed) - 0.5));
 
 				sustainEnd.scale = modifyScale(sustainEnd.scale, Note._noteFile.scaledEnd);
 				sustain.scale = modifyScale(sustain.scale, Note._noteFile.scaledHold);
