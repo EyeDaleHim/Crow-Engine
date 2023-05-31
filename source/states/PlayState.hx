@@ -709,7 +709,7 @@ class PlayState extends MusicBeatState
 
 		if (iconP1 != null)
 		{
-			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - _iconP1Offset;
+			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(gameInfo.health * 50, 0, 100, 100, 0) * 0.01)) - _iconP1Offset;
 			iconP1.centerOverlay(healthBar, Y);
 
 			if (iconP1.animation.curAnim.frames.length == 0 || iconP1.animation.curAnim.finished)
@@ -718,7 +718,7 @@ class PlayState extends MusicBeatState
 
 		if (iconP2 != null)
 		{
-			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - _iconP2Offset);
+			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(gameInfo.health * 50, 0, 100, 100, 0) * 0.01)) - (iconP2.width - _iconP2Offset);
 			iconP2.centerOverlay(healthBar, Y);
 
 			if (iconP2.animation.curAnim.frames.length == 0 || iconP2.animation.curAnim.finished)
@@ -1490,9 +1490,7 @@ class PlayState extends MusicBeatState
 					{
 						if (note.mustPress && note.isSustainNote)
 						{
-							if (note.requiredSustainHit
-								&& note.sustainEndTime - (Conductor.crochet * note.earlyMult) > Conductor.songPosition +
-									(backend.NoteStorageFunction.safeZoneOffset * note.earlyMult))
+							if (note.requiredSustainHit && note.sustainEndTime > Conductor.songPosition)
 							{
 								if (currentKeys[note.direction] && strum.animationTime <= 0.0)
 								{

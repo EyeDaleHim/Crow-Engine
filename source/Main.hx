@@ -129,7 +129,7 @@ class Main extends Sprite
 					{
 						FlxG.state.forEachOfType(flixel.FlxObject, function(object)
 						{
-							if (object != null && object.exists)
+							if (object?.exists)
 							{
 								if (object.moves && object.velocity.x == 0 && object.velocity.y == 0)
 									object.moves = false;

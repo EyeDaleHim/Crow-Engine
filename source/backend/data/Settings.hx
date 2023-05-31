@@ -18,13 +18,8 @@ class Settings
 		_save = new FlxSave();
 		_save.bind('settings', 'crow-engine');
 
-		if (_save.data.settings == null)
-			_save.data.settings = new Map<String, Dynamic>();
-		if (_save.data.controls == null)
-			_save.data.controls = new Map<String, Dynamic>();
-
-		prefs = _save.data.settings;
-		controls = _save.data.controls;
+		prefs = _save.data.settings ?? new Map<String, Dynamic>();
+		controls = _save.data.controls ?? new Map<String, Dynamic>();
 
 		onSet.set('framerate', function(value:Dynamic)
 		{

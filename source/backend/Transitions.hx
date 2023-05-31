@@ -20,13 +20,12 @@ class Transitions
 
 	public static function transition(duration:Null<Float>, fade:Easing, ease:Null<EaseFunction>, type:TransitionType, callbacks:Callbacks)
 	{
-		if (duration == null)
-			duration = 0.5;
+		duration = duration ?? 0.5;
+
 		if (fade == null)
 			throw "Transition \"Easing\" parameter cannot be null.";
 
-		if (ease == null)
-			ease = FlxEase.quadOut;
+		ease = ease ?? FlxEase.quadOut;
 
 		var camera:FlxCamera = new FlxCamera();
 		camera.bgColor = 0;
@@ -52,18 +51,15 @@ class Transitions
 						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
-							if (callbacks.startCallback != null)
-								callbacks.startCallback();
+							callbacks?.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							if (callbacks.updateCallback != null)
-								callbacks.updateCallback();
+							callbacks?.updateCallback();
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							if (callbacks.endCallback != null)
-								callbacks.endCallback();
+							callbacks?.endCallback();
 						}
 					});
 				}
@@ -83,13 +79,11 @@ class Transitions
 						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
-							if (callbacks.startCallback != null)
-								callbacks.startCallback();
+							callbacks?.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							if (callbacks.updateCallback != null)
-								callbacks.updateCallback();
+							callbacks?.updateCallback();
 
 							if (fade == Out)
 								black.y = gradient.y - black.height;
@@ -98,8 +92,7 @@ class Transitions
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							if (callbacks.endCallback != null)
-								callbacks.endCallback();
+							callbacks?.endCallback();
 						}
 					});
 				}
@@ -119,13 +112,11 @@ class Transitions
 						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
-							if (callbacks.startCallback != null)
-								callbacks.startCallback();
+							callbacks?.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							if (callbacks.updateCallback != null)
-								callbacks.updateCallback();
+							callbacks?.updateCallback();
 
 							if (fade == In)
 								black.y = (gradient.y - black.height) + 50;
@@ -134,8 +125,7 @@ class Transitions
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							if (callbacks.endCallback != null)
-								callbacks.endCallback();
+							callbacks?.endCallback();
 						}
 					});
 				}
@@ -155,13 +145,11 @@ class Transitions
 						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
-							if (callbacks.startCallback != null)
-								callbacks.startCallback();
+							callbacks?.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							if (callbacks.updateCallback != null)
-								callbacks.updateCallback();
+							callbacks?.updateCallback();
 
 							if (fade == In)
 								black.x = (gradient.x - black.width) + 50;
@@ -170,8 +158,7 @@ class Transitions
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							if (callbacks.endCallback != null)
-								callbacks.endCallback();
+							callbacks?.endCallback();
 						}
 					});
 				}
@@ -185,18 +172,15 @@ class Transitions
 					FlxTween.num(0, 1, duration, {
 						onStart: function(twn:FlxTween)
 						{
-							if (callbacks.startCallback != null)
-								callbacks.startCallback();
+							callbacks?.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							if (callbacks.updateCallback != null)
-								callbacks.updateCallback();
+							callbacks?.updateCallback();
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							if (callbacks.endCallback != null)
-								callbacks.endCallback();
+							callbacks?.endCallback();
 						}
 					});
 
@@ -207,10 +191,9 @@ class Transitions
 				}
 			default: // null
 				{
-					if (callbacks.startCallback != null)
-						callbacks.startCallback();
-					if (callbacks.endCallback != null)
-						callbacks.endCallback();
+					callbacks?.startCallback();
+
+					callbacks?.endCallback();
 				}
 		}
 

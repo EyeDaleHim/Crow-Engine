@@ -238,7 +238,7 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 			{
 				dialogueBox.animation.play('open');
 
-				if (portraitLeft != null && portraitLeft.attributes.exists('animationExists'))
+				if (portraitLeft?.attributes.exists('animationExists'))
 					portraitLeft.animation.play('enter');
 			}
 
