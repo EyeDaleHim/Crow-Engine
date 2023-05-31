@@ -51,15 +51,18 @@ class Transitions
 						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
-							callbacks?.startCallback();
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							callbacks?.updateCallback();
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							callbacks?.endCallback();
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
 						}
 					});
 				}
@@ -79,11 +82,13 @@ class Transitions
 						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
-							callbacks?.startCallback();
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							callbacks?.updateCallback();
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
 
 							if (fade == Out)
 								black.y = gradient.y - black.height;
@@ -92,7 +97,8 @@ class Transitions
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							callbacks?.endCallback();
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
 						}
 					});
 				}
@@ -112,11 +118,13 @@ class Transitions
 						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
-							callbacks?.startCallback();
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							callbacks?.updateCallback();
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
 
 							if (fade == In)
 								black.y = (gradient.y - black.height) + 50;
@@ -125,7 +133,8 @@ class Transitions
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							callbacks?.endCallback();
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
 						}
 					});
 				}
@@ -145,11 +154,13 @@ class Transitions
 						ease: ease,
 						onStart: function(twn:FlxTween)
 						{
-							callbacks?.startCallback();
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							callbacks?.updateCallback();
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
 
 							if (fade == In)
 								black.x = (gradient.x - black.width) + 50;
@@ -158,7 +169,8 @@ class Transitions
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							callbacks?.endCallback();
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
 						}
 					});
 				}
@@ -172,15 +184,18 @@ class Transitions
 					FlxTween.num(0, 1, duration, {
 						onStart: function(twn:FlxTween)
 						{
-							callbacks?.startCallback();
+							if (callbacks.startCallback != null)
+								callbacks.startCallback();
 						},
 						onUpdate: function(twn:FlxTween)
 						{
-							callbacks?.updateCallback();
+							if (callbacks.updateCallback != null)
+								callbacks.updateCallback();
 						},
 						onComplete: function(twn:FlxTween)
 						{
-							callbacks?.endCallback();
+							if (callbacks.endCallback != null)
+								callbacks.endCallback();
 						}
 					});
 
@@ -191,9 +206,10 @@ class Transitions
 				}
 			default: // null
 				{
-					callbacks?.startCallback();
-
-					callbacks?.endCallback();
+					if (callbacks.startCallback != null)
+						callbacks.startCallback();
+					if (callbacks.endCallback != null)
+						callbacks.endCallback();
 				}
 		}
 
