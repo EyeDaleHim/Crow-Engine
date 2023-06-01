@@ -19,7 +19,7 @@ class Settings
 		_save.bind('settings', 'crow-engine');
 
 		prefs = _save.data.settings ?? new Map<String, Dynamic>();
-		controls = _save.data.controls ?? new Map<String, Dynamic>();
+		controls = _save.data.controls ?? new Map<String, Array<Int>>();
 
 		onSet.set('framerate', function(value:Dynamic)
 		{

@@ -5,6 +5,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
@@ -16,7 +17,6 @@ import flixel.sound.FlxSound;
 import flixel.input.keyboard.FlxKey;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.display.FlxTiledSprite;
 import openfl.display.BitmapData;
 import music.Song;
 import objects.notes.Note;
@@ -31,10 +31,11 @@ class ChartEditorState extends MusicBeatState
 	public static final singAnimations:Array<String> = ['noteLEFT', 'noteDOWN', 'noteUP', 'noteRIGHT'];
 
 	public var mouseState:MouseState = NORMAL;
+	public var mouseFocusState:MouseFocusState = WORLD;
 
 	public static var current:ChartEditorState;
 
-	public var gridTemplate:BitmapData; // for copying
+	public var gridTemplates:Array<BitmapData> = []; // for copying
 
 	public static var lastPos:Float = 0.0;
 
@@ -47,9 +48,11 @@ class ChartEditorState extends MusicBeatState
 
 	public var topBar:FlxSprite;
 
+	public var topBarList:Array<TopBarText> = [];
+
 	public var renderedNotes:FlxTypedGroup<ChartNote>;
 
-	public var strumLines:Array<FlxTiledSprite> = [];
+	public var strumLines:Array<FlxTypedSpriteGroup<StrumSectionSprite>> = [];
 	public var noteSelector:FlxSprite;
 
 	public var infoText:EditorText;
@@ -58,10 +61,10 @@ class ChartEditorState extends MusicBeatState
 
 	override function create()
 	{
-		Main.fps.alpha = 0.2;
+		Main.fps.alpha = 0.0;
 		@:privateAccess
 		for (outline in Main.fps.outlines)
-			outline.alpha = 0.2;
+			outline.alpha = 0.0;
 
 		current = this;
 
@@ -131,22 +134,25 @@ class ChartEditorState extends MusicBeatState
 				noteSelector.animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 		}
 
-		gridTemplate = FlxGridOverlay.createGrid(CELL_SIZE, CELL_SIZE, CELL_SIZE * 2, CELL_SIZE * 16, true, 0xffd9e2e6, 0xffa8a1a1);
-
-		gridTemplate.lock();
-		for (y in 0...4)
+		for (i in 0...16)
 		{
-			for (x in 0...gridTemplate.width)
+			var gridTemplate:BitmapData = FlxGridOverlay.createGrid(CELL_SIZE, CELL_SIZE, CELL_SIZE * 4, CELL_SIZE * (1 + i), true, 0xffd9e2e6, 0xffa8a1a1);
+
+			gridTemplate.lock();
+			for (y in 0...4)
 			{
-				gridTemplate.setPixel32(x, gridTemplate.height - y, FlxColor.BLACK);
+				for (x in 0...gridTemplate.width)
+				{
+					gridTemplate.setPixel32(x, gridTemplate.height - y, FlxColor.BLACK);
+				}
 			}
+			gridTemplate.unlock();
+			gridTemplates.push(gridTemplate);
 		}
-		gridTemplate.unlock();
 
 		for (i in 0...2)
 		{
-			var strumLine:FlxTiledSprite = new FlxTiledSprite(gridTemplate, gridTemplate.width * 2,
-				(FlxG.sound.music.length / Conductor.stepCrochet) * CELL_SIZE);
+			var strumLine:FlxTypedSpriteGroup<StrumSectionSprite> = new FlxTypedSpriteGroup<StrumSectionSprite>();
 			strumLine.x = 50 + ((CELL_SIZE + 4) * (i * 4));
 			strumLine.x += 400;
 
@@ -159,8 +165,23 @@ class ChartEditorState extends MusicBeatState
 			add(strumLine);
 		}
 
+		for (section in Song.currentSong.sectionList)
+		{
+			for (strumLine in strumLines)
+			{
+				var sectionSprite:StrumSectionSprite = new StrumSectionSprite();
+				sectionSprite.ID = strumLine.length;
+				sectionSprite.measure = section.length;
+				sectionSprite.active = false;
+				sectionSprite.updateHitbox();
+				if (strumLine.length > 0)
+					sectionSprite.y = strumLine.members[sectionSprite.ID - 1].y + strumLine.members[sectionSprite.ID - 1].height;
+				strumLine.add(sectionSprite);
+			}
+		}
+
 		strum.x = strumLines[0].x;
-		strum.scale.x = new FlxRect(strum.x, 1, gridTemplate.width * 2, 1).union(new FlxRect(strumLines[1].x, 1, gridTemplate.width * 2, 1)).width;
+		strum.scale.x = new FlxRect(strum.x, 1, gridTemplates[0].width * 2, 1).union(new FlxRect(strumLines[1].x, 1, gridTemplates[0].width * 2, 1)).width;
 		strum.updateHitbox();
 		strum.x = strumLines[0].x;
 
@@ -195,10 +216,13 @@ class ChartEditorState extends MusicBeatState
 			}
 		}
 
+		registerTopButton("FILE", null);
+		registerTopButton("EDIT", null);
+
 		Conductor.songPosition = lastPos;
 
 		FlxG.camera.follow(strum, null, 1);
-		FlxG.camera.targetOffset.x = 400;
+		FlxG.camera.targetOffset.x = 300;
 
 		super.create();
 	}
@@ -225,11 +249,17 @@ class ChartEditorState extends MusicBeatState
 		lastPos = Conductor.songPosition;
 
 		if (songControl || sectionControl)
-			FlxG.sound.music.pause();
-		else if (BindKey.getKey(TOGGLE_SONG, JUST_PRESSED))
 		{
 			vocals.time = FlxG.sound.music.time = Conductor.songPosition;
 
+			if (FlxG.sound.music.playing)
+			{
+				FlxG.sound.music.pause();
+				vocals.pause();
+			}
+		}
+		else if (BindKey.getKey(TOGGLE_SONG, JUST_PRESSED))
+		{
 			if (FlxG.sound.music.playing)
 			{
 				FlxG.sound.music.pause();
@@ -264,81 +294,123 @@ class ChartEditorState extends MusicBeatState
 		super.update(elapsed);
 	}
 
+	public function registerTopButton(text:String, action:Void->Void)
+	{
+		var button:TopBarText = new TopBarText(text, action);
+		button.ID = topBarList.length;
+		if (topBarList.length > 0)
+			button.changePosition(topBarList[button.ID - 1].overlapBox.x + topBarList[button.ID - 1].overlapBox.width + 10, 0);
+		else
+			button.changePosition(2, 0);
+		button.camera = hudCamera;
+		button.borderStyle = NONE;
+		add(button);
+
+		topBarList.push(button);
+	}
+
 	private function mouseMovementCheck():Bool
 	{
-		if (FlxG.mouse.justMoved)
+		mouseFocusState = WORLD;
+
+		if (FlxG.mouse.screenY < topBar.height)
+			mouseFocusState = UI;
+
+		switch (mouseFocusState)
 		{
-			for (i in 0...strumLines.length)
-			{
-				var strum = strumLines[i];
-
-				if (FlxG.mouse.overlaps(strum, mainCamera))
+			case UI:
 				{
-					noteSelector.setGraphicSize(CELL_SIZE, CELL_SIZE);
-
-					noteSelector.centerOffsets();
-					noteSelector.updateHitbox();
-
-					var cellPos:Float = 0;
-
-					var k:Int = 0;
-					for (j in 0...4)
+					for (button in topBarList)
 					{
-						if (FlxG.mouse.x > strum.attributes['box$j'])
-							k = j;
+						if (FlxG.mouse.screenX >= button.x && FlxG.mouse.screenX <= button.x + button.width)
+						{
+							button.overlapBox.visible = true;
+
+							if (FlxG.mouse.justPressed && button.action != null)
+								button.action();
+						}
+						else
+							button.overlapBox.visible = false;
+					}
+				}
+			case WORLD:
+				{
+					if (FlxG.mouse.justMoved)
+					{
+						for (i in 0...strumLines.length)
+						{
+							var strum = strumLines[i];
+
+							if (FlxG.mouse.overlaps(strum, mainCamera))
+							{
+								noteSelector.setGraphicSize(CELL_SIZE, CELL_SIZE);
+
+								noteSelector.centerOffsets();
+								noteSelector.updateHitbox();
+
+								var cellPos:Float = 0;
+
+								var k:Int = 0;
+								for (j in 0...4)
+								{
+									if (FlxG.mouse.x > strum.attributes['box$j'])
+										k = j;
+								}
+
+								cellPos = strum.attributes['box$k'];
+								noteSelector.animation.play(noteAnimations[k]);
+
+								noteSelector.setPosition(cellPos, Math.floor(FlxG.mouse.y / CELL_SIZE) * CELL_SIZE);
+
+								noteSelector.attributes.set('noteDir', k);
+								noteSelector.attributes.set('strumLine', i);
+							}
+						}
 					}
 
-					cellPos = strum.attributes['box$k'];
-					noteSelector.animation.play(noteAnimations[k]);
-
-					noteSelector.setPosition(cellPos, Math.floor(FlxG.mouse.y / CELL_SIZE) * CELL_SIZE);
-
-					noteSelector.attributes.set('noteDir', k);
-					noteSelector.attributes.set('strumLine', i);
-				}
-			}
-		}
-
-		if (FlxG.mouse.justPressed)
-		{
-			if (FlxG.mouse.overlaps(strumLines[noteSelector.attributes.get('strumLine')], mainCamera))
-			{
-				if (FlxG.keys.pressed.CONTROL && FlxG.mouse.overlaps(renderedNotes))
-				{
-					renderedNotes.forEach(function(note:ChartNote)
+					if (FlxG.mouse.justPressed)
 					{
-						if (note.isOnScreen() && FlxG.mouse.overlaps(note, mainCamera))
+						if (FlxG.mouse.overlaps(strumLines[noteSelector.attributes.get('strumLine')], mainCamera))
 						{
-							/*if (note.attachedNote != null)
+							if (FlxG.keys.pressed.CONTROL && FlxG.mouse.overlaps(renderedNotes))
+							{
+								renderedNotes.forEach(function(note:ChartNote)
 								{
-									Song.currentSong.sectionList
-							}*/
-							trace('removed a note, ${note.ID}');
+									if (note.isOnScreen() && FlxG.mouse.overlaps(note, mainCamera))
+									{
+										/*if (note.attachedNote != null)
+											{
+												Song.currentSong.sectionList
+										}*/
+										trace('removed a note, ${note.ID}');
+									}
+								});
+							}
+							else
+							{
+								var chartNote:ChartNote = new ChartNote(new Note(transformEitherPosition(noteSelector.y),
+									noteSelector.attributes.get('noteDir'), noteSelector.attributes.get('strumLine'), 0));
+
+								var note:Note = chartNote.attachedNote;
+								Song.currentSong.sectionList[Math.floor((note.strumTime / Conductor.stepCrochet) / 16)].notes.push({
+									strumTime: note.strumTime,
+									direction: note.direction,
+									sustain: 0,
+									mustPress: note.mustPress,
+									noteAnim: singAnimations[note.direction],
+									noteType: ""
+								});
+
+								chartNote.setGraphicSize(CELL_SIZE, CELL_SIZE);
+								chartNote.updateHitbox();
+								chartNote.x = strumLines[note.mustPress ? 1 : 0].x + (CELL_SIZE * note.direction);
+								chartNote.y = FlxMath.remapToRange(note.strumTime, 0, FlxG.sound.music.length, strumLines[0].y,
+									strumLines[0].y + strumLines[0].height);
+								renderedNotes.add(chartNote);
+							}
 						}
-					});
+					}
 				}
-				else
-				{
-					var chartNote:ChartNote = new ChartNote(new Note(transformEitherPosition(noteSelector.y), noteSelector.attributes.get('noteDir'),
-						noteSelector.attributes.get('strumLine'), 0));
-
-					var note:Note = chartNote.attachedNote;
-					Song.currentSong.sectionList[Math.floor((note.strumTime / Conductor.stepCrochet) / 16)].notes.push({
-						strumTime: note.strumTime,
-						direction: note.direction,
-						sustain: 0,
-						mustPress: note.mustPress,
-						noteAnim: singAnimations[note.direction],
-						noteType: ""
-					});
-
-					chartNote.setGraphicSize(CELL_SIZE, CELL_SIZE);
-					chartNote.updateHitbox();
-					chartNote.x = strumLines[note.mustPress ? 1 : 0].x + (CELL_SIZE * note.direction);
-					chartNote.y = FlxMath.remapToRange(note.strumTime, 0, FlxG.sound.music.length, strumLines[0].y, strumLines[0].y + strumLines[0].height);
-					renderedNotes.add(chartNote);
-				}
-			}
 		}
 
 		return false;
@@ -402,6 +474,52 @@ class ChartEditorState extends MusicBeatState
 		current = null;
 
 		super.destroy();
+	}
+}
+
+class TopBarText extends EditorText
+{
+	public var overlapBox:FlxSprite;
+	public var action:Void->Void;
+
+	override public function new(text:String, action:Void->Void):Void
+	{
+		overlapBox = new FlxSprite().makeGraphic(32, 24, FlxColor.WHITE);
+		overlapBox.alpha = 0.35;
+
+		super(0, 0, 0, text, 22);
+
+		overlapBox.setGraphicSize(Std.int(Math.max(64, this.width)), 24);
+		overlapBox.updateHitbox();
+		overlapBox.centerOverlay(this, XY);
+	}
+
+	public function changePosition(x:Float, y:Float)
+	{
+		this.overlapBox.setPosition(x, y);
+
+		overlapBox.setGraphicSize(Std.int(Math.max(64, this.width)), 24);
+		overlapBox.updateHitbox();
+		overlapBox.centerOverlay(this, XY);
+	}
+
+	override public function draw():Void
+	{
+		if (overlapBox.exists && overlapBox.visible)
+			overlapBox.draw();
+		super.draw();
+	}
+}
+
+class StrumSectionSprite extends FlxSprite
+{
+	public var measure(default, set):Int = 4;
+
+	function set_measure(Value:Int)
+	{
+		loadGraphic(ChartEditorState.current.gridTemplates[Value - 1]);
+
+		return (this.measure = Value);
 	}
 }
 
@@ -529,4 +647,10 @@ enum abstract MouseState(Int)
 	var DRAGGING:MouseState = 1;
 	var IN_DRAG:MouseState = 2;
 	var FROM_UI:MouseState = 3;
+}
+
+enum abstract MouseFocusState(Int)
+{
+	var WORLD:MouseFocusState = 0x00;
+	var UI:MouseFocusState = 0x01;
 }
