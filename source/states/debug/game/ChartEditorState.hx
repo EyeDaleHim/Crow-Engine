@@ -17,11 +17,19 @@ import flixel.sound.FlxSound;
 import flixel.input.keyboard.FlxKey;
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.ui.FlxBaseMultiInput;
+import backend.graphic.CacheManager;
 import openfl.display.BitmapData;
+import openfl.events.Event;
+import openfl.events.IOErrorEvent;
+import openfl.net.FileReference;
 import music.Song;
 import objects.notes.Note;
-import backend.graphic.CacheManager;
+#if sys
 import sys.FileSystem;
+#end
+
+using StringTools;
 
 class ChartEditorState extends MusicBeatState
 {
@@ -31,7 +39,18 @@ class ChartEditorState extends MusicBeatState
 	public static final singAnimations:Array<String> = ['noteLEFT', 'noteDOWN', 'noteUP', 'noteRIGHT'];
 
 	public var mouseState:MouseState = NORMAL;
-	public var mouseFocusState:MouseFocusState = WORLD;
+	public var mouseFocusState(default, set):MouseFocusState = WORLD;
+
+	function set_mouseFocusState(state:MouseFocusState):MouseFocusState
+	{
+		if (state == WORLD)
+		{
+			for (button in topBarList)
+				button.overlapBox.visible = false;
+		}
+
+		return (mouseFocusState = state);
+	}
 
 	public static var current:ChartEditorState;
 
@@ -70,9 +89,14 @@ class ChartEditorState extends MusicBeatState
 
 		CacheManager.freeMemory(BITMAP, true);
 
-		mainCamera = new FlxCamera();
+		_file = new FileReference();
+		_file.addEventListener(Event.COMPLETE, onSaveComplete);
+		_file.addEventListener(Event.CANCEL, onSaveCancel);
+		_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 
+		mainCamera = new FlxCamera();
 		hudCamera = new FlxCamera();
+
 		hudCamera.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(mainCamera);
@@ -218,6 +242,10 @@ class ChartEditorState extends MusicBeatState
 
 		registerTopButton("FILE", null);
 		registerTopButton("EDIT", null);
+		registerTopButton("CHART", null);
+		registerTopButton("AUDIO", null);
+		registerTopButton("TEST", null);
+		registerTopButton("EXIT", null);
 
 		Conductor.songPosition = lastPos;
 
@@ -242,6 +270,7 @@ class ChartEditorState extends MusicBeatState
 		var songControl:Bool = songMovementCheck();
 		var sectionControl:Bool = sectionMovementCheck();
 		var mouseControl:Bool = mouseMovementCheck();
+		var undoRedoControl:Bool = undoRedoControl();
 
 		if (Conductor.songPosition < 0 || Conductor.songPosition >= FlxG.sound.music.length)
 			Conductor.songPosition = 0;
@@ -302,19 +331,59 @@ class ChartEditorState extends MusicBeatState
 			button.changePosition(topBarList[button.ID - 1].overlapBox.x + topBarList[button.ID - 1].overlapBox.width + 10, 0);
 		else
 			button.changePosition(2, 0);
-		button.camera = hudCamera;
+		button.camera = button.overlapBox.camera = hudCamera;
 		button.borderStyle = NONE;
 		add(button);
 
 		topBarList.push(button);
 	}
 
+	public function addNote():Void
+	{
+		var chartNote:ChartNote = new ChartNote(new Note(transformEitherPosition(noteSelector.y), noteSelector.attributes.get('noteDir'),
+			noteSelector.attributes.get('strumLine'), 0));
+
+		var note:Note = chartNote.attachedNote;
+		Song.currentSong.sectionList[Math.floor((note.strumTime / Conductor.stepCrochet) / 16)].notes.push({
+			strumTime: note.strumTime,
+			direction: note.direction,
+			sustain: 0,
+			mustPress: note.mustPress,
+			noteAnim: singAnimations[note.direction],
+			noteType: ""
+		});
+
+		chartNote.setGraphicSize(CELL_SIZE, CELL_SIZE);
+		chartNote.updateHitbox();
+		chartNote.x = strumLines[note.mustPress ? 1 : 0].x + (CELL_SIZE * note.direction);
+		chartNote.y = FlxMath.remapToRange(note.strumTime, 0, FlxG.sound.music.length, strumLines[0].y, strumLines[0].y + strumLines[0].height);
+		renderedNotes.add(chartNote);
+
+		addAction({type: "add_note", data: chartNote.ID});
+	}
+
+	public function deleteNote():Void
+	{
+		renderedNotes.forEach(function(note:ChartNote)
+		{
+			if (note.isOnScreen() && FlxG.mouse.overlaps(note, mainCamera))
+			{
+				trace('removed a note, ${note.ID}');
+			}
+		});
+
+		addAction({type: "del_note", data: null});
+	}
+
 	private function mouseMovementCheck():Bool
 	{
-		mouseFocusState = WORLD;
+		if (FlxG.mouse.justMoved)
+		{
+			mouseFocusState = WORLD;
 
-		if (FlxG.mouse.screenY < topBar.height)
-			mouseFocusState = UI;
+			if (FlxG.mouse.screenY < topBar.height)
+				mouseFocusState = UI;
+		}
 
 		switch (mouseFocusState)
 		{
@@ -373,41 +442,9 @@ class ChartEditorState extends MusicBeatState
 						if (FlxG.mouse.overlaps(strumLines[noteSelector.attributes.get('strumLine')], mainCamera))
 						{
 							if (FlxG.keys.pressed.CONTROL && FlxG.mouse.overlaps(renderedNotes))
-							{
-								renderedNotes.forEach(function(note:ChartNote)
-								{
-									if (note.isOnScreen() && FlxG.mouse.overlaps(note, mainCamera))
-									{
-										/*if (note.attachedNote != null)
-											{
-												Song.currentSong.sectionList
-										}*/
-										trace('removed a note, ${note.ID}');
-									}
-								});
-							}
+								deleteNote();
 							else
-							{
-								var chartNote:ChartNote = new ChartNote(new Note(transformEitherPosition(noteSelector.y),
-									noteSelector.attributes.get('noteDir'), noteSelector.attributes.get('strumLine'), 0));
-
-								var note:Note = chartNote.attachedNote;
-								Song.currentSong.sectionList[Math.floor((note.strumTime / Conductor.stepCrochet) / 16)].notes.push({
-									strumTime: note.strumTime,
-									direction: note.direction,
-									sustain: 0,
-									mustPress: note.mustPress,
-									noteAnim: singAnimations[note.direction],
-									noteType: ""
-								});
-
-								chartNote.setGraphicSize(CELL_SIZE, CELL_SIZE);
-								chartNote.updateHitbox();
-								chartNote.x = strumLines[note.mustPress ? 1 : 0].x + (CELL_SIZE * note.direction);
-								chartNote.y = FlxMath.remapToRange(note.strumTime, 0, FlxG.sound.music.length, strumLines[0].y,
-									strumLines[0].y + strumLines[0].height);
-								renderedNotes.add(chartNote);
-							}
+								addNote();
 						}
 					}
 				}
@@ -452,10 +489,70 @@ class ChartEditorState extends MusicBeatState
 		return (pressedLeft || pressedRight);
 	}
 
+	private var _actionIndex:Int = 0;
+	private var _actionList:Array<ActionType> = [];
+
+	private function undoRedoControl():Bool
+	{
+		if (_actionList.length == 0)
+			return false;
+
+		var undoCheck:Bool = FlxG.keys.justPressed.Z;
+		var redoCheck:Bool = FlxG.keys.justPressed.Y;
+
+		if (FlxG.keys.pressed.CONTROL && (undoCheck || redoCheck))
+		{
+			if (undoCheck)
+			{
+				if (_actionIndex != 0)
+					_actionIndex--;
+				else
+					return false;
+
+				switch (_actionList[_actionIndex].type)
+				{
+					case _:
+						_actionIndex++;
+						trace('couldn\'t find type: ${_actionList[_actionIndex].type}');
+				}
+			}
+			else if (redoCheck)
+			{
+				if (_actionIndex != _actionList.length - 1)
+					_actionIndex++;
+				else
+					return false;
+				switch (_actionList[_actionIndex].type)
+				{
+					case _:
+						_actionIndex--;
+						trace('couldn\'t find type: ${_actionList[_actionIndex].type}');
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private function addAction(action:ActionType):Void
+	{
+		if (action != null)
+		{
+			if (_actionIndex != _actionList.length - 1)
+				_actionList.splice(_actionIndex, _actionList.length - 1);
+			else
+				_actionList.push(action);
+
+			_actionIndex = _actionList.length - 1;
+		}
+	}
+
 	private function transformEitherPosition(convertToY:Bool = false, value:Float):Float
 	{
 		if (convertToY)
-			return FlxMath.remapToRange(value, 0, FlxG.sound.music.length, strumLines[0].y, strumLines[0].y + strumLines[0].height);
+			return FlxMath.remapToRange(value, 0, FlxG.sound.music.length, 0, CELL_SIZE * (FlxG.sound.music.length / Conductor.stepCrochet));
 
 		return FlxMath.remapToRange(value, strumLines[0].y, strumLines[0].y + strumLines[0].height, 0, FlxG.sound.music.length);
 	}
@@ -475,6 +572,41 @@ class ChartEditorState extends MusicBeatState
 
 		super.destroy();
 	}
+
+	private var _file:FileReference;
+
+	private function onSaveComplete(_):Void
+	{
+		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+		_file.removeEventListener(Event.CANCEL, onSaveCancel);
+		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+
+		trace("Save IO Successful");
+	}
+
+	/**
+	 * Called when the save file dialog is cancelled.
+	 */
+	private function onSaveCancel(_):Void
+	{
+		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+		_file.removeEventListener(Event.CANCEL, onSaveCancel);
+		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+
+		trace('Save cancelled');
+	}
+
+	/**
+	 * Called if there is an error while saving the gameplay recording.
+	 */
+	private function onSaveError(_:IOErrorEvent):Void
+	{
+		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
+		_file.removeEventListener(Event.CANCEL, onSaveCancel);
+		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+
+		trace('Save IO Error: ${_.text}');
+	}
 }
 
 class TopBarText extends EditorText
@@ -491,7 +623,7 @@ class TopBarText extends EditorText
 
 		overlapBox.setGraphicSize(Std.int(Math.max(64, this.width)), 24);
 		overlapBox.updateHitbox();
-		overlapBox.centerOverlay(this, XY);
+		this.centerOverlay(overlapBox, XY);
 	}
 
 	public function changePosition(x:Float, y:Float)
@@ -500,7 +632,7 @@ class TopBarText extends EditorText
 
 		overlapBox.setGraphicSize(Std.int(Math.max(64, this.width)), 24);
 		overlapBox.updateHitbox();
-		overlapBox.centerOverlay(this, XY);
+		this.centerOverlay(overlapBox, XY);
 	}
 
 	override public function draw():Void
@@ -509,6 +641,14 @@ class TopBarText extends EditorText
 			overlapBox.draw();
 		super.draw();
 	}
+}
+
+class DropdownList extends FlxTypedSpriteGroup<DropdownButton>
+{
+}
+
+class DropdownButton extends FlxText
+{
 }
 
 class StrumSectionSprite extends FlxSprite
@@ -646,11 +786,17 @@ enum abstract MouseState(Int)
 	var NORMAL:MouseState = 0;
 	var DRAGGING:MouseState = 1;
 	var IN_DRAG:MouseState = 2;
-	var FROM_UI:MouseState = 3;
+	var TALKING_TO_UI:MouseState = 3;
 }
 
 enum abstract MouseFocusState(Int)
 {
 	var WORLD:MouseFocusState = 0x00;
 	var UI:MouseFocusState = 0x01;
+}
+
+typedef ActionType =
+{
+	var type:String;
+	var data:Dynamic;
 }
