@@ -92,7 +92,7 @@ class MainMenuState extends MusicBeatState
 		versionText.setPosition(4, FlxG.height - versionText.height - 4);
 		add(versionText);
 
-		modText = new FlxText(0, 0, 0, ModManager.mods.length + " Mod(s) Active");
+		modText = new FlxText(0, 0, 0, ModManager.mods.length == 1 ? "1 Mod Active" : ModManager.mods.length + "Mods Active");
 		modText.scrollFactor.set();
 		modText.antialiasing = Settings.getPref('antialiasing', true);
 		modText.setFormat(Paths.font('vcr.ttf'), 16, 0xFFFFFFFF, RIGHT, OUTLINE, 0xFF000000);
