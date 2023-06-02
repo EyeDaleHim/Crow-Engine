@@ -34,6 +34,7 @@ jobs:
         name: Nightly Builds
         prerelease: false
         files: ./artifacts/*
+        draft: false
         body: |
           This is an automatic nightly release of Crow Engine.
           Note that Nightly Builds are unstable, and you may experience bugs, crashes, unintended behavior, or unfinished products.
