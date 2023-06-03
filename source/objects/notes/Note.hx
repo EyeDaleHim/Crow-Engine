@@ -206,6 +206,8 @@ class NoteSprite extends FlxSprite
 
 				sustainEnd.scale = modifyScale(sustainEnd.scale, Note._noteFile.scaledEnd);
 				sustain.scale = modifyScale(sustain.scale, Note._noteFile.scaledHold);
+
+				sustain.scale.y += (height / 2) / sustain.frameHeight;
 			}
 
 			scale = modifyScale(scale, Note._noteFile.scaledArrow);
@@ -320,25 +322,4 @@ class NoteSprite extends FlxSprite
 		return rect;
 	}
 }
-/*class SustainNote extends NoteSprite
-	{
-	public static var __pool:FlxPool<SustainNote>;
 
-	override public function new(?note:Note = null)
-	{
-		super(note);
-	}
-
-	override public function draw():Void
-	{
-		super.draw();
-
-		if (note == null)
-		{
-			for (i in 0...Std.int(note.sustainLength))
-			{
-
-			}
-		}
-	}
-}*/

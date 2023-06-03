@@ -913,24 +913,13 @@ class PlayState extends MusicBeatState
 			NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
 			NoteSprite.__pool.preAllocate(32);
 
-			/*SustainNote.__pool = new FlxPool<SustainNote>(SustainNote);
-				SustainNote.__pool.preAllocate(16); */
-
 			for (sections in Song.currentSong.sectionList)
 			{
 				for (note in sections.notes)
 				{
 					var sustainAmounts:Float = Math.max(0, note.sustain / Conductor.stepCrochet);
 
-					if (sustainAmounts > 0)
-						sustainAmounts += 1;
-
-					var newNote:Note = null;
-
-					if (note.sustain > 0)
-						newNote = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts, note.noteAnim);
-					else
-						newNote = new Note(note.strumTime, note.direction, note.mustPress, 0, note.noteAnim);
+					var newNote:Note = new Note(note.strumTime, note.direction, note.mustPress, sustainAmounts, note.noteAnim);
 
 					var oldNote:Note = newNote;
 					if (actualNotes.length > 0)
