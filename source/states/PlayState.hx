@@ -40,6 +40,7 @@ import objects.stageParts.TankmenUnit;
 import objects.character.Character;
 import objects.notes.Note;
 import objects.notes.Note.NoteSprite;
+import objects.notes.NoteSplash;
 import objects.notes.StrumNote;
 import backend.graphic.CacheManager;
 import weeks.ScoreContainer;
@@ -1524,7 +1525,10 @@ class PlayState extends MusicBeatState
 				{
 					case 'sick':
 						{
-							// insert notesplash
+							var splash:NoteSplash = new NoteSplash(note.noteSprite.x, note.noteSprite.y, note.direction);
+							add(splash);
+
+							addToHUD(splash);
 						}
 				}
 
