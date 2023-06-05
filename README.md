@@ -78,6 +78,7 @@ The following have contributed to Crow Engine.
     - There are many tutorials online and the installation should not be too hard.
 3. Download and install [Git SCM](https://git-scm.com/download/linux). Do not change any installation options, just leave them as is.
 4. Navigate to and open your Crow Engine folder. Once in the folder, double-click the `update.sh` file to open it and install the necessary libraries to compile the engine.
+    - Some Linux distros don't let you run shell scripts by default. If yours doesn't, run `chmod +x [CROW ENGINE FOLDER PATH]/update.sh` in a new terminal to allow the shell script to install the libraries.
 5. After the libraries have been installed, the terminal should close. Open a new terminal and set the directory to your Crow Engine folder. This can be done by entering `cd [CROW ENGINE FOLDER PATH]`.
 6. Once you have set the directory to your Crow Engine folder, type `lime build linux` and hit enter. This will start building the game. This will also take a bit of time if you are compiling for the first time.
 7. Navigate to `export/release/linux/bin` to find and open the executable.
