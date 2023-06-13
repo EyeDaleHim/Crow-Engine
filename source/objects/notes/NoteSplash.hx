@@ -2,39 +2,87 @@ package objects.notes;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
+import flixel.util.FlxPool;
 import music.Song;
+import objects.notes.Note;
+import objects.notes.NoteFile;
+import openfl.Assets;
+import tjson.TJSON as Json;
 
+@:allow(states.PlayState)
 class NoteSplash extends FlxSprite
 {
-	public function new(x:Float, y:Float, direction:Int = 0)
+	private static var _splashFile:NoteSplashFile;
+    private static var __pool:FlxPool<NoteSplash>;
+
+	public var direction:Int = 0;
+
+    private var animOffsets:Map<String, FlxPoint> = [];
+
+	public function new(?x:Float = 0, ?y:Float = 0)
 	{
+		if (NoteSplash._splashFile == null)
+		{
+			var path = Paths.imagePath('game/ui/splashSkins/${Song.metaData.noteSkin}/noteSplashes').replace('png', 'json');
+
+			if (!Tools.fileExists(path))
+			{
+				path = path.replace(Note.currentSkin, 'NOTE_assets');
+				FlxG.log.error('Couldn\'t find ${Note.currentSkin} in "game/ui/splashSkins/${Song.metaData.noteSkin}/noteSplashes"!');
+			}
+
+			NoteSplash._splashFile = Json.parse(Assets.getText(path));
+		}
+
 		super(x, y);
 
-        frames = Paths.getSparrowAtlas('game/ui/splashSkins/${Song.metaData.noteSkin}/noteSplashes');
+		frames = Paths.getSparrowAtlas('game/ui/splashSkins/${Song.metaData.noteSkin}/noteSplashes');
 
-        animation.addByPrefix('splash-0-1', 'note impact 1 purple', 24, false);
-        animation.addByPrefix('splash-0-2', 'note impact 2 purple', 24, false);
-        animation.addByPrefix('splash-1-1', 'note impact 1 blue', 24, false);
-        animation.addByPrefix('splash-1-2', 'note impact 2 blue', 24, false);
-        animation.addByPrefix('splash-2-1', 'note impact 1 green', 24, false);
-        animation.addByPrefix('splash-2-2', 'note impact 2 green', 24, false);
-        animation.addByPrefix('splash-3-1', 'note impact 1 red', 24, false);
-        animation.addByPrefix('splash-3-2', 'note impact 2 red', 24, false);
+		for (animData in NoteSplash._splashFile.animationData)
+		{
+			if (animData.indices != null && animData.indices.length > 0)
+				animation.addByIndices(animData.name, animData.prefix, animData.indices, "", animData.fps, animData.looped);
+			else
+				animation.addByPrefix(animData.name, animData.prefix, animData.fps, animData.looped);
 
-        animation.play('splash-' + direction + '-' + FlxG.random.int(1, 2));
-        animation.curAnim.frameRate += FlxG.random.int(-2, 2);
-        updateHitbox();
+			if (animData.offset.x != 0 || animData.offset.y != 0)
+				animOffsets.set(animData.name, FlxPoint.get(animData.offset.x, animData.offset.y));
+        }
 
-        offset.set(width * 0.3, height * 0.3);
+		alpha = 0.6;
 
-        alpha = 0.6;
+        exists = false;
+        moves = false;
 	}
 
-    override public function update(elapsed:Float)
-    {
-        if (animation.curAnim.finished)
-            kill();
+	public function playSplash(?x:Float = 0, ?y:Float = 0, ?direction:Int = 0):Void
+	{
+        setPosition(x, y);
+        this.direction = direction;
 
-        super.update(elapsed);
-    }
+		var frameVariation = _splashFile.frameRateVariation ?? {min: 0, max: 0};
+        var animName:String = FlxG.random.getObject(_splashFile.directionNames[direction]); 
+
+		animation.play(animName);
+        if (animation?.curAnim != null)
+		    animation.curAnim.frameRate += FlxG.random.int(frameVariation.min, frameVariation.max);
+
+		var offsetAnim:FlxPoint = FlxPoint.get();
+		if (animOffsets.exists(animName))
+			offsetAnim.set(animOffsets[animName].x, animOffsets[animName].y);
+
+        updateHitbox();
+        offset.set(offsetAnim.x, offsetAnim.y);
+
+        trace(offset);
+	}
+
+	override public function update(elapsed:Float)
+	{
+        if (animation?.curAnim?.finished)
+			kill();
+
+		super.update(elapsed);
+	}
 }

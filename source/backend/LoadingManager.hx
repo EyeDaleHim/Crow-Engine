@@ -151,9 +151,6 @@ class LoadingManager extends MusicBeatState
 		// initialize note
 		new Note();
 
-		NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
-		NoteSprite.__pool.preAllocate(32);
-
 		for (sections in Song.currentSong.sectionList)
 		{
 			for (note in sections.notes)

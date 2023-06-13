@@ -29,10 +29,15 @@ typedef StrumNoteFile =
 	@:optional var forcedAntialias:Null<Bool>;
 }
 
-// in case i ever need to combine the files
-
-typedef FullNoteFile =
+typedef NoteSplashFile =
 {
-	var noteFile:NoteFile;
-	var strumFile:StrumNoteFile;
+	var directionNames:Array<Array<String>>;
+
+	var frameRateVariation:{min:Int, max:Int};
+
+	var animationData:Array<Animation>;
+	var atlasType:String;
+	var scale:{x:Float, y:Float};
+
+	@:optional var forcedAntialias:Null<Bool>;
 }

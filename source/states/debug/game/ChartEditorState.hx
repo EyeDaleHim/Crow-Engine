@@ -395,8 +395,18 @@ class ChartEditorState extends MusicBeatState
 						{
 							button.overlapBox.visible = true;
 
-							if (FlxG.mouse.justPressed && button.action != null)
-								button.action();
+							if (FlxG.mouse.justPressed)
+							{
+								if (button.action != null)
+									button.action();
+
+								if (FlxG.sound.music.playing)
+								{
+									FlxG.sound.music.pause();
+									vocals.pause();
+								}
+								trace('fuck ${button.text}');
+							}
 						}
 						else
 							button.overlapBox.visible = false;

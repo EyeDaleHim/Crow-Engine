@@ -185,6 +185,7 @@ class PlayState extends MusicBeatState
 	// notes
 	public var renderedNotes:FlxTypedGroup<NoteSprite>;
 	public var pendingNotes:CircularBuffer<Note>;
+	public var renderedSplashes:FlxTypedGroup<NoteSplash>;
 
 	// strums
 	public var globalStrums:FlxTypedGroup<StrumNote>;
@@ -704,6 +705,9 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
+		@:privateAccess
+		FlxG.watch.addQuick("pools", [NoteSprite.__pool._count, NoteSplash.__pool._count]);
+
 		stageData.update(elapsed);
 		if (cutsceneHandler != null)
 			cutsceneHandler.update(elapsed);
@@ -890,6 +894,9 @@ class PlayState extends MusicBeatState
 		renderedNotes = new FlxTypedGroup<NoteSprite>();
 		addToHUD(renderedNotes);
 
+		renderedSplashes = new FlxTypedGroup<NoteSplash>();
+		addToHUD(renderedSplashes);
+
 		if (Song.currentSong == null)
 			return;
 
@@ -904,15 +911,18 @@ class PlayState extends MusicBeatState
 
 		songSpeed = FlxMath.roundDecimal(Song.currentSong.speed, 2);
 
+		NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
+		NoteSprite.__pool.preAllocate(32);
+
+		NoteSplash.__pool = new FlxPool<NoteSplash>(NoteSplash);
+		NoteSplash.__pool.preAllocate(8);
+
 		if (loadedNotes == null)
 		{
 			// initialize note
 			var actualNotes:Array<Note> = [];
 
 			new Note();
-
-			NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
-			NoteSprite.__pool.preAllocate(32);
 
 			for (sections in Song.currentSong.sectionList)
 			{
@@ -1525,10 +1535,9 @@ class PlayState extends MusicBeatState
 				{
 					case 'sick':
 						{
-							var splash:NoteSplash = new NoteSplash(note.noteSprite.x, note.noteSprite.y, note.direction);
-							add(splash);
-
-							addToHUD(splash);
+							var splash:NoteSplash = NoteSplash.__pool.get();
+							splash.playSplash(note.noteSprite.x, note.noteSprite.y, note.direction);
+							renderedSplashes.add(splash);
 						}
 				}
 
@@ -1787,8 +1796,10 @@ class PlayState extends MusicBeatState
 
 		Note._noteFile = null;
 		StrumNote._strumFile = null;
+		NoteSplash._splashFile = null;
 
 		NoteSprite.__pool = null;
+		NoteSplash.__pool = null;
 
 		super.destroy();
 	}
