@@ -221,6 +221,9 @@ class NoteSprite extends FlxSprite
 
 		if (note?.isSustainNote)
 		{
+			sustain.clipRect = null;
+			sustainEnd.clipRect = null;
+
 			sustain.visible = true;
 			sustainEnd.visible = true;
 
