@@ -3,10 +3,10 @@ package objects.notes;
 import music.Song;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.graphics.frames.FlxFramesCollection;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.util.FlxPool;
 import backend.NoteStorageFunction;
 import objects.notes.NoteFile;
 import openfl.Assets;
@@ -95,7 +95,7 @@ class Note
 @:allow(states.PlayState)
 class NoteSprite extends FlxSprite
 {
-	public static var __pool:FlxPool<NoteSprite>;
+	public static var __pool:FlxTypedGroup<NoteSprite>;
 
 	public var note:Note;
 
@@ -217,8 +217,13 @@ class NoteSprite extends FlxSprite
 
 		antialiasing = Note._noteFile.forcedAntialias ?? true;
 
+		preventDraw = false;
+
 		if (note?.isSustainNote)
 		{
+			sustain.visible = true;
+			sustainEnd.visible = true;
+
 			note.requiredSustainHit = false;
 
 			sustain.updateHitbox();

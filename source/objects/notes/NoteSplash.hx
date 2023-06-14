@@ -2,8 +2,8 @@ package objects.notes;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
-import flixel.util.FlxPool;
 import music.Song;
 import objects.notes.Note;
 import objects.notes.NoteFile;
@@ -14,11 +14,11 @@ import tjson.TJSON as Json;
 class NoteSplash extends FlxSprite
 {
 	private static var _splashFile:NoteSplashFile;
-    private static var __pool:FlxPool<NoteSplash>;
+	private static var __pool:FlxTypedGroup<NoteSplash>;
 
 	public var direction:Int = 0;
 
-    private var animOffsets:Map<String, FlxPoint> = [];
+	private var animOffsets:Map<String, FlxPoint> = [];
 
 	public function new(?x:Float = 0, ?y:Float = 0)
 	{
@@ -48,41 +48,39 @@ class NoteSplash extends FlxSprite
 
 			if (animData.offset.x != 0 || animData.offset.y != 0)
 				animOffsets.set(animData.name, FlxPoint.get(animData.offset.x, animData.offset.y));
-        }
+		}
 
 		alpha = 0.6;
 
-        exists = false;
-        moves = false;
+		exists = false;
+		moves = false;
 	}
 
 	public function playSplash(?x:Float = 0, ?y:Float = 0, ?direction:Int = 0):Void
 	{
-        setPosition(x, y);
-        this.direction = direction;
+		setPosition(x, y);
+		this.direction = direction;
 
 		var frameVariation = _splashFile.frameRateVariation ?? {min: 0, max: 0};
-        var animName:String = FlxG.random.getObject(_splashFile.directionNames[direction]); 
+		var animName:String = FlxG.random.getObject(_splashFile.directionNames[direction]);
 
 		animation.play(animName);
-        if (animation?.curAnim != null)
-		    animation.curAnim.frameRate += FlxG.random.int(frameVariation.min, frameVariation.max);
+		if (animation?.curAnim != null)
+			animation.curAnim.frameRate += FlxG.random.int(frameVariation.min, frameVariation.max);
 
 		var offsetAnim:FlxPoint = FlxPoint.get();
 		if (animOffsets.exists(animName))
 			offsetAnim.set(animOffsets[animName].x, animOffsets[animName].y);
 
-        updateHitbox();
-        offset.set(offsetAnim.x, offsetAnim.y);
-
-        trace(offset);
+		updateHitbox();
+		offset.set(offsetAnim.x, offsetAnim.y);
 	}
 
 	override public function update(elapsed:Float)
 	{
-        if (animation?.curAnim?.finished)
-			kill();
-
 		super.update(elapsed);
+
+		if (animation?.curAnim?.finished)
+			kill();
 	}
 }

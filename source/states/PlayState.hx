@@ -679,8 +679,9 @@ class PlayState extends MusicBeatState
 				if (note.mustPress)
 					_isolatedNotes[note.direction].push(note);
 
-				var currentNote:NoteSprite = NoteSprite.__pool.get();
-				currentNote.exists = true;
+				var currentNote:NoteSprite = NoteSprite.__pool.recycle(NoteSprite);
+				currentNote.revive();
+				currentNote.preventDraw = false;
 				currentNote.refreshNote(note);
 
 				renderedNotes.add(currentNote);
@@ -704,9 +705,6 @@ class PlayState extends MusicBeatState
 			super.openSubState(new states.debug.game.StageEditSubState());
 
 		super.update(elapsed);
-
-		@:privateAccess
-		FlxG.watch.addQuick("pools", [NoteSprite.__pool._count, NoteSplash.__pool._count]);
 
 		stageData.update(elapsed);
 		if (cutsceneHandler != null)
@@ -911,11 +909,26 @@ class PlayState extends MusicBeatState
 
 		songSpeed = FlxMath.roundDecimal(Song.currentSong.speed, 2);
 
-		NoteSprite.__pool = new FlxPool<NoteSprite>(NoteSprite);
-		NoteSprite.__pool.preAllocate(32);
+		NoteSprite.__pool = new FlxTypedGroup<NoteSprite>();
+		for (i in 0...32)
+		{
+			var poolObj:NoteSprite = new NoteSprite();
+			poolObj.kill();
 
-		NoteSplash.__pool = new FlxPool<NoteSplash>(NoteSplash);
-		NoteSplash.__pool.preAllocate(8);
+			NoteSprite.__pool.add(poolObj);
+		}
+
+		NoteSplash.__pool = new FlxTypedGroup<NoteSplash>();
+		for (i in 0...8)
+		{
+			var poolObj:NoteSplash = new NoteSplash();
+			poolObj.kill();
+
+			NoteSplash.__pool.add(poolObj);
+		}
+
+		// insert(0, NoteSprite.__pool);
+		// insert(0, NoteSplash.__pool);
 
 		if (loadedNotes == null)
 		{
@@ -1535,8 +1548,13 @@ class PlayState extends MusicBeatState
 				{
 					case 'sick':
 						{
-							var splash:NoteSplash = NoteSplash.__pool.get();
+							var splash:NoteSplash = NoteSplash.__pool.recycle(NoteSplash);
+							splash.revive();
 							splash.playSplash(note.noteSprite.x, note.noteSprite.y, note.direction);
+							splash.animation.finishCallback = function(name)
+							{
+								renderedSplashes.remove(splash);
+							}
 							renderedSplashes.add(splash);
 						}
 				}
@@ -1785,7 +1803,7 @@ class PlayState extends MusicBeatState
 				_isolatedNotes[note.direction].splice(_isolatedNotes[note.direction].indexOf(note), 1);
 		}
 
-		note.noteSprite.exists = false;
+		note.noteSprite.kill();
 		renderedNotes.remove(note.noteSprite, true);
 	}
 
