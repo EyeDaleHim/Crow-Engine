@@ -1,3 +1,4 @@
+#if !macro
 import backend.data.Settings;
 import backend.data.Controls;
 import backend.InternalHelper;
@@ -12,3 +13,4 @@ import mods.ModPaths;
 
 using StringTools;
 using utils.Tools;
+#end
