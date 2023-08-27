@@ -1,14 +1,7 @@
 package objects.notes;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.math.FlxPoint;
 import objects.notes.NoteFile;
 import music.Song;
-import openfl.Assets;
-import tjson.TJSON as Json;
-
-using StringTools;
 
 @:allow(states.PlayState)
 class StrumNote extends FlxSprite

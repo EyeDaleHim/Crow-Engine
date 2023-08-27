@@ -1,18 +1,9 @@
 package backend.graphic;
 
-import flixel.FlxG;
 import flash.geom.Rectangle;
 import flixel.graphics.FlxGraphic;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.graphics.frames.FlxAtlasFrames.TexturePackerObject;
 import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
-import flixel.graphics.frames.FlxFramesCollection.FlxFrameCollectionType;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
 import flixel.system.FlxAssets.FlxGraphicAsset;
-import flixel.system.FlxAssets.FlxTexturePackerSource;
-import openfl.Assets;
-import tjson.TJSON as Json;
 import haxe.xml.Access;
 import backend.graphic.CacheManager;
 

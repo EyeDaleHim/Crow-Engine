@@ -1,8 +1,5 @@
 package game;
 
-import tjson.TJSON as Json;
-import openfl.Assets;
-
 class SkinManager
 {
     public static var comboSkin:ComboSkin;

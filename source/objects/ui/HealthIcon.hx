@@ -1,10 +1,7 @@
 package objects.ui;
 
-import flixel.FlxSprite;
 import flixel.animation.FlxAnimation;
 import flixel.graphics.frames.FlxFrame;
-import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
 
 using StringTools;
 

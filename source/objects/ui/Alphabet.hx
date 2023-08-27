@@ -1,11 +1,5 @@
 package objects.ui;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
-import flixel.math.FlxMath;
-import flixel.util.FlxTimer;
 import objects.handlers.IFunkinSprite;
 
 using StringTools;

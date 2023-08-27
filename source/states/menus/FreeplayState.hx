@@ -1,15 +1,6 @@
 package states.menus;
 
 import music.Song;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
-import flixel.util.FlxStringUtil;
-import flixel.util.FlxSort;
 import states.menus.MainMenuState;
 import weeks.ScoreContainer;
 import weeks.WeekHandler;

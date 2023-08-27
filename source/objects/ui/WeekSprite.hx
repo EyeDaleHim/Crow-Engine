@@ -1,7 +1,5 @@
 package objects.ui;
 
-import flixel.FlxSprite;
-import flixel.util.FlxColor;
 import objects.handlers.IFunkinSprite;
 
 class WeekSprite extends FlxSprite implements IFunkinSprite

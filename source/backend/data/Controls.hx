@@ -1,6 +1,5 @@
 package backend.data;
 
-import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
 import backend.data.Settings;
 import haxe.ds.StringMap;

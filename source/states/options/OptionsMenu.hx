@@ -1,27 +1,11 @@
 package states.options;
 
-import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
-import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.input.keyboard.FlxKey;
 import states.options.DescriptionHolder;
 import states.options.categories.CategoryOptions;
 import states.options.categories.GameplayOptions;
 import states.options.categories.GraphicsOptions;
-import objects.ui.Alphabet;
-
-using StringTools;
-using utils.Tools;
 
 // god this code is so horrible
 class OptionsMenu extends MusicBeatState

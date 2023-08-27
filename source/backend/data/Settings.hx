@@ -1,8 +1,5 @@
 package backend.data;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.math.FlxMath;
 import flixel.util.FlxSave;
 
 class Settings

@@ -1,8 +1,6 @@
 package backend.graphic;
 
-import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
-import sys.FileSystem;
 import sys.io.File;
 import flash.media.Sound;
 import openfl.Assets;

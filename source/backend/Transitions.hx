@@ -1,15 +1,7 @@
 package backend;
 
-import flixel.FlxG;
-import flixel.FlxCamera;
-import flixel.FlxSprite;
-import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
-import flixel.util.FlxTimer;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
 import flixel.tweens.FlxEase.EaseFunction;
-import flixel.group.FlxGroup.FlxTypedGroup;
 
 using StringTools;
 

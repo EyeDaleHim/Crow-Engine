@@ -1,17 +1,9 @@
 package game;
 
-import flixel.FlxG;
-import flixel.FlxBasic;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import objects.notes.Note;
 import objects.notes.StrumNote;
 import weeks.SongHandler;
 import states.PlayState;
-import tjson.TJSON as Json;
-import sys.FileSystem;
-import openfl.Assets;
 
 // temporary haxe file to manage modchart, added this in because we're gonna be trying to support multiple modchart systems
 class ModChartManager

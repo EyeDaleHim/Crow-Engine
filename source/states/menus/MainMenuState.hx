@@ -1,14 +1,6 @@
 package states.menus;
 
-import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import flixel.math.FlxMath;
 import mods.ModManager;
 
 class MainMenuState extends MusicBeatState

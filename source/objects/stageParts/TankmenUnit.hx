@@ -1,8 +1,5 @@
 package objects.stageParts;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import objects.Stage.BGSprite;
 import states.PlayState;
 

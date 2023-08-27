@@ -1,13 +1,8 @@
 package backend;
 
 import backend.Transitions;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxPool;
-import flixel.util.FlxSort;
 import sys.thread.FixedThreadPool;
-import sys.FileSystem;
 import states.PlayState;
 import music.Song;
 import objects.Stage;

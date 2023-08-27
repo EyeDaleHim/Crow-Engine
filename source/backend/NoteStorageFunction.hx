@@ -1,9 +1,5 @@
 package backend;
 
-import flixel.FlxG;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import objects.notes.Note;
-
 // Fixed the name for you Dale -LeX
 class NoteStorageFunction
 {

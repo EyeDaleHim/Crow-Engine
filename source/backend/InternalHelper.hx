@@ -1,7 +1,5 @@
 package backend;
 
-import flixel.FlxG;
-
 class InternalHelper
 {
 	public static function playSound(sound:SoundEffects, volume:Float = 1)

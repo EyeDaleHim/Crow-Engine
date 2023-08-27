@@ -1,12 +1,6 @@
 package states.options;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.util.FlxColor;
 
 class DescriptionHolder extends FlxTypedSpriteGroup<FlxSprite>
 {

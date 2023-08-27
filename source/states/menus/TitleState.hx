@@ -1,11 +1,6 @@
 package states.menus;
 
 import backend.graphic.CacheManager;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.util.FlxTimer;
-import objects.ui.Alphabet;
 import openfl.Assets as OpenFlAssets;
 
 class TitleState extends MusicBeatState

@@ -1,8 +1,5 @@
 package music;
 
-import flixel.FlxG;
-import flixel.FlxCamera;
-import flixel.util.FlxSort;
 import states.PlayState;
 import objects.character.Character;
 

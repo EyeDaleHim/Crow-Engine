@@ -1,14 +1,6 @@
 package game.cutscenes;
 
-import flixel.math.FlxPoint;
-import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.sound.FlxSound;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import flixel.util.FlxTimer;
 import backend.graphic.CacheManager;
 import objects.character.CharacterAnimate;
 import states.PlayState;

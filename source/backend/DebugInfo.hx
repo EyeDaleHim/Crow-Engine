@@ -1,6 +1,5 @@
 package backend;
 
-import flixel.FlxG;
 import openfl.system.System;
 import haxe.Timer as HaxeTimer;
 import openfl.events.Event;
@@ -108,7 +107,6 @@ class DebugInfo extends TextField
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 3)
 						{
-							text += Math.round(ExternalCode.cpuClock()) + "MHZ | ";
 							text += Tools.abbreviateNumber(FlxG.stage.context3D.totalGPUMemory, dataSizes) + "\n";
 						}
 						else
@@ -127,7 +125,6 @@ class DebugInfo extends TextField
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 3)
 							{
-								text += "CPU: " + Math.round(ExternalCode.cpuClock()) + "MHZ | ";
 								text += "GPU: " + Tools.abbreviateNumber(FlxG.stage.context3D.totalGPUMemory, dataSizes) + "\n";
 							}
 						else

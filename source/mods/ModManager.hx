@@ -2,10 +2,7 @@ package mods;
 
 import weeks.WeekHandler;
 import mods.ModData;
-import openfl.Assets;
-import sys.FileSystem;
 import sys.io.File;
-import tjson.TJSON as Json;
 
 class ModManager
 {

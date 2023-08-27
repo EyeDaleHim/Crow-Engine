@@ -1,12 +1,6 @@
 package game.cutscenes;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import flixel.util.FlxTimer;
 import states.PlayState;
 import backend.Transitions;
 import game.cutscenes.CutsceneHandler;

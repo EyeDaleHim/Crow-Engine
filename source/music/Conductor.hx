@@ -1,6 +1,5 @@
 package music;
 
-import flixel.math.FlxMath;
 import music.Song;
 
 class Conductor

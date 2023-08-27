@@ -1,14 +1,8 @@
 package objects.notes;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxPoint;
 import music.Song;
 import objects.notes.Note;
 import objects.notes.NoteFile;
-import openfl.Assets;
-import tjson.TJSON as Json;
 
 @:allow(states.PlayState)
 class NoteSplash extends FlxSprite

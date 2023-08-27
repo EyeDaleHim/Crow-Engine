@@ -1,7 +1,5 @@
 package mods;
 
-import openfl.Assets;
-
 #if MODS_ENABLED
 class ModPaths
 {

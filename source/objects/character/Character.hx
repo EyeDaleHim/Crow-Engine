@@ -2,16 +2,7 @@ package objects.character;
 
 import backend.graphic.CacheManager;
 import states.PlayState;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.math.FlxPoint;
-import flixel.math.FlxMath;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.util.FlxStringUtil;
-import flixel.util.FlxSort;
 import flixel.addons.effects.FlxTrail;
-import tjson.TJSON as Json;
-import openfl.Assets;
 import objects.character.CharacterData;
 import music.Song;
 import music.Song.SongInfo;

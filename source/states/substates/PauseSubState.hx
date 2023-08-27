@@ -1,16 +1,6 @@
 package states.substates;
 
 import backend.LoadingManager;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.util.FlxTimer;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import objects.ui.Alphabet;
-import backend.graphic.CacheManager;
 
 using StringTools;
 

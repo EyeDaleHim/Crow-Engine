@@ -1,11 +1,6 @@
 package backend.debug;
 
 // windows for editors, should make life easier
-import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 
 class EditorWindow extends FlxTypedSpriteGroup<FlxSprite>
 {

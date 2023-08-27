@@ -1,8 +1,5 @@
 package objects;
 
-import flixel.FlxSprite;
-import objects.handlers.Animation;
-
 class FNFSprite extends FlxSprite
 {
     public var autoMoves:Bool = true;

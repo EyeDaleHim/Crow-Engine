@@ -1,16 +1,9 @@
 package objects.notes;
 
 import music.Song;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.graphics.frames.FlxFramesCollection;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
 import backend.NoteStorageFunction;
 import objects.notes.NoteFile;
-import openfl.Assets;
-import tjson.TJSON as Json;
 
 using StringTools;
 

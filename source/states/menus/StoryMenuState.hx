@@ -1,17 +1,6 @@
 package states.menus;
 
 import backend.LoadingManager;
-import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.math.FlxMath;
-import flixel.math.FlxRect;
-import flixel.util.FlxTimer;
-import flixel.util.FlxSort;
-import flixel.util.FlxSpriteUtil;
 import objects.ui.WeekSprite;
 import objects.character.WeekCharacter;
 import weeks.WeekHandler;

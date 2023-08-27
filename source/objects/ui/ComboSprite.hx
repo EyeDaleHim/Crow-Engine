@@ -1,7 +1,5 @@
 package objects.ui;
 
-import flixel.FlxSprite;
-
 class ComboSprite extends FlxSprite
 {
 	public var delay:Float = 0.0;

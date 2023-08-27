@@ -2,15 +2,6 @@ package objects;
 
 // temporary file to easily create stages
 import shaders.BuildingShaders;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.tweens.FlxTween;
-import flixel.sound.FlxSoundGroup;
-import flixel.sound.FlxSound;
-import flixel.util.typeLimit.OneOfTwo;
-// import sys.FileSystem;
 import objects.handlers.Animation;
 import states.PlayState;
 import music.Song;

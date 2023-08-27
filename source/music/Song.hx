@@ -1,15 +1,7 @@
 package music;
 
-import flixel.FlxG;
-import flixel.math.FlxMath;
-import openfl.utils.Assets;
-import tjson.TJSON as Json;
 import game.SkinManager;
 import music.Section.SectionInfo;
-import weeks.WeekHandler;
-
-using StringTools;
-using utils.Tools;
 
 class Song
 {

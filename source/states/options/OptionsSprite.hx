@@ -1,17 +1,8 @@
 package states.options;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
-import flixel.util.FlxColor;
-import flixel.math.FlxMath;
 import utils.InputFormat;
 import backend.data.Controls;
 import states.options.ControlsBindSubState;
-
-using StringTools;
-using utils.Tools;
 
 @:allow(states.options.OptionsMenu)
 class OptionsSprite extends FlxTypedSpriteGroup<FlxSprite>

@@ -1,28 +1,8 @@
 package states;
 
-import flixel.FlxG;
-import flixel.FlxBasic;
-import flixel.FlxObject;
-import flixel.FlxSprite;
-import flixel.FlxCamera;
-import flixel.FlxSubState;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
 import flixel.ui.FlxBar;
-import flixel.util.FlxColor;
-import flixel.util.FlxStringUtil;
-import flixel.util.FlxTimer;
 import flixel.util.FlxTimer.FlxTimerManager;
-import flixel.util.FlxSort;
-import flixel.util.FlxPool;
-import flixel.util.FlxDestroyUtil;
 import flixel.input.keyboard.FlxKey;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import flixel.sound.FlxSound;
 import game.SkinManager;
 import game.cutscenes.CutsceneHandler;
 import game.cutscenes.DialogueBox;
@@ -49,13 +29,9 @@ import backend.arrays.CircularBuffer;
 import backend.LoadingManager;
 import backend.Transitions;
 import backend.query.ControlQueries;
-import sys.FileSystem;
 #if SCRIPTS_ALLOWED
 import backend.ScriptHandler;
 #end
-
-using StringTools;
-using utils.Tools;
 
 class CurrentGame
 {
