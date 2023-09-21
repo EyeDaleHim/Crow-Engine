@@ -13,7 +13,7 @@ class GraphicsOptions extends CategoryOptions
 			name: 'Frame Rate',
 			description: 'How many frames should the game run at.',
 			saveHolder: 'framerate',
-			defaultValue: 0,
+			defaultValue: 60, // Why was this set to 0? 
 			choices: [60, 75, 90, 120, 144, 160, 240],
 			type: 2
 		});
