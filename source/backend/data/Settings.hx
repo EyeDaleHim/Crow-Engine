@@ -34,11 +34,7 @@ class Settings
 		onSet['framerate'](getPref('framerate', 60));
 		onSet['antialiasing'](getPref('antialiasing', true));
 
-		FlxG.stage.application.onExit.add(function(_)
-		{
-			_save.data.controls = controls;
-			_save.flush();
-		});
+		FlxG.stage.application.onExit.add(saveSettings);
 	}
 
 	public static function grabKey(name:String, ?defaultKeys:Array<Int>):Array<Int>
@@ -58,7 +54,7 @@ class Settings
 
 	public static function getPref(name:String, ?defaultPref:Dynamic):Dynamic
 	{
-		return !prefs.exists(name) ? defaultPref : prefs.get(name);
+		return (prefs == null || !prefExists(name)) ? defaultPref : prefs.get(name);
 	}
 
 	public static function prefExists(name:String):Bool
@@ -72,5 +68,13 @@ class Settings
 		if (onSet.exists(name))
 			onSet.get(name)(value);
 		return getPref(name);
+	}
+
+	public static function saveSettings(listener:Int = -1):Bool
+	{
+		_save.data.settings = prefs;
+		_save.data.controls = controls;
+
+		return _save.flush();
 	}
 }

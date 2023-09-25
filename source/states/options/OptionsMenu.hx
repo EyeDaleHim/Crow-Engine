@@ -196,6 +196,8 @@ class OptionsMenu extends MusicBeatState
 
 					categoryTitle.visible = true;
 				}
+
+				Settings.saveSettings();
 			}
 			else if (controls.getKey('ACCEPT', PRESSED) || (currentObj != null && FlxG.mouse.pressed && FlxG.mouse.overlaps(currentObj)))
 			{
