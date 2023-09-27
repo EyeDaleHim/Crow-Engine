@@ -69,7 +69,8 @@ class HealthIcon extends FlxSprite
 	// need sprTracker if you wanna make 'em beat, otherwise, just scales by itself.
 	public function beatHit()
 	{
-		scale.set(1.2, 1.2);
+		if (updateScale)
+			scale.set(1.2, 1.2);
 
 		if (sprTracker != null)
 		{
