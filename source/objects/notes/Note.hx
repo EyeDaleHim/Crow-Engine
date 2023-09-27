@@ -283,9 +283,6 @@ class NoteSprite extends FlxSprite
 
 	override public function draw()
 	{
-		if (!preventDraw)
-			super.draw();
-
 		if (note?.isSustainNote)
 		{
 			if (sustainEnd.exists && sustainEnd.visible)
@@ -299,6 +296,9 @@ class NoteSprite extends FlxSprite
 				sustain.draw();
 			}
 		}
+
+		if (!preventDraw)
+			super.draw();
 	}
 
 	private function modifyScale(point:FlxPoint, newPoint:{x:Float, y:Float, type:String}):FlxPoint
@@ -323,4 +323,3 @@ class NoteSprite extends FlxSprite
 		return rect;
 	}
 }
-
