@@ -660,6 +660,13 @@ class PlayState extends MusicBeatState
 				currentNote.preventDraw = false;
 				currentNote.refreshNote(note);
 
+				currentNote.alpha = currentNote.defaultAlpha;
+				if (note.isSustainNote)
+				{
+					currentNote.sustain.alpha = currentNote.sustain.alpha;
+					currentNote.sustainEnd.alpha = currentNote.sustainEnd.alpha;
+				}
+
 				renderedNotes.add(currentNote);
 				pendingNotes.remove(pendingNotes.indexOf(note));
 			}

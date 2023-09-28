@@ -93,8 +93,10 @@ class NoteSprite extends FlxSprite
 	public var note:Note;
 
 	// FUCK YOU
-	public var sustain:FlxSprite;
-	public var sustainEnd:FlxSprite;
+	public var sustain:SustainNote;
+	public var sustainEnd:SustainNote;
+
+	public var defaultAlpha:Float = 1.0;
 
 	public var preventDraw:Bool = false; // alternate to "visible"
 
@@ -102,8 +104,8 @@ class NoteSprite extends FlxSprite
 	{
 		super();
 
-		sustain = new FlxSprite();
-		sustainEnd = new FlxSprite();
+		sustain = new SustainNote();
+		sustainEnd = new SustainNote();
 
 		scrollFactor.set();
 		sustain.scrollFactor.set();
@@ -311,6 +313,11 @@ class NoteSprite extends FlxSprite
 				point.add(newPoint.x, newPoint.y);
 		};
 	}
+}
+
+class SustainNote extends FlxSprite
+{
+	public var defaultAlpha:Float = 0.6;
 
 	@:noCompletion
 	override function set_clipRect(rect:FlxRect):FlxRect
