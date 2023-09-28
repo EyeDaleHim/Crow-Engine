@@ -631,7 +631,7 @@ class TopBarText extends EditorText
 
 		super(0, 0, 0, text, 22);
 
-		overlapBox.setGraphicSize(Std.int(Math.max(64, this.width)), 24);
+		overlapBox.setGraphicSize(Math.max(64, this.width), 24);
 		overlapBox.updateHitbox();
 		this.centerOverlay(overlapBox, XY);
 	}
@@ -640,7 +640,7 @@ class TopBarText extends EditorText
 	{
 		this.overlapBox.setPosition(x, y);
 
-		overlapBox.setGraphicSize(Std.int(Math.max(64, this.width)), 24);
+		overlapBox.setGraphicSize(Math.max(64, this.width), 24);
 		overlapBox.updateHitbox();
 		this.centerOverlay(overlapBox, XY);
 	}

@@ -402,7 +402,7 @@ class Stage
 
 					var bgTrees:BGSprite = new BGSprite({path: 'treesBack', library: 'week6'}, {x: -30, y: 130}, {x: 0.9, y: 0.9});
 					bgTrees.antialiasing = false;
-					bgTrees.setGraphicSize(Std.int(widthData * 0.8));
+					bgTrees.setGraphicSize(widthData * 0.8);
 					bgTrees.updateHitbox();
 					bgTrees.ID = 3;
 					group.set('bgTrees', bgTrees);

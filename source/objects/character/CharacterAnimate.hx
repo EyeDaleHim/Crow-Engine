@@ -12,7 +12,7 @@ class CharacterAnimate extends FlxAnimate
 		super(x, y, Paths.imagePath('${path}/${character}').replace('.png', ''));
 	}
 
-	public function addAnim(name:String, symbol:String, fps:Int = 24, looped:Bool = false, ?indices:Array<Int> = null, ?x:Float = 0, ?y:Float = 0)
+	public function addAnim(name:String, symbol:String, fps:Float = 24, looped:Bool = false, ?indices:Array<Int> = null, ?x:Float = 0, ?y:Float = 0)
 	{
 		if (indices != null && indices.length > 0)
 			anim.addBySymbolIndices(name, symbol, indices, fps, looped, x, y);

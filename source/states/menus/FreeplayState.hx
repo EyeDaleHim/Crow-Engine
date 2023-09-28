@@ -252,7 +252,7 @@ class FreeplayState extends MusicBeatState
 		scoreText.x = FlxMath.lerp(scoreText.x, FlxG.width - scoreText.width - 8, FlxMath.bound(elapsed * 6.775, 0, 1));
 
 		scoreBG.x = scoreText.x - 8;
-		scoreBG.setGraphicSize(Std.int(Math.max(scoreText.width + 16, (FlxG.width + 20) - scoreText.x)), Std.int(scoreBG.height));
+		scoreBG.setGraphicSize(Math.max(scoreText.width + 16, (FlxG.width + 20) - scoreText.x), scoreBG.height);
 		scoreBG.updateHitbox();
 
 		diffText.centerOverlay(scoreBG, X);

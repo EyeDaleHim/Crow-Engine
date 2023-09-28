@@ -107,11 +107,6 @@ class Tools
 		return diffArray;
 	}
 
-	// https://en.wikipedia.org/wiki/Karatsuba_algorithm
-	// public static function smartMultiply(a:Int, b:Int):Int
-	// {
-	// }
-
 	public static function formatAccuracy(value:Float)
 	{
 		var str = Std.string(value);

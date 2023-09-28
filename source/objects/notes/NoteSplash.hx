@@ -13,7 +13,7 @@ class NoteSplash extends FlxSprite
 	public var direction:Int = 0;
 
 	private var animOffsets:Map<String, FlxPoint> = [];
-	private var animFPS:Map<String, Int> = [];
+	private var animFPS:Map<String, Float> = [];
 
 	public function new(?x:Float = 0, ?y:Float = 0)
 	{
@@ -61,11 +61,11 @@ class NoteSplash extends FlxSprite
 		var frameVariation = _splashFile.frameRateVariation ?? {min: 0, max: 0};
 		var animName:String = FlxG.random.getObject(_splashFile.directionNames[direction]);
 
-		var animFramerate:Int = animFPS.exists(animName) ? animFPS.get(animName) : 24;
+		var animFramerate:Float = animFPS.exists(animName) ? animFPS.get(animName) : 24;
 
 		animation.play(animName);
 		if (animation?.curAnim != null)
-			animation.curAnim.frameRate = animFramerate + FlxG.random.int(frameVariation.min, frameVariation.max);
+			animation.curAnim.frameRate = animFramerate + FlxG.random.float(frameVariation.min, frameVariation.max);
 
 		var offsetAnim:FlxPoint = FlxPoint.get();
 		if (animOffsets.exists(animName))
