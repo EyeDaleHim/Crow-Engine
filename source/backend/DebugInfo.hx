@@ -125,14 +125,14 @@ class DebugInfo extends TextField
 							text += "FPS: " + Math.min(frameCount, Settings.getPref('framerate', 60)) + "\n";
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 1)
-							text += "Memory: " + Tools.abbreviateNumber(memory, dataSizes);
+							text += "MEM: " + Tools.abbreviateNumber(memory, dataSizes);
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 2)
 							text += " / " + Tools.abbreviateNumber(memoryPeak, dataSizes) + "\n";
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 3)
 							{
-								text += "GPU: " + Tools.abbreviateNumber(gpuMem, dataSizes) + "\n";
+								text += "VRAM: " + Tools.abbreviateNumber(gpuMem, dataSizes) + "\n";
 							}
 						else
 							text += '\n';
