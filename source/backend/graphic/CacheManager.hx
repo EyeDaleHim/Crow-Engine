@@ -5,6 +5,7 @@ import sys.io.File;
 import flash.media.Sound;
 import openfl.Assets;
 import openfl.display.BitmapData;
+import openfl.display3D.textures.RectangleTexture;
 import haxe.ds.StringMap;
 import openfl.utils.ByteArray;
 import haxe.io.Bytes;
@@ -41,7 +42,7 @@ class CacheManager
 	}
 
 	// threading is useful if you're making dynamic scenes or some WEIRD shit!
-	public static function setBitmap(key:String = '', thread:Bool = false):FlxGraphic
+	public static function setBitmap(key:String = ''):FlxGraphic
 	{
 		var modsEnabled:Bool = #if MODS_ENABLED FileSystem.exists(key) #else false #end;
 
@@ -50,19 +51,32 @@ class CacheManager
 			var graphic:FlxGraphic = null;
 			if (modsEnabled)
 			{
-				var bitmap:BitmapData = #if !sys
-				BitmapData.fromFile(key) 
-				#else
-				BitmapData.fromBytes(ByteArray.fromBytes(sys.io.File.getBytes(key)))
-				#end;
+				var bitmap:BitmapData = #if !sys BitmapData.fromFile(key) #else BitmapData.fromBytes(ByteArray.fromBytes(sys.io.File.getBytes(key))) #end;
 				graphic = FlxGraphic.fromBitmapData(bitmap, false, key);
 			}
 			else if (graphic == null)
 				graphic = FlxGraphic.fromAssetKey(key, false, null, false);
+
 			graphic.persist = true;
 
-			FlxG.bitmap.addGraphic(graphic);
-			cachedAssets[BITMAP].set(key, {type: BITMAP, data: FlxG.bitmap.get(graphic.key)});
+			if (graphic.bitmap != null)
+			{
+				FlxG.bitmap.addGraphic(graphic);
+
+				if (Settings.getPref('gpu_cache', false))
+				{
+					var bitmap:BitmapData = graphic.bitmap;
+
+					var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
+					texture.uploadFromBitmapData(bitmap);
+					bitmap.image.data = null;
+					bitmap.dispose();
+					bitmap.disposeImage();
+					bitmap = BitmapData.fromTexture(texture);
+				}
+			}
+
+			cachedAssets[BITMAP].set(key, {type: BITMAP, data: graphic});
 
 			return getBitmap(key);
 		}

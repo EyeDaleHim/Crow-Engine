@@ -41,7 +41,7 @@ class HealthIcon extends FlxSprite
 	}
 
 	public var updateScale:Bool = false;
-	public var currentState:String = 'neutral';
+	public var currentState:String = '';
 
 	public override function update(elapsed:Float)
 	{

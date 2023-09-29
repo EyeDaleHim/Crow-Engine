@@ -25,6 +25,13 @@ class GraphicsOptions extends CategoryOptions
 			type: 0
 		});
 		options.push({
+			name: 'GPU Textures',
+			description: 'Whether to cache textures in the Graphics Card. (EXPERIMENTAL)',
+			saveHolder: 'gpu_cache',
+			defaultValue: false,
+			type: 0
+		});
+		options.push({
 			name: 'Flashing Lights',
 			description: 'Whether flashing lights should be on or off for photosensitive players.',
 			saveHolder: 'flashing_lights',
