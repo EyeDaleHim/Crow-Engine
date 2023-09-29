@@ -41,6 +41,7 @@ class HealthIcon extends FlxSprite
 	}
 
 	public var updateScale:Bool = false;
+	public var currentState:String = 'neutral';
 
 	public override function update(elapsed:Float)
 	{
@@ -82,7 +83,10 @@ class HealthIcon extends FlxSprite
 
 	public function changeState(suffix:String)
 	{
-		if (animation.getByName(suffix) != null)
+		if (currentState != suffix && animation.getByName(suffix) != null)
+		{
 			animation.play(suffix, true);
+			currentState = suffix;
+		}
 	}
 }

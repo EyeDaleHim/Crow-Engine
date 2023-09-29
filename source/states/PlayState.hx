@@ -698,7 +698,7 @@ class PlayState extends MusicBeatState
 			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(gameInfo.health * 50, 0, 100, 100, 0) * 0.01)) - _iconP1Offset;
 			iconP1.centerOverlay(healthBar, Y);
 
-			if (iconP1.animation.curAnim.frames.length == 0 || iconP1.animation.curAnim.finished)
+			if (iconP1.animation.curAnim.frames.length != 0 || iconP1.animation.curAnim.finished)
 				iconP1.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');
 		}
 
@@ -707,7 +707,7 @@ class PlayState extends MusicBeatState
 			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(gameInfo.health * 50, 0, 100, 100, 0) * 0.01)) - (iconP2.width - _iconP2Offset);
 			iconP2.centerOverlay(healthBar, Y);
 
-			if (iconP2.animation.curAnim.frames.length == 0 || iconP2.animation.curAnim.finished)
+			if (iconP2.animation.curAnim.frames.length != 0 || iconP2.animation.curAnim.finished)
 				iconP2.changeState(healthBar.percent > 80 ? 'lose' : 'neutral');
 		}
 
