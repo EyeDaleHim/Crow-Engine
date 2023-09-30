@@ -16,7 +16,7 @@ import backend.graphic.CacheManager;
 @:access(objects.notes.Note)
 class LoadingManager extends MusicBeatState
 {
-	static inline var LOADING_SPRITE_TIME:Float = 2.0;
+	static inline var LOADING_SPRITE_TIME:Float = 1.0;
 
 	public static var lastTime:Int = 0;
 

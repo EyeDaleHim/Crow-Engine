@@ -162,7 +162,7 @@ class FreeplayState extends MusicBeatState
 
 				Song.loadSong(songs[curSelected].name.formatToReadable(), availableDifficulties[curDifficulty]);
 
-				LoadingManager.startGame();
+				MusicBeatState.switchState(new PlayState());
 			}
 			else
 			{

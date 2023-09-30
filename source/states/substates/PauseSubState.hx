@@ -24,7 +24,7 @@ class PauseSubState extends MusicBeatSubState
 			callback: function()
 			{
 				FlxTween.tween(PlayState.current.pauseCamera, {alpha: 0.0}, 0.5, {ease: FlxEase.quadOut});
-				LoadingManager.startGame();
+				MusicBeatState.switchState(new PlayState());
 			}
 		},
 		{

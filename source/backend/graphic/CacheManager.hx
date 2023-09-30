@@ -46,37 +46,50 @@ class CacheManager
 	{
 		var modsEnabled:Bool = #if MODS_ENABLED FileSystem.exists(key) #else false #end;
 
+		trace('check1: $key');
 		if (modsEnabled || Assets.exists(key, IMAGE))
 		{
-			var graphic:FlxGraphic = null;
-			if (modsEnabled)
-			{
-				var bitmap:BitmapData = #if !sys BitmapData.fromFile(key) #else BitmapData.fromBytes(ByteArray.fromBytes(sys.io.File.getBytes(key))) #end;
-				graphic = FlxGraphic.fromBitmapData(bitmap, false, key);
-			}
-			else if (graphic == null)
-				graphic = FlxGraphic.fromAssetKey(key, false, null, false);
+			var bitmap:BitmapData = Assets.getBitmapData(key);
+			trace('check2');
 
-			graphic.persist = true;
-
-			if (graphic.bitmap != null)
+			if (bitmap != null)
 			{
-				FlxG.bitmap.addGraphic(graphic);
+				var graphic:FlxGraphic = null;
+				trace('check3: ${bitmap.width}, ${bitmap.height}');
 
 				if (Settings.getPref('gpu_cache', false))
 				{
-					var bitmap:BitmapData = graphic.bitmap;
-
+					trace('check3.5');
 					var texture:RectangleTexture = FlxG.stage.context3D.createRectangleTexture(bitmap.width, bitmap.height, BGRA, true);
+					trace('check4');
 					texture.uploadFromBitmapData(bitmap);
+					trace('check5');
 					bitmap.image.data = null;
 					bitmap.dispose();
 					bitmap.disposeImage();
+					trace('check6');
 					bitmap = BitmapData.fromTexture(texture);
-				}
-			}
+					
 
-			cachedAssets[BITMAP].set(key, {type: BITMAP, data: graphic});
+					graphic = FlxGraphic.fromBitmapData(bitmap, false, key);
+					graphic.persist = true;
+					graphic.destroyOnNoUse = false;
+					trace('check7');
+				}
+				else
+				{
+					graphic = FlxGraphic.fromBitmapData(bitmap, false, key);
+					graphic.persist = true;
+					graphic.destroyOnNoUse = false;
+					trace('check4b');
+
+					FlxG.bitmap.addGraphic(graphic);
+					trace('check5b');
+				}
+
+				cachedAssets[BITMAP].set(key, {type: BITMAP, data: graphic});
+				trace('check8');
+			}
 
 			return getBitmap(key);
 		}

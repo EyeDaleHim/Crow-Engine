@@ -317,7 +317,7 @@ class StoryMenuState extends MusicBeatState
 			PlayState.songDiff = curDifficulty;
 
 			music.Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), availableDifficulties[curDifficulty]);
-			LoadingManager.startGame();
+			MusicBeatState.switchState(new PlayState());
 		});
 
 		for (character in characters)

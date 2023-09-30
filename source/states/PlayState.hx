@@ -616,7 +616,7 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
-		trace('it took me ${openfl.Lib.getTimer() - LoadingManager.lastTime}ms to load');
+		// trace('it took me ${openfl.Lib.getTimer() - LoadingManager.lastTime}ms to load');
 
 		callScripts("create", [true]);
 	}
@@ -1093,7 +1093,7 @@ class PlayState extends MusicBeatState
 								CacheManager.cachedAssets[AUDIO].get(Paths.vocalsPath(Song.currentSong.song)).special = false;
 
 							Song.loadSong(PlayState.storyPlaylist[0].formatToReadable(), getAvailableDifficulties()[PlayState.songDiff]);
-							LoadingManager.startGame();
+							MusicBeatState.switchState(new PlayState());
 						}
 						else
 						{

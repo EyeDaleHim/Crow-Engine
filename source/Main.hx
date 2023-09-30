@@ -194,13 +194,6 @@ class Main extends Sprite
 		Settings.init();
 		weeks.ScoreContainer.init();
 
-		for (persistents in CacheManager.persistentAssets)
-		{
-			CacheManager.setBitmap(persistents);
-			if (CacheManager.cachedAssets[BITMAP].exists(persistents))
-				CacheManager.cachedAssets[BITMAP].get(persistents).special = true;
-		}
-
 		try
 		{
 			@:privateAccess
@@ -208,6 +201,13 @@ class Main extends Sprite
 		} catch (e)
 		{
 			Settings.prefs = new Map<String, Dynamic>();
+		}
+
+		for (persistents in CacheManager.persistentAssets)
+		{
+			CacheManager.setBitmap(persistents);
+			if (CacheManager.cachedAssets[BITMAP].exists(persistents))
+				CacheManager.cachedAssets[BITMAP].get(persistents).special = true;
 		}
 
 		#if !mobile
