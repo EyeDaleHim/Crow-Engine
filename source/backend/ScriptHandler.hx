@@ -4,7 +4,6 @@ package backend;
 import sys.FileSystem;
 import sys.io.File;
 import openfl.Assets;
-import tea.TeaScript;
 
 class ScriptHandler extends TeaScript
 {

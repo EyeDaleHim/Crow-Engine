@@ -13,7 +13,7 @@
 
 	<!-- _________________________ Crow Engine Settings _________________________ -->
 
-	<define name="SCRIPTS_ALLOWED" if="desktop"/> <!-- Whether or not scripts should be enabled -->
+	<!-- <define name="SCRIPTS_ALLOWED" if="desktop"/> Whether or not scripts should be enabled -->
 
 	<define name="EDITORS_ALLOWED"/> <!-- Whether or not the editor should be enabled -->
 

@@ -1,6 +1,5 @@
 package backend;
 
-import starling.core.StatsDisplay;
 import openfl.system.System;
 import haxe.Timer as HaxeTimer;
 import openfl.events.Event;
