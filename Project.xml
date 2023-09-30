@@ -120,8 +120,6 @@
 	<haxelib name="flixel-addons"/>
 	<haxelib name="flixel-ui"/>
 
-	<haxelib name="TeaScript" if="SCRIPTS_ALLOWED"/>
-
 	<!--Incase you wanna use adobe spritemaps with 2019+-->
 	<haxelib name="flxanimate"/>
 
