@@ -521,14 +521,14 @@ class PlayState extends MusicBeatState
 		scoreText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		scoreText.borderSize = 1.25;
 		scoreText.screenCenter(X);
-		scoreText.y = healthBarBG.y + 30;
+		scoreText.y = healthBarBG.y + 35;
 		addToHUD(scoreText);
 
 		engineText = new FlxText(0, 0, 0, 'Crow Engine ${Main.engineVersion.display}');
 		engineText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		engineText.borderSize = 1.25;
 		engineText.x = FlxG.width - engineText.width - 40;
-		engineText.y = healthBarBG.y + 30;
+		engineText.y = healthBarBG.y + 35;
 		addToHUD(engineText);
 
 		Conductor.songPosition = -500;
@@ -697,6 +697,7 @@ class PlayState extends MusicBeatState
 		{
 			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(gameInfo.health * 50, 0, 100, 100, 0) * 0.01)) - _iconP1Offset;
 			iconP1.centerOverlay(healthBar, Y);
+			iconP1.y -= 15;
 
 			if (iconP1.animation.curAnim.frames.length != 0 || iconP1.animation.curAnim.finished)
 				iconP1.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');
@@ -706,6 +707,7 @@ class PlayState extends MusicBeatState
 		{
 			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(gameInfo.health * 50, 0, 100, 100, 0) * 0.01)) - (iconP2.width - _iconP2Offset);
 			iconP2.centerOverlay(healthBar, Y);
+			iconP2.y -= 15;
 
 			if (iconP2.animation.curAnim.frames.length != 0 || iconP2.animation.curAnim.finished)
 				iconP2.changeState(healthBar.percent > 80 ? 'lose' : 'neutral');
