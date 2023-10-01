@@ -14,6 +14,7 @@ import sys.thread.Mutex;
 import lime.utils.Log;
 import lime.ui.Window;
 import lime.app.Application;
+import backend.macro.Macro;
 #if sys
 import sys.FileSystem;
 import sys.io.File;
@@ -23,9 +24,6 @@ import backend.graphic.CacheManager;
 import openfl.Assets;
 import openfl.utils.AssetCache;
 
-#if ("haxe" < "4.3.0")
-@:deprecated("Please update to Haxe version 4.3.0")
-#end
 class Main extends Sprite
 {
 	var game = {
@@ -48,6 +46,8 @@ class Main extends Sprite
 
 	public static function main():Void
 	{
+		Macro.initiateMacro();
+
 		Lib.current.addChild(new Main());
 	}
 
