@@ -521,14 +521,14 @@ class PlayState extends MusicBeatState
 		scoreText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		scoreText.borderSize = 1.25;
 		scoreText.screenCenter(X);
-		scoreText.y = healthBarBG.y + 30;
+		scoreText.y = healthBarBG.y + 35;
 		addToHUD(scoreText);
 
 		engineText = new FlxText(0, 0, 0, 'Crow Engine ${Main.engineVersion.display}');
 		engineText.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 		engineText.borderSize = 1.25;
 		engineText.x = FlxG.width - engineText.width - 40;
-		engineText.y = healthBarBG.y + 30;
+		engineText.y = healthBarBG.y + 35;
 		addToHUD(engineText);
 
 		Conductor.songPosition = -500;
@@ -660,6 +660,13 @@ class PlayState extends MusicBeatState
 				currentNote.preventDraw = false;
 				currentNote.refreshNote(note);
 
+				currentNote.alpha = currentNote.defaultAlpha;
+				if (note.isSustainNote)
+				{
+					currentNote.sustain.alpha = currentNote.sustain.alpha;
+					currentNote.sustainEnd.alpha = currentNote.sustainEnd.alpha;
+				}
+
 				renderedNotes.add(currentNote);
 				pendingNotes.remove(pendingNotes.indexOf(note));
 			}
@@ -690,8 +697,9 @@ class PlayState extends MusicBeatState
 		{
 			iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(gameInfo.health * 50, 0, 100, 100, 0) * 0.01)) - _iconP1Offset;
 			iconP1.centerOverlay(healthBar, Y);
+			iconP1.y -= 15;
 
-			if (iconP1.animation.curAnim.frames.length == 0 || iconP1.animation.curAnim.finished)
+			if (iconP1.animation.curAnim.frames.length != 0 || iconP1.animation.curAnim.finished)
 				iconP1.changeState(healthBar.percent < 20 ? 'lose' : 'neutral');
 		}
 
@@ -699,8 +707,9 @@ class PlayState extends MusicBeatState
 		{
 			iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(gameInfo.health * 50, 0, 100, 100, 0) * 0.01)) - (iconP2.width - _iconP2Offset);
 			iconP2.centerOverlay(healthBar, Y);
+			iconP2.y -= 15;
 
-			if (iconP2.animation.curAnim.frames.length == 0 || iconP2.animation.curAnim.finished)
+			if (iconP2.animation.curAnim.frames.length != 0 || iconP2.animation.curAnim.finished)
 				iconP2.changeState(healthBar.percent > 80 ? 'lose' : 'neutral');
 		}
 
@@ -1449,9 +1458,9 @@ class PlayState extends MusicBeatState
 							if (opponent != null && opponent.animation.curAnim.curFrame >= 4)
 							{
 								if (!opponent.animOffsets.exists(renderer.note.singAnim))
-									opponent.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(renderer.note.direction % 4))]);
+									opponent.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(renderer.note.direction % 4))], opponent.forceSing);
 								else
-									opponent.playAnim(renderer.note.singAnim, true);
+									opponent.playAnim(renderer.note.singAnim, opponent.forceSing);
 
 								opponent._animationTimer = 0.0;
 							}
@@ -1490,9 +1499,9 @@ class PlayState extends MusicBeatState
 								if (player != null && player.animation.curAnim.curFrame >= 4)
 								{
 									if (!player.animOffsets.exists(note.singAnim))
-										player.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))]);
+										player.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))], player.forceSing);
 									else
-										player.playAnim(note.singAnim, true);
+										player.playAnim(note.singAnim, player.forceSing);
 
 									player._animationTimer = 0.0;
 								}
@@ -1538,9 +1547,9 @@ class PlayState extends MusicBeatState
 				if (player != null)
 				{
 					if (!player.animOffsets.exists(note.singAnim))
-						player.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))]);
+						player.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))], player.forceSing);
 					else
-						player.playAnim(note.singAnim, true);
+						player.playAnim(note.singAnim, player.forceSing);
 					player._animationTimer = 0.0;
 				}
 
@@ -1588,9 +1597,9 @@ class PlayState extends MusicBeatState
 			if (opponent != null)
 			{
 				if (!opponent.animOffsets.exists(note.singAnim))
-					opponent.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))]);
+					opponent.playAnim(['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'][Std.int(Math.abs(note.direction % 4))], opponent.forceSing);
 				else
-					opponent.playAnim(note.singAnim, true);
+					opponent.playAnim(note.singAnim, opponent.forceSing);
 				opponent._animationTimer = 0.0;
 			}
 
@@ -1671,9 +1680,9 @@ class PlayState extends MusicBeatState
 			if (player != null)
 			{
 				if (player.animOffsets.exists(player.missList[direction]))
-					player.playAnim(player.missList[direction], true);
+					player.playAnim(player.missList[direction], player.forceSing);
 				else
-					player.playAnim(['singLEFTmiss', 'singDOWNmiss', 'singUPmiss', 'singRIGHTmiss'][direction]);
+					player.playAnim(['singLEFTmiss', 'singDOWNmiss', 'singUPmiss', 'singRIGHTmiss'][direction], player.forceSing);
 			}
 		}
 

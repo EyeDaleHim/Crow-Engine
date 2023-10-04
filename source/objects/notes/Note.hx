@@ -93,8 +93,10 @@ class NoteSprite extends FlxSprite
 	public var note:Note;
 
 	// FUCK YOU
-	public var sustain:FlxSprite;
-	public var sustainEnd:FlxSprite;
+	public var sustain:SustainNote;
+	public var sustainEnd:SustainNote;
+
+	public var defaultAlpha:Float = 1.0;
 
 	public var preventDraw:Bool = false; // alternate to "visible"
 
@@ -102,8 +104,8 @@ class NoteSprite extends FlxSprite
 	{
 		super();
 
-		sustain = new FlxSprite();
-		sustainEnd = new FlxSprite();
+		sustain = new SustainNote();
+		sustainEnd = new SustainNote();
 
 		scrollFactor.set();
 		sustain.scrollFactor.set();
@@ -195,12 +197,11 @@ class NoteSprite extends FlxSprite
 			if (note.isSustainNote)
 			{
 				sustainEnd.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y);
-				sustain.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y * (note.sustainLength * Song.currentSong.speed));
+				sustain.scale.set(Note._noteFile.scale.x, Note._noteFile.scale.y);
 
 				sustainEnd.scale = modifyScale(sustainEnd.scale, Note._noteFile.scaledEnd);
 				sustain.scale = modifyScale(sustain.scale, Note._noteFile.scaledHold);
-
-				sustain.scale.y += (height / 2) / sustain.frameHeight;
+				sustain.scale.y = 1 + (note.sustainLength * Song.currentSong.speed);
 			}
 
 			scale = modifyScale(scale, Note._noteFile.scaledArrow);
@@ -283,9 +284,6 @@ class NoteSprite extends FlxSprite
 
 	override public function draw()
 	{
-		if (!preventDraw)
-			super.draw();
-
 		if (note?.isSustainNote)
 		{
 			if (sustainEnd.exists && sustainEnd.visible)
@@ -299,6 +297,9 @@ class NoteSprite extends FlxSprite
 				sustain.draw();
 			}
 		}
+
+		if (!preventDraw)
+			super.draw();
 	}
 
 	private function modifyScale(point:FlxPoint, newPoint:{x:Float, y:Float, type:String}):FlxPoint
@@ -311,6 +312,11 @@ class NoteSprite extends FlxSprite
 				point.add(newPoint.x, newPoint.y);
 		};
 	}
+}
+
+class SustainNote extends FlxSprite
+{
+	public var defaultAlpha:Float = 0.6;
 
 	@:noCompletion
 	override function set_clipRect(rect:FlxRect):FlxRect
@@ -323,4 +329,3 @@ class NoteSprite extends FlxSprite
 		return rect;
 	}
 }
-

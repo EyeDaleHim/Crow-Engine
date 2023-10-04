@@ -81,11 +81,31 @@ class Tools
 		return array;
 	}
 
-	// https://en.wikipedia.org/wiki/Karatsuba_algorithm
-	//public static function smartMultiply(a:Int, b:Int):Int
-	//{
+	// returns: Array that contain the difference between two objects
+	public static function difference(array1:Array<Any>, array2:Array<Any>):Array<Any>
+	{
+		var diffArray:Array<Any> = [];
+		for (obj in array1)
+		{
+			if (!array2.contains(obj))
+				diffArray.push(obj);
+		}
 
-	// }
+		return diffArray;
+	}
+
+	// returns: Array that contain the same object in two individual arrays
+	public static function intersection(array1:Array<Any>, array2:Array<Any>):Array<Any>
+	{
+		var diffArray:Array<Any> = [];
+		for (obj in array1)
+		{
+			if (array2.contains(obj))
+				diffArray.push(obj);
+		}
+
+		return diffArray;
+	}
 
 	public static function formatAccuracy(value:Float)
 	{
@@ -143,7 +163,7 @@ class Tools
 		return object;
 	}
 
-	public static function calcRectOnStatusPosition(sprite:FlxSprite, rectangle:FlxRect)
+	public static function relativeRectPos(sprite:FlxSprite, rectangle:FlxRect)
 	{
 		return new FlxRect(rectangle.x - sprite.x, rectangle.y - sprite.y, rectangle.width, rectangle.height);
 	}

@@ -92,6 +92,12 @@ class DebugInfo extends TextField
 
 			text = "";
 
+			var gpuMem:UInt = 0;
+
+			@:privateAccess {
+				gpuMem = UInt.add(0, FlxG.stage.context3D.gl.getParameter(openfl.display3D.Context3D.__glMemoryTotalAvailable));
+			}
+
 			switch (Settings.getPref("fpsInfo", "default"))
 			{
 				case 'minimized':
@@ -107,7 +113,7 @@ class DebugInfo extends TextField
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 3)
 						{
-							text += Tools.abbreviateNumber(FlxG.stage.context3D.totalGPUMemory, dataSizes) + "\n";
+							text += Tools.abbreviateNumber(gpuMem, dataSizes) + "\n";
 						}
 						else
 							text += '\n';
@@ -118,14 +124,14 @@ class DebugInfo extends TextField
 							text += "FPS: " + Math.min(frameCount, Settings.getPref('framerate', 60)) + "\n";
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 1)
-							text += "Memory: " + Tools.abbreviateNumber(memory, dataSizes);
+							text += "MEM: " + Tools.abbreviateNumber(memory, dataSizes);
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 2)
 							text += " / " + Tools.abbreviateNumber(memoryPeak, dataSizes) + "\n";
 
 						if (Settings.getPref("fpsInfo_display", 0) >= 3)
 							{
-								text += "GPU: " + Tools.abbreviateNumber(FlxG.stage.context3D.totalGPUMemory, dataSizes) + "\n";
+								text += "VRAM: " + Tools.abbreviateNumber(gpuMem, dataSizes) + "\n";
 							}
 						else
 							text += '\n';

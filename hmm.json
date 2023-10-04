@@ -15,7 +15,6 @@
             "url": "https://github.com/Aidan63/linc_discord-rpc"
         },
         { "name": "tjson", "type": "haxelib" },
-        { "name": "hxCodec", "type": "haxelib" },
-        { "name": "TeaScript", "type": "haxelib" }
+        { "name": "hxCodec", "type": "haxelib" }
     ]
 }

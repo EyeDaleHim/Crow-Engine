@@ -41,6 +41,7 @@ class HealthIcon extends FlxSprite
 	}
 
 	public var updateScale:Bool = false;
+	public var currentState:String = '';
 
 	public override function update(elapsed:Float)
 	{
@@ -69,7 +70,8 @@ class HealthIcon extends FlxSprite
 	// need sprTracker if you wanna make 'em beat, otherwise, just scales by itself.
 	public function beatHit()
 	{
-		scale.set(1.2, 1.2);
+		if (updateScale)
+			scale.set(1.2, 1.2);
 
 		if (sprTracker != null)
 		{
@@ -81,7 +83,10 @@ class HealthIcon extends FlxSprite
 
 	public function changeState(suffix:String)
 	{
-		if (animation.getByName(suffix) != null)
+		if (currentState != suffix && animation.getByName(suffix) != null)
+		{
 			animation.play(suffix, true);
+			currentState = suffix;
+		}
 	}
 }

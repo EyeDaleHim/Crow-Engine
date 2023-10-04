@@ -33,7 +33,7 @@ typedef NoteSplashFile =
 {
 	var directionNames:Array<Array<String>>;
 
-	var frameRateVariation:{min:Int, max:Int};
+	var frameRateVariation:{min:Float, max:Float};
 
 	var animationData:Array<Animation>;
 	var atlasType:String;

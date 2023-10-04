@@ -20,7 +20,10 @@ class Character extends FlxSprite
 
 	// simple controls for your character
 	public var controlIdle:Bool = true; // Whether or not your character should keep playing the idle when it finishes an animation.
+
 	public var forceIdle:Bool = false;
+	public var forceSing:Bool = true;
+
 	public var _animationOffset:Float = 0.3;
 	public var overridePlayer:Bool = false; // If you set this to true, the enemy will be treated as a player
 
@@ -189,9 +192,9 @@ class Character extends FlxSprite
 						playIdleAnim = true;
 				}
 
-				if ((playIdleAnim || !singList.contains(animation.curAnim.name)) || forceIdle)
+				if (playIdleAnim || !singList.contains(animation.curAnim.name))
 				{
-					if (controlIdle || forceIdle)
+					if (controlIdle)
 					{
 						if ((name == 'tankman'
 							&& (animation.curAnim.name != 'singDOWN-alt'
@@ -211,8 +214,6 @@ class Character extends FlxSprite
 				}
 			}
 		}
-
-		forceIdle = false;
 	}
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
