@@ -8,13 +8,15 @@ Crow Engine
 
 ## Info
 
-Crow Engine is a modified version of the game Friday Night Funkin' that has been rebuilt to include comprehensive documentation for modding and to introduce new features. The primary goal of this project is to facilitate a clearer understanding of modding for players and developers.
+Crow Engine is a modified version of the game Friday Night Funkin' that has been rebuilt to include comprehensive modding documentation and introduce new features. The primary goal of this project is to facilitate a clearer understanding of modding for players and developers.
+
+### Disclaimer
+
+Crow Engine is my passion project, please do not expect any consistency in update schedule.
 
 ### Mods currently using Crow Engine
 
 * Chill-Sides
-* Undertale Mix Mod (Hypno's Lullaby Cover Mod)
-* Mechanics Mod (partially)
 
 ## Notes
 
