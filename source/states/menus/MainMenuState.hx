@@ -56,7 +56,7 @@ class MainMenuState extends MusicBeatState
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
 
-		mainBG = new FlxSprite(-80).loadGraphic(Paths.image('menus/mainBG'));
+		mainBG = new FlxSprite(-80, Paths.image('menus/mainBG'));
 		mainBG.scrollFactor.set(0, 0.20);
 		mainBG.scale.set(1.175, 1.175);
 		mainBG.updateHitbox();
@@ -64,7 +64,7 @@ class MainMenuState extends MusicBeatState
 		mainBG.antialiasing = Settings.getPref('antialiasing', true);
 		add(mainBG);
 
-		flickerBG = new FlxSprite(-80).loadGraphic(Paths.image('menus/flickerBG'));
+		flickerBG = new FlxSprite(-80, Paths.image('menus/flickerBG'));
 		flickerBG.scrollFactor.set(0, 0.20);
 		flickerBG.scale.set(1.175, 1.175);
 		flickerBG.updateHitbox();

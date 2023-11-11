@@ -97,7 +97,7 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 				}
 			case 'thorns':
 				{
-					portraitLeft = new FlxSprite(320, 170).loadGraphic(Paths.image('cutscenes/$song/spiritFaceForward'));
+					portraitLeft = new FlxSprite(320, 170, Paths.image('cutscenes/$song/spiritFaceForward'));
 					portraitLeft.scale.set(6, 6);
 					portraitLeft.antialiasing = false;
 					portraitLeft.visible = false;
@@ -153,7 +153,7 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 		};
 		add(dialogueText);
 
-		handSelect = new FlxSprite(1000, 575).loadGraphic(Paths.image('cutscenes/week6/hand_textbox'));
+		handSelect = new FlxSprite(1000, 575, Paths.image('cutscenes/week6/hand_textbox'));
 		handSelect.scale.set(6 * 0.9, 6 * 0.9);
 		handSelect.updateHitbox();
 		handSelect.visible = false;

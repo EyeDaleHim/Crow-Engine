@@ -65,7 +65,7 @@ class TitleState extends MusicBeatState
 
 		if (!initialized)
 		{
-			newgroundsLogo = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('title/newgrounds_logo'));
+			newgroundsLogo = new FlxSprite(0, FlxG.height * 0.52, Paths.image('title/newgrounds_logo'));
 			newgroundsLogo.antialiasing = Settings.getPref('antialiasing', true);
 
 			newgroundsLogo.scale.set(0.8, 0.8);

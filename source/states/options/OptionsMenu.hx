@@ -36,7 +36,7 @@ class OptionsMenu extends MusicBeatState
 
 	override function create()
 	{
-		background = new FlxSprite().loadGraphic(Paths.image('menus/settingsBG'));
+		background = new FlxSprite(Paths.image('menus/settingsBG'));
 		background.scrollFactor.set();
 		add(background);
 

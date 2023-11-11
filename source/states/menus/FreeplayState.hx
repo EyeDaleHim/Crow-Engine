@@ -42,7 +42,7 @@ class FreeplayState extends MusicBeatState
 	{
 		CacheManager.freeMemory(BITMAP, true);
 
-		background = new FlxSprite(0, 0).loadGraphic(Paths.image("menus/freeplayBG"));
+		background = new FlxSprite(Paths.image("menus/freeplayBG"));
 		background.scale.set(1.1, 1.1);
 		background.screenCenter();
 		background.scrollFactor.set();

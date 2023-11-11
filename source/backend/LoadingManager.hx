@@ -65,7 +65,7 @@ class LoadingManager extends MusicBeatState
 		__THREADPOOLS.run(loadImages);
 		__THREADPOOLS.run(loadSounds);
 
-		loadingSprite = new FlxSprite().loadGraphic(Paths.image('loading'));
+		loadingSprite = new FlxSprite(Paths.image('loading'));
 		loadingSprite.antialiasing = true;
 		loadingSprite.angle = Math.random() * 360;
 		loadingSprite.angularVelocity = 360;

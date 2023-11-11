@@ -54,7 +54,7 @@ class OffsetEditorState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.kill();
 
-		background = new FlxSprite().loadGraphic(Paths.image("menus/freeplayBG"));
+		background = new FlxSprite(Paths.image("menus/freeplayBG"));
 		background.scrollFactor.set();
 		background.cameras = [bgCamera];
 		add(background);
