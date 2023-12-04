@@ -82,7 +82,6 @@
 		<library name="week5"    preload="true"/>
 		<library name="week6"    preload="true"/> 
 		<library name="week7"    preload="true"/> 
-		<library name="backalley"    preload="true"/> 
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
@@ -94,7 +93,6 @@
 		<library name="week5"    preload="false"/>
 		<library name="week6"    preload="false"/>
 		<library name="week7"    preload="false"/> 
-		<library name="backalley"    preload="false"/> 
 	</section>
 
 	<!-- def not needed especially because of week 1
@@ -115,8 +113,6 @@
 	<assets path="assets/week6"    library="week6"    exclude="*.mp3" unless="web"/>
 	<assets path="assets/week7"    library="week7"    exclude="*.ogg" if="web"/>
 	<assets path="assets/week7"    library="week7"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/backalley"    library="backalley"    exclude="*.ogg" if="web"/>
-	<assets path="assets/backalley"    library="backalley"    exclude="*.mp3" unless="web"/>
 
 	<!-- _______________________________ Libraries ______________________________ -->
 

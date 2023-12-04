@@ -16,6 +16,11 @@ class Song
 		{*/
 			var fixData:String->String = function(str:String)
 			{
+				while (!str.endsWith("}"))
+				{
+					str = str.substr(0, str.length - 1);
+				}
+
 				return str;
 			};
 
@@ -33,6 +38,11 @@ class Song
 				currentSong = Json.parse(fixData(Assets.getText(path)));
 
 			metaData = meta;
+
+			currentSong.noteLength = 0;
+
+			for (section in currentSong.sectionList)
+				currentSong.noteLength += section.length;
 
 			if (metaData.comboSkin == null)
 				metaData.comboSkin = 'default';

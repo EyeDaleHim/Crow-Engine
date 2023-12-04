@@ -732,22 +732,6 @@ class Stage
 					stageInstance.attributes.set('tankAngle', FlxG.random.int(-90, 45));
 					stageInstance.attributes.set('tankSpeed', FlxG.random.float(5, 7));
 				}
-			case 'backalley':
-					{
-						stageInstance.defaultZoom = 0.90;
-	
-						stageInstance.camPosList.opponentPositions = [{x: 100, y: -100}];
-	
-						var background:BGSprite = new BGSprite({path: 'whittyBack', library: 'backalley'}, {x: -600, y: -200}, {x: 0.9, y: 0.9});
-						background.ID = 0;
-						group.set('back', background);
-	
-						var front:BGSprite = new BGSprite({path: 'whittyFront', library: 'backalley'}, {x: -650, y: 600}, {x: 0.9, y: 0.9});
-						front.scale.set(1.1, 1.1);
-						front.updateHitbox();
-						front.ID = 1;
-						group.set('front', front);
-					}
 			default:
 				{
 					stageInstance.defaultZoom = 0.90;
