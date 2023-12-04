@@ -343,6 +343,8 @@ class PlayState extends MusicBeatState
 						'dark-school';
 					case 'ugh' | 'guns' | 'stress':
 						'warzone';
+					case 'lo-fight':
+						'backalley';	
 					default:
 						'stage-error';
 				};

@@ -1,0 +1,11 @@
+{
+	"name": "backalley",
+	"description": "DADDY DEAREST",
+	"songs": ["Lo Fight"],
+	"defaultIcons": ["dad"],
+	"defaultColors": [-4621347],
+
+	"defaultDifficulty": "Normal",
+	"difficulties": ["Hard"],
+	"displayCharacters": ["dad", "boyfriend", "gf"]
+}
