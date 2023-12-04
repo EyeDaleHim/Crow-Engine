@@ -18,6 +18,8 @@ class Settings
 		prefs = _save.data.settings ?? new Map<String, Dynamic>();
 		controls = _save.data.controls ?? new Map<String, Array<Int>>();
 
+		trace(controls);
+
 		onSet.set('framerate', function(value:Dynamic)
 		{
 			FlxG.drawFramerate = FlxG.updateFramerate = Std.int(FlxMath.bound(value, 60, 240));

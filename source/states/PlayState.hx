@@ -28,7 +28,6 @@ import weeks.WeekHandler;
 import backend.arrays.CircularBuffer;
 import backend.LoadingManager;
 import backend.Transitions;
-import backend.query.ControlQueries;
 #if SCRIPTS_ALLOWED
 import backend.ScriptHandler;
 #end
@@ -765,7 +764,6 @@ class PlayState extends MusicBeatState
 				openSubState(new GameOverSubState());
 			}
 
-			inputQueries.update(elapsed);
 			manageNotes();
 		}
 
@@ -1191,8 +1189,6 @@ class PlayState extends MusicBeatState
 	private var _currentHeldSustains:Map<Int, Array<Note>> = [0 => [], 1 => [], 2 => [], 3 => []];
 
 	private var currentKeys:Array<Bool> = [];
-
-	public var inputQueries:ControlQueries = new ControlQueries();
 
 	public function keyPress(e:KeyboardEvent)
 	{

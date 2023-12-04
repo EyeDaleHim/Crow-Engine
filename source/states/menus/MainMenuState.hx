@@ -62,6 +62,7 @@ class MainMenuState extends MusicBeatState
 		mainBG.updateHitbox();
 		mainBG.screenCenter();
 		mainBG.antialiasing = Settings.getPref('antialiasing', true);
+		mainBG.active = false;
 		add(mainBG);
 
 		flickerBG = new FlxSprite(-80, Paths.image('menus/flickerBG'));
@@ -71,6 +72,7 @@ class MainMenuState extends MusicBeatState
 		flickerBG.screenCenter();
 		flickerBG.visible = false;
 		flickerBG.antialiasing = Settings.getPref('antialiasing', true);
+		flickerBG.active = false;
 		add(flickerBG);
 
 		menuGroup = new FlxTypedGroup<FlxSprite>();
@@ -82,6 +84,7 @@ class MainMenuState extends MusicBeatState
 		versionText.setFormat(Paths.font('vcr.ttf'), 14, 0xFFFFFFFF, LEFT, OUTLINE, 0xFF000000);
 		versionText.updateHitbox();
 		versionText.setPosition(4, FlxG.height - versionText.height - 4);
+		versionText.active = false;
 		add(versionText);
 
 		modText = new FlxText(0, 0, 0, ModManager.mods.length == 1 ? "1 Mod Active" : ModManager.mods.length + "Mods Active");
@@ -90,6 +93,7 @@ class MainMenuState extends MusicBeatState
 		modText.setFormat(Paths.font('vcr.ttf'), 16, 0xFFFFFFFF, RIGHT, OUTLINE, 0xFF000000);
 		modText.updateHitbox();
 		modText.setPosition(FlxG.width - modText.width - 4, FlxG.height - modText.height - 4);
+		modText.active = false;
 		add(modText);
 
 		for (item in menuList)
@@ -113,6 +117,28 @@ class MainMenuState extends MusicBeatState
 
 		super.create();
 
+		InputHandler.registerControl('BACK', function()
+		{
+			MusicBeatState.switchState(new TitleState());
+		});
+
+		InputHandler.registerControl('UI_UP', function()
+		{
+			changeSelection(-1);
+		});
+
+		InputHandler.registerControl('UI_DOWN', function()
+		{
+			changeSelection(1);
+		});
+
+		InputHandler.registerControl('ACCEPT', acceptSelection);
+
+		InputHandler.registerControl(FlxKey.SEVEN, function()
+		{
+			openSubState(new states.debug.EditorSelectionState());
+		});
+
 		changeSelection();
 	}
 
@@ -120,22 +146,6 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		if (controls.getKey('BACK', JUST_PRESSED))
-			MusicBeatState.switchState(new TitleState());
-
-		if (allowControl)
-		{
-			if (controls.getKey('UI_UP', JUST_PRESSED))
-				changeSelection(-1);
-			if (controls.getKey('UI_DOWN', JUST_PRESSED))
-				changeSelection(1);
-			if (controls.getKey('ACCEPT', JUST_PRESSED))
-				acceptSelection();
-		}
-
-		if (FlxG.keys.justPressed.SEVEN)
-			openSubState(new states.debug.EditorSelectionState());
-
 		camFollow.y = Tools.lerpBound(camFollow.y, FlxMath.remapToRange(curSelected, 0, menuList.length - 1, 20, mainBG.x + mainBG.width - 700),
 			(elapsed * 3.175));
 

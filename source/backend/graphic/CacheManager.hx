@@ -30,6 +30,17 @@ class CacheManager
 		DYNAMIC => new Map<String, CachedAsset>()
 	];
 
+	public static function recursiveCache(folder:String, type:AssetTypeData):Array<CachedAsset>
+	{
+		var assets:Array<CachedAsset> = [];
+
+		if (assets.length > 0)
+			return assets;
+
+		trace("Found none!");
+		return [];
+	}
+
 	public static function getBitmap(key:String = ''):FlxGraphic
 	{
 		if (FlxG.bitmap.checkCache(key))

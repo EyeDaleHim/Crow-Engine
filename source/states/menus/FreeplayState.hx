@@ -89,8 +89,7 @@ class FreeplayState extends MusicBeatState
 			if (iconObject.animation.curAnim != null && iconObject.animation.curAnim.numFrames <= 1)
 				iconObject.animation.curAnim.paused = true;
 
-			var metaData:SongMetadata = new SongMetadata(song.name, Std.int(len + 1), song.difficulties,
-				song.color);
+			var metaData:SongMetadata = new SongMetadata(song.name, Std.int(len + 1), song.difficulties, song.color);
 			// metaData.
 			metaData.weekName = song.parentWeek;
 
@@ -112,6 +111,75 @@ class FreeplayState extends MusicBeatState
 
 		updateScore(FlxMath.MAX_VALUE_FLOAT);
 
+		InputHandler.registerControl('BACK', function()
+		{
+			if (!canPress)
+				return;
+
+			canPress = false;
+			MusicBeatState.switchState(new MainMenuState());
+
+			if (lastPlayed != '')
+			{
+				FlxG.sound.music.fadeOut(0.5, 0.0, function(twn)
+				{
+					FlxG.sound.playMusic(Paths.music('freakyMenu'));
+				});
+			}
+		});
+
+		InputHandler.registerControl('ACCEPT', function()
+		{
+			if (!canPress)
+				return;
+
+			canPress = false;
+
+			if (Song.currentSong != null)
+			{
+				if (lastPlayed != Song.currentSong.song)
+				{
+					CacheManager.clearAudio(Paths.instPath(lastPlayed));
+					CacheManager.clearAudio(Paths.vocalsPath(lastPlayed));
+
+					lastPlayed = Song.currentSong.song;
+				}
+			}
+
+			Paths.currentLibrary = songs[curSelected].weekName;
+			PlayState.songDiff = curDifficulty;
+
+			FlxG.sound.music.fadeOut(0.5, 0.0);
+
+			Song.loadSong(songs[curSelected].name.formatToReadable(), availableDifficulties[curDifficulty]);
+
+			LoadingManager.startGame();
+		});
+
+		InputHandler.registerControl('UI_LEFT', function()
+		{
+			if (canPress)
+				changeDiff(-1);
+		});
+
+		InputHandler.registerControl('UI_RIGHT', function()
+		{
+			if (canPress)
+				changeDiff(1);
+		});
+
+		InputHandler.registerControl('UI_UP', function()
+		{
+			if (canPress)
+				changeSelection(-1);
+		});
+
+		InputHandler.registerControl('UI_DOWN', function()
+		{
+			if (canPress)
+				changeSelection(1);
+		});
+
 		super.create();
 	}
 
@@ -125,59 +193,6 @@ class FreeplayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		if (canPress)
-		{
-			if (controls.getKey('BACK', JUST_PRESSED))
-			{
-				canPress = false;
-				MusicBeatState.switchState(new MainMenuState());
-
-				if (lastPlayed != '')
-				{
-					FlxG.sound.music.fadeOut(0.5, 0.0, function(twn)
-					{
-						FlxG.sound.playMusic(Paths.music('freakyMenu'));
-					});
-				}
-			}
-			else if (controls.getKey('ACCEPT', JUST_PRESSED))
-			{
-				canPress = false;
-
-				if (Song.currentSong != null)
-				{
-					if (lastPlayed != Song.currentSong.song)
-					{
-						CacheManager.clearAudio(Paths.instPath(lastPlayed));
-						CacheManager.clearAudio(Paths.vocalsPath(lastPlayed));
-
-						lastPlayed = Song.currentSong.song;
-					}
-				}
-
-				Paths.currentLibrary = songs[curSelected].weekName;
-				PlayState.songDiff = curDifficulty;
-
-				FlxG.sound.music.fadeOut(0.5, 0.0);
-
-				Song.loadSong(songs[curSelected].name.formatToReadable(), availableDifficulties[curDifficulty]);
-
-				LoadingManager.startGame();
-			}
-			else
-			{
-				if (controls.getKey('UI_UP', JUST_PRESSED))
-					changeSelection(-1);
-				else if (controls.getKey('UI_DOWN', JUST_PRESSED))
-					changeSelection(1);
-
-				if (controls.getKey('UI_LEFT', JUST_PRESSED))
-					changeDiff(-1);
-				else if (controls.getKey('UI_RIGHT', JUST_PRESSED))
-					changeDiff(1);
-			}
-		}
-
 		songList.forEachExists(function(txt:Alphabet)
 		{
 			if (!txt.active)

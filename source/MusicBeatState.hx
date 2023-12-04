@@ -50,8 +50,6 @@ class MusicBeatState extends FlxUIState
 			});
 		}
 
-		super.create();
-
 		#if SCRIPTS_ALLOWED
 		for (key => script in TeaScript.global)
 			script.call("create", []);
@@ -227,5 +225,12 @@ class MusicBeatState extends FlxUIState
 		{
 			FlxTween.tween(FlxG.sound.music, {volume: 1}, 1.5);
 		}
+	}
+
+	override public function destroy():Void
+	{
+		InputHandler.clearInputs();
+
+		super.destroy();
 	}
 }

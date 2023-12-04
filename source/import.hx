@@ -30,11 +30,14 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxSort;
 import flixel.util.FlxDestroyUtil;
 
+import flixel.input.keyboard.FlxKey;
+
 import tjson.TJSON as Json;
 
 import openfl.Assets;
 import sys.FileSystem;
 
+import backend.InputHandler;
 import backend.data.Settings;
 import backend.data.Controls;
 import backend.InternalHelper;

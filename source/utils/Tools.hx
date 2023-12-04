@@ -107,6 +107,16 @@ class Tools
 		return diffArray;
 	}
 
+	public static function chunk(arr:Array<Any>, size:Int):Array<Array<Any>>
+	{
+		var newArray:Array<Array<Any>> = [];
+
+		for (i in 0...arr.length)
+			newArray.push(arr.slice(i * size, i * size + size));
+
+		return newArray;
+	}
+
 	public static function formatAccuracy(value:Float)
 	{
 		var str = Std.string(value);

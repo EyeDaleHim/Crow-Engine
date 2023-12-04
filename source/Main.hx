@@ -111,6 +111,8 @@ class Main extends Sprite
 
 		addChild(gameInstance);
 
+		InputHandler.init();
+
 		#if ALLOW_FLIXEL_SLEEPING
 		_MUTEX = new Mutex();
 
