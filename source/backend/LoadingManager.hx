@@ -188,8 +188,6 @@ class LoadingManager extends MusicBeatState
 	{
 		var stageName:String = 'stage';
 
-		trace(Song.currentSong.song.toLowerCase().replace(' ', '-'));
-
 		if (Song.currentSong != null)
 		{
 			stageName = switch (Song.currentSong.song.toLowerCase().replace(' ', '-'))
@@ -212,8 +210,6 @@ class LoadingManager extends MusicBeatState
 					'dark-school';
 				case 'ugh' | 'guns' | 'stress':
 					'warzone';
-				case 'lo-fight':
-					'backalley';
 				default:
 					'stage-error';
 			};

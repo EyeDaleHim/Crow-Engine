@@ -160,7 +160,7 @@ class FreeplayState extends MusicBeatState
 
 				FlxG.sound.music.fadeOut(0.5, 0.0);
 
-				Song.loadSong(songs[curSelected].name.formatToReadable(), 'hard');
+				Song.loadSong(songs[curSelected].name.formatToReadable(), availableDifficulties[curDifficulty]);
 
 				LoadingManager.startGame();
 			}
