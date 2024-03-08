@@ -30,8 +30,6 @@ class AssetsMacro
 
         exportLocation += "bin/";
 
-		trace(exportLocation);
-
 		function embedFile(filePath:String)
 		{
 			if (!ignoredExtensions.contains(Path.extension(filePath)))

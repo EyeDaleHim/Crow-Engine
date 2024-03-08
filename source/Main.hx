@@ -5,7 +5,7 @@ class Main extends Sprite
 	static final game = {
 		width: 1280, // Game Width
 		height: 720, // Game Height
-		initialState: FlxState, // The State when the game starts
+		initialState: states.menus.MainMenuState, // The State when the game starts
 		framerate: 60, // Default Framerate of the Game
 		skipSplash: true, // Skipping Flixel's Splash Screen
 		startFullscreen: false // If the game should start fullscreen
@@ -25,12 +25,7 @@ class Main extends Sprite
 
 		instance = this;
 
-		// splashScreen();
-
-		if (game.framerate > 900)
-		{
-			game.framerate = 900;
-		}
+		game.framerate = Math.min(game.framerate, 480).floor();
 
 		if (stage != null)
 		{
@@ -51,5 +46,6 @@ class Main extends Sprite
 
 		gameInstance = new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate,
 			game.skipSplash, game.startFullscreen);
+		addChild(gameInstance);
 	}
 }

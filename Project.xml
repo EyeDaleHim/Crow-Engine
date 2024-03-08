@@ -99,6 +99,8 @@
 	<warning value="flixel 4.11.0 is no longer supported for Crow Engine, use 5.2.2 and above." if="{flixel &lt;= 4.11.0 }"/>
 	<warning value="flixel-addons 2.11.0 is no longer supported for Crow Engine, use 3.1.0" if="${flixel-addons &lt;= 2.11.0}"/>
 
+	<haxeflag name="--macro macros.AssetsMacro.build()"/>
+
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
