@@ -54,7 +54,7 @@ class Assets
 		// hardware = Settings.gpu && hardware;
 
 		var bitmap:BitmapData = null;
-        var graphic:FlxGraphic = null;
+		var graphic:FlxGraphic = null;
 		var file:String = imagePath(path);
 
 		if (graphicCache.exists(file))
@@ -81,45 +81,66 @@ class Assets
 				}
 			}
 
-            graphic = FlxGraphic.fromBitmapData(bitmap, false, file);
-            graphic.persist = true;
-            graphic.destroyOnNoUse = false;
+			graphic = FlxGraphic.fromBitmapData(bitmap, false, file);
+			graphic.persist = true;
+			graphic.destroyOnNoUse = false;
 
-            FlxG.bitmap.addGraphic(graphic);
+			FlxG.bitmap.addGraphic(graphic);
 		}
 
 		return graphic;
 	}
 
-    public static function sound(path:String, type:SoundType):Sound
-    {
-        var file:String = soundPath(path, type);
-        var sound:Sound = null;
+	public static function frames(path:String):FlxFramesCollection
+	{
+		var image:FlxGraphic = image(path);
+		var xml:String = readText(imagePath(path).replace('.png', '.xml'));
 
-		trace(FileSystem.exists(file));
-		trace(file);
-        if (soundCache.exists(file))
-        {
-            return soundCache.get(file);
-        }
-        else if (FileSystem.exists(file))
-        {
-            sound = Sound.fromFile(file);
+		var returnedFrames:FlxAtlasFrames = null;
 
-            soundCache.set(file, sound);
-        }
+		try
+		{
+			returnedFrames = FlxAtlasFrames.fromSparrow(image, xml);
+		} catch (e)
+		{
+			trace(e.toString());
+			if (xml.length == 0)
+				return FlxImageFrame.fromFrame(FlxG.bitmap.whitePixel);
+		}
 
-        return sound;
-    }
+		if (returnedFrames == null)
+			return FlxImageFrame.fromFrame(FlxG.bitmap.whitePixel);
+
+		return returnedFrames;
+	}
+
+	public static function sound(path:String, type:SoundType):Sound
+	{
+		var file:String = soundPath(path, type);
+		var sound:Sound = null;
+
+		if (soundCache.exists(file))
+		{
+			return soundCache.get(file);
+		}
+		else if (FileSystem.exists(file))
+		{
+			sound = Sound.fromFile(file);
+
+			soundCache.set(file, sound);
+		}
+
+		return sound;
+	}
 
 	public static function music(path:String):Sound
 	{
-        return sound(path, MUSIC);
+		return sound(path, MUSIC);
 	}
 
 	public static function sfx(path:String):Sound
 	{
-        return sound(path, SFX);
+		return sound(path, SFX);
 	}
 
 	static function get_graphicCache():Map<String, FlxGraphic>
