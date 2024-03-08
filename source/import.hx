@@ -12,6 +12,8 @@ import flixel.graphics.FlxGraphic;
 
 import flixel.sound.FlxSound;
 
+import flixel.util.FlxSignal.FlxTypedSignal;
+
 import system.Assets;
 #end
 
