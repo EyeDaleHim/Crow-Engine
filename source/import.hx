@@ -11,6 +11,8 @@ import flixel.FlxCamera;
 import flixel.graphics.FlxGraphic;
 
 import flixel.sound.FlxSound;
+
+import system.Assets;
 #end
 
 import openfl.display.Sprite;
@@ -23,3 +25,6 @@ import openfl.media.Sound;
 import openfl.Lib;
 
 import haxe.io.Bytes;
+
+using StringTools;
+using Math;

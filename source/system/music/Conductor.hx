@@ -10,12 +10,12 @@ class Conductor extends FlxBasic
     public var step:Float = 0.0;
     public var section:Float = 0.0;
 
-    public function getBeat():Int
+    public function getBeat(floor:Bool = true):Float
     {}
 
-    public function getStep():Int
+    public function getStep(floor:Bool = true):Float
     {}
 
-    public function getSection():Int
+    public function getSection(floor:Bool = true):Float
     {}
 }
