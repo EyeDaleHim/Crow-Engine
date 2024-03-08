@@ -1,5 +1,0 @@
-package game;
-
-class SubtitleHandler
-{
-}
