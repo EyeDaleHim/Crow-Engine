@@ -8,6 +8,8 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
 
+import flixel.effects.FlxFlicker;
+
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFramesCollection;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -25,6 +27,7 @@ import flixel.sound.FlxSoundGroup;
 
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
+import flixel.util.FlxTimer;
 
 import system.Assets;
 import system.music.Music;
