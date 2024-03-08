@@ -18,7 +18,7 @@ class MainMenuState extends MainState
 	{
 		super.create();
 
-		musicHandler.safePlayInst("freakyMenu", 0.8);
+		MainState.musicHandler.safePlayInst("freakyMenu", 0.8);
 
 		background = new FlxSprite(Assets.image('menus/mainBG'));
 		background.scrollFactor.y = 0.20;
@@ -61,14 +61,16 @@ class MainMenuState extends MainState
 
 	override public function update(elapsed:Float)
 	{
-		if (FlxG.keys.anyJustPressed([W, UP]))
-			changeItem(-1);
-		if (FlxG.keys.anyJustPressed([S, DOWN]))
-			changeItem(1);
-        if (FlxG.keys.justPressed.ENTER && !selected)
-            selectItem();
-
-		if (selected)
+		if (!selected)
+		{
+			if (FlxG.keys.anyJustPressed([W, UP]))
+				changeItem(-1);
+			if (FlxG.keys.anyJustPressed([S, DOWN]))
+				changeItem(1);
+			if (FlxG.keys.justPressed.ENTER)
+				selectItem();
+		}
+		else
 		{
 			menuItems.forEach(function(spr:FlxSprite)
 			{
@@ -90,12 +92,16 @@ class MainMenuState extends MainState
 		FlxFlicker.flicker(flicker, 1.0, 0.15);
 		FlxFlicker.flicker(menuItems.members[selectedItem], 1.0, 0.06);
 
-        FlxG.sound.play(Assets.sfx("menu/confirmMenu"), 0.7);
+		FlxG.sound.play(Assets.sfx("menu/confirmMenu"), 0.7);
 
 		FlxTimer.wait(1.0, function()
 		{
 			switch (itemList[selectedItem])
 			{
+				case "freeplay":
+					{
+						FlxG.switchState(states.menus.FreeplayState.new);
+					}
 				default:
 					{
 						// do something...
@@ -106,12 +112,12 @@ class MainMenuState extends MainState
 								spr.alpha = 1.0;
 						});
 
-                        selected = false;
+						selected = false;
 					}
 			}
 		});
 
-        selected = true;
+		selected = true;
 	}
 
 	public function changeItem(change:Int = 0)

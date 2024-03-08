@@ -37,7 +37,7 @@ class Alphabet extends FlxObject
 		this.bold = bold;
 		this.alignment = alignment;
 
-		Assets.image('alphabet');
+		frames = Assets.frames('alphabet');
 	}
 
 	override public function update(elapsed:Float)

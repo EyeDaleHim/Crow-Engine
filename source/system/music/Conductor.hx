@@ -9,9 +9,9 @@ class Conductor extends FlxBasic
     public var position:Float = 0.0;
     public var offset:Float = 0.0;
 
-    public var bpm(default, set):Float = 100;
-    public var crochet(default, null):Float = 0.0;
-    public var stepCrochet(default, null):Float = 0.0;
+    public var bpm:Float = 100;
+    public var crochet(get, never):Float;
+    public var stepCrochet(get, never):Float;
 
     public final onStep:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
     public final onBeat:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
@@ -26,8 +26,18 @@ class Conductor extends FlxBasic
     public var lastSection(null, default):Int = -1;
 
     #if FLX_DEBUG
-    public var addOnWatch:Bool = false;
+    public var canWatch:Bool = true;
     #end
+
+    public static function createNewConductor(sound:FlxSound, bpm:Float = 100.0)
+    {
+        var newConductor:Conductor = new Conductor();
+        newConductor.sound = sound;
+        newConductor.bpm = bpm;
+        newConductor.ID = list.length;
+
+        list.push(newConductor);
+    }
 
     override public function new()
     {
@@ -64,16 +74,16 @@ class Conductor extends FlxBasic
         }
 
         #if FLX_DEBUG
-        if (addOnWatch)
+        if (canWatch)
         {
             FlxG.watch.addQuick("Conductor ID", ID);
 
             FlxG.watch.addQuick("", "");
             
-            FlxG.watch.addQuick("Position", position);
-            FlxG.watch.addQuick("Beat [Floored, Current]", [getBeat(), getBeat(false)]);
-            FlxG.watch.addQuick("Step [Floored, Current]", [getStep(), getStep(false)]);
-            FlxG.watch.addQuick("Section [Floored, Current]", [getSection(), getSection(false)]);
+            FlxG.watch.addQuick("Position", position.floor());
+            FlxG.watch.addQuick("Beat", getBeat());
+            FlxG.watch.addQuick("Step", getStep());
+            FlxG.watch.addQuick("Section", getSection());
         }
         #end
 
@@ -90,7 +100,7 @@ class Conductor extends FlxBasic
     public function getStep(floor:Bool = true):Float
     {
         if (floor)
-            step.floor();
+            return step.floor();
         return step;
     }
 
@@ -108,13 +118,13 @@ class Conductor extends FlxBasic
         onSection.removeAll();
     }
 
-    function set_bpm(newBPM:Float):Float
+    function get_crochet():Float
     {
-        bpm = newBPM;
+        return ((60 / bpm) * 1000);
+    }
 
-        crochet = ((60 / bpm) * 1000);
-        stepCrochet = crochet / 4;
-
-        return newBPM;
+    function get_stepCrochet():Float
+    {
+        return crochet / 4;
     }
 }

@@ -18,7 +18,8 @@ import flixel.graphics.frames.FlxImageFrame;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 
-import flixel.math.FlxMath;
+using flixel.math.FlxMath;
+
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 
@@ -29,8 +30,13 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.util.FlxTimer;
 
+import states.MainState;
+
 import system.Assets;
+
 import system.music.Music;
+import system.music.Conductor;
+
 #end
 
 import openfl.display.BitmapData;
