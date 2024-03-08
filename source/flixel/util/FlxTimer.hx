@@ -19,6 +19,7 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
  * @see [FlxG.fixedTimestep](https://api.haxeflixel.com/flixel/FlxG.html#fixedTimestep)
  * @see [FlxG.timeScale](https://api.haxeflixel.com/flixel/FlxG.html#timeScale)
  */
+ // shadowing until the next flixel version releases
 class FlxTimer implements IFlxDestroyable
 {
 	/**
