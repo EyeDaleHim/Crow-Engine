@@ -1,5 +1,7 @@
 package system;
 
+import flixel.system.FlxAssets;
+
 class Assets
 {
 	public static var graphicCache(get, never):Map<String, FlxGraphic>;
@@ -21,6 +23,7 @@ class Assets
 		if (type != null)
 			truePath += type;
 		truePath += '/$path';
+		truePath += '.${FlxAssets.defaultSoundExtension}';
 		return truePath;
 	}
 
@@ -33,11 +36,7 @@ class Assets
 	public static function readBytes(path:String):Bytes
 	{
 		if (FileSystem.exists(path))
-		{
-			trace("Got path");
 			return File.getBytes(path);
-		}
-		trace('didnt find path');
 
 		return null;
 	}
@@ -53,7 +52,6 @@ class Assets
 	public static function image(path:String, hardware:Bool = true):FlxGraphic
 	{
 		// hardware = Settings.gpu && hardware;
-
 
 		var bitmap:BitmapData = null;
         var graphic:FlxGraphic = null;
@@ -98,6 +96,8 @@ class Assets
         var file:String = soundPath(path, type);
         var sound:Sound = null;
 
+		trace(FileSystem.exists(file));
+		trace(file);
         if (soundCache.exists(file))
         {
             return soundCache.get(file);

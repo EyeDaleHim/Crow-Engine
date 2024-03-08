@@ -25,6 +25,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
 
 import system.Assets;
+import system.music.Music;
 #end
 
 import openfl.display.BitmapData;
