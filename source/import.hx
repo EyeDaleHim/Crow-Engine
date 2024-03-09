@@ -11,6 +11,7 @@ import flixel.FlxCamera;
 import flixel.effects.FlxFlicker;
 
 import flixel.graphics.FlxGraphic;
+import flixel.graphics.frames.FlxFrame;
 import flixel.graphics.frames.FlxFramesCollection;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.frames.FlxImageFrame;
@@ -37,6 +38,7 @@ import system.Assets;
 import system.music.Music;
 import system.music.Conductor;
 
+import objects.sprites.Alphabet;
 #end
 
 import openfl.display.BitmapData;
@@ -47,6 +49,8 @@ import openfl.events.Event;
 import openfl.events.KeyboardEvent;
 
 import openfl.geom.ColorTransform;
+import openfl.geom.Rectangle;
+import openfl.geom.Point;
 
 import openfl.media.Sound;
 
