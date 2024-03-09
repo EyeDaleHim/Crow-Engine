@@ -38,9 +38,7 @@ class Alphabet extends FlxObject
 	public var frameRate:Float = 24.0;
 
 	private var _flashPoint:Point;
-
 	private var _flashRect:Rectangle;
-	private var _flashRect2:Rectangle;
 
 	public function new(?x:Float = 0, ?y:Float = 0, text:String = "", bold:Bool = true, alignment:Alignment = LEFT)
 	{
@@ -69,6 +67,23 @@ class Alphabet extends FlxObject
 				{
 					final letter:String = letters.charAt(i);
 					final output:String = '$letter $type';
+					final animFrames:Array<FlxFrame> = new Array<FlxFrame>();
+
+					findByPrefix(animFrames, output); // adds valid frames to animFrames
+
+					if (animFrames.length > 0)
+						animationHash.set(output, animFrames);
+					else
+						FlxG.log.error('Could not create a hash for "${output}');
+				}
+			}
+
+			for (suffix in ['', ' bold'])
+			{
+				for (i in 0...numbers.length)
+				{
+					final number:String = numbers.charAt(i);
+					final output:String = '$number$suffix';
 					final animFrames:Array<FlxFrame> = new Array<FlxFrame>();
 
 					findByPrefix(animFrames, output); // adds valid frames to animFrames
@@ -111,10 +126,12 @@ class Alphabet extends FlxObject
 			if (!camera.visible || !camera.exists || !isOnScreen(camera))
 				continue;
 
-			//i f (isSimpleRender())
-				drawSimple();
+			setSize(0, 0);
+
+			// i f (isSimpleRender())
+			drawSimple();
 			/*else
-				drawComplex();*/
+				drawComplex(); */
 		}
 
 		#if FLX_DEBUG
@@ -147,25 +164,53 @@ class Alphabet extends FlxObject
 	function drawSimple():Void
 	{
 		var _addedPoint:FlxPoint = FlxPoint.get();
-		
+
 		for (i in 0...text.length)
 		{
-			var animToPlay:String = getAnimName(text.charAt(i)); 
+			var char:String = text.charAt(i);
+
+			switch (char)
+			{
+				case " ":
+					{
+						_addedPoint.add(40);
+						continue;
+					}
+				case '\n':
+					{
+						_addedPoint.set(0, height);
+						continue;
+					}
+			}
+
+			var animToPlay:String = getAnimName(char);
 			var _frame:FlxFrame = null;
 			if (Alphabet.animationHash.exists(animToPlay))
 				_frame = Alphabet.animationHash.get(animToPlay)[curFrame];
+			else
+			{
+				_addedPoint.add(40);
+				FlxG.log.error('Alphabet character ${char} is invalid.');
+				continue;
+			}
 
 			var _pixels:BitmapData = _frame.parent.bitmap;
 
 			_flashRect.setTo(0, 0, _frame.frame.width, _frame.frame.height);
-			
+
 			getScreenPosition(_point, camera);
+
+			if (!bold)
+				_flashRect.width += 2;
+
+			_point.scale(scale.x, scale.y);
 			_point.add(_addedPoint.x, _addedPoint.y);
+
 			if (isPixelPerfectRender(camera))
 				_point.floor();
 
 			_addedPoint.add(_flashRect.width, 0);
-			
+
 			if (!camera.containsPoint(_point, _flashRect.width, _flashRect.height))
 				continue;
 
@@ -181,7 +226,7 @@ class Alphabet extends FlxObject
 	{
 		for (i in 0...text.length)
 		{
-			var animToPlay:String = getAnimName(text.charAt(i)); 
+			var animToPlay:String = getAnimName(text.charAt(i));
 		}
 	}
 
@@ -206,7 +251,7 @@ class Alphabet extends FlxObject
 
 		_flashPoint = new Point();
 		_flashRect = new Rectangle();
-		_flashRect2 = new Rectangle();
+
 		scale = FlxPoint.get(1, 1);
 	}
 

@@ -12,7 +12,7 @@ class FreeplayState extends MainState
 		background.active = false;
 		add(background);
 
-        alphabetTest = new Alphabet(100, 100, "testing");
+        alphabetTest = new Alphabet(100, 100, "testing1234567890");
         add(alphabetTest);
 
         super.create();
