@@ -1,11 +1,6 @@
 {
-	"name": "week6",
-	"description": "HATING SIMULATOR ft. Moawling",
-	"songs": ["Senpai", "Roses", "Thorns"],
-    "defaultIcons": ["senpai", "senpai", "spirit"],
-    "defaultColors": [-34625],
-	
-	"defaultDifficulty": "Normal",
-	"difficulties": ["Easy", "Normal", "Hard"],
-	"displayCharacters": ["pixel", "boyfriend", "gf"]
+    "name": "Week 6",
+    "description": "HATING SIMULATOR FT. MOAWLING",
+    "characters": ["senpai", "bf", "gf"],
+    "songList": ["Senpai", "Roses", "Thorns"]
 }

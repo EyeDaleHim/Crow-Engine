@@ -1,11 +1,6 @@
 {
-	"name": "week5",
-	"description": "Red Snow",
-	"songs": ["Cocoa", "Eggnog", "Winter Horrorland"],
-    "defaultIcons": ["parents", "parents", "monster"],
-    "defaultColors": [-6237697],
-	
-	"defaultDifficulty": "Normal",
-	"difficulties": ["Easy", "Normal", "Hard"],
-	"displayCharacters": ["parents", "boyfriend", "gf"]
+    "name": "Week 5",
+    "description": "RED SNOW",
+    "characters": ["mom", "bf", "gf"],
+    "songList": ["Cocoa", "Eggnog", "Winter Horrorland"]
 }

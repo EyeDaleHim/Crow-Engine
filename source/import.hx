@@ -12,6 +12,7 @@ import flixel.effects.FlxFlicker;
 
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFrame;
+import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
 import flixel.graphics.frames.FlxFramesCollection;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.frames.FlxImageFrame;
@@ -23,6 +24,7 @@ using flixel.math.FlxMath;
 
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
+import flixel.math.FlxMatrix;
 
 import flixel.sound.FlxSound;
 import flixel.sound.FlxSoundGroup;
@@ -34,6 +36,13 @@ import flixel.util.FlxTimer;
 import states.MainState;
 
 import system.Assets;
+import system.DataManager;
+
+import system.data.ChartData;
+import system.data.SongDisplayData;
+import system.data.SongMetadata;
+import system.data.WeekMetadata;
+import system.data.WeekGlobalMetadata;
 
 import system.music.Music;
 import system.music.Conductor;
@@ -59,7 +68,10 @@ import openfl.Lib;
 import sys.FileSystem;
 import sys.io.File;
 
+import haxe.Json;
+
 import haxe.io.Bytes;
 
 using StringTools;
 using Math;
+using flixel.util.FlxColorTransformUtil;

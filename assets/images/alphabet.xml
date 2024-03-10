@@ -58,22 +58,22 @@
 	<SubTexture name="0 bold0001" x="39" y="80" width="45" height="65"/>
 	<SubTexture name="0 bold0002" x="88" y="80" width="45" height="65"/>
 	<SubTexture name="0 bold0003" x="88" y="80" width="45" height="65"/>
-	<SubTexture name="10000" x="137" y="80" width="23" height="53"/>
-	<SubTexture name="10001" x="137" y="80" width="23" height="53"/>
-	<SubTexture name="10002" x="164" y="80" width="23" height="53"/>
-	<SubTexture name="10003" x="164" y="80" width="23" height="53"/>
+	<SubTexture name="10000" x="137" y="80" width="24" height="53"/>
+	<SubTexture name="10001" x="137" y="80" width="24" height="53"/>
+	<SubTexture name="10002" x="164" y="80" width="24" height="53"/>
+	<SubTexture name="10003" x="164" y="80" width="24" height="53"/>
 	<SubTexture name="1 bold0000" x="191" y="80" width="31" height="64"/>
 	<SubTexture name="1 bold0001" x="191" y="80" width="31" height="64"/>
 	<SubTexture name="1 bold0002" x="226" y="80" width="31" height="64"/>
 	<SubTexture name="1 bold0003" x="226" y="80" width="31" height="64"/>
 	<SubTexture name="20000" x="261" y="80" width="37" height="52"/>
 	<SubTexture name="20001" x="261" y="80" width="37" height="52"/>
-	<SubTexture name="20002" x="302" y="80" width="36" height="52" frameX="0" frameY="0" frameWidth="37" frameHeight="52"/>
-	<SubTexture name="20003" x="302" y="80" width="36" height="52" frameX="0" frameY="0" frameWidth="37" frameHeight="52"/>
+	<SubTexture name="20002" x="302" y="80" width="37" height="52" frameX="0" frameY="0" frameWidth="37" frameHeight="52"/>
+	<SubTexture name="20003" x="302" y="80" width="37" height="52" frameX="0" frameY="0" frameWidth="37" frameHeight="52"/>
 	<SubTexture name="2 bold0000" x="342" y="80" width="47" height="63"/>
 	<SubTexture name="2 bold0001" x="342" y="80" width="47" height="63"/>
-	<SubTexture name="2 bold0002" x="393" y="80" width="45" height="63" frameX="-1" frameY="0" frameWidth="47" frameHeight="63"/>
-	<SubTexture name="2 bold0003" x="393" y="80" width="45" height="63" frameX="-1" frameY="0" frameWidth="47" frameHeight="63"/>
+	<SubTexture name="2 bold0002" x="393" y="80" width="47" height="63" frameX="-1" frameY="0" frameWidth="47" frameHeight="63"/>
+	<SubTexture name="2 bold0003" x="393" y="80" width="47" height="63" frameX="-1" frameY="0" frameWidth="47" frameHeight="63"/>
 	<SubTexture name="30000" x="442" y="80" width="34" height="56"/>
 	<SubTexture name="30001" x="442" y="80" width="34" height="56"/>
 	<SubTexture name="30002" x="480" y="80" width="34" height="55" frameX="0" frameY="0" frameWidth="34" frameHeight="56"/>

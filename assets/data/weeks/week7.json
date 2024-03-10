@@ -1,11 +1,6 @@
 {
-	"name": "week7",
-	"description": "TANKMAN",
-	"songs": ["Ugh", "Guns", "Stress"],
-    "defaultIcons": ["tankman"],
-	"defaultColors": [-608764],
-
-	"defaultDifficulty": "Normal",
-	"difficulties": ["Easy", "Normal", "Hard"],
-	"displayCharacters": ["tankman", "boyfriend", "gf"]
+    "name": "Week 7",
+    "description": "TANKMAN",
+    "characters": ["tankman", "bf", "gf"],
+    "songList": ["Ugh", "Guns", "Stress"]
 }

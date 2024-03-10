@@ -2,19 +2,81 @@ package states.menus;
 
 class FreeplayState extends MainState
 {
-    public var background:FlxSprite;
+	public static var selected:Int = 0;
 
-    public var alphabetTest:Alphabet;
+	public var background:FlxSprite;
 
-    override function create()
-    {
-        background = new FlxSprite(Assets.image('menus/freeplayBG'));
+	public var songs:Array<SongDisplayData> = [];
+	public var songGroup:FlxTypedGroup<Alphabet>;
+
+	public var alphabetTest:Alphabet;
+
+	override function create()
+	{
+		background = new FlxSprite(Assets.image('menus/freeplayBG'));
 		background.active = false;
 		add(background);
 
-        alphabetTest = new Alphabet(100, 100, "testing1234567890");
-        add(alphabetTest);
+		songGroup = new FlxTypedGroup<Alphabet>();
+		add(songGroup);
 
-        super.create();
-    }
+		var index:Int = 0;
+		for (week in DataManager.weekList)
+		{
+			for (song in week.songList)
+			{
+				var songItem:Alphabet = new Alphabet(20 * (1 + index), 60 * (1 + index), song);
+				songItem.ID = index;
+
+				songGroup.add(songItem);
+
+				if (index == selected)
+					songItem.alpha = 1;
+				else
+					songItem.alpha = 0.6;
+
+				index++;
+			}
+		}
+
+		super.create();
+	}
+
+	override function update(elapsed:Float)
+	{
+        if (FlxG.keys.anyJustPressed([W, UP]))
+            changeItem(-1);
+        if (FlxG.keys.anyJustPressed([S, DOWN]))
+            changeItem(1);
+
+		songGroup.forEach(function(text:Alphabet)
+		{
+			var textPos:FlxPoint = FlxPoint.get();
+
+			textPos.x = 90 + (35 * (text.ID - selected));
+
+			var center:Float = (FlxG.height / 2) - (text.height / 2);
+
+			textPos.y = center + (165 * (text.ID - selected));
+
+			text.x = FlxMath.lerp(text.x, textPos.x, FlxMath.bound(elapsed * 7, 0, 1));
+			text.y = FlxMath.lerp(text.y, textPos.y, FlxMath.bound(elapsed * 7, 0, 1));
+		});
+
+		super.update(elapsed);
+	}
+
+	public function changeItem(change:Int = 0)
+	{
+        if (songGroup.members[selected] != null)
+            songGroup.members[selected].alpha = 0.6;
+
+		selected = FlxMath.wrap(selected + change, 0, songGroup.length - 1);
+
+		if (change != 0)
+			FlxG.sound.play(Assets.sfx("menu/scrollMenu"), 0.5);
+
+        if (songGroup.members[selected] != null)
+            songGroup.members[selected].alpha = 1.0;
+	}
 }

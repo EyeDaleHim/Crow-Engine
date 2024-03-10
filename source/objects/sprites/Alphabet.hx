@@ -13,7 +13,7 @@ class Alphabet extends FlxObject
 
 	public var antialiasing:Bool = FlxSprite.defaultAntialiasing;
 
-	public var alpha:Float = 1.0;
+	public var alpha(default, set):Float = 1.0;
 
 	public var bakedRotationAngle(default, null):Float = 0;
 
@@ -39,6 +39,8 @@ class Alphabet extends FlxObject
 
 	private var _flashPoint:Point;
 	private var _flashRect:Rectangle;
+
+	private var _matrix:FlxMatrix;
 
 	public function new(?x:Float = 0, ?y:Float = 0, text:String = "", bold:Bool = true, alignment:Alignment = LEFT)
 	{
@@ -128,10 +130,10 @@ class Alphabet extends FlxObject
 
 			setSize(0, 0);
 
-			// i f (isSimpleRender())
-			drawSimple();
-			/*else
-				drawComplex(); */
+			if (isSimpleRender())
+				drawSimple();
+			else
+				drawComplex();
 		}
 
 		#if FLX_DEBUG
@@ -196,14 +198,13 @@ class Alphabet extends FlxObject
 
 			var _pixels:BitmapData = _frame.parent.bitmap;
 
-			_flashRect.setTo(0, 0, _frame.frame.width, _frame.frame.height);
+			_flashRect.setTo(0, 0, _frame.sourceSize.x, _frame.sourceSize.y);
 
 			getScreenPosition(_point, camera);
 
 			if (!bold)
 				_flashRect.width += 2;
 
-			_point.scale(scale.x, scale.y);
 			_point.add(_addedPoint.x, _addedPoint.y);
 
 			if (isPixelPerfectRender(camera))
@@ -224,25 +225,80 @@ class Alphabet extends FlxObject
 
 	function drawComplex():Void
 	{
+		var _addedPoint:FlxPoint = FlxPoint.get();
+
 		for (i in 0...text.length)
 		{
-			var animToPlay:String = getAnimName(text.charAt(i));
+			var char:String = text.charAt(i);
+
+			switch (char)
+			{
+				case " ":
+					{
+						_addedPoint.add(40 * scale.x);
+						continue;
+					}
+				case '\n':
+					{
+						_addedPoint.set(0, height * scale.y);
+						continue;
+					}
+			}
+
+			var animToPlay:String = getAnimName(char);
+			var _frame:FlxFrame = null;
+			if (Alphabet.animationHash.exists(animToPlay))
+				_frame = Alphabet.animationHash.get(animToPlay)[curFrame];
+			else
+			{
+				_addedPoint.add(40 * scale.x);
+				FlxG.log.error('Alphabet character ${char} is invalid.');
+				continue;
+			}
+
+			var _pixels:BitmapData = _frame.parent.bitmap;
+
+			_flashRect.setTo(0, 0, _frame.sourceSize.x, _frame.sourceSize.y);
+
+			var center:FlxPoint = FlxPoint.get(_flashRect.width / 2, _flashRect.height / 2);
+
+			_frame.prepareMatrix(_matrix, FlxFrameAngle.ANGLE_0, false, false);
+			_matrix.translate(-center.x, -center.y);
+			_matrix.scale(scale.x, scale.y);
+
+			getScreenPosition(_point, camera);
+
+			if (!bold)
+				_flashRect.width += 2;
+
+			_point.add(center.x, center.y);
+			_matrix.translate(_point.x, _point.y);
+			_matrix.translate(_addedPoint.x, _addedPoint.y);
+
+			center.put();
+
+			if (isPixelPerfectRender(camera))
+			{
+				_matrix.tx = Math.floor(_matrix.tx);
+				_matrix.ty = Math.floor(_matrix.ty);
+			}
+
+			_addedPoint.add(_flashRect.width * scale.x, 0);
+
+			if (!camera.containsPoint(_point, _flashRect.width * scale.x, _flashRect.height * scale.y))
+				continue;
+
+			_point.copyToFlash(_flashPoint);
+			camera.drawPixels(_frame, _pixels, _matrix, colorTransform, blend, antialiasing);
 		}
+
+		width = Math.max(_flashPoint.x + _flashRect.width - x, width);
+		height = Math.max(_flashPoint.y + _flashRect.height - y, height);
 	}
 
 	public function isSimpleRender(?camera:FlxCamera):Bool
 	{
-		if (FlxG.renderTile)
-			return false;
-
-		return isSimpleRenderBlit(camera);
-	}
-
-	public function isSimpleRenderBlit(?camera:FlxCamera):Bool
-	{
-		var result:Bool = (angle == 0 || bakedRotationAngle > 0) && scale.x == 1 && scale.y == 1 && blend == null;
-		result = result && (camera != null ? isPixelPerfectRender(camera) : pixelPerfectRender);
-		return result;
+		return scale.x == 1 && scale.y == 1;
 	}
 
 	override function initVars():Void
@@ -251,7 +307,9 @@ class Alphabet extends FlxObject
 
 		_flashPoint = new Point();
 		_flashRect = new Rectangle();
+		_matrix = new FlxMatrix();
 
+		colorTransform = new ColorTransform();
 		scale = FlxPoint.get(1, 1);
 	}
 
@@ -305,5 +363,17 @@ class Alphabet extends FlxObject
 		}
 
 		return invalid;
+	}
+
+	function set_alpha(value:Float)
+	{
+		value = FlxMath.bound(value, 0, 1);
+
+		if (value != 1 || color != 0xffffff)
+			colorTransform.setMultipliers(color.redFloat, color.greenFloat, color.blueFloat, value);
+		else
+			colorTransform.setMultipliers(1, 1, 1, 1);
+
+		return (alpha = value);
 	}
 }

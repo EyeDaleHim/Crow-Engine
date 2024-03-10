@@ -44,8 +44,22 @@ class Main extends Sprite
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 		}
 
-		gameInstance = new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate,
-			game.skipSplash, game.startFullscreen);
+		gameInstance = new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate, game.skipSplash, game.startFullscreen);
 		addChild(gameInstance);
+
+		if (FileSystem.exists(Assets.assetPath('data/weeks/meta.json')))
+		{
+			var meta:WeekGlobalMetadata = cast Json.parse(Assets.readText(Assets.assetPath('data/weeks/meta.json')));
+
+			if (meta.list?.length != 0)
+			{
+				for (week in meta.list)
+					DataManager.importWeekFile(week);
+			}
+			else
+				FlxG.log.error('Couldn\'t find your Week Global Metadata, please check ${Assets.assetPath('data/weeks/meta.json')}');
+		}
+
+		trace(DataManager.weekList);
 	}
 }

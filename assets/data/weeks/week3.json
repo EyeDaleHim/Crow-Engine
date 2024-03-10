@@ -1,11 +1,6 @@
 {
-	"name": "week3",
-	"description": "PICO",
-	"songs": ["Pico", "Philly Nice", "Blammed"],
-	"defaultIcons": ["pico"],
-	"defaultColors": [-7072173],
-	
-	"defaultDifficulty": "Normal",
-	"difficulties": ["Easy", "Normal", "Hard"],
-	"displayCharacters": ["pico", "boyfriend", "gf"]
+    "name": "Week 3",
+    "description": "PICO",
+    "characters": ["pico", "bf", "gf"],
+    "songList": ["Pico", "Philly Nice", "Blammed"]
 }
