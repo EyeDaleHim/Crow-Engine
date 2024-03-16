@@ -9,10 +9,10 @@ class FreeplayState extends MainState
 	public var songs:Array<SongDisplayData> = [];
 	public var songGroup:FlxTypedGroup<Alphabet>;
 
-	public var alphabetTest:Alphabet;
-
 	override function create()
 	{
+		MainState.conductor.sound = MainState.musicHandler.inst;
+
 		background = new FlxSprite(Assets.image('menus/freeplayBG'));
 		background.active = false;
 		add(background);
@@ -27,6 +27,7 @@ class FreeplayState extends MainState
 			{
 				var songItem:Alphabet = new Alphabet(20 * (1 + index), 60 * (1 + index), song);
 				songItem.ID = index;
+				songItem.antialiasing = true;
 
 				songGroup.add(songItem);
 
@@ -44,10 +45,20 @@ class FreeplayState extends MainState
 
 	override function update(elapsed:Float)
 	{
-        if (FlxG.keys.anyJustPressed([W, UP]))
-            changeItem(-1);
-        if (FlxG.keys.anyJustPressed([S, DOWN]))
-            changeItem(1);
+		if (FlxG.keys.justPressed.ENTER)
+		{
+			MainState.musicHandler.stop();
+			MainState.conductor.sound = null;
+			
+			FlxG.switchState(new PlayState());
+		}
+		else
+		{
+			if (FlxG.keys.anyJustPressed([W, UP]))
+				changeItem(-1);
+			if (FlxG.keys.anyJustPressed([S, DOWN]))
+				changeItem(1);
+		}
 
 		songGroup.forEach(function(text:Alphabet)
 		{
@@ -68,15 +79,15 @@ class FreeplayState extends MainState
 
 	public function changeItem(change:Int = 0)
 	{
-        if (songGroup.members[selected] != null)
-            songGroup.members[selected].alpha = 0.6;
+		if (songGroup.members[selected] != null)
+			songGroup.members[selected].alpha = 0.6;
 
 		selected = FlxMath.wrap(selected + change, 0, songGroup.length - 1);
 
 		if (change != 0)
 			FlxG.sound.play(Assets.sfx("menu/scrollMenu"), 0.5);
 
-        if (songGroup.members[selected] != null)
-            songGroup.members[selected].alpha = 1.0;
+		if (songGroup.members[selected] != null)
+			songGroup.members[selected].alpha = 1.0;
 	}
 }

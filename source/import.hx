@@ -29,13 +29,18 @@ import flixel.math.FlxMatrix;
 import flixel.sound.FlxSound;
 import flixel.sound.FlxSoundGroup;
 
+import flixel.text.FlxText;
+
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
+import flixel.util.FlxSort;
+import flixel.util.FlxPool;
 import flixel.util.FlxTimer;
 
 import states.MainState;
 
-import system.Assets;
+import backend.Assets;
+
 import system.DataManager;
 
 import system.data.ChartData;
@@ -47,7 +52,12 @@ import system.data.WeekGlobalMetadata;
 import system.music.Music;
 import system.music.Conductor;
 
+import objects.notes.Note;
+import objects.notes.StrumNote;
+
 import objects.sprites.Alphabet;
+import objects.sprites.Character;
+import objects.sprites.NoteSprite;
 #end
 
 import openfl.display.BitmapData;

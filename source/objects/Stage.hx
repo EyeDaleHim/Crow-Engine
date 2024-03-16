@@ -1,0 +1,6 @@
+package objects;
+
+class Stage
+{
+    
+}

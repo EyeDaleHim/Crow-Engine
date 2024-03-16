@@ -1,4 +1,4 @@
-package system;
+package backend;
 
 import flixel.system.FlxAssets;
 

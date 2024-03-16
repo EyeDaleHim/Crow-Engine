@@ -46,7 +46,7 @@ class Main extends Sprite
 
 		gameInstance = new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate, game.skipSplash, game.startFullscreen);
 		addChild(gameInstance);
-
+		
 		if (FileSystem.exists(Assets.assetPath('data/weeks/meta.json')))
 		{
 			var meta:WeekGlobalMetadata = cast Json.parse(Assets.readText(Assets.assetPath('data/weeks/meta.json')));
@@ -59,7 +59,5 @@ class Main extends Sprite
 			else
 				FlxG.log.error('Couldn\'t find your Week Global Metadata, please check ${Assets.assetPath('data/weeks/meta.json')}');
 		}
-
-		trace(DataManager.weekList);
 	}
 }

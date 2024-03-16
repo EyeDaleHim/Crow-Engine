@@ -41,4 +41,12 @@ class Music extends FlxBasic
 
 		FlxG.sound.list.add(vocal);
 	}
+
+	public function stop()
+	{
+		if (inst?.playing)
+			inst.stop();
+		for (vocal in vocalList)
+			vocal?.stop();
+	}
 }

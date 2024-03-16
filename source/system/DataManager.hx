@@ -6,6 +6,8 @@ class DataManager
 
 	public static final weekList:Array<WeekMetadata> = [];
 
+	public static final loadedCharts:Map<String, ChartData> = [];
+
 	public static function importWeekFile(weekName:String)
 	{
 		try
