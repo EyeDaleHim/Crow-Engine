@@ -126,7 +126,7 @@ class PlayState extends MainState
 		else if (event.keyCode == FlxKey.D)
 			dir = 3;
 
-		if (FlxG.state.active && dir != -1)
+		if (FlxG.state.active && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_PRESSED))
 		{
 			var confirm:Bool = false;
 
@@ -134,14 +134,14 @@ class PlayState extends MainState
 			{
 				for (strum in controlledStrums)
 				{
-					strum.members[dir].animation.play(strum.members[dir].confirmAnim);
+					strum.members[dir].playAnim(strum.members[dir].confirmAnim);
 				}
 			}
 			else
 			{
 				for (strum in controlledStrums)
 				{
-					strum.members[dir].animation.play(strum.members[dir].pressAnim);
+					strum.members[dir].playAnim(strum.members[dir].pressAnim);
 				}
 			}
 		}
@@ -161,11 +161,11 @@ class PlayState extends MainState
 		else if (event.keyCode == FlxKey.D)
 			dir = 3;
 
-		if (FlxG.state.active && dir != -1)
+		if (FlxG.state.active && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_RELEASED))
 		{
 			for (strum in controlledStrums)
 			{
-				strum.members[dir].animation.play(strum.members[dir].staticAnim);
+				strum.members[dir].playAnim(strum.members[dir].staticAnim);
 			}
 		}
 	}

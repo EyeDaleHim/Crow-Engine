@@ -32,4 +32,16 @@ class StrumNote extends FlxSprite
 
         antialiasing = true;
 	}
+
+    public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
+    {
+        animation.play(AnimName, Force, Reversed, Frame);
+
+		var offsetAnim:FlxPoint = FlxPoint.get();
+		if (animOffsets.exists(AnimName))
+			offsetAnim.set(animOffsets[AnimName].x, animOffsets[AnimName].y);
+		else
+			centerOffsets();
+		centerOrigin();
+    }
 }
