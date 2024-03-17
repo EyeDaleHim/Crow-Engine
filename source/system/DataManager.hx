@@ -2,6 +2,8 @@ package system;
 
 class DataManager
 {
+	public static final emptyChart:ChartData = {noteTypes: [], notes: []};
+
 	public static final songHash:Map<String, SongDisplayData> = new Map();
 
 	public static final weekList:Array<WeekMetadata> = [];
