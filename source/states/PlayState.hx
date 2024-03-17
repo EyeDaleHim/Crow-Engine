@@ -83,15 +83,15 @@ class PlayState extends MainState
         var strumGroup:FlxTypedGroup<StrumNote> = new FlxTypedGroup<StrumNote>();
         strumGroup.camera = hudCamera;
 
-        var startX:Float = 75;
-        var startY:Float = 20;
+        var startX:Float = 75 + (gap * strumList.length);
+        var startY:Float = 50;
 
         for (i in 0...4)
         {
             var strumNote:StrumNote = new StrumNote(i);
             strumNote.ID = i;
 
-            strumNote.x = startX + (strumList.length == 0 ? 25 : 0) + (Note.noteWidth * i) + (gap * strumList.length);
+            strumNote.x = startX + (strumList.length == 0 ? 25 : 0) + (Note.noteWidth * i);
             strumNote.y = startY;
 
             strumGroup.add(strumNote);
