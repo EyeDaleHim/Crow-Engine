@@ -22,8 +22,8 @@ class StrumNote extends FlxSprite
 		// temp stand-ins
 
 		animation.addByPrefix(staticAnim, if (direction == 0) "arrowL" else if (direction == 1) "arrowD" else if (direction == 2) "arrowU" else "arrowR");
-		animation.addByPrefix(pressAnim, if (direction == 0) "left p" else if (direction == 1) "down p" else if (direction == 2) "up p" else "right p");
-		animation.addByPrefix(confirmAnim, if (direction == 0) "left c" else if (direction == 1) "down c" else if (direction == 2) "up c" else "right c");
+		animation.addByPrefix(pressAnim, if (direction == 0) "left p" else if (direction == 1) "down p" else if (direction == 2) "up p" else "right p", 24, false);
+		animation.addByPrefix(confirmAnim, if (direction == 0) "left c" else if (direction == 1) "down c" else if (direction == 2) "up c" else "right c", 24, false);
 
         animation.play(staticAnim);
 
