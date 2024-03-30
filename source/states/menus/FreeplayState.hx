@@ -36,6 +36,17 @@ class FreeplayState extends MainState
 				else
 					songItem.alpha = 0.6;
 
+				var displayData:SongDisplayData = {};
+
+				if (DataManager.songHash.exists(song))
+					displayData = DataManager.songHash.get(song);
+
+				songs[index] = {
+					name: displayData.name ?? song,
+					char: displayData.char ?? "face",
+					color: displayData.color ?? FlxColor.WHITE
+				};
+
 				index++;
 			}
 		}
@@ -50,7 +61,7 @@ class FreeplayState extends MainState
 			MainState.musicHandler.stop();
 			MainState.conductor.sound = null;
 			
-			FlxG.switchState(new PlayState());
+			FlxG.switchState(new PlayState(songs[selected].name));
 		}
 		else
 		{

@@ -18,12 +18,19 @@ class PlayState extends MainState
 	public var maxHealth:Float = 100.0;
 	public var health:Float = 50.0;
 
+	// // managers
+	public var timerManager:FlxTimerManager;
+	public var tweenManager:FlxTweenManager;
+
 	// cameras
 	public var hudCamera:FlxCamera;
 
 	// sprites
 	// // hud
 	public var infoText:FlxText;
+
+	public var healthBar:FlxBar;
+	public var healthBarBG:FlxSprite;
 
 	// // characters
 	public var characterList:FlxTypedGroup<Character>;
@@ -45,15 +52,21 @@ class PlayState extends MainState
 		MainState.conductor.active = false;
 
 		if (FileSystem.exists(Assets.assetPath('data/songs/$chartFile.json')))
-			DataManager.loadedCharts.set(chartFile, Json.parse(Assets.assetPath('data/songs/$chartFile.json')));
-		else
-			chartData = DataManager.emptyChart;
+		{
+			DataManager.loadedCharts.set(chartFile, Json.parse(Assets.readText(Assets.assetPath('data/songs/$chartFile.json'))));
+			chartData = DataManager.loadedCharts.get(chartFile);
+		}
+
+		MainState.musicHandler.loadInst('songs/$chartFile/Inst', 0.8, false);
+		MainState.musicHandler.loadVocal('songs/$chartFile/Voices', 0.8, false);
 
 		instance = this;
 	}
 
 	override function create()
 	{
+		initVars();
+
 		hudCamera = new FlxCamera();
 		FlxG.cameras.add(hudCamera, false);
 
@@ -61,14 +74,16 @@ class PlayState extends MainState
 
 		FlxG.mouse.visible = false;
 
-		generateSong();
+		notes = Chart.read(chartData);
 
 		activeNotes = new FlxTypedGroup<NoteSprite>();
 
 		for (i in 0...(chartData.playerNum ?? 2))
 		{
-			generateStrum(FlxG.width / 2);
+			createStrum(FlxG.width / 2);
 		}
+
+		createHUD();
 
 		var controlledPlayers:Array<Int> = chartData.controlledStrums ?? [1];
 		for (i in 0...controlledPlayers.length)
@@ -77,13 +92,38 @@ class PlayState extends MainState
 				controlledStrums.push(strumList[controlledPlayers[i]]);
 		}
 
+		startCountdown(startSong);
+
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
 
 		super.create();
 	}
 
-	public function generateStrum(gap:Float):Void
+	private function initVars():Void
+	{
+		timerManager = new FlxTimerManager();
+		tweenManager = new FlxTweenManager();
+
+		FlxG.plugins.addPlugin(timerManager);
+		FlxG.plugins.addPlugin(tweenManager);
+	}
+
+	public function createHUD():Void
+	{
+		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Assets.image("game/ui/healthBar"));
+		healthBarBG.camera = hudCamera;
+		healthBarBG.screenCenter(X);
+		add(healthBarBG);
+
+		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, (healthBarBG.width - 8).floor(), (healthBarBG.height - 8).floor(), this,
+			'health', 0, maxHealth);
+		healthBar.camera = hudCamera;
+		healthBar.createFilledBar(FlxColor.RED, FlxColor.LIME);
+		add(healthBar);
+	}
+
+	public function createStrum(gap:Float):Void
 	{
 		var strumGroup:FlxTypedGroup<StrumNote> = new FlxTypedGroup<StrumNote>();
 		strumGroup.camera = hudCamera;
@@ -109,7 +149,20 @@ class PlayState extends MainState
 
 	public function generateSong():Void
 	{
-		notes = Chart.read(chartData);
+	}
+
+	public function startCountdown(finishCallback:() -> Void = null):Void
+	{
+		if (finishCallback != null)
+			finishCallback();
+	}
+
+	public function startSong():Void
+	{
+		MainState.musicHandler.playInst(0.8, false);
+		MainState.musicHandler.playAllVocal();
+
+		MainState.conductor.sound = MainState.musicHandler.inst;
 	}
 
 	public function keyPress(event:KeyboardEvent)
@@ -197,5 +250,9 @@ class PlayState extends MainState
 		}
 
 		super.update(elapsed);
+	}
+
+	public function updateNotes():Void
+	{
 	}
 }

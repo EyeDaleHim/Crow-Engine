@@ -31,6 +31,10 @@ import flixel.sound.FlxSoundGroup;
 
 import flixel.text.FlxText;
 
+import flixel.tweens.FlxTween.FlxTweenManager;
+
+import flixel.ui.FlxBar;
+
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.util.FlxSort;
