@@ -35,13 +35,14 @@ class PlayState extends MainState
 	// // characters
 	public var characterList:FlxTypedGroup<Character>;
 
+	// // notes & strums
 	public var activeNotes:FlxTypedGroup<NoteSprite>;
 	public var notes:Array<Note> = [];
 	public var strumList:Array<FlxTypedGroup<StrumNote>> = [];
 
 	public var controlledStrums:Array<FlxTypedGroup<StrumNote>> = [];
 
-	public function new(chartFile:String = "", isStory:Bool = false)
+	public function new(folder:String = "", chartFile:String = "", isStory:Bool = false)
 	{
 		super();
 
@@ -51,14 +52,14 @@ class PlayState extends MainState
 		MainState.conductor.position = 0.0;
 		MainState.conductor.active = false;
 
-		if (FileSystem.exists(Assets.assetPath('data/songs/$chartFile.json')))
+		if (FileSystem.exists(Assets.assetPath('songs/$folder/$chartFile.json')))
 		{
-			DataManager.loadedCharts.set(chartFile, Json.parse(Assets.readText(Assets.assetPath('data/songs/$chartFile.json'))));
+			DataManager.loadedCharts.set(chartFile, Json.parse(Assets.readText(Assets.assetPath('songs/$folder/$chartFile.json'))));
 			chartData = DataManager.loadedCharts.get(chartFile);
 		}
 
-		MainState.musicHandler.loadInst('songs/$chartFile/Inst', 0.8, false);
-		MainState.musicHandler.loadVocal('songs/$chartFile/Voices', 0.8, false);
+		MainState.musicHandler.loadInst('songs/$folder/Inst', 0.8, false);
+		MainState.musicHandler.loadVocal('songs/$folder/Voices', 0.8, false);
 
 		instance = this;
 	}
@@ -121,6 +122,13 @@ class PlayState extends MainState
 		healthBar.camera = hudCamera;
 		healthBar.createFilledBar(FlxColor.RED, FlxColor.LIME);
 		add(healthBar);
+		
+		infoText = new FlxText("[Score] 0 / [Misses] 0 / [Accuracy] 0%");
+		infoText.setFormat(Assets.font("vcr").fontName, 18);
+		infoText.camera = hudCamera;
+		infoText.centerOverlay(healthBarBG, X);
+		infoText.y = healthBarBG.objBottom() + 10;
+		add(infoText);
 	}
 
 	public function createStrum(gap:Float):Void
@@ -149,6 +157,12 @@ class PlayState extends MainState
 
 	public function generateSong():Void
 	{
+		notes = Chart.read(chartData);
+
+		for (i in 0...256)
+		{
+			notes.push(new Note(MainState.conductor.stepCrochet * i, FlxG.random.int(0, 3), FlxG.random.int(0, 1)));
+		}
 	}
 
 	public function startCountdown(finishCallback:() -> Void = null):Void

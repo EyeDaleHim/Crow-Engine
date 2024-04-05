@@ -1,11 +1,14 @@
 package backend;
 
 import flixel.system.FlxAssets;
+import openfl.text.Font;
 
 class Assets
 {
 	public static var graphicCache(get, never):Map<String, FlxGraphic>;
 	public static var soundCache:Map<String, Sound> = [];
+
+	public static var fonts:Map<String, Font> = [];
 
 	inline public static function assetPath(path:String):String
 	{
@@ -33,6 +36,9 @@ class Assets
 	inline public static function sfxPath(path:String):String
 		return soundPath(path, SFX);
 
+	inline public static function fontPath(path:String):String
+		return assetPath('fonts/$path.ttf');
+
 	public static function readBytes(path:String):Bytes
 	{
 		if (FileSystem.exists(path))
@@ -47,6 +53,24 @@ class Assets
 			return File.getContent(path);
 
 		return "";
+	}
+
+	public static function font(path:String):Font
+	{
+		var font:Font = null;
+		var file:String = fontPath(path);
+
+		if (fonts.exists(path))
+			font = fonts.get(path);
+		else
+		{
+			fonts.set(path, Font.fromBytes(Assets.readBytes(file)));
+			font = Assets.font(path);
+
+			Font.registerFont(font);
+		}
+
+		return font;
 	}
 
 	public static function image(path:String, hardware:Bool = true):FlxGraphic

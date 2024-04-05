@@ -35,6 +35,7 @@ import flixel.tweens.FlxTween.FlxTweenManager;
 
 import flixel.ui.FlxBar;
 
+import flixel.util.FlxAxes;
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.util.FlxSort;
@@ -85,7 +86,11 @@ import sys.io.File;
 import haxe.Json;
 
 import haxe.io.Bytes;
+import haxe.io.Path;
 
 using StringTools;
 using Math;
+#if !macro
+using Utilities;
+#end
 using flixel.util.FlxColorTransformUtil;

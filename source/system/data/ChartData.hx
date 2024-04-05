@@ -8,4 +8,6 @@ typedef ChartData =
 
     @:optional var playerNum:Int;
     @:optional var controlledStrums:Array<Int>;
+
+    @:optional var overrideMeta:SongMetadata;
 }

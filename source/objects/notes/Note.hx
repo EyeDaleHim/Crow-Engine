@@ -10,7 +10,7 @@ class Note
     public var type:String = "";
     public var sustain:Float = 0.0;
 
-    public function new(strumTime:Float = 0.0, direction:Int = 0, side:Int = 0, type:String, sustain:Float = 0.0)
+    public function new(strumTime:Float = 0.0, direction:Int = 0, side:Int = 0, type:String = "", sustain:Float = 0.0)
     {
         this.strumTime = strumTime;
         this.direction = direction;

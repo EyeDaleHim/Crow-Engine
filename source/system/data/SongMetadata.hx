@@ -2,11 +2,11 @@ package system.data;
 
 typedef SongMetadata =
 {
-    var player:String;
-    var opponent:String;
-    var spectator:String;
+    @:optional var player:String;
+    @:optional var opponent:String;
+    @:optional var spectator:String;
 
-    var bpm:Float;
-    var speed:Float;
-    var stage:String;
+    @:optional var bpm:Float;
+    @:optional var speed:Float;
+    @:optional var stage:String;
 }
