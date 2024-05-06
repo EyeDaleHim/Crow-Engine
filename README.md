@@ -1,6 +1,10 @@
 Crow Engine
 ======
 
+# REWRITE GOALS
+
+The plan is to create a proof-of-concept project of trying to create a modding system without relying on scripting. There will still be scripting but the main priority is still modding without scripting as much as possible.
+
 ![Size](https://img.shields.io/github/repo-size/EyeDaleHim/Crow-Engine?style=flat-square)
 [![Contributor Covenant](https://img.shields.io/twitter/url?label=Crow%20Engine&style=social&url=https%3A%2F%2Ftwitter.com%2FCrow-Engine)](https://twitter.com/CrowEngineFNF)
 

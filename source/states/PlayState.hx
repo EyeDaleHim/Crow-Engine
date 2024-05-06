@@ -8,6 +8,14 @@ class PlayState extends MainState
 {
 	public static var instance:PlayState;
 
+	// quick getters
+	public var conductor(get, never):Conductor;
+
+	function get_conductor():Conductor
+	{
+		return MainState.conductor;
+	}
+
 	// data
 	public var isStory:Bool = false;
 
@@ -49,14 +57,31 @@ class PlayState extends MainState
 		this.chartFile = chartFile;
 		this.isStory = isStory;
 
-		MainState.conductor.position = 0.0;
-		MainState.conductor.active = false;
+		conductor.position = 0.0;
+		conductor.active = false;
 
 		if (FileSystem.exists(Assets.assetPath('songs/$folder/$chartFile.json')))
 		{
 			DataManager.loadedCharts.set(chartFile, Json.parse(Assets.readText(Assets.assetPath('songs/$folder/$chartFile.json'))));
 			chartData = DataManager.loadedCharts.get(chartFile);
+
+			if (chartData.overrideMeta != null)
+				songMeta = chartData.overrideMeta;
 		}
+
+		if (FileSystem.exists(Assets.assetPath('songs/$folder/meta.json')) && songMeta == null)
+			songMeta = Json.parse(Assets.readText(Assets.assetPath('songs/$folder/meta.json')));
+
+		if (songMeta == null)
+			songMeta = {
+				player: "bf",
+				spectator: "gf",
+				opponent: "dad",
+
+				bpm: 100,
+				speed: 1.0,
+				stage: "stage"
+			};
 
 		MainState.musicHandler.loadInst('songs/$folder/Inst', 0.8, false);
 		MainState.musicHandler.loadVocal('songs/$folder/Voices', 0.8, false);
@@ -75,7 +100,7 @@ class PlayState extends MainState
 
 		FlxG.mouse.visible = false;
 
-		notes = Chart.read(chartData);
+		generateSong();
 
 		activeNotes = new FlxTypedGroup<NoteSprite>();
 
@@ -105,9 +130,6 @@ class PlayState extends MainState
 	{
 		timerManager = new FlxTimerManager();
 		tweenManager = new FlxTweenManager();
-
-		FlxG.plugins.addPlugin(timerManager);
-		FlxG.plugins.addPlugin(tweenManager);
 	}
 
 	public function createHUD():Void
@@ -122,7 +144,7 @@ class PlayState extends MainState
 		healthBar.camera = hudCamera;
 		healthBar.createFilledBar(FlxColor.RED, FlxColor.LIME);
 		add(healthBar);
-		
+
 		infoText = new FlxText("[Score] 0 / [Misses] 0 / [Accuracy] 0%");
 		infoText.setFormat(Assets.font("vcr").fontName, 18);
 		infoText.camera = hudCamera;
@@ -161,8 +183,15 @@ class PlayState extends MainState
 
 		for (i in 0...256)
 		{
-			notes.push(new Note(MainState.conductor.stepCrochet * i, FlxG.random.int(0, 3), FlxG.random.int(0, 1)));
+			notes.push(new Note(conductor.stepCrochet * i, FlxG.random.int(0, 3), FlxG.random.int(0, 1)));
 		}
+
+		notes.sort((a:Note, b:Note) ->
+		{
+			return FlxSort.byValues(FlxSort.ASCENDING, a.strumTime, b.strumTime);
+		});
+
+		trace(notes);
 	}
 
 	public function startCountdown(finishCallback:() -> Void = null):Void
@@ -176,7 +205,7 @@ class PlayState extends MainState
 		MainState.musicHandler.playInst(0.8, false);
 		MainState.musicHandler.playAllVocal();
 
-		MainState.conductor.sound = MainState.musicHandler.inst;
+		conductor.sound = MainState.musicHandler.inst;
 	}
 
 	public function keyPress(event:KeyboardEvent)
@@ -237,31 +266,39 @@ class PlayState extends MainState
 		}
 	}
 
+	var _removeNotes:Array<Note> = [];
+
 	override public function update(elapsed:Float)
 	{
+		conductor.update(elapsed);
+
 		if (notes.length > 0)
 		{
 			var spawnTime:Float = 3000 / songMeta.speed;
 
-			var i:Int = notes.length;
-
-			while (i >= 0)
+			for (i in 0...notes.length)
 			{
-				if (notes[i].strumTime - (MainState.conductor.position - MainState.conductor.offset) <= spawnTime)
+				if (notes[i] == null)
+					continue;
+
+				if (notes[i].strumTime - (conductor.position - conductor.offset) <= spawnTime)
 				{
 					var noteSpr:NoteSprite = activeNotes.recycle(NoteSprite);
 					noteSpr.noteData = notes[i];
 
 					activeNotes.add(noteSpr);
+					_removeNotes.push(notes[i]);
 				}
 				else
-				{
-					notes.splice(i, notes.length);
 					break;
-				}
-				i--;
 			}
+
+			for (note in _removeNotes.splice(0, _removeNotes.length))
+				notes.remove(note);
 		}
+
+		timerManager.update(elapsed);
+		tweenManager.update(elapsed);
 
 		super.update(elapsed);
 	}

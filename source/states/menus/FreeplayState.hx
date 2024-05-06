@@ -63,7 +63,7 @@ class FreeplayState extends MainState
 			
 			FlxG.switchState(new PlayState(songs[selected].name));
 		}
-		else
+		else if (songGroup.length > 1)
 		{
 			if (FlxG.keys.anyJustPressed([W, UP]))
 				changeItem(-1);

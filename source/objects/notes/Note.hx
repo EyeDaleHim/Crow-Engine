@@ -18,4 +18,9 @@ class Note
         this.type = type;
         this.sustain = sustain;
     }
+
+    public function toString():String
+    {
+        return '{strumTime : $strumTime, direction : $direction, side : $side, type : \'$type\', sustain : $sustain}';
+    }
 }

@@ -6,10 +6,10 @@ class Chart
 	{
 		try
 		{
-            var noteList:Array<Note> = [];
+			var noteList:Array<Note> = [];
 
-            for (note in raw.notes)
-            {
+			for (note in raw.notes)
+			{
 				var rawNote:Array<Int> = null;
 
 				if (note[0] == 0)
@@ -19,12 +19,12 @@ class Chart
 
 				var newNote:Note = new Note(rawNote[1], rawNote[2], rawNote[3], raw.noteTypes[rawNote[4]], rawNote[5]);
 				noteList.push(newNote);
-            }
+			}
 
-            return noteList;
+			return noteList;
 		} catch (e)
 		{
-            trace(e.toString());
+			trace(e.toString());
 		}
 
 		return [];
