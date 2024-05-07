@@ -23,6 +23,8 @@ class PlayState extends MainState
 	public var chartData:ChartData = DataManager.emptyChart;
 	public var songMeta:SongMetadata;
 
+	public var safeFrames:Float = 10;
+
 	public var maxHealth:Float = 100.0;
 	public var health:Float = 50.0;
 
@@ -45,8 +47,10 @@ class PlayState extends MainState
 
 	// // notes & strums
 	public var activeNotes:FlxTypedGroup<NoteSprite>;
-	public var notes:Array<Note> = [];
 	public var strumList:Array<FlxTypedGroup<StrumNote>> = [];
+
+	public var notes:Array<Note> = [];
+	public var inputNotes:Array<Note> = [];
 
 	public var controlledStrums:Array<FlxTypedGroup<StrumNote>> = [];
 
@@ -109,6 +113,8 @@ class PlayState extends MainState
 			createStrum(FlxG.width / 2);
 		}
 
+		add(activeNotes);
+
 		createHUD();
 
 		var controlledPlayers:Array<Int> = chartData.controlledStrums ?? [1];
@@ -156,6 +162,7 @@ class PlayState extends MainState
 	public function createStrum(gap:Float):Void
 	{
 		var strumGroup:FlxTypedGroup<StrumNote> = new FlxTypedGroup<StrumNote>();
+		strumGroup.ID = strumList.length;
 		strumGroup.camera = hudCamera;
 
 		var startX:Float = 75 + (gap * strumList.length);
@@ -226,6 +233,16 @@ class PlayState extends MainState
 		{
 			var confirm:Bool = false;
 
+			for (note in inputNotes)
+			{
+				if (note.canBeHit(conductor.position, (safeFrames / 60.0) * 1000.0) && note.direction == dir)
+				{
+					confirm = true;
+
+					hitNote(note);
+				}
+			}
+
 			if (confirm)
 			{
 				for (strum in controlledStrums)
@@ -283,11 +300,20 @@ class PlayState extends MainState
 
 				if (notes[i].strumTime - (conductor.position - conductor.offset) <= spawnTime)
 				{
-					var noteSpr:NoteSprite = activeNotes.recycle(NoteSprite);
+					var noteSpr:NoteSprite = activeNotes.recycle(NoteSprite, function()
+					{
+						var noteInstance:NoteSprite = new NoteSprite(notes[i]);
+						noteInstance.camera = hudCamera;
+
+						return noteInstance;
+					});
 					noteSpr.noteData = notes[i];
 
 					activeNotes.add(noteSpr);
 					_removeNotes.push(notes[i]);
+
+					if (determineStrums(notes[i]))
+						inputNotes.push(notes[i]);
 				}
 				else
 					break;
@@ -297,13 +323,64 @@ class PlayState extends MainState
 				notes.remove(note);
 		}
 
+		var position:Float = (conductor.position - conductor.offset);
+
+		activeNotes.forEachAlive(function(note:NoteSprite)
+		{
+			var distance:Float = (0.45 * (position - note.noteData.strumTime) * songMeta.speed);
+
+			var strumGroup:FlxTypedGroup<StrumNote> = strumList[note.noteData.side];
+			var strumNote:StrumNote = strumGroup.members[note.noteData.direction];
+
+			note.centerOverlay(strumNote, X);
+			note.y = strumNote.y - distance;
+
+			if (note.noteData.strumTime - position < -300)
+			{
+				note.kill();
+
+				_removeNotes.push(note.noteData);
+			}
+		});
+
+		for (note in _removeNotes.splice(0, _removeNotes.length))
+		{
+			destroyNote(note);
+		}
+
 		timerManager.update(elapsed);
 		tweenManager.update(elapsed);
 
 		super.update(elapsed);
 	}
 
-	public function updateNotes():Void
+	public function hitNote(note:Note, diff:Float = 0.0)
 	{
+		destroyNote(note);
+	}
+
+	public function destroyNote(note:Note)
+	{
+		if (inputNotes.indexOf(note) != -1)
+			inputNotes.splice(inputNotes.indexOf(note), 1);
+		activeNotes.remove(note.parent, true);
+
+		if (note?.parent != null)
+		{
+			note.parent.kill();
+		}
+	}
+
+	private function determineStrums(note:Note):Bool
+	{
+		if (note != null)
+		{
+			for (strum in strumList)
+			{
+				if (strum.ID == note.side)
+					return true;
+			}
+		}
+		return false;
 	}
 }

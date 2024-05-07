@@ -21,21 +21,24 @@ class StrumNote extends FlxSprite
 
 		// temp stand-ins
 
-		animation.addByPrefix(staticAnim, if (direction == 0) "arrowL" else if (direction == 1) "arrowD" else if (direction == 2) "arrowU" else "arrowR");
-		animation.addByPrefix(pressAnim, if (direction == 0) "left p" else if (direction == 1) "down p" else if (direction == 2) "up p" else "right p", 24, false);
-		animation.addByPrefix(confirmAnim, if (direction == 0) "left c" else if (direction == 1) "down c" else if (direction == 2) "up c" else "right c", 24, false);
+		animation.addByPrefix(staticAnim,
+			if (direction == 0) "arrowLEFT" else if (direction == 1) "arrowDOWN" else if (direction == 2) "arrowUP" else "arrowRIGHT");
+		animation.addByPrefix(pressAnim,
+			if (direction == 0) "left press" else if (direction == 1) "down press" else if (direction == 2) "up press" else "right press", 24, false);
+		animation.addByPrefix(confirmAnim,
+			if (direction == 0) "left confirm" else if (direction == 1) "down confirm" else if (direction == 2) "up confirm" else "right confirm", 24, false);
 
-        animation.play(staticAnim);
+		animation.play(staticAnim);
 
-        scale.set(0.7, 0.7);
+		scale.set(0.7, 0.7);
 		updateHitbox();
 
-        antialiasing = true;
+		antialiasing = true;
 	}
 
-    public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
-    {
-        animation.play(AnimName, Force, Reversed, Frame);
+	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0)
+	{
+		animation.play(AnimName, Force, Reversed, Frame);
 
 		var offsetAnim:FlxPoint = FlxPoint.get();
 		if (animOffsets.exists(AnimName))
@@ -43,5 +46,5 @@ class StrumNote extends FlxSprite
 		else
 			centerOffsets();
 		centerOrigin();
-    }
+	}
 }

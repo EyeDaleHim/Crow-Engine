@@ -41,6 +41,7 @@ import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.util.FlxSort;
 import flixel.util.FlxPool;
 import flixel.util.FlxTimer;
+import flixel.util.FlxDestroyUtil;
 
 import states.MainState;
 
