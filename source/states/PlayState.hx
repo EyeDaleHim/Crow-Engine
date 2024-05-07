@@ -25,8 +25,18 @@ class PlayState extends MainState
 
 	public var safeFrames:Float = 10;
 
+	// player stats
 	public var maxHealth:Float = 100.0;
 	public var health:Float = 50.0;
+
+	public var score:Int = 0;
+
+	public var misses:Int = 0;
+
+	public var ratingHits:Float = 0.0;
+	public var totalHits:Int = 0;
+
+	public var combo:Int = 0;
 
 	// // managers
 	public var timerManager:FlxTimerManager;
@@ -41,6 +51,9 @@ class PlayState extends MainState
 
 	public var healthBar:FlxBar;
 	public var healthBarBG:FlxSprite;
+
+	public var comboGroup:FlxTypedContainer<FlxSprite>;
+	public var ratingGroup:FlxTypedContainer<FlxSprite>;
 
 	// // characters
 	public var characterList:FlxTypedGroup<Character>;
@@ -151,12 +164,23 @@ class PlayState extends MainState
 		healthBar.createFilledBar(FlxColor.RED, FlxColor.LIME);
 		add(healthBar);
 
-		infoText = new FlxText("[Score] 0 / [Misses] 0 / [Accuracy] 0%");
+		infoText = new FlxText();
 		infoText.setFormat(Assets.font("vcr").fontName, 18);
 		infoText.camera = hudCamera;
 		infoText.centerOverlay(healthBarBG, X);
 		infoText.y = healthBarBG.objBottom() + 10;
+
+		updateScoreText();
+
 		add(infoText);
+
+		comboGroup = new FlxTypedContainer<FlxSprite>();
+		comboGroup.camera = hudCamera;
+		add(comboGroup);
+
+		ratingGroup = new FlxTypedContainer<FlxSprite>();
+		ratingGroup.camera = hudCamera;
+		add(ratingGroup);
 	}
 
 	public function createStrum(gap:Float):Void
@@ -190,15 +214,21 @@ class PlayState extends MainState
 
 		for (i in 0...256)
 		{
-			notes.push(new Note(conductor.stepCrochet * i, FlxG.random.int(0, 3), FlxG.random.int(0, 1)));
+			// notes.push(new Note(conductor.stepCrochet * i * 2.5, FlxG.random.int(0, 3), 0));
+			notes.push(new Note(conductor.stepCrochet * i * 2.5, FlxG.random.int(0, 3), 1));
 		}
+
+		var copy:Array<Note> = [];
+		for (note in notes)
+		{
+			copy.push(new Note(note.strumTime, note.direction, 0));
+		}
+		notes = notes.concat(copy);
 
 		notes.sort((a:Note, b:Note) ->
 		{
 			return FlxSort.byValues(FlxSort.ASCENDING, a.strumTime, b.strumTime);
 		});
-
-		trace(notes);
 	}
 
 	public function startCountdown(finishCallback:() -> Void = null):Void
@@ -335,11 +365,13 @@ class PlayState extends MainState
 			note.centerOverlay(strumNote, X);
 			note.y = strumNote.y - distance;
 
-			if (note.noteData.strumTime - position < -300)
+			if (!determineStrums(note.noteData) && note.noteData.strumTime - position < 0)
 			{
-				note.kill();
-
-				_removeNotes.push(note.noteData);
+				hitNote(note.noteData);
+			}
+			else if (note.noteData.strumTime - position < -300 && determineStrums(note.noteData))
+			{
+				missNote(note.noteData);
 			}
 		});
 
@@ -348,14 +380,81 @@ class PlayState extends MainState
 			destroyNote(note);
 		}
 
+		comboGroup.forEachAlive(function(spr:FlxSprite)
+		{
+			spr.customData.set("actualAlpha", spr.alpha - (elapsed * 2));
+		
+			if (spr.alpha <= 0.0)
+				spr.kill();
+		});
+
 		timerManager.update(elapsed);
 		tweenManager.update(elapsed);
 
 		super.update(elapsed);
 	}
 
+	public function updateScoreText():Void
+	{
+		var separator:String = "//";
+
+		var scoreString:String = 'Score: $score';
+		var missString:String = 'Misses: $misses';
+
+		var roundedAccuracy:Float = ratingHits / totalHits;
+		if (Math.isNaN(roundedAccuracy))
+			roundedAccuracy = 0.0;
+
+		var accuracyString:String = 'Accuracy: ${FlxMath.roundDecimal(roundedAccuracy * 100.0, 2)}%';
+
+		infoText.text = '$scoreString $separator $missString $separator $accuracyString';
+		infoText.centerOverlay(healthBarBG, X);
+	}
+
 	public function hitNote(note:Note, diff:Float = 0.0)
 	{
+		if (determineStrums(note))
+		{
+			score += 500;
+
+			ratingHits += 1.0;
+			totalHits++;
+
+			combo++;
+
+			popUpCombo();
+			updateScoreText();
+		}
+		else if (strumList[note.side] != null)
+		{
+			var strum:StrumNote = strumList[note.side].members[note.direction];
+			strum.playAnim(strum.confirmAnim, true);
+
+			if (strum.animation.finishCallback == null)
+			{
+				strum.animation.finishCallback = function(name:String)
+				{
+					if (name == strum.confirmAnim)
+					{
+						strum.animation.finishCallback = null;
+						strum.playAnim(strum.staticAnim);
+					}
+				};
+			}
+		}
+
+		destroyNote(note);
+	}
+
+	public function missNote(note:Note)
+	{
+		misses++;
+		totalHits++;
+
+		updateScoreText();
+
+		FlxG.sound.play(Assets.sfx('game/miss/missnote${FlxG.random.int(1, 3)}'), 0.4);
+
 		destroyNote(note);
 	}
 
@@ -371,11 +470,34 @@ class PlayState extends MainState
 		}
 	}
 
+	public function popUpCombo():Void
+	{
+		var comboSpr = comboGroup.recycle(FlxSprite);
+		comboSpr.camera = hudCamera;
+		comboSpr.loadGraphic(Assets.image('game/combo/ratings/sick'));
+
+		comboSpr.scale.set(0.7, 0.7);
+		comboSpr.updateHitbox();
+
+		comboSpr.screenCenter();
+		comboSpr.x -= comboSpr.width / 2;
+		comboSpr.y -= comboSpr.height / 2;
+
+		comboSpr.acceleration.y = 550;
+		comboSpr.velocity.y = -FlxG.random.int(140, 175);
+		comboSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
+
+		comboSpr.customData.set("actualAlpha", 1.5);
+		comboSpr.alpha = 1.0;
+
+		comboGroup.add(comboSpr);
+	}
+
 	private function determineStrums(note:Note):Bool
 	{
 		if (note != null)
 		{
-			for (strum in strumList)
+			for (strum in controlledStrums)
 			{
 				if (strum.ID == note.side)
 					return true;

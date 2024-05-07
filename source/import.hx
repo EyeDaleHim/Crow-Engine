@@ -19,6 +19,7 @@ import flixel.graphics.frames.FlxImageFrame;
 
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.group.FlxContainer.FlxTypedContainer;
 
 using flixel.math.FlxMath;
 
@@ -90,6 +91,7 @@ import haxe.io.Bytes;
 import haxe.io.Path;
 
 using StringTools;
+using Lambda;
 using Math;
 #if !macro
 using Utilities;
