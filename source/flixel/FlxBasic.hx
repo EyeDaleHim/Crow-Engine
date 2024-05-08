@@ -1,5 +1,3 @@
-package flixel.util;
-
 package flixel;
 
 import flixel.group.FlxContainer;

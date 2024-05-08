@@ -383,7 +383,17 @@ class PlayState extends MainState
 		comboGroup.forEachAlive(function(spr:FlxSprite)
 		{
 			spr.customData.set("actualAlpha", spr.alpha - (elapsed * 2));
-		
+			spr.alpha = spr.customData.get("actualAlpha");
+
+			if (spr.alpha <= 0.0)
+				spr.kill();
+		});
+
+		ratingGroup.forEachAlive(function(spr:FlxSprite)
+		{
+			spr.customData.set("actualAlpha", spr.alpha - (elapsed * 2));
+			spr.alpha = spr.customData.get("actualAlpha");
+
 			if (spr.alpha <= 0.0)
 				spr.kill();
 		});
@@ -472,25 +482,60 @@ class PlayState extends MainState
 
 	public function popUpCombo():Void
 	{
-		var comboSpr = comboGroup.recycle(FlxSprite);
-		comboSpr.camera = hudCamera;
-		comboSpr.loadGraphic(Assets.image('game/combo/ratings/sick'));
+		var ratingSpr = ratingGroup.recycle(FlxSprite);
+		ratingSpr.camera = hudCamera;
+		ratingSpr.loadGraphic(Assets.image('game/combo/ratings/sick'));
 
-		comboSpr.scale.set(0.7, 0.7);
-		comboSpr.updateHitbox();
+		ratingSpr.scale.set(0.7, 0.7);
+		ratingSpr.updateHitbox();
 
-		comboSpr.screenCenter();
-		comboSpr.x -= comboSpr.width / 2;
-		comboSpr.y -= comboSpr.height / 2;
+		ratingSpr.screenCenter();
+		ratingSpr.x -= ratingSpr.width / 2;
+		ratingSpr.y -= ratingSpr.height / 2;
 
-		comboSpr.acceleration.y = 550;
-		comboSpr.velocity.y = -FlxG.random.int(140, 175);
-		comboSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
+		ratingSpr.acceleration.y = 550;
+		ratingSpr.velocity.y = -FlxG.random.int(140, 175);
+		ratingSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
 
-		comboSpr.customData.set("actualAlpha", 1.5);
-		comboSpr.alpha = 1.0;
+		ratingSpr.customData.set("actualAlpha", 1.5);
+		ratingSpr.alpha = 1.0;
 
-		comboGroup.add(comboSpr);
+		ratingGroup.add(ratingSpr);
+
+		var numberStr:String = Std.string(combo).lpad("0", 3);
+		var lastComboSpr:FlxSprite = null;
+
+		for (i in 0...numberStr.length)
+		{
+			var str:String = numberStr.charAt(i);
+
+			var comboSpr:FlxSprite = comboGroup.recycle(FlxSprite);
+			comboSpr.camera = hudCamera;
+			comboSpr.loadGraphic(Assets.image('game/combo/numbers/num$str'));
+
+			if (lastComboSpr == null)
+			{
+				comboSpr.setPosition(ratingSpr.objRight() - (ratingSpr.width / 2), ratingSpr.objBottom());
+			}
+			else
+			{
+				comboSpr.setPosition(lastComboSpr.objRight() + 2, lastComboSpr.y);
+			}
+
+			comboSpr.scale.set(0.5, 0.5);
+			comboSpr.updateHitbox();
+
+			comboSpr.acceleration.y = FlxG.random.int(200, 300);
+			comboSpr.velocity.y = -FlxG.random.int(140, 160);
+			comboSpr.velocity.x = FlxG.random.float(-5, 5);
+
+			comboSpr.customData.set("actualAlpha", 1.5);
+			comboSpr.alpha = 1.0;
+
+			comboGroup.add(comboSpr);
+
+			lastComboSpr = comboSpr;
+		}
 	}
 
 	private function determineStrums(note:Note):Bool
