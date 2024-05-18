@@ -215,7 +215,7 @@ class PlayState extends MainState
 		for (i in 0...256)
 		{
 			// notes.push(new Note(conductor.stepCrochet * i * 2.5, FlxG.random.int(0, 3), 0));
-			notes.push(new Note(conductor.stepCrochet * i * 2.5, FlxG.random.int(0, 3), 1));
+			notes.push(new Note(2000 + conductor.stepCrochet * i * 2.5, FlxG.random.int(0, 3), 1));
 		}
 
 		var copy:Array<Note> = [];
@@ -382,7 +382,7 @@ class PlayState extends MainState
 
 		comboGroup.forEachAlive(function(spr:FlxSprite)
 		{
-			spr.customData.set("actualAlpha", spr.alpha - (elapsed * 2));
+			spr.customData.set("actualAlpha", spr.customData.get("actualAlpha") - (elapsed * 5));
 			spr.alpha = spr.customData.get("actualAlpha");
 
 			if (spr.alpha <= 0.0)
@@ -391,7 +391,7 @@ class PlayState extends MainState
 
 		ratingGroup.forEachAlive(function(spr:FlxSprite)
 		{
-			spr.customData.set("actualAlpha", spr.alpha - (elapsed * 2));
+			spr.customData.set("actualAlpha", spr.customData.get("actualAlpha") - (elapsed * 5));
 			spr.alpha = spr.customData.get("actualAlpha");
 
 			if (spr.alpha <= 0.0)
@@ -461,6 +461,8 @@ class PlayState extends MainState
 		misses++;
 		totalHits++;
 
+		combo = 0;
+
 		updateScoreText();
 
 		FlxG.sound.play(Assets.sfx('game/miss/missnote${FlxG.random.int(1, 3)}'), 0.4);
@@ -497,7 +499,7 @@ class PlayState extends MainState
 		ratingSpr.velocity.y = -FlxG.random.int(140, 175);
 		ratingSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
 
-		ratingSpr.customData.set("actualAlpha", 1.5);
+		ratingSpr.customData.set("actualAlpha", 1.0 + (conductor.crochet * 0.002));
 		ratingSpr.alpha = 1.0;
 
 		ratingGroup.add(ratingSpr);
@@ -515,11 +517,11 @@ class PlayState extends MainState
 
 			if (lastComboSpr == null)
 			{
-				comboSpr.setPosition(ratingSpr.objRight() - (ratingSpr.width / 2), ratingSpr.objBottom());
+				comboSpr.setPosition(ratingSpr.objRight() - (ratingSpr.width / 2), ratingSpr.objBottom() + 10);
 			}
 			else
 			{
-				comboSpr.setPosition(lastComboSpr.objRight() + 2, lastComboSpr.y);
+				comboSpr.setPosition(lastComboSpr.objRight() - 8, lastComboSpr.y);
 			}
 
 			comboSpr.scale.set(0.5, 0.5);
@@ -529,7 +531,7 @@ class PlayState extends MainState
 			comboSpr.velocity.y = -FlxG.random.int(140, 160);
 			comboSpr.velocity.x = FlxG.random.float(-5, 5);
 
-			comboSpr.customData.set("actualAlpha", 1.5);
+			comboSpr.customData.set("actualAlpha", 1.0 + (conductor.crochet * 0.001));
 			comboSpr.alpha = 1.0;
 
 			comboGroup.add(comboSpr);

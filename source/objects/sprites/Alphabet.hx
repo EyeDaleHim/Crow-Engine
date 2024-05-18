@@ -15,12 +15,9 @@ class Alphabet extends FlxObject
 
 	public var alpha(default, set):Float = 1.0;
 
-	public var bakedRotationAngle(default, null):Float = 0;
-
 	public var blend:BlendMode;
 
 	public var color:FlxColor = 0xFFFFFFFF;
-
 	public var colorTransform:ColorTransform;
 
 	public var scale:FlxPoint = FlxPoint.get(1.0, 1.0);
@@ -36,6 +33,8 @@ class Alphabet extends FlxObject
 	public var endFrame:Int = 3;
 
 	public var frameRate:Float = 24.0;
+
+	private var _lastSize:FlxPoint;
 
 	private var _flashPoint:Point;
 	private var _flashRect:Rectangle;
@@ -308,6 +307,8 @@ class Alphabet extends FlxObject
 		_flashPoint = new Point();
 		_flashRect = new Rectangle();
 		_matrix = new FlxMatrix();
+
+		_lastSize = FlxPoint.get(width, height);
 
 		colorTransform = new ColorTransform();
 		scale = FlxPoint.get(1, 1);

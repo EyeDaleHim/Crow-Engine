@@ -26,7 +26,8 @@ class Assets
 		if (type != null)
 			truePath += type;
 		truePath += '/$path';
-		truePath += '.${FlxAssets.defaultSoundExtension}';
+		if (new haxe.io.Path(path).ext == null)
+			truePath += '.${FlxAssets.defaultSoundExtension}';
 		return truePath;
 	}
 

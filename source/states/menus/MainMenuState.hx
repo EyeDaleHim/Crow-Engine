@@ -18,7 +18,7 @@ class MainMenuState extends MainState
 	{
 		super.create();
 
-		MainState.musicHandler.playInst("menus/freakyMenu", 0.8);
+		MainState.musicHandler.playInst("menus/getting_frozensubzero.wav", 0.8);
 		MainState.conductor.sound = MainState.musicHandler.inst;
 
 		background = new FlxSprite(Assets.image('menus/mainBG'));
@@ -57,6 +57,9 @@ class MainMenuState extends MainState
 			menuItems.add(sprItem);
 		}
 
+		var button:Button = new backend.ui.Button(100, 100, {bgColor: 0xA2000000}, {autoSize: true, font: "vcr"}, "Button");
+		add(button);
+
 		changeItem();
 	}
 
@@ -93,7 +96,7 @@ class MainMenuState extends MainState
 		FlxFlicker.flicker(flicker, 1.0, 0.15);
 		FlxFlicker.flicker(menuItems.members[selectedItem], 1.0, 0.06);
 
-		FlxG.sound.play(Assets.sfx("menu/confirmMenu"), 0.7);
+		FlxG.sound.play(Assets.sfx("menu/confirmOptions"), 0.7);
 
 		FlxTimer.wait(1.0, function()
 		{
