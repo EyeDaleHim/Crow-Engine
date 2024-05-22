@@ -19,7 +19,7 @@ class Button extends Box
 		textColor: FlxColor.WHITE,
 		fontSize: 16,
 		font: "",
-		autoSize: false
+		autoSize: XY
 	};
 
 	public var buttonStyle:ButtonStyle;
@@ -45,7 +45,6 @@ class Button extends Box
 			buttonStyle.textColor ??= defaultButtonStyle.textColor;
 			buttonStyle.fontSize ??= defaultButtonStyle.fontSize;
 			buttonStyle.font ??= defaultButtonStyle.font;
-			buttonStyle.autoSize ??= defaultButtonStyle.autoSize;
 		}
 
 		this.buttonStyle = buttonStyle;
@@ -67,11 +66,10 @@ class Button extends Box
 
 		style.bgColor = FlxColor.WHITE;
 
-		if (buttonStyle.autoSize)
-		{
+		if (buttonStyle.autoSize?.x)
 			style.width = Math.floor(textObject.width + 16);
+		if (buttonStyle.autoSize?.y)
 			style.height = Math.floor(textObject.height + 8);
-		}
 
 		super(x, y, style);
 
@@ -137,5 +135,5 @@ typedef ButtonStyle =
 	@:optional var font:String;
 	@:optional var fontSize:Int;
 
-	@:optional var autoSize:Bool;
+	@:optional var autoSize:FlxAxes;
 };

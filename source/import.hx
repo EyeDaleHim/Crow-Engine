@@ -53,6 +53,7 @@ import backend.Assets;
 import backend.ui.Style;
 import backend.ui.Box;
 import backend.ui.Button;
+import backend.ui.Checkbox;
 
 import system.DataManager;
 

@@ -33,7 +33,9 @@ class AssetsMacro
 		function embedFile(filePath:String)
 		{
 			if (!ignoredExtensions.contains(Path.extension(filePath)))
+			{
 				File.copy(filePath, Path.join([cwd, exportLocation, filePath.substring(cwd.length)]));
+			}
 		}
 
 		var parentPath = Path.join([cwd, 'assets']);

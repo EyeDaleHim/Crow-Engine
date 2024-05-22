@@ -18,7 +18,7 @@ class MainMenuState extends MainState
 	{
 		super.create();
 
-		MainState.musicHandler.playInst("menus/getting_frozensubzero.wav", 0.8);
+		MainState.musicHandler.playInst("menus/freakyMenu", 0.8);
 		MainState.conductor.sound = MainState.musicHandler.inst;
 
 		background = new FlxSprite(Assets.image('menus/mainBG'));
@@ -57,8 +57,11 @@ class MainMenuState extends MainState
 			menuItems.add(sprItem);
 		}
 
-		var button:Button = new backend.ui.Button(100, 100, {bgColor: 0xA2000000}, {autoSize: true, font: "vcr"}, "Button");
+		var button:Button = new backend.ui.Button(100, 100, {bgColor: 0xA2000000, cornerSize: 8.0}, {font: "vcr"}, "Button");
 		add(button);
+
+		var checkbox:Checkbox = new backend.ui.Checkbox(100, 200, 40, 40, true);
+		add(checkbox);
 
 		changeItem();
 	}
@@ -96,7 +99,7 @@ class MainMenuState extends MainState
 		FlxFlicker.flicker(flicker, 1.0, 0.15);
 		FlxFlicker.flicker(menuItems.members[selectedItem], 1.0, 0.06);
 
-		FlxG.sound.play(Assets.sfx("menu/confirmOptions"), 0.7);
+		FlxG.sound.play(Assets.sfx("menu/confirmMenu"), 0.7);
 
 		FlxTimer.wait(1.0, function()
 		{
@@ -106,6 +109,10 @@ class MainMenuState extends MainState
 					{
 						FlxG.switchState(states.menus.FreeplayState.new);
 					}
+				case "options":
+				{
+					FlxG.switchState(states.options.OptionsState.new);
+				}
 				default:
 					{
 						// do something...
