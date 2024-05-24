@@ -1,4 +1,4 @@
-package backend.game;
+package system.gameplay;
 
 class Chart
 {

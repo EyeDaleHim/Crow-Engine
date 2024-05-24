@@ -57,12 +57,6 @@ class MainMenuState extends MainState
 			menuItems.add(sprItem);
 		}
 
-		var button:Button = new backend.ui.Button(100, 100, {bgColor: 0xA2000000, cornerSize: 8.0}, {font: "vcr"}, "Button");
-		add(button);
-
-		var checkbox:Checkbox = new backend.ui.Checkbox(100, 200, 40, 40, true);
-		add(checkbox);
-
 		changeItem();
 	}
 

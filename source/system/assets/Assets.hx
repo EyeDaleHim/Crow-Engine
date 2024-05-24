@@ -1,4 +1,4 @@
-package backend;
+package system.assets;
 
 import flixel.system.FlxAssets;
 import openfl.text.Font;

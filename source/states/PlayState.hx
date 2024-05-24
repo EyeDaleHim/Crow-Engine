@@ -1,6 +1,5 @@
 package states;
 
-import backend.game.Chart;
 import flixel.input.keyboard.FlxKey;
 import openfl.events.KeyboardEvent;
 

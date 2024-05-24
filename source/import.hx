@@ -48,14 +48,16 @@ import flixel.util.FlxDestroyUtil;
 
 import states.MainState;
 
-import backend.Assets;
-
 import backend.ui.Style;
 import backend.ui.Box;
 import backend.ui.Button;
 import backend.ui.Checkbox;
 
+import system.assets.Assets;
+
 import system.DataManager;
+
+import system.gameplay.Chart;
 
 import system.data.ChartData;
 import system.data.SongDisplayData;
