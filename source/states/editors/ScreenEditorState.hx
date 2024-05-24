@@ -37,7 +37,7 @@ class ScreenEditorState extends MainState
 
 		for (item in list)
 		{
-			var itemText:Alphabet = new Alphabet(4, 70 + (110 * list.indexOf(item)), item);
+			var itemText:Alphabet = new Alphabet(4, 70 + (70 * list.indexOf(item)), item);
 			itemText.alpha = 0.6;
 			editorItems.add(itemText);
 
@@ -104,5 +104,12 @@ class ScreenEditorState extends MainState
 					selectedEditor = stageEditor;
 				}
 		}
+	}
+
+	override public function destroy()
+	{
+		remove(selectedEditor);
+		selectedEditor = null;
+		super.destroy();
 	}
 }
