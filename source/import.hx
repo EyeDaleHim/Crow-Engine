@@ -19,7 +19,10 @@ import flixel.graphics.frames.FlxImageFrame;
 
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.group.FlxContainer;
 import flixel.group.FlxContainer.FlxTypedContainer;
+
+import flixel.input.keyboard.FlxKey;
 
 using flixel.math.FlxMath;
 
@@ -32,7 +35,10 @@ import flixel.sound.FlxSoundGroup;
 
 import flixel.text.FlxText;
 
+import flixel.tweens.FlxTween;
 import flixel.tweens.FlxTween.FlxTweenManager;
+
+import flixel.input.mouse.FlxMouseEvent;
 
 import flixel.ui.FlxBar;
 
@@ -47,6 +53,11 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxDestroyUtil;
 
 import states.MainState;
+
+import states.editors.CharacterEditorGroup;
+import states.editors.ChartEditorGroup;
+import states.editors.StageEditorGroup;
+import states.editors.ScreenEditorState;
 
 import backend.ui.Style;
 import backend.ui.Box;

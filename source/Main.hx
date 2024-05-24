@@ -46,7 +46,18 @@ class Main extends Sprite
 
 		gameInstance = new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate, game.skipSplash, game.startFullscreen);
 		addChild(gameInstance);
-		
+
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, function(e)
+		{
+			if (FlxG.keys.checkStatus(e.keyCode, JUST_PRESSED))
+			{
+				if (e.keyCode == FlxKey.F3)
+				{
+					FlxG.switchState(new ScreenEditorState());
+				}
+			}
+		});
+
 		if (FileSystem.exists(Assets.assetPath('data/weeks/meta.json')))
 		{
 			var meta:WeekGlobalMetadata = cast Json.parse(Assets.readText(Assets.assetPath('data/weeks/meta.json')));
