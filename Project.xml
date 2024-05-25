@@ -104,6 +104,9 @@
 
 	<!-- _________________________________ Custom _______________________________ -->
 
+	<prebuild haxe="build/Prebuild.hx"/>
+	<postbuild haxe="build/Postbuild.hx"/>
+
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
 
 	<icon path="assets/icons/icon16.png" size='16'/>
