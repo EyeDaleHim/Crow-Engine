@@ -10,3 +10,9 @@ typedef SongMetadata =
     @:optional var speed:Float;
     @:optional var stage:String;
 }
+
+typedef SongDisplayData = {
+    @:optional var name:String;
+    @:optional var color:Int;
+    @:optional var char:String;
+}
