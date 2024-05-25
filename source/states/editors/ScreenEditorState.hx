@@ -4,6 +4,8 @@ class ScreenEditorState extends MainState
 {
 	public static final list:Array<String> = ['Character Editor', 'Chart Editor', 'Stage Editor'];
 
+	public static var isActive:Bool = false;
+
 	public static var curSelected:Int = 0;
 
 	public static var characterEditor:CharacterEditorGroup;
@@ -14,10 +16,12 @@ class ScreenEditorState extends MainState
 
 	public var topCamera:FlxCamera;
 
-	public var editorItems:FlxTypedGroup<Alphabet>;
+	public var editorItems:FlxTypedGroup<Button>;
 
 	override function create()
 	{
+		isActive = true;
+
 		if (characterEditor == null)
 			characterEditor = new CharacterEditorGroup();
 
@@ -31,36 +35,48 @@ class ScreenEditorState extends MainState
 		topCamera.bgColor.alpha = 0;
 		FlxG.cameras.add(topCamera);
 
-		editorItems = new FlxTypedGroup<Alphabet>();
+		editorItems = new FlxTypedGroup<Button>();
 		editorItems.camera = topCamera;
 		add(editorItems);
 
 		for (item in list)
 		{
-			var itemText:Alphabet = new Alphabet(4, 70 + (70 * list.indexOf(item)), item);
-			itemText.alpha = 0.6;
+			var itemText:Button = new Button(10, 30 + (30 * list.indexOf(item)), null, {autoSize: XY, fontSize: 16, font: "vcr"}, item);
 			editorItems.add(itemText);
 
 			FlxMouseEvent.add(itemText, function(spr)
 			{
-				clickSelection(item);
+				if (editorItems.active)
+					clickSelection(item);
 			}, null, function(spr)
 			{
-				spr.alpha = 1.0;
+				if (editorItems.active)
+					spr.alpha = 1.0;
 			}, function(spr)
 			{
-				spr.alpha = 0.6;
+				if (editorItems.active)
+					spr.alpha = 0.6;
 			});
 		}
 
 		bringUpEditors();
 	}
 
+	public var editorActive:Bool = true;
+
 	public function bringUpEditors():Void
 	{
+		editorActive = true;
+
+		FlxTween.cancelTweensOf(topCamera);
+
 		topCamera.alpha = 0.0;
 		editorItems.active = false;
-		FlxTween.tween(topCamera, {alpha: 1.0}, 0.5, {
+		editorItems.forEach(function(spr:Button)
+		{
+			spr.exists = true;
+		});
+		FlxTween.tween(topCamera, {alpha: 1.0}, 0.2, {
 			onComplete: function(tween)
 			{
 				editorItems.active = true;
@@ -68,8 +84,23 @@ class ScreenEditorState extends MainState
 		});
 	}
 
-	public function changeSelection(change:Int)
+	public function closeEditors():Void
 	{
+		editorActive = false;
+
+		FlxTween.cancelTweensOf(topCamera);
+
+		topCamera.alpha = 1.0;
+		editorItems.active = false;
+		FlxTween.tween(topCamera, {alpha: 0.0}, 0.2, {
+			onComplete: function(tween)
+			{
+				editorItems.forEach(function(spr:Button)
+				{
+					spr.exists = false;
+				});
+			}
+		});
 	}
 
 	public function clickSelection(editor:String):Void
@@ -108,6 +139,8 @@ class ScreenEditorState extends MainState
 
 	override public function destroy()
 	{
+		isActive = false;
+
 		remove(selectedEditor);
 		selectedEditor = null;
 		super.destroy();

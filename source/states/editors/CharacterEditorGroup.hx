@@ -2,6 +2,8 @@ package states.editors;
 
 class CharacterEditorGroup extends FlxContainer
 {
+    // public var 
+
     override public function new()
     {
         super();

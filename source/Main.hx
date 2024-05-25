@@ -53,7 +53,16 @@ class Main extends Sprite
 			{
 				if (e.keyCode == FlxKey.F3)
 				{
-					FlxG.switchState(new ScreenEditorState());
+					if (ScreenEditorState.isActive)
+					{
+						var state:ScreenEditorState = cast (FlxG.state, ScreenEditorState);
+						if (state.editorActive)
+							state.closeEditors();
+						else
+							state.bringUpEditors();
+					}
+					else
+						FlxG.switchState(new ScreenEditorState());
 				}
 			}
 		});
