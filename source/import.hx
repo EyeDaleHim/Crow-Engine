@@ -70,21 +70,27 @@ import system.DataManager;
 
 import system.gameplay.Chart;
 
+import system.data.AnimationData;
 import system.data.ChartData;
-import system.data.SongDisplayData;
-import system.data.SongMetadata;
+import system.data.CharacterData;
+import system.data.SongData;
+import system.data.PointData;
 import system.data.WeekMetadata;
-import system.data.WeekGlobalMetadata;
 
 import system.music.Music;
 import system.music.Conductor;
+
+import objects.characters.Bopper;
+import objects.characters.Character;
 
 import objects.notes.Note;
 import objects.notes.StrumNote;
 
 import objects.sprites.Alphabet;
-import objects.sprites.Character;
 import objects.sprites.NoteSprite;
+
+import objects.stages.Prop;
+
 #end
 
 import openfl.display.BitmapData;
