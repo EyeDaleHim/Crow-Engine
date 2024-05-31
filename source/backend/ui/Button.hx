@@ -2,7 +2,7 @@ package backend.ui;
 
 class Button extends Box
 {
-	static final defaultStyle:Style = {
+	public static final defaultStyle:Style = {
 		width: 128,
 		height: 128,
 		bgColor: 0xFF212328,
@@ -13,7 +13,7 @@ class Button extends Box
 		cornerSize: 0.0
 	};
 
-	static final defaultButtonStyle:ButtonStyle = {
+	public static final defaultButtonStyle:ButtonStyle = {
 		hoverColor: 0xFF6B6B6B,
 		clickColor: 0xFF585858,
 		textColor: FlxColor.WHITE,
@@ -23,7 +23,7 @@ class Button extends Box
 	};
 
 	public var buttonStyle:ButtonStyle;
-    public var textObject:FlxText;
+    public var textDisplay:FlxText;
 
     public var checkOverlap:Void->FlxPoint; // useful if you have your custom mouse or whatever, if null, button uses FlxG.mouse by default
     
@@ -34,23 +34,10 @@ class Button extends Box
 
 	override public function new(?x:Float = 0.0, ?y:Float = 0.0, ?style:Style, ?buttonStyle:ButtonStyle, ?text:String = "")
 	{
-		if (buttonStyle == null)
-		{
-			buttonStyle = defaultButtonStyle;
-		}
-		else
-		{
-			buttonStyle.hoverColor ??= defaultButtonStyle.hoverColor;
-			buttonStyle.clickColor ??= defaultButtonStyle.clickColor;
-			buttonStyle.textColor ??= defaultButtonStyle.textColor;
-			buttonStyle.fontSize ??= defaultButtonStyle.fontSize;
-			buttonStyle.font ??= defaultButtonStyle.font;
-		}
+		this.buttonStyle = ValidateUtils.validateButtonStyle(buttonStyle);
 
-		this.buttonStyle = buttonStyle;
-
-		textObject = new FlxText(text, buttonStyle.fontSize);
-		textObject.setFormat(Assets.font(buttonStyle.font).fontName, buttonStyle.fontSize, buttonStyle.textColor);
+		textDisplay = new FlxText(text, buttonStyle.fontSize);
+		textDisplay.setFormat(Assets.font(buttonStyle.font).fontName, buttonStyle.fontSize, buttonStyle.textColor);
 
 		var actualColor:FlxColor;
 
@@ -67,15 +54,15 @@ class Button extends Box
 		style.bgColor = FlxColor.WHITE;
 
 		if (buttonStyle.autoSize?.x)
-			style.width = Math.floor(textObject.width + 16);
+			style.width = Math.floor(textDisplay.width + 16);
 		if (buttonStyle.autoSize?.y)
-			style.height = Math.floor(textObject.height + 8);
+			style.height = Math.floor(textDisplay.height + 8);
 
-		super(x, y, style);
+		super(x, y, buttonStyle.overrideStyle ?? style);
 
         style.bgColor = actualColor;
 
-		textObject.centerOverlay(this, XY);
+		textDisplay.centerOverlay(this, XY);
 
 		color = style.bgColor;
 	}
@@ -121,7 +108,7 @@ class Button extends Box
 	override public function draw()
 	{
 		super.draw();
-		textObject.draw();
+		textDisplay.draw();
 	}
 }
 
@@ -136,4 +123,6 @@ typedef ButtonStyle =
 	@:optional var fontSize:Int;
 
 	@:optional var autoSize:FlxAxes;
+
+	@:optional var overrideStyle:Style;
 };

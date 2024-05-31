@@ -57,6 +57,8 @@ class MainMenuState extends MainState
 			menuItems.add(sprItem);
 		}
 
+		add(new Stepper(20, 70));
+
 		changeItem();
 	}
 

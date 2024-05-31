@@ -2,12 +2,21 @@ package states.editors;
 
 class CharacterEditorGroup extends FlxContainer
 {
-    // public var 
+    public var gameCamera:FlxCamera;
+    public var hudCamera:FlxCamera;
+
+    public var character:Character;
 
     override public function new()
     {
         super();
 
-        add(new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFFBB0E0E));
+        gameCamera = new FlxCamera();
+        FlxG.cameras.add(gameCamera, false);
+
+        hudCamera = new FlxCamera();
+        FlxG.cameras.add(hudCamera, false);
+
+        
     }
 }

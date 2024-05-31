@@ -63,6 +63,7 @@ import backend.ui.Style;
 import backend.ui.Box;
 import backend.ui.Button;
 import backend.ui.Checkbox;
+import backend.ui.Stepper;
 
 import system.assets.Assets;
 
@@ -90,6 +91,8 @@ import objects.sprites.Alphabet;
 import objects.sprites.NoteSprite;
 
 import objects.stages.Prop;
+
+import utilities.ValidateUtils;
 
 #end
 

@@ -2,7 +2,7 @@ package backend.ui;
 
 class Box extends FlxSprite
 {
-	static final defaultStyle:Style = {
+	public static final defaultStyle:Style = {
 		width: 128,
 		height: 128,
 		bgColor: 0xFF212328,
@@ -19,23 +19,7 @@ class Box extends FlxSprite
 	{
 		super(x, y);
 
-		if (style == null)
-			style = defaultStyle;
-		else
-		{
-			style.width ??= defaultStyle.width;
-			style.height ??= defaultStyle.height;
-
-			style.bgColor ??= defaultStyle.bgColor;
-
-			style.topLeftSize ??= defaultStyle.topLeftSize;
-			style.topRightSize ??= defaultStyle.topRightSize;
-			style.botLeftSize ??= defaultStyle.botLeftSize;
-			style.botRightSize ??= defaultStyle.botRightSize;
-
-			style.cornerSize ??= defaultStyle.cornerSize;
-		}
-
+		style = ValidateUtils.validateBoxStyle(style);
         this.style = style;
 
 		if (style.topLeftSize > 0.0 || style.topRightSize > 0.0 || style.botLeftSize > 0.0 || style.botRightSize > 0.0)
