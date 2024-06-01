@@ -1,19 +1,10 @@
 package system.data;
 
-typedef FloatPointData =
-{
-    @:optional var x:Float;
-    @:optional var y:Float;
-}
+typedef FloatPointData = PointData<Float>;
+typedef IntPointData = PointData<Int>;
+typedef AxePointData = PointData<Bool>;
 
-typedef IntPointData =
-{
-    @:optional var x:Int;
-    @:optional var y:Int;
-}
-
-typedef AxePointData =
-{
-    @:optional var x:Bool;
-    @:optional var y:Bool;
+typedef PointData<T> = {
+	var ?x:T;
+	var ?y:T;
 }
