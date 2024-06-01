@@ -1,6 +1,6 @@
 package backend.ui;
 
-class List extends Button
+class List extends FlxObject
 {
 
 }
