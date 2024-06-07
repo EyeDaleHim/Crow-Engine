@@ -18,7 +18,7 @@ class Button extends Box
 		clickColor: 0xFF585858,
 		textColor: FlxColor.WHITE,
 		fontSize: 16,
-		font: "",
+		font: "vcr",
 		alignment: CENTER,
 		alignGap: 4.0,
 		autoSize: XY
@@ -36,7 +36,8 @@ class Button extends Box
 
 	override public function new(?x:Float = 0.0, ?y:Float = 0.0, ?style:Style, ?buttonStyle:ButtonStyle, ?text:String = "")
 	{
-		this.buttonStyle = ValidateUtils.validateButtonStyle(buttonStyle);
+		buttonStyle = ValidateUtils.validateButtonStyle(buttonStyle);
+		this.buttonStyle = buttonStyle;
 
 		textDisplay = new FlxText(text, buttonStyle.fontSize);
 		textDisplay.setFormat(Assets.font(buttonStyle.font).fontName, buttonStyle.fontSize, buttonStyle.textColor);

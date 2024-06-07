@@ -2,7 +2,7 @@ package backend.ui;
 
 class List extends Box
 {
-    public static final defaultListStyle:Style = {
+	public static final defaultListStyle:Style = {
 		width: 180,
 		height: 360,
 		bgColor: 0xFF212328,
@@ -13,45 +13,86 @@ class List extends Box
 		cornerSize: 0.0
 	};
 
-    public static final defaultListItemStyle:ItemStyle = {
-        widthRatio: 0.95,
-        heightRatio: 0.20,
-        itemGap: 4.0
-    };
+	public static final defaultListItemStyle:ItemStyle = {
+		widthRatio: 0.95,
+		heightRatio: 0.09,
+		itemGap: 6.0
+	};
 
-    public var objects:Array<ItemData> = [];
+	public var objectItems:Array<ListItem> = [];
 
-    public var objectItems:Array<Button> = [];
+	override public function new(?x:Float = 0.0, ?y:Float = 0.0, ?style:Style, ?itemStyle:ItemStyle)
+	{
+		style = ValidateUtils.validateListBoxStyle(style);
+		itemStyle = ValidateUtils.validateListItemStyle(itemStyle);
 
-    override public function new(?x:Float = 0.0, ?y:Float = 0.0, ?style:Style, ?itemStyle:ItemStyle)
-    {
-        super(x, y, ValidateUtils.validateListBoxStyle(style));
+		super(x, y, style);
 
+		var size:Float = itemStyle.itemGap;
+		while (size + (height * itemStyle.heightRatio) < height)
+		{
+			var item:ListItem = new ListItem(x + itemStyle.itemGap, y + size, {
+				width: (style.width * itemStyle.widthRatio).floor(),
+				height: (style.height * itemStyle.heightRatio).floor(),
+				cornerSize: 8.0
+			}, {autoSize: null, alignment: LEFT}, this);
+			objectItems.push(item);
+			item.centerOverlay(this, X);
 
-    }
+			size += (height * itemStyle.heightRatio) + itemStyle.itemGap;
+		}
+	}
+
+	override public function update(elapsed:Float)
+	{
+		if (!exists && !active)
+			return;
+
+		super.update(elapsed);
+		for (member in objectItems)
+		{
+			if (member.exists && member.active)
+				member.update(elapsed);
+		}
+	}
+
+	override public function draw()
+	{
+		if (!exists && !visible)
+			return;
+
+		super.draw();
+		for (member in objectItems)
+		{
+			if (member.exists && member.visible)
+				member.draw();
+		}
+	}
 }
 
 class ListItem extends Button
 {
-    public var itemStyle:ItemStyle;
+	public var itemStyle:ItemStyle;
 
-    override public function new(?x:Float = 0.0, ?y:Float = 0.0, ?style:Style, ?buttonStyle:ButtonStyle, ?itemStyle:ItemStyle, parent:List)
-    {
-        super(x, y, style, buttonStyle);
+	override public function new(?x:Float = 0.0, ?y:Float = 0.0, ?style:Style, ?buttonStyle:ButtonStyle, ?itemStyle:ItemStyle, parent:List)
+	{
+		itemStyle = ValidateUtils.validateListItemStyle(itemStyle);
 
-        itemStyle = ValidateUtils.validateListItemStyle(itemStyle);
-    }
+		super(x, y, style, buttonStyle);
+	}
 }
 
-typedef ItemStyle = {
-    @:optional var widthRatio:Float;
-    @:optional var heightRatio:Float;
-    @:optional var buttonStyle:ButtonStyle;
-    @:optional var itemGap:Float;
+typedef ItemStyle =
+{
+	@:optional var widthRatio:Float;
+	@:optional var heightRatio:Float;
+	@:optional var buttonStyle:ButtonStyle;
+	@:optional var itemGap:Float;
 };
 
 @:structInit
-typedef ItemData = {
-    var display:String;
-    @:optional var data:Dynamic;
+typedef ItemData =
+{
+	var display:String;
+	@:optional var data:Dynamic;
 };
