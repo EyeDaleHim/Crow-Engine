@@ -10,7 +10,7 @@
 When reporting an issue, you should always report one issue per bug. If you notice several
 bugs and want to report them, please make **individual issues for all of them**.
 
-Issues are often reported several times, please make sure that your issue already exists
+Issues might often get reported several times, please make sure that your issue already exists
 before you report them, search them first [here](https://github.com/EyeDaleHim/Crow-Engine/issues)
 
 If you don't find a relevant match or if you're unsure, do not hesitate to **open a new issue**.
@@ -21,12 +21,10 @@ If you want to contribute to the engine, make sure that:
 
 - The functionality is desired, which means that it solves a common use case that several users
 will need in their projects.
-- Make sure that the contribution does not affect performance majorly. You can ignore this rule if
-your pull request does not alter the code in any way.
-- Even if it doesn't get merged, your PR is useful for future work by another developer.
-- Document every change, if your pull requests add methods that others may not understand in a way,
+- The change doesn't affect any other existing feature. Please ensure your changes do not inadvertently change other features.
+- You document every relevant change, if your pull requests add methods that others may not understand in a way,
 please add a comment shortly explaining them.
-- If the PR is made to resolve a change, please link the original issue.
+- If the PR is made to resolve a change or issue, please link the original issue.
 
 Do not hesitate to explain your reasoning for your PR in a verbose or quick way, as long as you go with
 readability in mind.
