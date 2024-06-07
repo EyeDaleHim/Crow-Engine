@@ -19,6 +19,8 @@ class Button extends Box
 		textColor: FlxColor.WHITE,
 		fontSize: 16,
 		font: "",
+		alignment: CENTER,
+		alignGap: 4.0,
 		autoSize: XY
 	};
 
@@ -49,7 +51,7 @@ class Button extends Box
 
 		super(x, y, buttonStyle.overrideStyle ?? style);
 
-		textDisplay.centerOverlay(this, XY);
+		alignDisplay();
 
 		color = style.bgColor;
 	}
@@ -92,6 +94,27 @@ class Button extends Box
 		super.update(elapsed);
 	}
 
+	public function alignDisplay()
+	{
+		switch (buttonStyle.alignment)
+		{
+			case CENTER:
+				textDisplay.centerOverlay(this, XY);
+			case LEFT:
+				textDisplay.centerOverlay(this, Y);
+				textDisplay.x = x + buttonStyle.alignGap;
+			case RIGHT:
+				textDisplay.centerOverlay(this, Y);
+				textDisplay.x = this.objRight() - textDisplay.width - buttonStyle.alignGap;
+			case TOP:
+				textDisplay.centerOverlay(this, X);
+				textDisplay.y = y + buttonStyle.alignGap;
+			case BOTTOM:
+				textDisplay.centerOverlay(this, X);
+				textDisplay.y = this.objBottom() - textDisplay.height - buttonStyle.alignGap;
+		}
+	}
+
 	override public function draw()
 	{
 		super.draw();
@@ -127,7 +150,19 @@ typedef ButtonStyle =
 	@:optional var font:String;
 	@:optional var fontSize:Int;
 
+	@:optional var alignment:TextAlignment;
+	@:optional var alignGap:Float;
+
 	@:optional var autoSize:FlxAxes;
 
 	@:optional var overrideStyle:Style;
 };
+
+enum TextAlignment
+{
+	LEFT;
+	RIGHT;
+	BOTTOM;
+	TOP;
+	CENTER;
+}

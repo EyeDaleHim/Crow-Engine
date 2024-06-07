@@ -58,6 +58,7 @@ class MainMenuState extends MainState
 		}
 
 		add(new Stepper(20, 70, {cornerSize: 8.0}));
+		add(new List(20, 300, {cornerSize: 8.0}));
 
 		changeItem();
 	}

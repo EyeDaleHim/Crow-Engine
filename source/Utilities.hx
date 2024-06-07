@@ -2,34 +2,6 @@ package;
 
 class Utilities
 {
-	inline public static function objRight(obj:FlxObject):Float
-	{
-		if (obj == null)
-			return 0.0;
-		return obj.x + obj.width;
-	}
-
-	inline public static function objBottom(obj:FlxObject):Float
-	{
-		if (obj == null)
-			return 0.0;
-		return obj.y + obj.height;
-	}
-
-	public static function centerOverlay(object:FlxObject, base:FlxObject, axes:FlxAxes = XY):FlxObject
-	{
-		if (object == null || base == null)
-			return object;
-
-		if (axes.x)
-			object.x = base.x + (base.width / 2) - (object.width / 2);
-
-		if (axes.y)
-			object.y = base.y + (base.height / 2) - (object.height / 2);
-
-		return object;
-	}
-
 	public static function calcRelativeRect(spr:FlxSprite, rect:FlxRect):FlxRect
 		return FlxRect.get(rect.x - spr.x, rect.y - spr.y, rect.width, rect.height);
 

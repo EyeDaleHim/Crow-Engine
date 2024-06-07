@@ -64,6 +64,7 @@ import backend.ui.Box;
 import backend.ui.Button;
 import backend.ui.Checkbox;
 import backend.ui.Stepper;
+import backend.ui.List;
 
 import system.assets.Assets;
 
@@ -91,9 +92,6 @@ import objects.sprites.Alphabet;
 import objects.sprites.NoteSprite;
 
 import objects.stages.Prop;
-
-import utilities.ValidateUtils;
-
 #end
 
 import openfl.display.BitmapData;
@@ -124,5 +122,7 @@ using Lambda;
 using Math;
 #if !macro
 using Utilities;
+using utils.ObjectUtils;
+using utils.ValidateUtils;
 #end
 using flixel.util.FlxColorTransformUtil;
