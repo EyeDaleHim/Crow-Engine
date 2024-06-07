@@ -1,4 +1,4 @@
-package utilities;
+package utils;
 
 class ValidateUtils
 {
@@ -91,6 +91,8 @@ class ValidateUtils
 			data.textColor ??= Button.defaultButtonStyle.textColor;
 			data.fontSize ??= Button.defaultButtonStyle.fontSize;
 			data.font ??= Button.defaultButtonStyle.font;
+			data.alignment ??= Button.defaultButtonStyle.alignment;
+			data.alignGap ??= Button.defaultButtonStyle.alignGap;
 		}
 
 		return data;
@@ -111,6 +113,43 @@ class ValidateUtils
 			data.textColor ??= Stepper.defaultStepperStyle.textColor;
 			data.font ??= Stepper.defaultStepperStyle.font;
 			data.fontSize ??= Stepper.defaultStepperStyle.fontSize;
+		}
+
+		return data;
+	}
+
+	public static function validateListBoxStyle(data:Style):Style
+	{
+		if (data == null)
+			data = List.defaultListStyle;
+		else
+		{
+			data.width ??= List.defaultListStyle.width;
+			data.height ??= List.defaultListStyle.height;
+
+			data.bgColor ??= List.defaultListStyle.bgColor;
+
+			data.topLeftSize ??= List.defaultListStyle.topLeftSize;
+			data.topRightSize ??= List.defaultListStyle.topRightSize;
+			data.botLeftSize ??= List.defaultListStyle.botLeftSize;
+			data.botRightSize ??= List.defaultListStyle.botRightSize;
+
+			data.cornerSize ??= List.defaultListStyle.cornerSize;
+		}
+
+		return data;
+	}
+
+	public static function validateListItemStyle(data:ItemStyle):ItemStyle
+	{
+		if (data == null)
+			data = List.defaultListItemStyle;
+		else
+		{
+			data.widthRatio ??= List.defaultListItemStyle.widthRatio;
+			data.heightRatio ??= List.defaultListItemStyle.heightRatio;
+			data.buttonStyle ??= Button.defaultButtonStyle;
+			data.itemGap ??= List.defaultListItemStyle.itemGap;
 		}
 
 		return data;
