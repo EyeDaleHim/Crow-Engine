@@ -50,7 +50,10 @@ class Button extends Box
 		if (buttonStyle.autoSize?.y)
 			style.height = Math.floor(textDisplay.height + 8);
 
+		var actualColor:FlxColor = (buttonStyle.overrideStyle ?? style).bgColor;
+		(buttonStyle.overrideStyle ?? style).bgColor = FlxColor.WHITE;
 		super(x, y, buttonStyle.overrideStyle ?? style);
+		style.bgColor = actualColor;
 
 		alignDisplay();
 
@@ -126,7 +129,7 @@ class Button extends Box
 	{
 		x = Value;
 
-		textDisplay.centerOverlay(this, X);
+		alignDisplay();
 
 		return Value;
 	}
@@ -135,7 +138,7 @@ class Button extends Box
 	{
 		y = Value;
 
-		textDisplay.centerOverlay(this, Y);
+		alignDisplay();
 
 		return Value;
 	}

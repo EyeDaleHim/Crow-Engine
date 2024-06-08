@@ -42,6 +42,7 @@ import flixel.input.mouse.FlxMouseEvent;
 
 import flixel.ui.FlxBar;
 
+import flixel.util.typeLimit.OneOfTwo;
 import flixel.util.FlxAxes;
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal;
