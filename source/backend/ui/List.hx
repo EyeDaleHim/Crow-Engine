@@ -62,11 +62,6 @@ class List extends Box
 
 			size += (height * itemStyle.heightRatio) + itemStyle.itemGap;
 		}
-
-		for (i in 0...30)
-		{
-			add('mything$i');
-		}
 	}
 
 	public function add(item:OneOfTwo<String, ItemData>)
