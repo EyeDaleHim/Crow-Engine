@@ -9,6 +9,10 @@ typedef SongMetadata =
     @:optional var bpm:Float;
     @:optional var speed:Float;
     @:optional var stage:String;
+
+    @:optional var difficulty:Int;
+
+    @:optional var channels:Array<String>;
 }
 
 typedef SongDisplayData = {
