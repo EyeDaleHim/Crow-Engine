@@ -1,5 +1,7 @@
 package;
 
+import system.gameplay.ChartConverter;
+
 class Main extends Sprite
 {
 	static final game = {
@@ -55,7 +57,7 @@ class Main extends Sprite
 				{
 					if (ScreenEditorState.isActive)
 					{
-						var state:ScreenEditorState = cast (FlxG.state, ScreenEditorState);
+						var state:ScreenEditorState = cast(FlxG.state, ScreenEditorState);
 						if (state.editorActive)
 							state.closeEditors();
 						else
@@ -66,6 +68,8 @@ class Main extends Sprite
 				}
 			}
 		});
+
+		FlxG.stage.application.window.onDropFile.add(readFolderAndConvertChart);
 
 		if (FileSystem.exists(Assets.assetPath('data/weeks/meta.json')))
 		{
@@ -78,6 +82,34 @@ class Main extends Sprite
 			}
 			else
 				FlxG.log.error('Couldn\'t find your Week Global Metadata, please check ${Assets.assetPath('data/weeks/meta.json')}');
+		}
+	}
+
+	public static function readFolderAndConvertChart(rawPath:String)
+	{
+		function convertChart(filePath:String)
+		{
+			var path:Path = new Path(filePath);
+			var data:Dynamic = Json.parse(File.getContent(path.toString()));
+			var convertedData:ChartData = ChartConverter.convertPsychToCrow(data);
+			FileSystem.createDirectory('converted_charts');
+			File.saveContent('converted_charts/${path.file}.${path.ext}', Json.stringify(convertedData));
+		}
+
+		if (FileSystem.isDirectory(rawPath))
+		{
+			for (file in FileSystem.readDirectory(rawPath))
+			{
+				if (FileSystem.isDirectory(Path.join([rawPath, file])))
+					readFolderAndConvertChart(Path.join([rawPath, file]));
+			}
+		}
+		else
+		{
+			try
+			{
+				convertChart(rawPath);
+			}
 		}
 	}
 }

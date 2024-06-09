@@ -10,14 +10,7 @@ class Chart
 
 			for (note in raw.notes)
 			{
-				var rawNote:Array<Int> = null;
-
-				if (note[0] == 0)
-					rawNote = raw.cachedNotes[note[1]];
-				else
-					rawNote = note;
-
-				var newNote:Note = new Note(rawNote[1], rawNote[2], rawNote[3], raw.noteTypes[rawNote[4]], rawNote[5]);
+				var newNote:Note = new Note(note[0], note[1].floor(), note[2].floor(), raw.noteTypes[note[3].floor()], note[4].floor());
 				noteList.push(newNote);
 			}
 

@@ -2,9 +2,7 @@ package system.data;
 
 typedef SongMetadata =
 {
-    @:optional var player:String;
-    @:optional var opponent:String;
-    @:optional var spectator:String;
+    @:optional var characters:SongCharacterListData;
 
     @:optional var bpm:Float;
     @:optional var speed:Float;
@@ -13,6 +11,14 @@ typedef SongMetadata =
     @:optional var difficulty:Int;
 
     @:optional var channels:Array<String>;
+
+    @:optional var songDisplay:SongDisplayData;
+}
+
+typedef SongCharacterListData = {
+    @:optional var players:Array<String>;
+    @:optional var opponents:Array<String>;
+    @:optional var spectators:Array<String>;
 }
 
 typedef SongDisplayData = {

@@ -90,9 +90,11 @@ class PlayState extends MainState
 
 		if (songMeta == null)
 			songMeta = {
-				player: "bf",
-				spectator: "gf",
-				opponent: "dad",
+				characters: {
+					players: ["bf"],
+					spectators: ["gf"],
+					opponents: ["dad"]
+				},
 
 				bpm: 100,
 				speed: 1.0,
@@ -120,7 +122,7 @@ class PlayState extends MainState
 
 		activeNotes = new FlxTypedGroup<NoteSprite>();
 
-		for (i in 0...(chartData.playerNum ?? 2))
+		for (i in 0...(chartData.strumLength ?? 2))
 		{
 			createStrum(FlxG.width / 2);
 		}
@@ -129,7 +131,7 @@ class PlayState extends MainState
 
 		createHUD();
 
-		var controlledPlayers:Array<Int> = chartData.controlledStrums ?? [1];
+		var controlledPlayers:Array<Int> = chartData.playerControllers ?? [1];
 		for (i in 0...controlledPlayers.length)
 		{
 			if (strumList[controlledPlayers[i]] != null)
