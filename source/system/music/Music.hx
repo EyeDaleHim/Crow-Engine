@@ -3,85 +3,86 @@ package system.music;
 // helper class
 class Music extends FlxBasic
 {
-	public var inst:FlxSound;
-	public var vocalList:Array<FlxSound> = [];
+	public static var cacheLimit:Int = 4;
+
+	public var channels:Array<FlxSound> = [];
+
+	private var _loadIndex:Int = 0;
 
 	public function new()
 	{
 		super();
 
-		inst = FlxG.sound.list.recycle(FlxSound);
-		inst.persist = true;
-		FlxG.sound.list.add(inst);
-	}
-
-	public function loadInst(sound:String, volume:Float = 1.0, looped:Bool = true, ?onComplete:Void->Void)
-	{
-		if (inst == null)
+		for (i in 0...cacheLimit)
 		{
-			inst = FlxG.sound.list.recycle(FlxSound);
-			inst.persist = true;
-			FlxG.sound.list.add(inst);
-		}
-
-		if (inst.playing)
-			inst.stop();
-
-		inst.loadEmbedded(Assets.music(sound), true, false, onComplete);
-		inst.persist = true;
-		inst.volume = volume;
-	}
-
-	public function playInst(?sound:Null<String>, volume:Float = 1.0, looped:Null<Bool> = null, ?onComplete:Void->Void)
-	{
-		if (sound != null)
-		{
-			if (inst.playing)
-				return;
-			@:privateAccess
-			if (inst._sound == null)
-				loadInst(sound, volume, looped, onComplete);
-		}
-		inst.looped = looped ?? inst.looped;
-
-		inst.play(true);
-	}
-
-	public function loadVocal(sound:String, volume:Float = 1.0, looped:Bool = true, ?onComplete:Void->Void, followInst:Bool = true)
-	{
-		var vocal:FlxSound = FlxG.sound.list.recycle(FlxSound).loadEmbedded(Assets.music(sound), looped, false, onComplete);
-		vocal.persist = true;
-		vocal.volume = volume;
-		if (followInst)
-			vocal.time = inst.time;
-
-		FlxG.sound.list.add(vocal);
-		vocalList.push(vocal);
-	}
-
-	public function playAllVocal(?sounds:Array<String>, volume:Float = 1.0, looped:Null<Bool> = null, ?onComplete:Void->Void)
-	{
-		for (i in 0...vocalList.length)
-		{
-			var vocal = vocalList[i];
-			vocal.looped = looped ?? vocal.looped;
-
-			vocal.play(true);
+			var channel:FlxSound = FlxG.sound.list.recycle(FlxSound);
+			channel.persist = true;
+			channel.kill();
+			channel.ID = i;
+			channels.push(channel);
+			FlxG.sound.list.add(channel);
 		}
 	}
 
-	public function stop(stopInst:Bool = true, stopVocals:Bool = true)
+	public function loadChannel(sound:String, volume:Float = 1.0, looped:Bool = true, ?onComplete:Void->Void):FlxSound
 	{
-		if (stopInst)
+		var curChannel:FlxSound = channels[_loadIndex];
+
+		if (curChannel == null)
 		{
-			if (inst?.playing)
-				inst.stop();
+			if (curChannel != null)
+				curChannel.stop();
+			else
+				curChannel = FlxG.sound.list.recycle(FlxSound);
+			curChannel.persist = true;
+			curChannel.ID = _loadIndex;
+			channels[_loadIndex] = curChannel;
+			FlxG.sound.list.add(curChannel);
 		}
-		
-		if (stopVocals)
+
+		if (curChannel.playing)
+			curChannel.stop();
+
+		curChannel.loadEmbedded(Assets.music(sound), true, false, onComplete);
+		curChannel.persist = true;
+		curChannel.volume = volume;
+
+		curChannel.revive();
+
+		_loadIndex++;
+
+		return curChannel;
+	}
+
+	public function playChannel(channel:Int, ?sound:Null<String>, volume:Float = 1.0, looped:Null<Bool> = null, ?onComplete:Void->Void)
+	{
+		var curChannel:FlxSound = channels[channel];
+
+		if (!curChannel?.exists)
 		{
-			for (vocal in vocalList)
-				vocal?.stop();
+			curChannel = loadChannel(sound, volume, looped, onComplete);
 		}
+
+		curChannel.play(true);
+	}
+
+	public function clearChannels()
+	{
+		for (channel in channels)
+		{
+			if (channel != null)
+			{
+				channel.stop();
+				channel.kill();
+			}
+		}
+
+		for (channel in channels.splice(cacheLimit, channels.length))
+		{
+			channel.destroy();
+			channel = null;
+		}
+
+		_loadIndex = 0;
 	}
 }

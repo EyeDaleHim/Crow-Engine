@@ -18,8 +18,9 @@ class MainMenuState extends MainState
 	{
 		super.create();
 
-		MainState.musicHandler.playInst("menus/freakyMenu", 0.8);
-		MainState.conductor.sound = MainState.musicHandler.inst;
+		if (!MainState.musicHandler.channels[0].alive)
+			MainState.musicHandler.playChannel(0, "menus/freakyMenu", 0.8);
+		MainState.conductor.sound = MainState.musicHandler.channels[0];
 
 		background = new FlxSprite(Assets.image('menus/mainBG'));
 		background.scrollFactor.y = 0.20;

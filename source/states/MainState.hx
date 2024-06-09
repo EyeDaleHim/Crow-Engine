@@ -11,7 +11,7 @@ class MainState extends FlxState
 		FlxG.plugins.addIfUniqueType(new Conductor());
 
         if (Conductor.list[0] == null)
-            Conductor.createNewConductor(musicHandler.inst, 102);
+            Conductor.createNewConductor(musicHandler.channels[0], 102);
 	}
 
 	static function get_musicHandler()

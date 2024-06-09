@@ -11,7 +11,9 @@ class FreeplayState extends MainState
 
 	override function create()
 	{
-		MainState.conductor.sound = MainState.musicHandler.inst;
+		if (!MainState.musicHandler.channels[0].alive)
+			MainState.musicHandler.playChannel(0, "menus/freakyMenu", 0.8);
+		MainState.conductor.sound = MainState.musicHandler.channels[0];
 
 		background = new FlxSprite(Assets.image('menus/freeplayBG'));
 		background.active = false;
@@ -58,10 +60,10 @@ class FreeplayState extends MainState
 	{
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			MainState.musicHandler.stop();
+			MainState.musicHandler.clearChannels();
 			MainState.conductor.sound = null;
 			
-			FlxG.switchState(new PlayState(songs[selected].name));
+			FlxG.switchState(new PlayState(songs[selected].name, 'bopeebo-hard'));
 		}
 		else if (songGroup.length > 1)
 		{

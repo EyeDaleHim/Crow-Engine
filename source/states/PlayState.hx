@@ -76,10 +76,13 @@ class PlayState extends MainState
 		conductor.position = 0.0;
 		conductor.active = false;
 
-		if (FileSystem.exists(Assets.assetPath('songs/$folder/$chartFile.json')))
+		var file:String = Assets.assetPath('data/songs/$folder/$chartFile.json').trim();
+		if (FileSystem.exists(file))
 		{
-			DataManager.loadedCharts.set(chartFile, Json.parse(Assets.readText(Assets.assetPath('songs/$folder/$chartFile.json'))));
-			chartData = DataManager.loadedCharts.get(chartFile);
+			var data:ChartData = Json.parse(Assets.readText(file));
+
+			DataManager.loadedCharts.set(chartFile, data);
+			chartData = data;
 
 			if (chartData.overrideMeta != null)
 				songMeta = chartData.overrideMeta;
@@ -101,8 +104,8 @@ class PlayState extends MainState
 				stage: "stage"
 			};
 
-		MainState.musicHandler.loadInst('songs/$folder/Inst', 0.8, false);
-		MainState.musicHandler.loadVocal('songs/$folder/Voices', 0.8, false);
+		MainState.musicHandler.loadChannel('songs/$folder/Inst', 0.8, false);
+		MainState.musicHandler.loadChannel('songs/$folder/Voices', 0.8, false);
 
 		instance = this;
 	}
@@ -212,24 +215,7 @@ class PlayState extends MainState
 	public function generateSong():Void
 	{
 		notes = Chart.read(chartData);
-
-		for (i in 0...256)
-		{
-			// notes.push(new Note(conductor.stepCrochet * i * 2.5, FlxG.random.int(0, 3), 0));
-			notes.push(new Note(2000 + conductor.stepCrochet * i * 2.5, FlxG.random.int(0, 3), 1));
-		}
-
-		var copy:Array<Note> = [];
-		for (note in notes)
-		{
-			copy.push(new Note(note.strumTime, note.direction, 0));
-		}
-		notes = notes.concat(copy);
-
-		notes.sort((a:Note, b:Note) ->
-		{
-			return FlxSort.byValues(FlxSort.ASCENDING, a.strumTime, b.strumTime);
-		});
+		trace(notes);
 	}
 
 	public function startCountdown(finishCallback:() -> Void = null):Void
@@ -240,10 +226,10 @@ class PlayState extends MainState
 
 	public function startSong():Void
 	{
-		MainState.musicHandler.playInst(0.8, false);
-		MainState.musicHandler.playAllVocal();
+		MainState.musicHandler.playChannel(0, 0.8, false);
+		MainState.musicHandler.playChannel(1, false);
 
-		conductor.sound = MainState.musicHandler.inst;
+		conductor.sound = MainState.musicHandler.channels[0];
 	}
 
 	public function keyPress(event:KeyboardEvent)
