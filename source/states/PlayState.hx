@@ -76,7 +76,8 @@ class PlayState extends MainState
 		conductor.position = 0.0;
 		conductor.active = false;
 
-		var file:String = Assets.assetPath('data/songs/$folder/$chartFile.json').trim();
+		var file:String = Assets.assetPath('data/songs/${folder.toLowerCase()}/$chartFile.json');
+
 		if (FileSystem.exists(file))
 		{
 			var data:ChartData = Json.parse(Assets.readText(file));
@@ -99,13 +100,17 @@ class PlayState extends MainState
 					opponents: ["dad"]
 				},
 
+				channels: ["Inst", "Voices"],
+
 				bpm: 100,
 				speed: 1.0,
 				stage: "stage"
 			};
 
-		MainState.musicHandler.loadChannel('songs/$folder/Inst', 0.8, false);
-		MainState.musicHandler.loadChannel('songs/$folder/Voices', 0.8, false);
+		for (channel in songMeta.channels)
+		{
+			MainState.musicHandler.loadChannel('songs/$folder/$channel', 0.8, false);
+		}
 
 		instance = this;
 	}
@@ -215,7 +220,6 @@ class PlayState extends MainState
 	public function generateSong():Void
 	{
 		notes = Chart.read(chartData);
-		trace(notes);
 	}
 
 	public function startCountdown(finishCallback:() -> Void = null):Void

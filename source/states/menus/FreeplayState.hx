@@ -63,7 +63,7 @@ class FreeplayState extends MainState
 			MainState.musicHandler.clearChannels();
 			MainState.conductor.sound = null;
 			
-			FlxG.switchState(new PlayState(songs[selected].name, 'bopeebo-hard'));
+			FlxG.switchState(new PlayState(songs[selected].name, '${songs[selected].name.toLowerCase()}-hard'));
 		}
 		else if (songGroup.length > 1)
 		{
