@@ -15,7 +15,7 @@ class Music extends FlxBasic
 
 		for (i in 0...cacheLimit)
 		{
-			var channel:FlxSound = FlxG.sound.list.recycle(FlxSound);
+			var channel:FlxSound = new FlxSound();
 			channel.persist = true;
 			channel.kill();
 			channel.ID = i;
@@ -33,7 +33,7 @@ class Music extends FlxBasic
 			if (curChannel != null)
 				curChannel.stop();
 			else
-				curChannel = FlxG.sound.list.recycle(FlxSound);
+				curChannel = new FlxSound();
 			curChannel.persist = true;
 			curChannel.ID = _loadIndex;
 			channels[_loadIndex] = curChannel;
