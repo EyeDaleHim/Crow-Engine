@@ -1,6 +1,7 @@
 {
+    "name": "bf",
     "healthColor": -13520687,
-    "animationList": [
+    "animations": [
         {
             "prefix": "BF idle dance",
             "indices": [],
@@ -153,29 +154,8 @@
             "looped": false
         }
     ],
-    "singList": [
-        "singLEFT",
-        "singDOWN",
-        "singUP",
-        "singRIGHT"
-    ],
-    "idleList": [
-        "idle",
-        ""
-    ],
-    "missList": [
-        "singLEFTmiss",
-        "singDOWNmiss",
-        "singUPmiss",
-        "singRIGHTmiss"
-    ],
-    "name": "bf",
-    "flip": {
-        "x": false,
-        "y": false
-    },
-    "scale": {
-        "x": 1,
-        "y": 1
-    }
+
+    "idleList": ["idle"],
+    "singList": ["singLEFT", "singDOWN", "singUP", "singRIGHT"],
+    "missList": ["singLEFTmiss", "singDOWNmiss", "singUPmiss", "singRIGHTmiss"]
 }

@@ -30,11 +30,16 @@ class Bopper extends Prop
 	{
 		// pre super.beatHit();
 
+		var lastIndex:Int = bopIndex;
+
 		if (beatBop > 0 && bopList.length > 0)
 		{
 			bopIndex++;
 			bopIndex %= bopList.length;
 		}
+
+		if (bopList[bopIndex]?.length > 0)
+			playAnimation(bopList[bopIndex], lastIndex == bopIndex);
 
 		super.beatHit();
 	}

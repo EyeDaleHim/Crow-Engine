@@ -5,7 +5,7 @@ class ValidateUtils
 	public static final DEFAULT_CHAR_NAME:String = "bf";
 	public static final DEFAULT_CHAR_HEALTH_COLOR:FlxColor = 0xFFFFFFFF;
 
-	public static final DEFAULT_CHAR_IDLELIST:Array<String> = ["idle"];
+	public static final DEFAULT_CHAR_BOPLIST:Array<String> = ["idle"];
 	public static final DEFAULT_CHAR_SINGLIST:Array<String> = ["singLEFT", "singDOWN", "singUP", "singRIGHT"];
 	public static final DEFAULT_CHAR_MISSLIST:Array<String> = ["missLEFT", "missDOWN", "missUP", "missRIGHT"];
 
@@ -16,9 +16,11 @@ class ValidateUtils
 	{
 		if (data != null)
 		{
-			data.name ??= "bf";
+			data.name ??= DEFAULT_CHAR_NAME;
 
-			if (data.animations?.length > 0)
+			if (data.animations == null)
+				data.animations = [];
+			else if (data.animations.length > 0)
 			{
 				for (anim in data.animations)
 				{
@@ -28,12 +30,25 @@ class ValidateUtils
 
 			data.healthColor ??= DEFAULT_CHAR_HEALTH_COLOR;
 
-			data.idleList ??= DEFAULT_CHAR_IDLELIST;
+			data.bopList ??= DEFAULT_CHAR_BOPLIST;
 			data.missList ??= DEFAULT_CHAR_SINGLIST;
 			data.singList ??= DEFAULT_CHAR_MISSLIST;
 
 			data.flip ??= DEFAULT_CHAR_FLIP;
 			data.scale ??= DEFAULT_CHAR_SCALE;
+		}
+		else
+		{
+			data = {
+				name: DEFAULT_CHAR_NAME,
+				animations: [],
+				healthColor: DEFAULT_CHAR_HEALTH_COLOR,
+				bopList: DEFAULT_CHAR_BOPLIST,
+				singList: DEFAULT_CHAR_SINGLIST,
+				missList: DEFAULT_CHAR_MISSLIST,
+				flip: DEFAULT_CHAR_FLIP,
+				scale: DEFAULT_CHAR_SCALE
+			};
 		}
 
 		return data;

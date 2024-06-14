@@ -7,7 +7,7 @@ typedef CharacterData =
 
 	@:optional var healthColor:FlxColor;
 
-	@:optional var idleList:Array<String>;
+	@:optional var bopList:Array<String>;
 	@:optional var missList:Array<String>;
 	@:optional var singList:Array<String>;
 

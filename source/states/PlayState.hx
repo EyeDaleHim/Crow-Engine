@@ -57,6 +57,10 @@ class PlayState extends MainState
 	// // characters
 	public var characterList:FlxTypedGroup<Character>;
 
+	public var playerList:Array<Character> = [];
+	public var spectatorList:Array<Character> = [];
+	public var opponentList:Array<Character> = [];
+
 	// // notes & strums
 	public var activeNotes:FlxTypedGroup<NoteSprite>;
 	public var strumList:Array<FlxTypedGroup<StrumNote>> = [];
@@ -120,11 +124,28 @@ class PlayState extends MainState
 		initVars();
 
 		hudCamera = new FlxCamera();
+		hudCamera.bgColor.alpha = 0;
 		FlxG.cameras.add(hudCamera, false);
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
 		FlxG.mouse.visible = false;
+
+		characterList = new FlxTypedGroup<Character>();
+		add(characterList);
+
+		for (player in songMeta.characters.players)
+		{
+			var char:Character = new Character(400, 260, player);
+			char.scrollFactor.set(0.95, 0.95);
+			characterList.add(char);
+			playerList.push(char);
+
+			conductor.onBeat.add(function(beat:Int)
+			{
+				char.beatHit();
+			});
+		}
 
 		generateSong();
 
@@ -266,6 +287,10 @@ class PlayState extends MainState
 
 			if (confirm)
 			{
+				var player = playerList[0];
+				player.playAnimation(player.singList[dir]);
+				player.singTimer = conductor.stepCrochet / 4;
+
 				for (strum in controlledStrums)
 				{
 					strum.members[dir].playAnim(strum.members[dir].confirmAnim);

@@ -56,6 +56,13 @@ class Assets
 		return "";
 	}
 
+	public static function exists(path:String):Bool
+	{
+		if (FileSystem.exists(path))
+			return true;
+		return false;
+	}
+
 	public static function font(path:String):Font
 	{
 		var font:Font = null;
