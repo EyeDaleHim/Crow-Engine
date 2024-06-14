@@ -30,6 +30,8 @@ class Character extends Bopper
 					animation.addByIndices(anim.name, anim.prefix, anim.indices, "", anim.fps, anim.looped);
 				else
 					animation.addByPrefix(anim.name, anim.prefix, anim.fps, anim.looped);
+
+				animOffsets.set(anim.name, FlxPoint.get(anim.offset.x, anim.offset.y));
 			}
 		}
 
@@ -44,8 +46,12 @@ class Character extends Bopper
 		}
 	}
 
+	public var updateCallback:FlxTypedSignal<Void->Void> = new FlxTypedSignal<Void->Void>();
+
 	override public function update(elapsed:Float)
 	{
+		updateCallback.dispatch();
+
 		if (singTimer > 0.0)
 			singTimer -= elapsed;
 
@@ -56,17 +62,20 @@ class Character extends Bopper
 	{
 		// pre super.beatHit();
 
-		var lastIndex:Int = bopIndex;
-
-		if (beatBop > 0 && bopList.length > 0)
+		if (singTimer <= 0.0)
 		{
-			bopIndex++;
-			bopIndex %= bopList.length;
+			var lastIndex:Int = bopIndex;
+
+			if (beatBop > 0 && bopList.length > 0)
+			{
+				bopIndex++;
+				bopIndex %= bopList.length;
+			}
+
+			if (bopList[bopIndex]?.length > 0)
+				playAnimation(bopList[bopIndex], lastIndex == bopIndex);
 		}
 
-		if (singTimer <= 0 && bopList[bopIndex]?.length > 0)
-			playAnimation(bopList[bopIndex], lastIndex == bopIndex);
-
-		super.beatHit();
+		// super.beatHit();
 	}
 }

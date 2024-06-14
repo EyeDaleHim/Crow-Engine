@@ -288,8 +288,8 @@ class PlayState extends MainState
 			if (confirm)
 			{
 				var player = playerList[0];
-				player.playAnimation(player.singList[dir]);
-				player.singTimer = conductor.stepCrochet / 4;
+				player.playAnimation(player.singList[dir], true);
+				player.singTimer = (conductor.crochet * 0.001) * 1.5;
 
 				for (strum in controlledStrums)
 				{
