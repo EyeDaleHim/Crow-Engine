@@ -155,7 +155,7 @@
         }
     ],
 
-    "idleList": ["idle"],
+    "idleList": ["idle", ""],
     "singList": ["singLEFT", "singDOWN", "singUP", "singRIGHT"],
     "missList": ["singLEFTmiss", "singDOWNmiss", "singUPmiss", "singRIGHTmiss"]
 }
