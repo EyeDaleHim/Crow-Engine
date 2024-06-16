@@ -37,6 +37,7 @@ import flixel.text.FlxText;
 
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxTween.FlxTweenManager;
+import flixel.tweens.FlxEase;
 
 import flixel.input.mouse.FlxMouseEvent;
 

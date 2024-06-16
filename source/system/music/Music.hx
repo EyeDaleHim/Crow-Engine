@@ -43,7 +43,7 @@ class Music extends FlxBasic
 		if (curChannel.playing)
 			curChannel.stop();
 
-		curChannel.loadEmbedded(Assets.music(sound), true, false, onComplete);
+		curChannel.loadEmbedded(Assets.music(sound), looped, false, onComplete);
 		curChannel.persist = true;
 		curChannel.volume = volume;
 

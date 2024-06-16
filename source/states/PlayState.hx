@@ -41,6 +41,8 @@ class PlayState extends MainState
 	public var timerManager:FlxTimerManager;
 	public var tweenManager:FlxTweenManager;
 
+	public var soundList:Array<FlxSound> = [];
+
 	// cameras
 	public var hudCamera:FlxCamera;
 
@@ -73,6 +75,8 @@ class PlayState extends MainState
 	public function new(folder:String = "", chartFile:String = "", isStory:Bool = false)
 	{
 		super();
+
+		MainState.musicHandler.clearChannels();
 
 		this.chartFile = chartFile;
 		this.isStory = isStory;
@@ -115,6 +119,17 @@ class PlayState extends MainState
 		{
 			MainState.musicHandler.loadChannel('songs/$folder/$channel', 0.8, false);
 		}
+
+		var longChannel:FlxSound = null;
+
+		for (channel in MainState.musicHandler.channels)
+		{
+			if (channel.exists && channel.length > longChannel?.length)
+				longChannel = channel;
+		}
+
+		if (longChannel != null)
+			longChannel.onComplete = endSong;
 
 		instance = this;
 	}
@@ -192,6 +207,7 @@ class PlayState extends MainState
 			'health', 0, maxHealth);
 		healthBar.camera = hudCamera;
 		healthBar.createFilledBar(FlxColor.RED, FlxColor.LIME);
+		healthBar.numDivisions = 250;
 		add(healthBar);
 
 		infoText = new FlxText();
@@ -245,12 +261,74 @@ class PlayState extends MainState
 
 	public function startCountdown(finishCallback:() -> Void = null):Void
 	{
-		if (finishCallback != null)
-			finishCallback();
+		var list:Array<String> = ["three", "two", "one", "go"];
+		var len:Int = list.length;
+
+		var graphs:Array<FlxGraphic> = [];
+		var sounds:Array<Sound> = [];
+
+		var countdownSpr:FlxSprite = new FlxSprite();
+		countdownSpr.alpha = 0.0;
+		countdownSpr.camera = hudCamera;
+		add(countdownSpr);
+
+		var countdownSound:FlxSound = FlxG.sound.list.recycle(FlxSound);
+
+		soundList.push(countdownSound);
+
+		for (item in list)
+		{
+			if (Assets.exists(Assets.imagePath('game/countdown/$item')))
+				graphs.push(Assets.image('game/countdown/$item'));
+			else
+				graphs.push(null);
+
+			if (Assets.exists(Assets.soundPath('game/countdown/$item', SFX)))
+				sounds.push(Assets.sound('game/countdown/$item', SFX));
+			else
+				sounds.push(null);
+		}
+
+		trace(graphs, '\n', sounds);
+
+		var tmr:FlxTimer = FlxTimer.loop(conductor.crochet * 0.001, function(loop)
+		{
+			trace(loop, len);
+			trace(conductor.crochet * 0.001);
+
+			if (loop == len && finishCallback != null)
+			{
+				FlxDestroyUtil.destroy(countdownSpr);
+				FlxDestroyUtil.destroy(countdownSound);
+
+				finishCallback();
+			}
+			else
+			{
+				if (graphs[len] != null)
+				{
+					countdownSpr.loadGraphic(graphs[len]);
+					countdownSpr.screenCenter();
+
+					tweenManager.num(1.0, 0.0, conductor.crochet * 0.001, {ease: FlxEase.cubeInOut}, function(v:Float)
+					{
+						countdownSpr.alpha = v;
+					});
+				}
+
+				if (sounds[len] != null)
+				{
+					countdownSound.loadEmbedded(sounds[len]);
+					countdownSound.play();
+				}
+			}
+		}, len);
+		tmr.manager = timerManager;
 	}
 
 	public function startSong():Void
 	{
+		trace('started');
 		MainState.musicHandler.playChannel(0, 0.8, false);
 		MainState.musicHandler.playChannel(1, false);
 
@@ -329,6 +407,10 @@ class PlayState extends MainState
 		}
 	}
 
+	public function endSong():Void
+	{
+	}
+
 	var _removeNotes:Array<Note> = [];
 
 	override public function update(elapsed:Float)
@@ -396,6 +478,8 @@ class PlayState extends MainState
 			destroyNote(note);
 		}
 
+		health = FlxMath.bound(health, 0, maxHealth);
+
 		comboGroup.forEachAlive(function(spr:FlxSprite)
 		{
 			spr.customData.set("actualAlpha", spr.customData.get("actualAlpha") - (elapsed * 5));
@@ -446,6 +530,9 @@ class PlayState extends MainState
 			ratingHits += 1.0;
 			totalHits++;
 
+			// health += rating.healthHit;
+			health += 0.75;
+
 			combo++;
 
 			popUpCombo();
@@ -476,6 +563,9 @@ class PlayState extends MainState
 	{
 		misses++;
 		totalHits++;
+
+		// health -= rating.healthLoss;
+		health -= 7.5;
 
 		combo = 0;
 

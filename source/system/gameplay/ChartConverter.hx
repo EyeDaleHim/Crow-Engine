@@ -86,7 +86,6 @@ class ChartConverter
 				var sectionNotes:Array<Array<Dynamic>> = section.sectionNotes;
 				for (dataNote in sectionNotes)
 				{
-					trace(dataNote);
 					var note:Array<Float> = [];
 					note[0] = dataNote[0];
 					note[1] = (Math.floor(dataNote[1]) % 4);
