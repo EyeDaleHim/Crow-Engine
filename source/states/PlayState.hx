@@ -24,6 +24,8 @@ class PlayState extends MainState
 
 	public var safeFrames:Float = 10;
 
+	public var gameStarted:Bool = false;
+
 	// player stats
 	public var maxHealth:Float = 100.0;
 	public var health:Float = 50.0;
@@ -114,6 +116,8 @@ class PlayState extends MainState
 				speed: 1.0,
 				stage: "stage"
 			};
+
+		conductor.bpm = songMeta.bpm;
 
 		for (channel in songMeta.channels)
 		{
@@ -272,10 +276,6 @@ class PlayState extends MainState
 		countdownSpr.camera = hudCamera;
 		add(countdownSpr);
 
-		var countdownSound:FlxSound = FlxG.sound.list.recycle(FlxSound);
-
-		soundList.push(countdownSound);
-
 		for (item in list)
 		{
 			if (Assets.exists(Assets.imagePath('game/countdown/$item')))
@@ -289,25 +289,24 @@ class PlayState extends MainState
 				sounds.push(null);
 		}
 
-		trace(graphs, '\n', sounds);
+		tweenManager.num(-conductor.crochet * (len + 1), 0.0, conductor.crochet * 0.001 * (len + 1), function(v:Float)
+		{
+			conductor.position = v;
+		});
 
 		var tmr:FlxTimer = FlxTimer.loop(conductor.crochet * 0.001, function(loop)
 		{
-			trace(loop, len);
-			trace(conductor.crochet * 0.001);
-
-			if (loop == len && finishCallback != null)
+			if (loop == len + 1 && finishCallback != null)
 			{
 				FlxDestroyUtil.destroy(countdownSpr);
-				FlxDestroyUtil.destroy(countdownSound);
 
 				finishCallback();
 			}
 			else
 			{
-				if (graphs[len] != null)
+				if (graphs[loop - 1] != null)
 				{
-					countdownSpr.loadGraphic(graphs[len]);
+					countdownSpr.loadGraphic(graphs[loop - 1]);
 					countdownSpr.screenCenter();
 
 					tweenManager.num(1.0, 0.0, conductor.crochet * 0.001, {ease: FlxEase.cubeInOut}, function(v:Float)
@@ -316,23 +315,25 @@ class PlayState extends MainState
 					});
 				}
 
-				if (sounds[len] != null)
+				if (sounds[loop - 1] != null)
 				{
-					countdownSound.loadEmbedded(sounds[len]);
+					var countdownSound:FlxSound = FlxG.sound.load(sounds[loop - 1], false);
+					soundList.push(countdownSound);
 					countdownSound.play();
 				}
 			}
-		}, len);
+		}, len + 1);
 		tmr.manager = timerManager;
 	}
 
 	public function startSong():Void
 	{
-		trace('started');
 		MainState.musicHandler.playChannel(0, 0.8, false);
 		MainState.musicHandler.playChannel(1, false);
 
 		conductor.sound = MainState.musicHandler.channels[0];
+
+		gameStarted = true;
 	}
 
 	public function keyPress(event:KeyboardEvent)
@@ -409,6 +410,20 @@ class PlayState extends MainState
 
 	public function endSong():Void
 	{
+		conductor.sound = null;
+
+		gameStarted = false;
+
+		restartSong();
+	}
+
+	public function restartSong():Void
+	{
+		conductor.position = -5000;
+
+		generateSong();
+
+		startCountdown(startSong);
 	}
 
 	var _removeNotes:Array<Note> = [];
@@ -463,7 +478,7 @@ class PlayState extends MainState
 			note.centerOverlay(strumNote, X);
 			note.y = strumNote.y - distance;
 
-			if (!determineStrums(note.noteData) && note.noteData.strumTime - position < 0)
+			if (gameStarted && !determineStrums(note.noteData) && note.noteData.strumTime - position < 0)
 			{
 				hitNote(note.noteData);
 			}
