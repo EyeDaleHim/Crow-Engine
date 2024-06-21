@@ -49,6 +49,9 @@ class Main extends Sprite
 		gameInstance = new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate, game.skipSplash, game.startFullscreen);
 		addChild(gameInstance);
 
+		Discord.init();
+		Logs.init();
+
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, function(e)
 		{
 			if (FlxG.keys.checkStatus(e.keyCode, JUST_PRESSED))

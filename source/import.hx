@@ -68,6 +68,8 @@ import backend.ui.Checkbox;
 import backend.ui.Stepper;
 import backend.ui.List;
 
+import system.api.Discord;
+
 import system.assets.Assets;
 
 import system.DataManager;
@@ -83,6 +85,8 @@ import system.data.WeekMetadata;
 
 import system.music.Music;
 import system.music.Conductor;
+
+import utils.logs.Logs;
 
 import objects.characters.Bopper;
 import objects.characters.Character;

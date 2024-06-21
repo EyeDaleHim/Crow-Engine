@@ -70,7 +70,7 @@
 
 	<haxelib name="tjson"/>
 
-	<haxelib name="discord_rpc" if="desktop cpp"/>
+	<haxelib name="hxdiscord_rpc" if="desktop cpp"/>
 	<haxelib name="hxcpp-debug-server" if="debug cpp"/>
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
