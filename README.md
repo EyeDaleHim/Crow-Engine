@@ -1,6 +1,11 @@
 Crow Engine
 ======
 
+# LICENSING
+
+- This repository's source code is licensed under the Commons Clause license using Apache License 2.0 as its basis.
+- Some of this repository's assets are owned by or derived from work by the [Funkin' Crew](https://github.com/FunkinCrew). The Funkin' Crew's assets have specific licensing requirements, see the [official repository](https://github.com/FunkinCrew/funkin.assets/) for more information.
+
 # REWRITE GOALS
 
 The plan is to create a proof-of-concept project of trying to create a modding system without relying on scripting. There will still be scripting but the main priority is still modding without scripting as much as possible.
