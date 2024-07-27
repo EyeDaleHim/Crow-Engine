@@ -3,7 +3,7 @@ Crow Engine
 
 # LICENSING
 
-- This repository's source code is licensed under the Commons Clause license using Apache License 2.0 as its basis.
+- This repository's source code is licensed under the GPL 3.0 license.
 - Some of this repository's assets are owned by or derived from work by the [Funkin' Crew](https://github.com/FunkinCrew). The Funkin' Crew's assets have specific licensing requirements, see the [official repository](https://github.com/FunkinCrew/funkin.assets/) for more information.
 
 # REWRITE GOALS
