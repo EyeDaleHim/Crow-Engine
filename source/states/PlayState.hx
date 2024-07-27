@@ -78,6 +78,8 @@ class PlayState extends MainState
 	{
 		super();
 
+		FlxG.autoPause = true;
+
 		MainState.musicHandler.clearChannels();
 
 		this.chartFile = chartFile;

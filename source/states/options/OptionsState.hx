@@ -29,10 +29,7 @@ class OptionsState extends MainState
     {
         super();
 
-        Controls.registerFunction(Control.BACK, JUST_PRESSED, function()
-        {
-            FlxG.switchState(states.menus.MainMenuState.new);
-        }, {once: false});
+        Controls.registerFunction(Control.BACK, JUST_PRESSED, switchBack, {once: true});
     }
 
     override function create()
@@ -109,6 +106,7 @@ class OptionsState extends MainState
         midPoint += cancelButton.height + 4;
 
         backButton = new Button(4, midPoint, style, buttonStyle, "Back");
+        backButton.onClick = switchBack;
         add(backButton);
 
         super.create();
@@ -124,5 +122,10 @@ class OptionsState extends MainState
         categories.members[selected].color = categories.members[selected].buttonStyle.clickColor;
 
         curSelected = selected;
+    }
+
+    private function switchBack():Void
+    {
+        FlxG.switchState(states.menus.MainMenuState.new);
     }
 }
