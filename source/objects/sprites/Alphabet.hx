@@ -297,6 +297,9 @@ class Alphabet extends FlxObject
 
 	public function isSimpleRender(?camera:FlxCamera):Bool
 	{
+		if (FlxG.renderTile)
+			return false;
+
 		return scale.x == 1 && scale.y == 1;
 	}
 

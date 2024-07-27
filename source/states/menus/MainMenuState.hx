@@ -14,6 +14,17 @@ class MainMenuState extends MainState
 
 	public var followLerp:FlxPoint = FlxPoint.get();
 
+	public function new()
+	{
+		super();
+
+		Controls.init(); // remove later...
+
+		Controls.registerFunction(Control.UI_UP, JUST_PRESSED, changeItem.bind(-1));
+		Controls.registerFunction(Control.UI_DOWN, JUST_PRESSED, changeItem.bind(1));
+		Controls.registerFunction(Control.ACCEPT, JUST_PRESSED, selectItem);
+	}
+
 	override function create()
 	{
 		super.create();
@@ -63,16 +74,7 @@ class MainMenuState extends MainState
 
 	override public function update(elapsed:Float)
 	{
-		if (!selected)
-		{
-			if (FlxG.keys.anyJustPressed([W, UP]))
-				changeItem(-1);
-			if (FlxG.keys.anyJustPressed([S, DOWN]))
-				changeItem(1);
-			if (FlxG.keys.justPressed.ENTER)
-				selectItem();
-		}
-		else
+		if (selected)
 		{
 			menuItems.forEach(function(spr:FlxSprite)
 			{
@@ -90,6 +92,9 @@ class MainMenuState extends MainState
 
 	public function selectItem()
 	{
+		if (selected)
+			return;
+
 		flicker.revive();
 		FlxFlicker.flicker(flicker, 1.0, 0.15);
 		FlxFlicker.flicker(menuItems.members[selectedItem], 1.0, 0.06);
@@ -128,6 +133,9 @@ class MainMenuState extends MainState
 
 	public function changeItem(change:Int = 0)
 	{
+		if (selected)
+			return;
+
 		selectedItem = FlxMath.wrap(selectedItem + change, 0, itemList.length - 1);
 
 		if (change != 0)

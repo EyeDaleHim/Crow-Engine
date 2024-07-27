@@ -74,14 +74,16 @@ import system.assets.Assets;
 
 import system.DataManager;
 
-import system.gameplay.Chart;
-
 import system.data.AnimationData;
 import system.data.ChartData;
 import system.data.CharacterData;
 import system.data.SongData;
 import system.data.PointData;
 import system.data.WeekMetadata;
+
+import system.gameplay.Chart;
+
+import system.input.Controls;
 
 import system.music.Music;
 import system.music.Conductor;

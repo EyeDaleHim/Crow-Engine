@@ -39,11 +39,6 @@ class Conductor extends FlxBasic
         list.push(newConductor);
     }
 
-    override public function new()
-    {
-        super();
-    }
-
     override public function update(elapsed:Float)
     {
         if (sound == null)

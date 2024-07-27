@@ -46,31 +46,30 @@ class Main extends Sprite
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 		}
 
+		FlxG.save.bind("CrowEngine/save", "EyeDaleHim");
+
 		gameInstance = new FlxGame(game.width, game.height, game.initialState, game.framerate, game.framerate, game.skipSplash, game.startFullscreen);
 		addChild(gameInstance);
 
+		Controls.init();
 		Discord.init();
 		Logs.init();
 
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, function(e)
+		FlxG.autoPause = false;
+
+		Controls.registerRawKey([F3], JUST_PRESSED, function()
 		{
-			if (FlxG.keys.checkStatus(e.keyCode, JUST_PRESSED))
+			if (ScreenEditorState.isActive)
 			{
-				if (e.keyCode == FlxKey.F3)
-				{
-					if (ScreenEditorState.isActive)
-					{
-						var state:ScreenEditorState = cast(FlxG.state, ScreenEditorState);
-						if (state.editorActive)
-							state.closeEditors();
-						else
-							state.bringUpEditors();
-					}
-					else
-						FlxG.switchState(new ScreenEditorState());
-				}
+				var state:ScreenEditorState = cast(FlxG.state, ScreenEditorState);
+				if (state.editorActive)
+					state.closeEditors();
+				else
+					state.bringUpEditors();
 			}
-		});
+			else
+				FlxG.switchState(new ScreenEditorState());
+		}, {persist: true});
 
 		FlxG.stage.application.window.onDropFile.add(readFolderAndConvertChart);
 

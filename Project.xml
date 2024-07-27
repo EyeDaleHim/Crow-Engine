@@ -37,7 +37,7 @@
 
 	<!-- ____________________________ Window Settings ___________________________ -->
 
-	<window width="1280" height="720" hardware="true" vsync="false" fps="" background=""/>
+	<window width="1280" height="720" hardware="true" vsync="false" fps="60" background=""/>
 
 	<window if="desktop" fullscreen="false" resizable="true" vsync="false" allowHighDPI="true" allow-shaders="true"/>
 	<window if="mobile" fullscreen="true" resizable="false"/>

@@ -2,6 +2,29 @@ package utils;
 
 class ValidateUtils
 {
+	public static final DEFAULT_ACTION_ARG = {
+		persist: false,
+		once: false
+	}
+
+	public static function validateActionArgs(arg:ActionArgs):ActionArgs
+	{
+		if (arg != null)
+		{
+			arg.persist ??= DEFAULT_ACTION_ARG.persist;
+			arg.once ??= DEFAULT_ACTION_ARG.once;
+		}
+		else
+		{
+			arg = {
+				persist: DEFAULT_ACTION_ARG.persist,
+				once: DEFAULT_ACTION_ARG.once
+			}
+		}
+
+		return arg;
+	}
+
 	public static final DEFAULT_CHAR_NAME:String = "bf";
 	public static final DEFAULT_CHAR_HEALTH_COLOR:FlxColor = 0xFFFFFFFF;
 

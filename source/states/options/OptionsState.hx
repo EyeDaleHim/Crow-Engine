@@ -25,6 +25,16 @@ class OptionsState extends MainState
     public var cancelButton:Button;
     public var backButton:Button;
 
+    public function new()
+    {
+        super();
+
+        Controls.registerFunction(Control.BACK, JUST_PRESSED, function()
+        {
+            FlxG.switchState(states.menus.MainMenuState.new);
+        }, {once: false});
+    }
+
     override function create()
     {
         background = new FlxSprite(Assets.image('menus/settingsBG'));
