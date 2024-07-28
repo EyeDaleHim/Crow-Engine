@@ -11,9 +11,9 @@ class FreeplayState extends MainState
 
 	override function create()
 	{
-		if (!MainState.musicHandler.channels[0].alive)
-			MainState.musicHandler.playChannel(0, "menus/freakyMenu", 0.8);
-		MainState.conductor.sound = MainState.musicHandler.channels[0];
+		if (!musicHandler.channels[0].alive)
+			musicHandler.playChannel(0, "menus/freakyMenu", 0.8);
+		conductor.sound = musicHandler.channels[0];
 
 		background = new FlxSprite(Assets.image('menus/freeplayBG'));
 		background.active = false;
@@ -60,8 +60,8 @@ class FreeplayState extends MainState
 	{
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			MainState.musicHandler.clearChannels();
-			MainState.conductor.sound = null;
+			musicHandler.clearChannels();
+			conductor.sound = null;
 			
 			FlxG.switchState(new PlayState(songs[selected].name, '${songs[selected].name.toLowerCase()}-hard'));
 		}
