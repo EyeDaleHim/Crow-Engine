@@ -2,6 +2,7 @@
 import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
+import flixel.FlxSubState;
 
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -54,12 +55,13 @@ import flixel.util.FlxPool;
 import flixel.util.FlxTimer;
 import flixel.util.FlxDestroyUtil;
 
-import states.MainState;
+import states.*;
 
-import states.editors.CharacterEditorGroup;
-import states.editors.ChartEditorGroup;
-import states.editors.StageEditorGroup;
-import states.editors.ScreenEditorState;
+import states.editors.*;
+import states.menus.*;
+import states.options.*;
+
+import substates.*;
 
 import backend.ui.Style;
 import backend.ui.Box;
@@ -83,7 +85,9 @@ import system.data.WeekMetadata;
 
 import system.gameplay.Chart;
 
-import system.input.Controls;
+import system.input.*;
+import system.input.Controls.ActionArgs;
+import system.input.Controls.Control;
 
 import system.music.Music;
 import system.music.Conductor;
