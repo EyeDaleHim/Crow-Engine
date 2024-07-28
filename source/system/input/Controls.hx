@@ -238,20 +238,15 @@ class Control
 			this.defaultKeys = defaultKeys;
 		}
 	}
-}
 
-class ActionDigital extends FlxActionDigital
-{
-	public var persist:Bool = false;
-	public var savedState:Null<FlxInputState> = null;
-
-	public var active:Bool = true;
-
-	override public function check():Bool
+	public function check():Bool
 	{
-		if (!active)
-			return false;
-		return super.check();
+		for (key in keys)
+		{
+			if (FlxKey.toStringMap.exists(key) && cast(key, Int) >= 0)
+				return true;
+		}
+		return false;
 	}
 }
 
