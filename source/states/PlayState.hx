@@ -7,13 +7,7 @@ class PlayState extends MainState
 {
 	public static var instance:PlayState;
 
-	// quick getters
-	public var conductor(get, never):Conductor;
-
-	function get_conductor():Conductor
-	{
-		return MainState.conductor;
-	}
+	public var pauseMenu:PauseSubState;
 
 	// data
 	public var isStory:Bool = false;
@@ -25,6 +19,8 @@ class PlayState extends MainState
 	public var safeFrames:Float = 10;
 
 	public var gameStarted:Bool = false;
+
+	public var paused:Bool = false;
 
 	// player stats
 	public var maxHealth:Float = 100.0;
@@ -47,6 +43,7 @@ class PlayState extends MainState
 
 	// cameras
 	public var hudCamera:FlxCamera;
+	public var pauseCamera:FlxCamera;
 
 	// sprites
 	// // hud
@@ -78,9 +75,36 @@ class PlayState extends MainState
 	{
 		super();
 
+		hudCamera = new FlxCamera();
+		hudCamera.bgColor.alpha = 0;
+
+		pauseCamera = new FlxCamera();
+		pauseCamera.bgColor = 0x000000;
+		pauseCamera.bgColor.alphaFloat = 0.0;
+		pauseCamera.visible = false;
+
+		destroySubStates = false;
+
+		pauseMenu = new PauseSubState(pauseCamera);
+		pauseMenu.closeCallback = function()
+		{
+			paused = false;
+
+			for (action in pauseMenu.actions)
+			{
+				action.active = false;
+			}
+
+			pauseCamera.bgColor.alphaFloat = 0.0;
+			pauseCamera.visible = false;
+
+			musicHandler.resumeChannel(0, 0.8, false);
+			musicHandler.resumeChannel(1, false);
+		};
+
 		FlxG.autoPause = true;
 
-		MainState.musicHandler.clearChannels();
+		musicHandler.clearChannels();
 
 		this.chartFile = chartFile;
 		this.isStory = isStory;
@@ -123,12 +147,12 @@ class PlayState extends MainState
 
 		for (channel in songMeta.channels)
 		{
-			MainState.musicHandler.loadChannel('songs/$folder/$channel', 0.8, false);
+			musicHandler.loadChannel('songs/$folder/$channel', 0.8, false);
 		}
 
 		var longChannel:FlxSound = null;
 
-		for (channel in MainState.musicHandler.channels)
+		for (channel in musicHandler.channels)
 		{
 			if (channel.exists && channel.length > longChannel?.length)
 				longChannel = channel;
@@ -137,6 +161,17 @@ class PlayState extends MainState
 		if (longChannel != null)
 			longChannel.onComplete = endSong;
 
+		Controls.registerFunction(Control.PAUSE, JUST_PRESSED, function()
+		{
+			if (!paused)
+			{
+				musicHandler.pauseChannels();
+
+				openSubState(pauseMenu);
+				paused = true;
+			}
+		});
+
 		instance = this;
 	}
 
@@ -144,9 +179,8 @@ class PlayState extends MainState
 	{
 		initVars();
 
-		hudCamera = new FlxCamera();
-		hudCamera.bgColor.alpha = 0;
 		FlxG.cameras.add(hudCamera, false);
+		FlxG.cameras.add(pauseCamera, false);
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
@@ -328,21 +362,11 @@ class PlayState extends MainState
 		tmr.manager = timerManager;
 	}
 
-	public function startSong():Void
-	{
-		MainState.musicHandler.playChannel(0, 0.8, false);
-		MainState.musicHandler.playChannel(1, false);
-
-		conductor.sound = MainState.musicHandler.channels[0];
-
-		gameStarted = true;
-	}
-
 	public function keyPress(event:KeyboardEvent)
 	{
 		var dir:Int = checkKeyCode(event.keyCode);
 
-		if (FlxG.state.active && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_PRESSED))
+		if (!paused && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_PRESSED))
 		{
 			var confirm:Bool = false;
 
@@ -381,7 +405,7 @@ class PlayState extends MainState
 	{
 		var dir:Int = checkKeyCode(event.keyCode);
 
-		if (FlxG.state.active && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_RELEASED))
+		if (!paused && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_RELEASED))
 		{
 			for (strum in controlledStrums)
 			{
@@ -408,6 +432,16 @@ class PlayState extends MainState
 		return -1;
 	}
 
+	public function startSong():Void
+	{
+		musicHandler.playChannel(0, 0.8, false);
+		musicHandler.playChannel(1, false);
+
+		conductor.sound = musicHandler.channels[0];
+
+		gameStarted = true;
+	}
+
 	public function endSong():Void
 	{
 		conductor.sound = null;
@@ -420,6 +454,8 @@ class PlayState extends MainState
 	public function restartSong():Void
 	{
 		conductor.position = -5000;
+
+		musicHandler.pauseChannels();
 
 		generateSong();
 
