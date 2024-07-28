@@ -340,17 +340,7 @@ class PlayState extends MainState
 
 	public function keyPress(event:KeyboardEvent)
 	{
-		var dir:Int = -1;
-
-		// substitute code
-		if (event.keyCode == FlxKey.A)
-			dir = 0;
-		else if (event.keyCode == FlxKey.S)
-			dir = 1;
-		else if (event.keyCode == FlxKey.W)
-			dir = 2;
-		else if (event.keyCode == FlxKey.D)
-			dir = 3;
+		var dir:Int = checkKeyCode(event.keyCode);
 
 		if (FlxG.state.active && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_PRESSED))
 		{
@@ -389,17 +379,7 @@ class PlayState extends MainState
 
 	public function keyRelease(event:KeyboardEvent)
 	{
-		var dir:Int = -1;
-
-		// substitute code
-		if (event.keyCode == FlxKey.A)
-			dir = 0;
-		else if (event.keyCode == FlxKey.S)
-			dir = 1;
-		else if (event.keyCode == FlxKey.W)
-			dir = 2;
-		else if (event.keyCode == FlxKey.D)
-			dir = 3;
+		var dir:Int = checkKeyCode(event.keyCode);
 
 		if (FlxG.state.active && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_RELEASED))
 		{
@@ -408,6 +388,24 @@ class PlayState extends MainState
 				strum.members[dir].playAnim(strum.members[dir].staticAnim);
 			}
 		}
+	}
+
+	private static final controls:Array<Control> = [Control.NOTE_LEFT, Control.NOTE_DOWN, Control.NOTE_UP, Control.NOTE_RIGHT];
+
+	public function checkKeyCode(keyCode:Int = -1)
+	{
+		if (keyCode != -1)
+		{
+			for (control in controls)
+			{
+				for (key in control.keys)
+				{
+					if (key == keyCode)
+						return controls.indexOf(control);
+				}
+			}
+		}
+		return -1;
 	}
 
 	public function endSong():Void
