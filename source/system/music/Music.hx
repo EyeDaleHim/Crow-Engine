@@ -66,6 +66,19 @@ class Music extends FlxBasic
 		curChannel.play(true);
 	}
 
+	public function resumeChannel(channel:Int, ?sound:Null<String>, volume:Float = 1.0, looped:Null<Bool> = null)
+	{
+		var curChannel:FlxSound = channels[channel];
+
+		if (!curChannel?.exists)
+		{
+			playChannel(channel, sound, volume, looped);
+			return;
+		}
+
+		curChannel.resume();
+	}
+
 	public function clearChannels()
 	{
 		for (channel in channels)
@@ -84,5 +97,16 @@ class Music extends FlxBasic
 		}
 
 		_loadIndex = 0;
+	}
+
+	public function pauseChannels()
+	{
+		for (channel in channels)
+		{
+			if (channel != null)
+			{
+				channel.pause();
+			}
+		}
 	}
 }
