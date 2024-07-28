@@ -14,6 +14,8 @@ class Character extends Bopper
 		var path:String = Assets.assetPath('images/characters/$name/$name.json');
 		if (Assets.exists(path))
 			data = Json.parse(Assets.readText(path));
+		else
+			Logs.info('Character $name was not found.');
 		data = ValidateUtils.validateCharData(data);
 
 		super(x, y, name);
