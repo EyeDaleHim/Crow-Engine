@@ -2,8 +2,8 @@ package states;
 
 class MainState extends FlxState
 {
-	public static var musicHandler(get, never):Music;
-	public static var conductor(get, never):Conductor;
+	public var musicHandler(get, never):Music;
+	public var conductor(get, never):Conductor;
 
 	override function create()
 	{
@@ -16,12 +16,12 @@ class MainState extends FlxState
             Conductor.createNewConductor(musicHandler.channels[0], 102);
 	}
 
-	static function get_musicHandler()
+	function get_musicHandler()
 	{
 		return FlxG.plugins.get(Music);
 	}
 
-	static function get_conductor()
+	function get_conductor()
 	{
 		return FlxG.plugins.get(Conductor);
 	}
