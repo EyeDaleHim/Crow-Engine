@@ -19,6 +19,7 @@ class PlayState extends MainState
 	public var safeFrames:Float = 10;
 
 	public var gameStarted:Bool = false;
+	public var gameRestarted:Bool = false;
 
 	public var paused:Bool = false;
 
@@ -97,9 +98,14 @@ class PlayState extends MainState
 
 			pauseCamera.bgColor.alphaFloat = 0.0;
 			pauseCamera.visible = false;
-
-			musicHandler.resumeChannel(0, 0.8, false);
-			musicHandler.resumeChannel(1, false);
+			@:privateAccess
+			if (!pauseMenu._songRestarted)
+			{
+				musicHandler.resumeChannel(0, 0.8, false);
+				musicHandler.resumeChannel(1, false);
+			}
+			else
+				pauseMenu._songRestarted = false;
 		};
 
 		FlxG.autoPause = true;
@@ -234,6 +240,9 @@ class PlayState extends MainState
 	{
 		timerManager = new FlxTimerManager();
 		tweenManager = new FlxTweenManager();
+
+		add(timerManager);
+		add(tweenManager);
 	}
 
 	public function createHUD():Void
@@ -297,6 +306,8 @@ class PlayState extends MainState
 	public function generateSong():Void
 	{
 		notes = Chart.read(chartData);
+
+		musicHandler.pauseChannels();
 	}
 
 	public function startCountdown(finishCallback:() -> Void = null):Void
@@ -438,8 +449,10 @@ class PlayState extends MainState
 		musicHandler.playChannel(1, false);
 
 		conductor.sound = musicHandler.channels[0];
+		conductor.active = true;
 
 		gameStarted = true;
+		gameRestarted = false;
 	}
 
 	public function endSong():Void
@@ -453,9 +466,28 @@ class PlayState extends MainState
 
 	public function restartSong():Void
 	{
-		conductor.position = -5000;
+		gameRestarted = true;
 
-		musicHandler.pauseChannels();
+		conductor.position = -5000;
+		conductor.active = false;
+
+		score = 0;
+		health = maxHealth / 2.0;
+		misses = 0;
+
+		ratingHits = 0.0;
+		totalHits = 0;
+
+		combo = 0;
+
+		updateScoreText();
+
+		activeNotes.forEachAlive(function(note:NoteSprite)
+		{
+			destroyNote(note.noteData);
+		});
+
+		hudCamera.flash(FlxColor.BLACK, 0.25);
 
 		generateSong();
 
@@ -466,7 +498,8 @@ class PlayState extends MainState
 
 	override public function update(elapsed:Float)
 	{
-		conductor.update(elapsed);
+		if (conductor.active)
+			conductor.update(elapsed);
 
 		if (notes.length > 0)
 		{
@@ -514,13 +547,16 @@ class PlayState extends MainState
 			note.centerOverlay(strumNote, X);
 			note.y = strumNote.y - distance;
 
-			if (gameStarted && !determineStrums(note.noteData) && note.noteData.strumTime - position < 0)
+			if (gameStarted && !gameRestarted)
 			{
-				hitNote(note.noteData);
-			}
-			else if (note.noteData.strumTime - position < -300 && determineStrums(note.noteData))
-			{
-				missNote(note.noteData);
+				if (!determineStrums(note.noteData) && note.noteData.strumTime - position < 0)
+				{
+					hitNote(note.noteData);
+				}
+				else if (note.noteData.strumTime - position < -300 && determineStrums(note.noteData))
+				{
+					missNote(note.noteData);
+				}
 			}
 		});
 
@@ -548,9 +584,6 @@ class PlayState extends MainState
 			if (spr.alpha <= 0.0)
 				spr.kill();
 		});
-
-		timerManager.update(elapsed);
-		tweenManager.update(elapsed);
 
 		super.update(elapsed);
 	}

@@ -25,6 +25,8 @@ class Conductor extends FlxBasic
     public var lastStep(null, default):Int = -1;
     public var lastSection(null, default):Int = -1;
 
+    public var followSoundSource:Bool = true;
+
     #if FLX_DEBUG
     public var canWatch:Bool = true;
     #end
@@ -41,7 +43,7 @@ class Conductor extends FlxBasic
 
     override public function update(elapsed:Float)
     {
-        if (sound == null)
+        if (!followSoundSource || sound == null)
             position += (elapsed * 1000);
         else
             position = sound.time - offset;

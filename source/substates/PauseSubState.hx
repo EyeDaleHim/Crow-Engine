@@ -59,6 +59,8 @@ class PauseSubState extends MainSubState
         changeItem();
 	}
 
+	private var _songRestarted:Bool = false;
+
 	override public function update(elapsed:Float)
 	{
 		camera.bgColor.alphaFloat = Math.min(camera.bgColor.alphaFloat + elapsed, 0.6);
@@ -104,8 +106,9 @@ class PauseSubState extends MainSubState
             }
             case "Restart Song":
             {
+				_songRestarted = true;
                 close();
-                PlayState.instance.restartSong();
+				PlayState.instance.restartSong();
             }
         }
     }

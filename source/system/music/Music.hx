@@ -68,6 +68,7 @@ class Music extends FlxBasic
 
 	public function resumeChannel(channel:Int, ?sound:Null<String>, volume:Float = 1.0, looped:Null<Bool> = null)
 	{
+		trace("resumed");
 		var curChannel:FlxSound = channels[channel];
 
 		if (!curChannel?.exists)
@@ -101,6 +102,7 @@ class Music extends FlxBasic
 
 	public function pauseChannels()
 	{
+		trace("paused");
 		for (channel in channels)
 		{
 			if (channel != null)
