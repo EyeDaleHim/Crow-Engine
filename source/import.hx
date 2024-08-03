@@ -74,7 +74,7 @@ import system.api.Discord;
 
 import system.assets.Assets;
 
-import system.DataManager;
+import system.WeekManager;
 
 import system.data.AnimationData;
 import system.data.ChartData;

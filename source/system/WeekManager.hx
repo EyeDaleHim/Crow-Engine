@@ -1,6 +1,6 @@
 package system;
 
-class DataManager
+class WeekManager
 {
 	public static final emptyChart:ChartData = {noteTypes: [], notes: []};
 

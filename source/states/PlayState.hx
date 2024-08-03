@@ -13,7 +13,7 @@ class PlayState extends MainState
 	public var isStory:Bool = false;
 
 	public var chartFile:String = "";
-	public var chartData:ChartData = DataManager.emptyChart;
+	public var chartData:ChartData = WeekManager.emptyChart;
 	public var songMeta:SongMetadata;
 
 	public var safeFrames:Float = 10;
@@ -133,7 +133,7 @@ class PlayState extends MainState
 		{
 			var data:ChartData = Json.parse(Assets.readText(file));
 
-			DataManager.loadedCharts.set(chartFile, data);
+			WeekManager.loadedCharts.set(chartFile, data);
 			chartData = data;
 
 			if (chartData.overrideMeta != null)

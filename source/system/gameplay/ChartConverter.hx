@@ -58,7 +58,7 @@ class ChartConverter
 		if (type == BASE_WEEKEND_V1)
 			return convertWeekendToCrow(data, 'hard');
 
-		return DataManager.emptyChart;
+		return WeekManager.emptyChart;
 	}
 
 	public static function convertBaseLegacyToCrow(data:Dynamic):ChartData

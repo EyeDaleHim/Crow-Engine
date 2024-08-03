@@ -80,7 +80,7 @@ class Main extends Sprite
 			if (meta.list?.length != 0)
 			{
 				for (week in meta.list)
-					DataManager.importWeekFile(week);
+					WeekManager.importWeekFile(week);
 			}
 			else
 				FlxG.log.error('Couldn\'t find your Week Global Metadata, please check ${Assets.assetPath('data/weeks/meta.json')}');

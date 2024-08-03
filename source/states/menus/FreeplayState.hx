@@ -23,7 +23,7 @@ class FreeplayState extends MainState
 		add(songGroup);
 
 		var index:Int = 0;
-		for (week in DataManager.weekList)
+		for (week in WeekManager.weekList)
 		{
 			for (song in week.songList)
 			{
@@ -40,8 +40,8 @@ class FreeplayState extends MainState
 
 				var displayData:SongDisplayData = {};
 
-				if (DataManager.songHash.exists(song))
-					displayData = DataManager.songHash.get(song);
+				if (WeekManager.songHash.exists(song))
+					displayData = WeekManager.songHash.get(song);
 
 				songs[index] = {
 					name: displayData.name ?? song,
