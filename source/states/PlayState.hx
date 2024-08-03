@@ -23,6 +23,13 @@ class PlayState extends MainState
 
 	public var paused:Bool = false;
 
+	public var songPosition(get, never):Float;
+
+	function get_songPosition():Float
+	{
+		return (conductor.position - conductor.offset);
+	}
+
 	// player stats
 	public var maxHealth:Float = 100.0;
 	public var health:Float = 50.0;
@@ -90,6 +97,8 @@ class PlayState extends MainState
 		pauseMenu.closeCallback = function()
 		{
 			paused = false;
+
+			conductor.active = true;
 
 			for (action in pauseMenu.actions)
 			{
@@ -175,6 +184,7 @@ class PlayState extends MainState
 
 				openSubState(pauseMenu);
 				paused = true;
+				conductor.active = false;
 			}
 		});
 
@@ -383,7 +393,7 @@ class PlayState extends MainState
 
 			for (note in inputNotes)
 			{
-				if (note.canBeHit(conductor.position, (safeFrames / 60.0) * 1000.0) && note.direction == dir)
+				if (note.canBeHit(songPosition, (safeFrames / 60.0) * 1000.0) && note.direction == dir)
 				{
 					confirm = true;
 
@@ -450,6 +460,7 @@ class PlayState extends MainState
 
 		conductor.sound = musicHandler.channels[0];
 		conductor.active = true;
+		conductor.followSoundSource = false;		
 
 		gameStarted = true;
 		gameRestarted = false;
@@ -498,9 +509,6 @@ class PlayState extends MainState
 
 	override public function update(elapsed:Float)
 	{
-		if (conductor.active)
-			conductor.update(elapsed);
-
 		if (notes.length > 0)
 		{
 			var spawnTime:Float = 3000 / songMeta.speed;
@@ -510,7 +518,7 @@ class PlayState extends MainState
 				if (notes[i] == null)
 					continue;
 
-				if (notes[i].strumTime - (conductor.position - conductor.offset) <= spawnTime)
+				if (notes[i].strumTime - songPosition <= spawnTime)
 				{
 					var noteSpr:NoteSprite = activeNotes.recycle(NoteSprite, function()
 					{
@@ -535,11 +543,9 @@ class PlayState extends MainState
 				notes.remove(note);
 		}
 
-		var position:Float = (conductor.position - conductor.offset);
-
 		activeNotes.forEachAlive(function(note:NoteSprite)
 		{
-			var distance:Float = (0.45 * (position - note.noteData.strumTime) * songMeta.speed);
+			var distance:Float = (0.45 * (songPosition - note.noteData.strumTime) * songMeta.speed);
 
 			var strumGroup:FlxTypedGroup<StrumNote> = strumList[note.noteData.side];
 			var strumNote:StrumNote = strumGroup.members[note.noteData.direction];
@@ -549,11 +555,11 @@ class PlayState extends MainState
 
 			if (gameStarted && !gameRestarted)
 			{
-				if (!determineStrums(note.noteData) && note.noteData.strumTime - position < 0)
+				if (!determineStrums(note.noteData) && note.noteData.strumTime - songPosition < 0)
 				{
 					hitNote(note.noteData);
 				}
-				else if (note.noteData.strumTime - position < -300 && determineStrums(note.noteData))
+				else if (note.noteData.strumTime - songPosition < -300 && determineStrums(note.noteData))
 				{
 					missNote(note.noteData);
 				}

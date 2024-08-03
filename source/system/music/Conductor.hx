@@ -27,6 +27,8 @@ class Conductor extends FlxBasic
 
     public var followSoundSource:Bool = true;
 
+    public var syncBuffer:Float = 20.0;
+
     #if FLX_DEBUG
     public var canWatch:Bool = true;
     #end
@@ -43,10 +45,16 @@ class Conductor extends FlxBasic
 
     override public function update(elapsed:Float)
     {
-        if (!followSoundSource || sound == null)
+        if (!followSoundSource)
             position += (elapsed * 1000);
-        else
+        else if (sound != null)
             position = sound.time - offset;
+
+        if (!followSoundSource && sound != null)
+        {
+            if (Math.abs(position - (sound.time - offset)) > syncBuffer)
+                position = sound.time - offset;
+        }
 
         step = position / stepCrochet;
         beat = step / 4;
