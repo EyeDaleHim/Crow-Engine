@@ -117,6 +117,11 @@ class PlayState extends MainState
 				pauseMenu._songRestarted = false;
 		};
 
+		for (action in pauseMenu.actions)
+			{
+				action.active = false;
+			}
+
 		FlxG.autoPause = true;
 
 		musicHandler.clearChannels();
@@ -138,6 +143,10 @@ class PlayState extends MainState
 
 			if (chartData.overrideMeta != null)
 				songMeta = chartData.overrideMeta;
+		}
+		else
+		{
+			Logs.error('The game was not able to find a chart data for $chartFile. Check $file');
 		}
 
 		if (FileSystem.exists(Assets.assetPath('songs/$folder/meta.json')) && songMeta == null)
