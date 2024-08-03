@@ -15,19 +15,19 @@ class Conductor extends FlxBasic
 
     public final onStep:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
     public final onBeat:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
-    public final onSection:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
+    public final onMeasure:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
 
     public var beat(null, default):Float = 0.0;
     public var step(null, default):Float = 0.0;
-    public var section(null, default):Float = 0.0;
+    public var measure(null, default):Float = 0.0;
 
     public var lastBeat(null, default):Int = -1;
     public var lastStep(null, default):Int = -1;
-    public var lastSection(null, default):Int = -1;
+    public var lastMeasure(null, default):Int = -1;
 
     public var followSoundSource:Bool = true;
 
-    public var syncBuffer:Float = 20.0;
+    public var syncBuffer:Float = 30.0;
 
     #if FLX_DEBUG
     public var canWatch:Bool = true;
@@ -53,12 +53,15 @@ class Conductor extends FlxBasic
         if (!followSoundSource && sound != null)
         {
             if (Math.abs(position - (sound.time - offset)) > syncBuffer)
+            {
+                trace('RESYNC! ${Math.abs(position - (sound.time - offset))}ms');
                 position = sound.time - offset;
+            }
         }
 
         step = position / stepCrochet;
         beat = step / 4;
-        section = beat / 4;
+        measure = beat / 4;
 
         if (lastBeat != getBeat())
         {
@@ -72,10 +75,10 @@ class Conductor extends FlxBasic
             onStep.dispatch(getStep().floor());
         }
 
-        if (lastSection != getSection())
+        if (lastMeasure != getMeasure())
         {
-            lastSection = getSection().floor();
-            onSection.dispatch(getSection().floor());
+            lastMeasure = getMeasure().floor();
+            onMeasure.dispatch(getMeasure().floor());
         }
 
         #if FLX_DEBUG
@@ -86,9 +89,8 @@ class Conductor extends FlxBasic
             FlxG.watch.addQuick("", "");
             
             FlxG.watch.addQuick("Position", position.floor());
-            FlxG.watch.addQuick("Beat", getBeat());
-            FlxG.watch.addQuick("Step", getStep());
-            FlxG.watch.addQuick("Section", getSection());
+            FlxG.watch.addQuick("Measure/Beat/Step", [getMeasure(), getBeat(), getStep()]);
+            FlxG.watch.addQuick("BPM", bpm);
         }
         #end
 
@@ -109,18 +111,18 @@ class Conductor extends FlxBasic
         return step;
     }
 
-    public function getSection(floor:Bool = true):Float
+    public function getMeasure(floor:Bool = true):Float
     {
         if (floor)
-            return section.floor();
-        return section;
+            return measure.floor();
+        return measure;
     }
 
     public function clearCallbacks():Void
     {
         onStep.removeAll();
         onBeat.removeAll();
-        onSection.removeAll();
+        onMeasure.removeAll();
     }
 
     function get_crochet():Float
