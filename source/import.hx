@@ -63,12 +63,12 @@ import states.options.*;
 
 import substates.*;
 
-import backend.ui.Style;
-import backend.ui.Box;
-import backend.ui.Button;
-import backend.ui.Checkbox;
-import backend.ui.Stepper;
-import backend.ui.List;
+import backend.Constants;
+
+import backend.ui.*;
+import backend.ui.Button.ButtonStyle;
+import backend.ui.Stepper.StepperStyle;
+import backend.ui.List.ItemStyle;
 
 import system.api.Discord;
 
@@ -94,14 +94,11 @@ import system.music.Conductor;
 
 import utils.logs.Logs;
 
-import objects.characters.Bopper;
-import objects.characters.Character;
+import objects.characters.*;
 
-import objects.notes.Note;
-import objects.notes.StrumNote;
+import objects.notes.*;
 
-import objects.sprites.Alphabet;
-import objects.sprites.NoteSprite;
+import objects.sprites.*;
 
 import objects.stages.Prop;
 #end
