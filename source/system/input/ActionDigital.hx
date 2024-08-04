@@ -5,6 +5,8 @@ import flixel.input.actions.FlxAction.FlxActionDigital;
 
 class ActionDigital extends FlxActionDigital
 {
+	public var controlOrigin:Control;
+
 	public var persist:Bool = false;
 	public var savedState:Null<FlxInputState> = null;
 

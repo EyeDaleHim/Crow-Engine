@@ -88,6 +88,7 @@ class Controls
 			args = ValidateUtils.validateActionArgs(args);
 
 			var action:ActionDigital = new ActionDigital();
+			action.controlOrigin = control;
 			action.callback = function(_)
 			{
 				func();
@@ -102,7 +103,7 @@ class Controls
 
 			action.savedState = state;
 
-			action.persist = args?.persist ?? false;
+			action.persist = args.persist;
 
 			control.actions.push(action);
 			manager.addAction(action);
@@ -158,6 +159,8 @@ class Controls
 
 	public static function registerRawKey(keys:Array<FlxKey>, state:FlxInputState, func:() -> Void, ?args:ActionArgs)
 	{
+		args = ValidateUtils.validateActionArgs(args);
+
 		var action:ActionDigital = new ActionDigital();
 		action.callback = function(_)
 		{
@@ -173,7 +176,7 @@ class Controls
 
 		action.savedState = state;
 
-		action.persist = args?.persist ?? false;
+		action.persist = args.persist;
 
 		rawKeyActions.push(action);
 		manager.addAction(action);

@@ -117,10 +117,23 @@ class PlayState extends MainState
 				pauseMenu._songRestarted = false;
 		};
 
-		for (action in pauseMenu.actions)
+		Controls.registerFunction(Control.PAUSE, JUST_PRESSED, function()
+		{
+			trace("we called pause");
+			if (!paused && pauseMenu != null)
 			{
-				action.active = false;
+				musicHandler.pauseChannels();
+
+				openSubState(pauseMenu);
+				paused = true;
+				conductor.active = false;
 			}
+		});
+
+		for (action in pauseMenu.actions)
+		{
+			action.active = false;
+		}
 
 		FlxG.autoPause = true;
 
@@ -146,7 +159,7 @@ class PlayState extends MainState
 		}
 		else
 		{
-			Logs.error('The game was not able to find a chart data for $chartFile. Check $file');
+			Logs.error(NoChart(file, chartFile));
 		}
 
 		if (FileSystem.exists(Assets.assetPath('songs/$folder/meta.json')) && songMeta == null)
@@ -184,18 +197,6 @@ class PlayState extends MainState
 
 		if (longChannel != null)
 			longChannel.onComplete = endSong;
-
-		Controls.registerFunction(Control.PAUSE, JUST_PRESSED, function()
-		{
-			if (!paused)
-			{
-				musicHandler.pauseChannels();
-
-				openSubState(pauseMenu);
-				paused = true;
-				conductor.active = false;
-			}
-		});
 
 		instance = this;
 	}
@@ -469,7 +470,7 @@ class PlayState extends MainState
 
 		conductor.sound = musicHandler.channels[0];
 		conductor.active = true;
-		conductor.followSoundSource = false;		
+		conductor.followSoundSource = false;
 
 		gameStarted = true;
 		gameRestarted = false;
