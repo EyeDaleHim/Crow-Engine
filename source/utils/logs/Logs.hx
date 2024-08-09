@@ -1,5 +1,6 @@
 package utils.logs;
 
+import flixel.util.typeLimit.OneOfThree;
 import openfl.events.IOErrorEvent;
 import openfl.system.Capabilities;
 import lime.system.System;
@@ -28,14 +29,11 @@ _______________________________
 
 	private static var _STORED_MESSAGES:Array<Message> = [];
 
-	// sometimes it can be annoying to see the same error with the same graphic path
-	private static var _CANNOT_RENDER_GRAPHIC_CACHE:Array<CommonLogs> = [];
-
 	private static var logFile:FileOutput;
 
 	public static var BUFFER_SIZE:Int = 50; // How big should our logs be in memory before we write
 
-	private static function _print(log:OneOfTwo<CommonLogs, String>, type:Type, silent:Bool = false, ?info:haxe.PosInfos):Void
+	private static function _print(log:LogItem, printLevel:PrintLevel = CONSOLE, type:Type, silent:Bool = false, ?info:haxe.PosInfos):Void
 	{
 		var time:String = DateTools.format(Date.now(), "%H-%M-%S");
 
@@ -46,23 +44,33 @@ _______________________________
 		else
 			outputLog = {log: log, time: time, type: type};
 
-		if (outputLog.log.getName() == "CannotFindRoomItem")
-			_CANNOT_RENDER_GRAPHIC_CACHE.push(outputLog.log.getParameters()[0]);
-
 		_STORED_MESSAGES.push(outputLog);
 
-		var line:String = "";
+		var line:String = formatMessage(outputLog.log);
 
-		switch (outputLog.log)
+		switch (printLevel)
 		{
-			case Custom(message):
-				line = message;
+			case CONSOLE:
+				#if !PRINT_REGARDLESS
+				if (!silent)
+				#else
+				if (true) // wtf am i doing
+				#end
+				{
+					#if js
+					if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
+						(untyped console).log(formatPosInfo(line, info));
+					#elseif sys
+					Sys.println(formatPosInfo(line, info));
+					#end
+				}
+			case FLIXEL:
+				if (type == ERROR)
+					FlxG.log.error(line);
+				else if (type == WARNING)
+					FlxG.log.warn(line);
+			case _:
 		}
-
-		#if !PRINT_REGARDLESS
-		if (!silent)
-		#end
-		Sys.println('${info.fileName}:${info.lineNumber}: $line');
 
 		if (_STORED_MESSAGES.length > BUFFER_SIZE)
 		{
@@ -71,11 +79,8 @@ _______________________________
 			{
 				var logItem:CommonLogs = _STORED_MESSAGES[i].log;
 
-				switch (logItem)
-				{
-					case Custom(message):
-						line = '$message';
-				}
+				line = formatMessage(outputLog.log);
+
 				if (line.length > 0)
 					logFile.writeString('[${_STORED_MESSAGES[i].time}] [${_STORED_MESSAGES[i].type}]: $line\n');
 
@@ -116,7 +121,7 @@ _______________________________
 			starterOutput = starterOutput.replace('%f', '${System.deviceVendor} (${System.deviceModel})');
 			starterOutput = starterOutput.replace('%g', Capabilities.cpuArchitecture);
 			starterOutput = starterOutput.replace('%h', FlxG?.stage?.context3D?.driverInfo ?? 'N/A');
-            starterOutput = starterOutput.replace('%j', renderMethod());
+			starterOutput = starterOutput.replace('%j', renderMethod());
 
 			starterOutput = starterOutput.trim();
 
@@ -133,11 +138,8 @@ _______________________________
 				{
 					var logItem:CommonLogs = _STORED_MESSAGES[i].log;
 
-					switch (logItem)
-					{
-						case Custom(message):
-							line = '$message';
-					}
+					line = formatMessage(logItem);
+
 					if (line.length > 0)
 						logFile.writeString('[${_STORED_MESSAGES[i].time}] [${_STORED_MESSAGES[i].type}]: $line\n');
 				}
@@ -148,22 +150,33 @@ _______________________________
 		}
 	}
 
-	public static function error(log:OneOfTwo<CommonLogs, String>, ?silent:Bool, ?info:haxe.PosInfos):Void
+	private static function formatMessage(logItem:CommonLogs):String
 	{
-		silent ??= DEFAULT_SILENT;
-		_print(log, ERROR, silent, info);
+		switch (logItem)
+		{
+			case Custom(message):
+				return '$message';
+			case NoChart(folder, file):
+				return 'The game was not able to find a chart data for $file. ($folder)';
+		}
 	}
 
-	public static function warn(log:OneOfTwo<CommonLogs, String>, ?silent:Bool, ?info:haxe.PosInfos):Void
+	public static function error(log:LogItem, ?printLevel:PrintLevel = FLIXEL, ?silent:Bool, ?info:haxe.PosInfos):Void
 	{
 		silent ??= DEFAULT_SILENT;
-		_print(log, WARNING, silent, info);
+		_print(log, printLevel, ERROR, silent, info);
 	}
 
-	public static function info(log:OneOfTwo<CommonLogs, String>, ?silent:Bool, ?info:haxe.PosInfos):Void
+	public static function warn(log:LogItem, ?printLevel:PrintLevel = FLIXEL, ?silent:Bool, ?info:haxe.PosInfos):Void
 	{
 		silent ??= DEFAULT_SILENT;
-		_print(log, INFO, silent, info);
+		_print(log, printLevel, WARNING, silent, info);
+	}
+
+	public static function info(log:LogItem, ?printLevel:PrintLevel = CONSOLE, ?silent:Bool, ?info:haxe.PosInfos):Void
+	{
+		silent ??= DEFAULT_SILENT;
+		_print(log, printLevel, INFO, silent, info);
 	}
 
 	private static function renderMethod():String
@@ -181,7 +194,27 @@ _______________________________
 			return 'ERROR ON QUERY RENDER METHOD: ${e}';
 		}
 	}
+
+	private static function formatPosInfo(v:String, infos:haxe.PosInfos):String
+	{
+		if (infos == null)
+			return v;
+
+		var infoStr:String = '${infos.fileName}:${infos.lineNumber}';
+
+		if (infos.customParams != null)
+		{
+			for (value in infos.customParams)
+			{
+				infoStr += ", " + Std.string(value);
+			}
+		}
+
+		return infoStr + ": " + v;
+	}
 }
+
+typedef LogItem = OneOfThree<CommonLogs, String, Dynamic>;
 
 typedef Message =
 {
@@ -189,6 +222,13 @@ typedef Message =
 	var time:String;
 	var log:CommonLogs;
 };
+
+enum abstract PrintLevel(String)
+{
+	var CONSOLE:PrintLevel;
+	var LOG_ONLY:PrintLevel;
+	var FLIXEL:PrintLevel;
+}
 
 enum abstract Type(String)
 {
@@ -201,4 +241,5 @@ enum abstract Type(String)
 enum CommonLogs
 {
 	Custom(message:String);
+	NoChart(folder:String, file:String);
 }
