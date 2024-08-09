@@ -21,7 +21,7 @@ class WeekManager
 
 				if (rawData.length == 0)
 				{
-					FlxG.log.error('Could not load week $weekName, please check ${Assets.assetPath(weekLocation)} if the data is correct.');
+					Logs.error('Could not load week $weekName, please check ${Assets.assetPath(weekLocation)} if the data is correct.');
 					return;
 				}
 
@@ -41,7 +41,7 @@ class WeekManager
 				weekList.push(weekData);
 			}
 			else
-				FlxG.log.error('Could not load week $weekName, please check ${Assets.assetPath(weekLocation)}');
+				Logs.error('Could not load week $weekName, please check ${Assets.assetPath(weekLocation)}');
 		} catch (e)
 		{
 			trace(e.toString());

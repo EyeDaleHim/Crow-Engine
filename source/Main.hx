@@ -83,7 +83,7 @@ class Main extends Sprite
 					WeekManager.importWeekFile(week);
 			}
 			else
-				FlxG.log.error('Couldn\'t find your Week Global Metadata, please check ${Assets.assetPath('data/weeks/meta.json')}');
+				Logs.error('Couldn\'t find your Week Global Metadata, please check ${Assets.assetPath('data/weeks/meta.json')}');
 		}
 	}
 

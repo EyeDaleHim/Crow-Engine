@@ -75,7 +75,7 @@ class Alphabet extends FlxObject
 					if (animFrames.length > 0)
 						animationHash.set(output, animFrames);
 					else
-						FlxG.log.error('Could not create a hash for "${output}');
+						Logs.error('Could not create a hash for "${output}');
 				}
 			}
 
@@ -92,7 +92,7 @@ class Alphabet extends FlxObject
 					if (animFrames.length > 0)
 						animationHash.set(output, animFrames);
 					else
-						FlxG.log.error('Could not create a hash for "${output}');
+						Logs.error('Could not create a hash for "${output}');
 				}
 			}
 		}
@@ -191,7 +191,7 @@ class Alphabet extends FlxObject
 			else
 			{
 				_addedPoint.add(40);
-				FlxG.log.error('Alphabet character ${char} is invalid.');
+				Logs.error('Alphabet character ${char} is invalid.');
 				continue;
 			}
 
@@ -251,7 +251,7 @@ class Alphabet extends FlxObject
 			else
 			{
 				_addedPoint.add(40 * scale.x);
-				FlxG.log.error('Alphabet character ${char} is invalid.');
+				Logs.error('Alphabet character ${char} is invalid.');
 				continue;
 			}
 
@@ -351,7 +351,7 @@ class Alphabet extends FlxObject
 			return;
 
 		final names = invalidFrames.map((f) -> '"${f.name}"').join(", ");
-		FlxG.log.error('Attempting to use frames that belong to a destroyed graphic, frame names: $names');
+		Logs.error('Attempting to use frames that belong to a destroyed graphic, frame names: $names');
 		#end
 	}
 
