@@ -52,7 +52,7 @@ class Conductor extends FlxBasic
 
         if (!followSoundSource && sound != null)
         {
-            if (Math.abs(position - (sound.time - offset)) > syncBuffer)
+            if (sound.time - offset > 0 && Math.abs(position - (sound.time - offset)) > syncBuffer)
             {
                 trace('RESYNC! ${Math.abs(position - (sound.time - offset))}ms');
                 position = sound.time - offset;

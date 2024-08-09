@@ -53,26 +53,31 @@ class FreeplayState extends MainState
 			}
 		}
 
+		Controls.registerFunction(Control.ACCEPT, JUST_PRESSED, function()
+		{
+			musicHandler.clearChannels();
+			conductor.sound = null;
+
+			FlxG.switchState(() -> new PlayState(songs[selected].name, '${songs[selected].name.toLowerCase()}-hard'));
+		});
+
+		Controls.registerFunction(Control.UI_UP, JUST_PRESSED, function()
+		{
+			if (songGroup.length > 1)
+				changeItem(-1);
+		});
+
+		Controls.registerFunction(Control.UI_DOWN, JUST_PRESSED, function()
+		{
+			if (songGroup.length > 1)
+				changeItem(1);
+		});
+
 		super.create();
 	}
 
 	override function update(elapsed:Float)
 	{
-		if (FlxG.keys.justPressed.ENTER)
-		{
-			musicHandler.clearChannels();
-			conductor.sound = null;
-			
-			FlxG.switchState(new PlayState(songs[selected].name, '${songs[selected].name.toLowerCase()}-hard'));
-		}
-		else if (songGroup.length > 1)
-		{
-			if (FlxG.keys.anyJustPressed([W, UP]))
-				changeItem(-1);
-			if (FlxG.keys.anyJustPressed([S, DOWN]))
-				changeItem(1);
-		}
-
 		songGroup.forEach(function(text:Alphabet)
 		{
 			var textPos:FlxPoint = FlxPoint.get();

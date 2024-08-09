@@ -758,4 +758,22 @@ class PlayState extends MainState
 		}
 		return false;
 	}
+
+	override function startOutro(onOutroComplete:()->Void):Void
+	{
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPress);
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, keyRelease);
+
+		musicHandler.clearChannels();
+		conductor.sound = null;
+
+		super.startOutro(onOutroComplete);	
+	}
+
+	override function destroy():Void
+	{
+		conductor.clearCallbacks();
+
+		super.destroy();
+	}
 }
