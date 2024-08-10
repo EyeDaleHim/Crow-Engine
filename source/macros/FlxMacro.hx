@@ -18,7 +18,7 @@ class FlxMacro
 			{
 				name: "customData", // Field name.
 				access: [haxe.macro.Expr.Access.APublic], // Access level
-				kind: haxe.macro.Expr.FieldType.FVar(macro :Map<String, Dynamic>, macro $v{new Map<String, Dynamic>()}), // Variable type and default value
+				kind: haxe.macro.Expr.FieldType.FVar(macro :Dynamic, macro $v{{}}), // Variable type and default value
 				pos: pos, // The field's position in code.
 			}
 		]);
