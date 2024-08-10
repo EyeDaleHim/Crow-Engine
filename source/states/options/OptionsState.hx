@@ -126,6 +126,6 @@ class OptionsState extends MainState
 
     private function switchBack():Void
     {
-        FlxG.switchState(states.menus.MainMenuState.new);
+        FlxG.switchState(() -> new states.menus.MainMenuState());
     }
 }

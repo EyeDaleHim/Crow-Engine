@@ -72,6 +72,7 @@ class PlayState extends MainState
 
 	// // notes & strums
 	public var activeNotes:FlxTypedGroup<NoteSprite>;
+	public var sustainNotes:FlxTypedGroup<SustainNote>;
 	public var strumList:Array<FlxTypedGroup<StrumNote>> = [];
 
 	public var notes:Array<Note> = [];
@@ -96,9 +97,15 @@ class PlayState extends MainState
 		pauseMenu = new PauseSubState(pauseCamera);
 		pauseMenu.closeCallback = function()
 		{
-			paused = false;
+			timerManager.active = true;
+			tweenManager.active = true;
 
-			conductor.active = true;
+			timerManager.forEach(function(tmr:FlxTimer)
+			{
+				tmr.active = true;
+			});
+
+			paused = false;
 
 			for (action in pauseMenu.actions)
 			{
@@ -110,6 +117,8 @@ class PlayState extends MainState
 			@:privateAccess
 			if (!pauseMenu._songRestarted)
 			{
+				conductor.active = true;
+
 				musicHandler.resumeChannel(0, 0.8, false);
 				musicHandler.resumeChannel(1, false);
 			}
@@ -122,6 +131,14 @@ class PlayState extends MainState
 			trace("we called pause");
 			if (!paused && pauseMenu != null)
 			{
+				timerManager.active = false;
+				tweenManager.active = false;
+
+				timerManager.forEach(function(tmr:FlxTimer)
+				{
+					tmr.active = false;
+				});
+
 				musicHandler.pauseChannels();
 
 				openSubState(pauseMenu);
@@ -231,12 +248,14 @@ class PlayState extends MainState
 		generateSong();
 
 		activeNotes = new FlxTypedGroup<NoteSprite>();
+		sustainNotes = new FlxTypedGroup<SustainNote>();
 
 		for (i in 0...(chartData.strumLength ?? 2))
 		{
 			createStrum(FlxG.width / 2);
 		}
 
+		add(sustainNotes);
 		add(activeNotes);
 
 		createHUD();
@@ -403,10 +422,9 @@ class PlayState extends MainState
 
 			for (note in inputNotes)
 			{
-				if (note.canBeHit(songPosition, (safeFrames / 60.0) * 1000.0) && note.direction == dir)
+				if (note.canBeHit(songPosition, (safeFrames / 60.0) * 1000.0) && note.direction == dir && determineStrums(note))
 				{
 					confirm = true;
-
 					hitNote(note);
 				}
 			}
@@ -445,7 +463,7 @@ class PlayState extends MainState
 		}
 	}
 
-	private static final controls:Array<Control> = [Control.NOTE_LEFT, Control.NOTE_DOWN, Control.NOTE_UP, Control.NOTE_RIGHT];
+	public var controls:Array<Control> = [Control.NOTE_LEFT, Control.NOTE_DOWN, Control.NOTE_UP, Control.NOTE_RIGHT];
 
 	public function checkKeyCode(keyCode:Int = -1)
 	{
@@ -537,9 +555,32 @@ class PlayState extends MainState
 
 						return noteInstance;
 					});
+
+					noteSpr.visible = true;
 					noteSpr.noteData = notes[i];
+					noteSpr.sustain = null;
 
 					activeNotes.add(noteSpr);
+
+					if (notes[i].sustain > 0.0)
+					{
+						var sustainSpr:SustainNote = sustainNotes.recycle(SustainNote, function()
+						{
+							var noteInstance:SustainNote = new SustainNote(notes[i], TILE, (notes[i].sustain / conductor.stepCrochet) * songMeta.speed);
+							noteInstance.camera = hudCamera;
+
+							return noteInstance;
+						});
+						noteSpr.sustain = sustainSpr;
+
+						sustainSpr.noteData = notes[i];
+						sustainSpr.length = (notes[i].sustain / conductor.stepCrochet) * 1.5 * songMeta.speed;
+						sustainSpr.clipRect = null;
+						notes[i].sustainActive = false;
+
+						sustainNotes.add(sustainSpr);
+					}
+
 					_removeNotes.push(notes[i]);
 
 					if (determineStrums(notes[i]))
@@ -565,14 +606,54 @@ class PlayState extends MainState
 
 			if (gameStarted && !gameRestarted)
 			{
+				if (note.noteData == null) // somehow
+					return;
+
 				if (!determineStrums(note.noteData) && note.noteData.strumTime - songPosition < 0)
 				{
 					hitNote(note.noteData);
 				}
-				else if (note.noteData.strumTime - songPosition < -300 && determineStrums(note.noteData))
+				else if (determineStrums(note.noteData))
 				{
-					missNote(note.noteData);
+					var hittable:Bool = note.noteData.wasHit;
+
+					if (note.noteData.sustainActive)
+						hittable = songPosition < note.noteData.strumTime + (note.noteData.sustain / 2); // divide by two because we're nice
+
+					if (hittable && note.noteData.sustain > 0.0)
+					{
+						if (controls[note.noteData.direction].checkStatus(PRESSED))
+						{
+							hitNote(note.noteData);
+						}
+						else if (controls[note.noteData.direction].checkStatus(JUST_RELEASED))
+						{
+							missNote(note.noteData);
+						}
+					}
+					else
+					{
+						if (note.exists && !note.noteData.sustainActive && note.noteData.strumTime - songPosition < -300)
+							missNote(note.noteData);
+					}
 				}
+			}
+		});
+
+		sustainNotes.forEachAlive(function(note:SustainNote)
+		{
+			if (!determineStrums(note.noteData) || controls[note.noteData.direction].checkStatus(PRESSED))
+			{
+				var strumGroup:FlxTypedGroup<StrumNote> = strumList[note.noteData.side];
+				var strumNote:StrumNote = strumGroup.members[note.noteData.direction];
+
+				var center = strumNote.y + (Note.noteWidth / 2);
+
+				var rect = FlxRect.get(0, 0, note.width / note.scale.x, note.height / note.scale.y);
+				rect.y = (center - note.y) / note.scale.y;
+				rect.height -= rect.y;
+
+				note.clipRect = rect;
 			}
 		});
 
@@ -585,20 +666,37 @@ class PlayState extends MainState
 
 		comboGroup.forEachAlive(function(spr:FlxSprite)
 		{
-			spr.customData.set("actualAlpha", spr.customData.get("actualAlpha") - (elapsed * 5));
-			spr.alpha = spr.customData.get("actualAlpha");
+			if (spr.customData.actualAlpha > 1.0)
+				spr.customData.actualAlpha -= elapsed * 5.0;
+			else
+				spr.customData.actualAlpha -= elapsed * 2.0;
+			spr.alpha = spr.customData.actualAlpha;
 
 			if (spr.alpha <= 0.0)
 				spr.kill();
 		});
 
+		comboGroup.sort((order:Int, combo1:FlxSprite, combo2:FlxSprite) ->
+		{
+			return FlxSort.byValues(FlxSort.ASCENDING, combo1.alpha, combo2.alpha);
+		});
+
 		ratingGroup.forEachAlive(function(spr:FlxSprite)
 		{
-			spr.customData.set("actualAlpha", spr.customData.get("actualAlpha") - (elapsed * 5));
-			spr.alpha = spr.customData.get("actualAlpha");
+			if (spr.customData.actualAlpha > 1.0)
+				spr.customData.actualAlpha -= elapsed * 5.0;
+			else
+				spr.customData.actualAlpha -= elapsed * 2.0;
+
+			spr.alpha = spr.customData.actualAlpha;
 
 			if (spr.alpha <= 0.0)
 				spr.kill();
+		});
+
+		ratingGroup.sort((order:Int, rating1:FlxSprite, rating2:FlxSprite) ->
+		{
+			return FlxSort.byValues(FlxSort.ASCENDING, rating1.alpha, rating2.alpha);
 		});
 
 		super.update(elapsed);
@@ -623,25 +721,42 @@ class PlayState extends MainState
 
 	public function hitNote(note:Note, diff:Float = 0.0)
 	{
+		var canRemoveNote:Bool = false;
+
 		if (determineStrums(note))
 		{
-			score += 500;
+			note.wasHit = true;
 
-			ratingHits += 1.0;
-			totalHits++;
+			if (!note.sustainActive)
+			{
+				score += 500;
 
-			// health += rating.healthHit;
-			health += 0.75;
+				ratingHits += 1.0;
+				totalHits++;
 
-			combo++;
+				// health += rating.healthHit;
+				health += 0.75;
 
-			popUpCombo();
+				combo++;
+
+				popUpCombo();
+			}
+
+			if (note.sustain > 0.0)
+			{
+				score += ((500 / (note.sustain / conductor.stepCrochet)) * FlxG.elapsed).floor();
+				note.sustainActive = true;
+			}
+
 			updateScoreText();
 		}
 		else if (strumList[note.side] != null)
 		{
+			if (note.sustain > 0.0)
+				note.sustainActive = true;
+
 			var strum:StrumNote = strumList[note.side].members[note.direction];
-			strum.playAnim(strum.confirmAnim, true);
+			strum.playAnim(strum.confirmAnim, !note.sustainActive);
 
 			if (strum.animation.finishCallback == null)
 			{
@@ -656,7 +771,18 @@ class PlayState extends MainState
 			}
 		}
 
-		destroyNote(note);
+		if (note.sustainActive)
+		{
+			if (songPosition > (note.strumTime + note.sustain))
+				canRemoveNote = true;
+			note.parent.visible = false;
+		}
+
+		if (note.sustain <= 0.0)
+			canRemoveNote = true;
+
+		if (canRemoveNote)
+			destroyNote(note);
 	}
 
 	public function missNote(note:Note)
@@ -678,13 +804,22 @@ class PlayState extends MainState
 
 	public function destroyNote(note:Note)
 	{
-		if (inputNotes.indexOf(note) != -1)
-			inputNotes.splice(inputNotes.indexOf(note), 1);
-		activeNotes.remove(note.parent, true);
+		if (note == null)
+			return;
 
-		if (note?.parent != null)
+		if (inputNotes.contains(note))
+			inputNotes.remove(note);
+
+		if (note.sustainParent != null)
+		{
+			note.sustainParent.kill();
+			note.sustainParent.noteData = null;
+		}
+
+		if (note.parent != null)
 		{
 			note.parent.kill();
+			note.parent.noteData = null;
 		}
 	}
 
@@ -705,7 +840,7 @@ class PlayState extends MainState
 		ratingSpr.velocity.y = -FlxG.random.int(140, 175);
 		ratingSpr.velocity.x = FlxG.random.int(0, 10) * FlxG.random.sign();
 
-		ratingSpr.customData.set("actualAlpha", 1.0 + (conductor.crochet * 0.002));
+		ratingSpr.customData.actualAlpha = 1.0 + (conductor.crochet * 0.002);
 		ratingSpr.alpha = 1.0;
 
 		ratingGroup.add(ratingSpr);
@@ -737,7 +872,7 @@ class PlayState extends MainState
 			comboSpr.velocity.y = -FlxG.random.int(140, 160);
 			comboSpr.velocity.x = FlxG.random.float(-5, 5);
 
-			comboSpr.customData.set("actualAlpha", 1.0 + (conductor.crochet * 0.001));
+			comboSpr.customData.actualAlpha = 1.0 + (conductor.crochet * 0.001);
 			comboSpr.alpha = 1.0;
 
 			comboGroup.add(comboSpr);
@@ -759,7 +894,7 @@ class PlayState extends MainState
 		return false;
 	}
 
-	override function startOutro(onOutroComplete:()->Void):Void
+	override function startOutro(onOutroComplete:() -> Void):Void
 	{
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, keyRelease);
@@ -767,7 +902,7 @@ class PlayState extends MainState
 		musicHandler.clearChannels();
 		conductor.sound = null;
 
-		super.startOutro(onOutroComplete);	
+		super.startOutro(onOutroComplete);
 	}
 
 	override function destroy():Void
