@@ -251,6 +251,16 @@ class Control
 		}
 		return false;
 	}
+
+	public function checkStatus(state:FlxInputState):Bool
+	{
+		for (key in keys)
+		{
+			if (FlxKey.toStringMap.exists(key) && cast(key, Int) >= 0)
+				return FlxG.keys.checkStatus(key, state);
+		}
+		return false;
+	}
 }
 
 typedef ActionArgs =
