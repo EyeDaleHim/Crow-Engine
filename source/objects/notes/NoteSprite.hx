@@ -1,8 +1,9 @@
-package objects.sprites;
+package objects.notes;
 
 class NoteSprite extends FlxSprite
 {
 	public var noteData(default, set):Note;
+	public var sustain:SustainNote;
 
 	override public function new(noteData:Note)
 	{
@@ -19,6 +20,26 @@ class NoteSprite extends FlxSprite
 
         scale.set(0.7, 0.7);
 		updateHitbox();
+	}
+
+	override function set_x(value:Float):Float
+	{
+		this.x = value;
+
+		if (sustain != null)
+			sustain.centerOverlay(this, X);
+
+		return value;
+	}
+
+	override function set_y(value:Float):Float
+	{
+		this.y = value;
+
+		if (sustain != null)
+			sustain.y = this.getMidpoint().y;
+
+		return value;
 	}
 
 	function set_noteData(noteData:Note)
