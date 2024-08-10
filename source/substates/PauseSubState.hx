@@ -116,9 +116,9 @@ class PauseSubState extends MainSubState
 				close();
 				
 				if (PlayState.instance.isStory)
-					FlxG.switchState(new states.menus.MainMenuState());
+					FlxG.switchState(() -> new states.menus.MainMenuState());
 				else
-					FlxG.switchState(new states.menus.FreeplayState());
+					FlxG.switchState(() -> new states.menus.FreeplayState());
 			}
         }
     }

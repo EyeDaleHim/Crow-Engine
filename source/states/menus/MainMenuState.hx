@@ -107,11 +107,11 @@ class MainMenuState extends MainState
 			{
 				case "freeplay":
 					{
-						FlxG.switchState(states.menus.FreeplayState.new);
+						FlxG.switchState(()-> new states.menus.FreeplayState());
 					}
 				case "options":
 				{
-					FlxG.switchState(states.options.OptionsState.new);
+					FlxG.switchState(()-> new states.options.OptionsState());
 				}
 				default:
 					{

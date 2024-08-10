@@ -68,7 +68,7 @@ class Main extends Sprite
 					state.bringUpEditors();
 			}
 			else
-				FlxG.switchState(new ScreenEditorState());
+				FlxG.switchState(() -> new ScreenEditorState());
 		}, {persist: true});
 
 		FlxG.stage.application.window.onDropFile.add(readFolderAndConvertChart);
