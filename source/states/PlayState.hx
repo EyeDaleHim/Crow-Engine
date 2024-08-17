@@ -84,6 +84,8 @@ class PlayState extends MainState
 	{
 		super();
 
+		FlxG.fixedTimestep = false;
+
 		hudCamera = new FlxCamera();
 		hudCamera.bgColor.alpha = 0;
 

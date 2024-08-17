@@ -5,6 +5,13 @@ class MainState extends FlxState
 	public var musicHandler(get, never):Music;
 	public var conductor(get, never):Conductor;
 
+	public function new()
+	{
+		super();
+
+		FlxG.fixedTimestep = true;
+	}
+
 	override function create()
 	{
 		FlxG.plugins.addIfUniqueType(new Music());
