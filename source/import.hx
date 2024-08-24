@@ -100,7 +100,8 @@ import objects.notes.*;
 
 import objects.sprites.*;
 
-import objects.stages.Prop;
+import objects.stages.*;
+import objects.stages.stage_data.*;
 #end
 
 import openfl.display.BitmapData;

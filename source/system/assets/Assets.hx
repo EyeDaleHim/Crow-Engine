@@ -149,7 +149,7 @@ class Assets
 	public static function sound(path:String, type:SoundType):Sound
 	{
 		var file:String = soundPath(path, type);
-		var sound:Sound = null;
+		var sound:Sound = new Sound();
 
 		if (soundCache.exists(file))
 		{

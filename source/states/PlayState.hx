@@ -53,7 +53,12 @@ class PlayState extends MainState
 	public var hudCamera:FlxCamera;
 	public var pauseCamera:FlxCamera;
 
+	// events stuff
+	public var focusedPoint:String = "";
+
 	// sprites
+	public var stage:Stage;
+
 	// // hud
 	public var infoText:FlxText;
 
@@ -231,12 +236,18 @@ class PlayState extends MainState
 
 		FlxG.mouse.visible = false;
 
+		switch (songMeta.stage)
+		{
+			default:
+				stage = new DadStage();
+		}
+		add(stage);
+
 		characterList = new FlxTypedGroup<Character>();
-		add(characterList);
 
 		for (player in songMeta.characters.players)
 		{
-			var char:Character = new Character(400, 260, player);
+			var char:Character = new Character(0.0, 0.0, player);
 			char.scrollFactor.set(0.95, 0.95);
 			characterList.add(char);
 			playerList.push(char);
@@ -246,6 +257,23 @@ class PlayState extends MainState
 				char.beatHit();
 			});
 		}
+
+		for (opponent in songMeta.characters.opponents)
+		{
+			var char:Character = new Character(0.0, 0.0, opponent);
+			char.scrollFactor.set(0.95, 0.95);
+			characterList.add(char);
+			opponentList.push(char);
+
+			conductor.onBeat.add(function(beat:Int)
+			{
+				char.beatHit();
+			});
+		}
+
+		stage.initializeStage([spectatorList, opponentList, playerList]);
+
+		FlxG.camera.zoom = stage.defaultZoom;
 
 		generateSong();
 
@@ -273,6 +301,14 @@ class PlayState extends MainState
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
+
+		conductor.onMeasure.add(function(measure:Int)
+		{
+			if (focusedPoint == Stage.PLAYER_NAME)
+				focusedPoint = Stage.OPPONENT_NAME;
+			else
+				focusedPoint = Stage.PLAYER_NAME;
+		});
 
 		super.create();
 	}
@@ -568,7 +604,7 @@ class PlayState extends MainState
 					{
 						var sustainSpr:SustainNote = sustainNotes.recycle(SustainNote, function()
 						{
-							var noteInstance:SustainNote = new SustainNote(notes[i], TILE, (notes[i].sustain / conductor.stepCrochet) * songMeta.speed);
+							var noteInstance:SustainNote = new SustainNote(notes[i], STRETCH, (notes[i].sustain / conductor.stepCrochet) * songMeta.speed);
 							noteInstance.camera = hudCamera;
 
 							return noteInstance;
@@ -701,7 +737,24 @@ class PlayState extends MainState
 			return FlxSort.byValues(FlxSort.ASCENDING, rating1.alpha, rating2.alpha);
 		});
 
+		updateCamera();
+
 		super.update(elapsed);
+	}
+
+	public function updateCamera():Void
+	{
+		if (stage.cameraPoints.exists(focusedPoint))
+		{
+			var ratio:Float = 2.4 * FlxG.elapsed * stage.cameraSpeed;
+
+			var target:FlxPoint = stage.cameraPoints.get(focusedPoint).clone().subtract(FlxG.width / 2, FlxG.height / 2);
+
+			FlxG.camera.scroll.x = FlxMath.lerp(FlxG.camera.scroll.x, target.x, ratio);
+			FlxG.camera.scroll.y = FlxMath.lerp(FlxG.camera.scroll.y, target.y, ratio);
+
+			target.put();
+		}
 	}
 
 	public function updateScoreText():Void
@@ -748,6 +801,10 @@ class PlayState extends MainState
 			{
 				score += ((500 / (note.sustain / conductor.stepCrochet)) * FlxG.elapsed).floor();
 				note.sustainActive = true;
+
+				var strum:StrumNote = strumList[note.side].members[note.direction];
+
+				strum.playAnim(strum.confirmAnim, strum.animation.curAnim.curFrame > 2);
 			}
 
 			updateScoreText();
@@ -758,7 +815,7 @@ class PlayState extends MainState
 				note.sustainActive = true;
 
 			var strum:StrumNote = strumList[note.side].members[note.direction];
-			strum.playAnim(strum.confirmAnim, !note.sustainActive);
+			strum.playAnim(strum.confirmAnim, (!note.sustainActive || strum.animation.curAnim.curFrame > 2));
 
 			if (strum.animation.finishCallback == null)
 			{
