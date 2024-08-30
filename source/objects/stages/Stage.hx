@@ -32,7 +32,7 @@ class Stage extends FlxTypedGroup<FlxObject>
 	{
 		var _setCharacters:Bool = false;
 
-		if (characters != null)
+		if (characters?.length > 0)
 		{
 			_setCharacters = true;
 
@@ -43,8 +43,10 @@ class Stage extends FlxTypedGroup<FlxObject>
 			{
 				var startIndex:Int = members.indexOf(objectOrder[i]);
 
-				if (characters[i].length != 0)
+				if (characters[i]?.length != 0)
 				{
+					objectOrder[i].setSize(characters[i][0].width, characters[i][0].height);
+
 					for (j in 0...characters[i].length)
 					{
 						if (!members.contains(objectOrder[i]))
@@ -66,9 +68,12 @@ class Stage extends FlxTypedGroup<FlxObject>
 			}
 		}
 
-		setPlayerCamPos(getPlayerCamPos());
-		setOpponentCamPos(getOpponentCamPos());
-		setSpectatorCamPos(getSpectatorCamPos());
+		if (!cameraPoints.exists(PLAYER_NAME))
+			setPlayerCamPos(getPlayerCamPos());
+		if (!cameraPoints.exists(OPPONENT_NAME))
+			setOpponentCamPos(getOpponentCamPos().add(_opponentObject.width, _opponentObject.height / 2));
+		if (!cameraPoints.exists(SPECTATOR_NAME))
+			setSpectatorCamPos(getSpectatorCamPos());
 
 		FlxDestroyUtil.destroy(_playerObject);
 		FlxDestroyUtil.destroy(_spectatorObject);
@@ -134,14 +139,14 @@ class Stage extends FlxTypedGroup<FlxObject>
 		return newPoint;
 	}
 
-	public function setSpectatorPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint, feetRelative:Bool = true):FlxPoint
+	public function setSpectatorPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
 		positionPoints.set(SPECTATOR_NAME, newPoint ?? FlxPoint.get(x, y));
 
 		return newPoint;
 	}
 
-	public function setOpponentPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint, feetRelative:Bool = true):FlxPoint
+	public function setOpponentPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
 		positionPoints.set(OPPONENT_NAME, newPoint ?? FlxPoint.get(x, y));
 
@@ -163,6 +168,48 @@ class Stage extends FlxTypedGroup<FlxObject>
 	}
 
 	public function setOpponentCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	{
+		cameraPoints.set(OPPONENT_NAME, newPoint ?? FlxPoint.get(x, y));
+
+		return newPoint;
+	}
+
+	public function addOffsetToPlayerPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	{
+		positionPoints.set(PLAYER_NAME, newPoint ?? FlxPoint.get(x, y));
+
+		return newPoint;
+	}
+
+	public function addOffsetToSpectatorPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	{
+		positionPoints.set(SPECTATOR_NAME, newPoint ?? FlxPoint.get(x, y));
+
+		return newPoint;
+	}
+
+	public function addOffsetToOpponentPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	{
+		positionPoints.set(OPPONENT_NAME, newPoint ?? FlxPoint.get(x, y));
+
+		return newPoint;
+	}
+
+	public function addOffsetToPlayerCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	{
+		cameraPoints.set(PLAYER_NAME, newPoint ?? FlxPoint.get(x, y));
+
+		return newPoint;
+	}
+
+	public function addOffsetToSpectatorCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	{
+		cameraPoints.set(SPECTATOR_NAME, newPoint ?? FlxPoint.get(x, y));
+
+		return newPoint;
+	}
+
+	public function addOffsetToOpponentCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
 		cameraPoints.set(OPPONENT_NAME, newPoint ?? FlxPoint.get(x, y));
 

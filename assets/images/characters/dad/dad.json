@@ -1,12 +1,7 @@
 {
-    "healthColor": -5282098,
-    "missList": [
-        "singLEFTmiss",
-        "singDOWNmiss",
-        "singUPmiss",
-        "singRIGHTmiss"
-    ],
-    "animationList": [
+    "name": "bf",
+    "healthColor": -13520687,
+    "animations": [
         {
             "prefix": "Dad idle dance",
             "indices": [],
@@ -24,7 +19,7 @@
             "fps": 24,
             "name": "singLEFT",
             "offset": {
-                "x": -10,
+                "x": -9,
                 "y": 10
             },
             "looped": false
@@ -63,22 +58,8 @@
             "looped": false
         }
     ],
-    "singList": [
-        "singLEFT",
-        "singDOWN",
-        "singUP",
-        "singRIGHT"
-    ],
-    "idleList": [
-        "idle"
-    ],
-    "name": "dad",
-    "flip": {
-        "x": false,
-        "y": false
-    },
-    "scale": {
-        "x": 1,
-        "y": 1
-    }
+
+    "bopList": ["idle", ""],
+    "singList": ["singLEFT", "singDOWN", "singUP", "singRIGHT"],
+    "missList": []
 }

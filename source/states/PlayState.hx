@@ -811,11 +811,15 @@ class PlayState extends MainState
 		}
 		else if (strumList[note.side] != null)
 		{
+			var opponent = opponentList[0];
+			opponent.playAnimation(opponent.singList[note.direction], true);
+			opponent.singTimer = (conductor.crochet * 0.001) * 1.5;
+
 			if (note.sustain > 0.0)
 				note.sustainActive = true;
 
 			var strum:StrumNote = strumList[note.side].members[note.direction];
-			strum.playAnim(strum.confirmAnim, (!note.sustainActive || strum.animation.curAnim.curFrame > 2));
+			strum.playAnim(strum.confirmAnim, (!note.sustainActive || (note.sustainActive && strum.animation.curAnim.curFrame > 2)));
 
 			if (strum.animation.finishCallback == null)
 			{

@@ -38,7 +38,7 @@ class DadStage extends Stage
         curtains.active = false;
         add(curtains);
 
-        setPlayerPos(770, 100);
+        setPlayerPos(970, 375);
         setSpectatorPos(400, 130);
         setOpponentPos(100, 100);
     }
