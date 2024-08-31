@@ -135,7 +135,6 @@ class PlayState extends MainState
 
 		Controls.registerFunction(Control.PAUSE, JUST_PRESSED, function()
 		{
-			trace("we called pause");
 			if (!paused && pauseMenu != null)
 			{
 				timerManager.active = false;
