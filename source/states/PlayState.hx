@@ -107,10 +107,11 @@ class PlayState extends MainState
 			timerManager.active = true;
 			tweenManager.active = true;
 
-			timerManager.forEach(function(tmr:FlxTimer)
-			{
-				tmr.active = true;
-			});
+			if (conductor.sound != null)
+				conductor.resyncPosition();
+
+			for (sound in soundList)
+				sound.resume();
 
 			paused = false;
 
@@ -140,12 +141,10 @@ class PlayState extends MainState
 				timerManager.active = false;
 				tweenManager.active = false;
 
-				timerManager.forEach(function(tmr:FlxTimer)
-				{
-					tmr.active = false;
-				});
-
 				musicHandler.pauseChannels();
+
+				for (sound in soundList)
+					sound.pause();
 
 				openSubState(pauseMenu);
 				paused = true;
@@ -417,8 +416,10 @@ class PlayState extends MainState
 			conductor.position = v;
 		});
 
-		var tmr:FlxTimer = FlxTimer.loop(conductor.crochet * 0.001, function(loop)
+		var tmr:FlxTimer = new FlxTimer(timerManager);
+		tmr.start(conductor.crochet * 0.001, function(tmr)
 		{
+			var loop:Int = tmr.loops - tmr.loopsLeft;
 			if (loop == len + 1 && finishCallback != null)
 			{
 				FlxDestroyUtil.destroy(countdownSpr);
@@ -446,7 +447,6 @@ class PlayState extends MainState
 				}
 			}
 		}, len + 1);
-		tmr.manager = timerManager;
 	}
 
 	public function keyPress(event:KeyboardEvent)

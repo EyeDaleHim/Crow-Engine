@@ -56,8 +56,7 @@ class Conductor extends FlxBasic
 			{
 				if (sound.time - offset > 0 && Math.abs(position - (sound.time - offset)) > syncBuffer)
 				{
-					trace('RESYNC! ${Math.abs(position - (sound.time - offset))}ms');
-					position = sound.time - offset;
+					resyncPosition();
 				}
 			}
 
@@ -98,6 +97,12 @@ class Conductor extends FlxBasic
 		}
 
 		super.update(elapsed);
+	}
+
+	public function resyncPosition():Void
+	{
+		trace('RESYNC! ${Math.abs(position - (sound.time - offset))}ms');
+		position = sound.time - offset;
 	}
 
 	public function getBeat(floor:Bool = true):Float
