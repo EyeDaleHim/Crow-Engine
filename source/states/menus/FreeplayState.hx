@@ -9,6 +9,8 @@ class FreeplayState extends MainState
 	public var songs:Array<SongDisplayData> = [];
 	public var songGroup:FlxTypedGroup<Alphabet>;
 
+	public var icons:FlxTypedGroup<IconSprite>;
+
 	override function create()
 	{
 		if (!musicHandler.channels[0].alive)
@@ -21,6 +23,9 @@ class FreeplayState extends MainState
 
 		songGroup = new FlxTypedGroup<Alphabet>();
 		add(songGroup);
+		
+		icons = new FlxTypedGroup<IconSprite>();
+		add(icons);
 
 		var index:Int = 0;
 		for (week in WeekManager.weekList)
@@ -48,6 +53,10 @@ class FreeplayState extends MainState
 					char: displayData.char ?? "face",
 					color: displayData.color ?? FlxColor.WHITE
 				};
+
+				var icon:IconSprite = new IconSprite(displayData.char);
+				icon.ID = index;
+				icons.add(icon);
 
 				index++;
 			}
@@ -90,6 +99,14 @@ class FreeplayState extends MainState
 
 			text.x = FlxMath.lerp(text.x, textPos.x, FlxMath.bound(elapsed * 7, 0, 1));
 			text.y = FlxMath.lerp(text.y, textPos.y, FlxMath.bound(elapsed * 7, 0, 1));
+		});
+
+		icons.forEach(function(icon:IconSprite)
+		{
+			var text:Alphabet = songGroup.members[icon.ID];
+
+			icon.setPosition(text.objRight() + 30);
+			icon.centerOverlay(text, Y);
 		});
 
 		super.update(elapsed);

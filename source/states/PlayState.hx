@@ -60,10 +60,7 @@ class PlayState extends MainState
 	public var stage:Stage;
 
 	// // hud
-	public var infoText:FlxText;
-
-	public var healthBar:FlxBar;
-	public var healthBarBG:FlxSprite;
+	public var stats:StatsUI;
 
 	public var comboGroup:FlxTypedContainer<FlxSprite>;
 	public var ratingGroup:FlxTypedContainer<FlxSprite>;
@@ -322,27 +319,18 @@ class PlayState extends MainState
 
 	public function createHUD():Void
 	{
-		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Assets.image("game/ui/healthBar"));
-		healthBarBG.camera = hudCamera;
-		healthBarBG.screenCenter(X);
-		add(healthBarBG);
+		stats = new StatsUI();
+		stats.camera = hudCamera;
+		stats.screenCenter();
+		stats.y = FlxG.height * 0.9;
+		add(stats);
 
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, (healthBarBG.width - 8).floor(), (healthBarBG.height - 8).floor(), this,
-			'health', 0, maxHealth);
-		healthBar.camera = hudCamera;
-		healthBar.createFilledBar(FlxColor.RED, FlxColor.LIME);
-		healthBar.numDivisions = 250;
-		add(healthBar);
+		stats.getHealth = () -> return health;
+		stats.getMaxHealth = () -> return maxHealth;
 
-		infoText = new FlxText();
-		infoText.setFormat(Assets.font("vcr").fontName, 18);
-		infoText.camera = hudCamera;
-		infoText.centerOverlay(healthBarBG, X);
-		infoText.y = healthBarBG.objBottom() + 10;
+		stats.updateStatsText(score, misses, ratingHits / totalHits);
 
-		updateScoreText();
-
-		add(infoText);
+		conductor.onBeat.add(stats.beatHit);
 
 		comboGroup = new FlxTypedContainer<FlxSprite>();
 		comboGroup.camera = hudCamera;
@@ -381,6 +369,12 @@ class PlayState extends MainState
 	public function generateSong():Void
 	{
 		notes = Chart.read(chartData);
+
+		for (note in notes) // artificial increase
+		{
+			if (note.sustain > conductor.stepCrochet)
+				note.sustain += conductor.stepCrochet;
+		}
 
 		musicHandler.pauseChannels();
 	}
@@ -556,7 +550,7 @@ class PlayState extends MainState
 
 		combo = 0;
 
-		updateScoreText();
+		stats.updateStatsText(score, misses, ratingHits / totalHits);
 
 		activeNotes.forEachAlive(function(note:NoteSprite)
 		{
@@ -611,7 +605,7 @@ class PlayState extends MainState
 						noteSpr.sustain = sustainSpr;
 
 						sustainSpr.noteData = notes[i];
-						sustainSpr.length = (notes[i].sustain / conductor.stepCrochet) * 1.5 * songMeta.speed;
+						sustainSpr.length = (notes[i].sustain / conductor.stepCrochet) * songMeta.speed;
 						sustainSpr.clipRect = null;
 						notes[i].sustainActive = false;
 
@@ -736,16 +730,16 @@ class PlayState extends MainState
 			return FlxSort.byValues(FlxSort.ASCENDING, rating1.alpha, rating2.alpha);
 		});
 
-		updateCamera();
+		updateCamera(elapsed);
 
 		super.update(elapsed);
 	}
 
-	public function updateCamera():Void
+	public function updateCamera(elapsed:Float):Void
 	{
 		if (stage.cameraPoints.exists(focusedPoint))
 		{
-			var ratio:Float = 2.4 * FlxG.elapsed * stage.cameraSpeed;
+			var ratio:Float = 2.4 * elapsed * stage.cameraSpeed;
 
 			var target:FlxPoint = stage.cameraPoints.get(focusedPoint).clone().subtract(FlxG.width / 2, FlxG.height / 2);
 
@@ -754,23 +748,6 @@ class PlayState extends MainState
 
 			target.put();
 		}
-	}
-
-	public function updateScoreText():Void
-	{
-		var separator:String = "//";
-
-		var scoreString:String = 'Score: $score';
-		var missString:String = 'Misses: $misses';
-
-		var roundedAccuracy:Float = ratingHits / totalHits;
-		if (Math.isNaN(roundedAccuracy))
-			roundedAccuracy = 0.0;
-
-		var accuracyString:String = 'Accuracy: ${FlxMath.roundDecimal(roundedAccuracy * 100.0, 2)}%';
-
-		infoText.text = '$scoreString $separator $missString $separator $accuracyString';
-		infoText.centerOverlay(healthBarBG, X);
 	}
 
 	public function hitNote(note:Note, diff:Float = 0.0)
@@ -798,7 +775,7 @@ class PlayState extends MainState
 
 			if (note.sustain > 0.0)
 			{
-				score += ((500 / (note.sustain / conductor.stepCrochet)) * FlxG.elapsed).floor();
+				score += ((500 / note.sustain) * FlxG.elapsed).floor();
 				note.sustainActive = true;
 
 				var strum:StrumNote = strumList[note.side].members[note.direction];
@@ -806,7 +783,7 @@ class PlayState extends MainState
 				strum.playAnim(strum.confirmAnim, strum.animation.curAnim.curFrame > 2);
 			}
 
-			updateScoreText();
+			stats.updateStatsText(score, misses, ratingHits / totalHits);
 		}
 		else if (strumList[note.side] != null)
 		{
@@ -835,7 +812,10 @@ class PlayState extends MainState
 
 		if (note.sustainActive)
 		{
-			if (songPosition > (note.strumTime + note.sustain))
+			var endPosition:Float = note.strumTime + note.sustain;
+			if (determineStrums(note))
+				endPosition += conductor.stepCrochet / 2;
+			if (songPosition > endPosition)
 				canRemoveNote = true;
 			note.parent.visible = false;
 		}
@@ -857,7 +837,7 @@ class PlayState extends MainState
 
 		combo = 0;
 
-		updateScoreText();
+		stats.updateStatsText(score, misses, ratingHits / totalHits);
 
 		FlxG.sound.play(Assets.sfx('game/miss/missnote${FlxG.random.int(1, 3)}'), 0.4);
 

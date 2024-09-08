@@ -56,9 +56,14 @@ class Assets
 		return "";
 	}
 
-	public static function exists(path:String):Bool
+	public static function exists(path:String, ?pathPrefix:String->String):Bool
 	{
-		if (FileSystem.exists(path))
+		var completePath:String = path;
+
+		if (pathPrefix != null)
+			completePath = pathPrefix(path);
+
+		if (FileSystem.exists(completePath))
 			return true;
 		return false;
 	}
