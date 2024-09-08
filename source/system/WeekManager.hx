@@ -29,13 +29,8 @@ class WeekManager
 
 				for (song in weekData.songList)
 				{
-					var path:String = 'data/song_displays/$song.json';
-					
-					if (FileSystem.exists(Assets.assetPath(path)))
-					{
-						var displayData:SongDisplayData = cast Json.parse(Assets.readText(Assets.assetPath(path)));
-						songHash.set(song, displayData);
-					}
+					var displayData:SongDisplayData = {name: song, char: weekData.characters[0]};
+					songHash.set(song, displayData);
 				}
 
 				weekList.push(weekData);
