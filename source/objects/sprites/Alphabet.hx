@@ -96,6 +96,11 @@ class Alphabet extends FlxObject
 				}
 			}
 		}
+
+		if (isSimpleRender())
+			drawSimple();
+		else
+			drawComplex();
 	}
 
 	private var _frameTime:Float = 0.0;
@@ -218,13 +223,14 @@ class Alphabet extends FlxObject
 			camera.copyPixels(_frame, _pixels, _flashRect, _flashPoint, colorTransform, blend, antialiasing);
 		}
 
-		width = Math.max(_flashPoint.x + _flashRect.width - x, width);
-		height = Math.max(_flashPoint.y + _flashRect.height - y, height);
+		width = Math.max(_flashPoint.x + _flashRect.width, width);
+		height = Math.max(_flashPoint.y + _flashRect.height, height);
 	}
 
 	function drawComplex():Void
 	{
 		var _addedPoint:FlxPoint = FlxPoint.get();
+		var sizeRect:FlxPoint = FlxPoint.get();
 
 		for (i in 0...text.length)
 		{
@@ -284,6 +290,8 @@ class Alphabet extends FlxObject
 
 			_addedPoint.add(_flashRect.width * scale.x, 0);
 
+			sizeRect.set(_addedPoint.x, _addedPoint.y + Math.max(_flashRect.height, sizeRect.y));
+
 			if (!camera.containsPoint(_point, _flashRect.width * scale.x, _flashRect.height * scale.y))
 				continue;
 
@@ -291,8 +299,7 @@ class Alphabet extends FlxObject
 			camera.drawPixels(_frame, _pixels, _matrix, colorTransform, blend, antialiasing);
 		}
 
-		width = Math.max(_flashPoint.x + _flashRect.width - x, width);
-		height = Math.max(_flashPoint.y + _flashRect.height - y, height);
+		setSize(sizeRect.x, sizeRect.y);
 	}
 
 	public function isSimpleRender(?camera:FlxCamera):Bool
