@@ -132,87 +132,67 @@ class Stage extends FlxTypedGroup<FlxObject>
 		return cameraPoints.exists(OPPONENT_NAME) ? cameraPoints.get(OPPONENT_NAME) : getOpponentPos() + FlxPoint.get(100, -100);
 	}
 
-	public function setPlayerPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	public function setCharPos(name:String, ?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
-		positionPoints.set(PLAYER_NAME, newPoint ?? FlxPoint.get(x, y));
+		if (positionPoints.exists(name))
+		{
+			if (newPoint != null)
+				positionPoints.get(name).copyFrom(newPoint);
+			else
+				positionPoints.get(name).set(x, y);
+		}
+		else
+		{
+			positionPoints.set(name, newPoint ?? FlxPoint.get(x, y));
+		}
 
-		return newPoint;
+		return positionPoints.get(name);
 	}
 
-	public function setSpectatorPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	inline public function setPlayerPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
-		positionPoints.set(SPECTATOR_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
+		return setCharPos(PLAYER_NAME, x, y, newPoint);
 	}
 
-	public function setOpponentPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	inline public function setSpectatorPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
-		positionPoints.set(OPPONENT_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
+		return setCharPos(SPECTATOR_NAME, x, y, newPoint);
 	}
 
-	public function setPlayerCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	inline public function setOpponentPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
-		cameraPoints.set(PLAYER_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
+		return setCharPos(OPPONENT_NAME, x, y, newPoint);
 	}
 
-	public function setSpectatorCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	public function setCamPos(name:String, ?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
-		cameraPoints.set(SPECTATOR_NAME, newPoint ?? FlxPoint.get(x, y));
+		if (cameraPoints.exists(name))
+		{
+			if (newPoint != null)
+				cameraPoints.get(name).copyFrom(newPoint);
+			else
+				cameraPoints.get(name).set(x, y);
+		}
+		else
+		{
+			cameraPoints.set(name, newPoint ?? FlxPoint.get(x, y));
+		}
 
-		return newPoint;
+		return cameraPoints.get(name);
 	}
 
-	public function setOpponentCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	inline public function setPlayerCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
-		cameraPoints.set(OPPONENT_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
+		return setCamPos(PLAYER_NAME, x, y, newPoint);
 	}
 
-	public function addOffsetToPlayerPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	inline public function setSpectatorCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
-		positionPoints.set(PLAYER_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
+		return setCamPos(SPECTATOR_NAME, x, y, newPoint);
 	}
 
-	public function addOffsetToSpectatorPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
+	inline public function setOpponentCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
 	{
-		positionPoints.set(SPECTATOR_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
-	}
-
-	public function addOffsetToOpponentPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
-	{
-		positionPoints.set(OPPONENT_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
-	}
-
-	public function addOffsetToPlayerCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
-	{
-		cameraPoints.set(PLAYER_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
-	}
-
-	public function addOffsetToSpectatorCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
-	{
-		cameraPoints.set(SPECTATOR_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
-	}
-
-	public function addOffsetToOpponentCamPos(?x:Float = 0.0, ?y:Float = 0.0, ?newPoint:FlxPoint):FlxPoint
-	{
-		cameraPoints.set(OPPONENT_NAME, newPoint ?? FlxPoint.get(x, y));
-
-		return newPoint;
+		return setCamPos(OPPONENT_NAME, x, y, newPoint);
 	}
 }
