@@ -19,6 +19,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.frames.FlxImageFrame;
 
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.group.FlxContainer;
 import flixel.group.FlxContainer.FlxTypedContainer;
@@ -95,6 +96,8 @@ import system.music.Conductor;
 import utils.logs.Logs;
 
 import objects.characters.*;
+
+import objects.game.*;
 
 import objects.notes.*;
 
