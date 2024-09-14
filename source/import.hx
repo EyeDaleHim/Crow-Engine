@@ -85,6 +85,7 @@ import system.data.PointData;
 import system.data.WeekMetadata;
 
 import system.gameplay.Chart;
+import system.gameplay.Rating;
 
 import system.input.*;
 import system.input.Controls.ActionArgs;
