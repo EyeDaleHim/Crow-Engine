@@ -135,7 +135,7 @@ class SustainNote extends FlxSprite
 
 	function set_length(value:Float)
 	{
-		scale.set(0.7, (1.0 + value) * 0.7);
+		setGraphicSize(frameWidth * 0.7, value * 0.45);
 		updateHitbox();
 
 		return (this.length = value);
