@@ -43,6 +43,20 @@ class PlayState extends MainState
 
 	public var combo:Int = 0;
 
+	public var ratings:Array<Rating> = [
+		new Rating("sick"),
+		new Rating("good", -90.0, 90.0, 300),
+		new Rating("bad", -135.0, 135.0, 150),
+		new Rating("shit", -166.0, 166.0, -200),
+	];
+
+	public var lastRating(get, never):Rating;
+
+	function get_lastRating():Rating
+		return ratings[ratings.length - 1];
+
+	public var missRating = new Rating("miss", Math.NaN, Math.NaN, -100, 1, ["missnote1"]);
+
 	// // managers
 	public var timerManager:FlxTimerManager;
 	public var tweenManager:FlxTweenManager;
@@ -450,12 +464,15 @@ class PlayState extends MainState
 		if (!paused && dir != -1 && FlxG.keys.checkStatus(event.keyCode, JUST_PRESSED))
 		{
 			var confirm:Bool = false;
+			var maxSustain:Float = 0.0;
 
 			for (note in inputNotes)
 			{
 				if (note.canBeHit(songPosition, (safeFrames / 60.0) * 1000.0) && note.direction == dir && determineStrums(note))
 				{
 					confirm = true;
+					maxSustain = Math.max(maxSustain, note.sustain);
+
 					hitNote(note);
 				}
 			}
@@ -464,7 +481,7 @@ class PlayState extends MainState
 			{
 				var player = playerList[0];
 				player.playAnimation(player.singList[dir], true);
-				player.singTimer = (conductor.crochet * 0.001) * 1.5;
+				player.singTimer = Math.max((maxSustain * 0.001) + ((conductor.crochet / 2) * 0.001), (conductor.crochet * 0.001) * 1.5);
 
 				for (strum in controlledStrums)
 				{
@@ -597,7 +614,7 @@ class PlayState extends MainState
 					{
 						var sustainSpr:SustainNote = sustainNotes.recycle(SustainNote, function()
 						{
-							var noteInstance:SustainNote = new SustainNote(notes[i], STRETCH, (notes[i].sustain / conductor.stepCrochet) * songMeta.speed);
+							var noteInstance:SustainNote = new SustainNote(notes[i], STRETCH, notes[i].sustain * songMeta.speed);
 							noteInstance.camera = hudCamera;
 
 							return noteInstance;
@@ -605,7 +622,7 @@ class PlayState extends MainState
 						noteSpr.sustain = sustainSpr;
 
 						sustainSpr.noteData = notes[i];
-						sustainSpr.length = (notes[i].sustain / conductor.stepCrochet) * songMeta.speed;
+						sustainSpr.length = notes[i].sustain * songMeta.speed;
 						sustainSpr.clipRect = null;
 						notes[i].sustainActive = false;
 
@@ -649,7 +666,7 @@ class PlayState extends MainState
 					var hittable:Bool = note.noteData.wasHit;
 
 					if (note.noteData.sustainActive)
-						hittable = songPosition < note.noteData.strumTime + (note.noteData.sustain / 2); // divide by two because we're nice
+						hittable = songPosition < note.noteData.strumTime + note.noteData.sustain + conductor.stepCrochet;
 
 					if (hittable && note.noteData.sustain > 0.0)
 					{
@@ -659,14 +676,25 @@ class PlayState extends MainState
 						}
 						else if (controls[note.noteData.direction].checkStatus(JUST_RELEASED))
 						{
-							missNote(note.noteData);
+							if (songPosition > note.noteData.strumTime + note.noteData.sustain + lastRating.minTime
+								&& songPosition < note.noteData.strumTime + note.noteData.sustain + lastRating.maxTime)
+							{
+								hitSustainEnd(note.noteData);
+							}
+							else
+							{
+								trace(songPosition - (note.noteData.strumTime + note.noteData.sustain),
+									songPosition > note.noteData.strumTime + note.noteData.sustain + lastRating.minTime,
+									songPosition < note.noteData.strumTime + note.noteData.sustain + lastRating.maxTime);
+								missNote(note.noteData);
+							}
 						}
 					}
-					else
-					{
-						if (note.exists && !note.noteData.sustainActive && note.noteData.strumTime - songPosition < -300)
-							missNote(note.noteData);
-					}
+
+					if (note.exists
+						&& !note.noteData.sustainActive
+						&& note.noteData.strumTime - songPosition < -(lastRating.maxTime * 2.0))
+						missNote(note.noteData);
 				}
 			}
 		});
@@ -750,12 +778,15 @@ class PlayState extends MainState
 		}
 	}
 
-	public function hitNote(note:Note, diff:Float = 0.0)
+	public function hitNote(note:Note)
 	{
 		var canRemoveNote:Bool = false;
 
 		if (determineStrums(note))
 		{
+			var diff:Float = conductor.position - note.strumTime;
+			var rating:Rating = determineRatingByTime(diff);
+
 			note.wasHit = true;
 
 			if (!note.sustainActive)
@@ -770,12 +801,12 @@ class PlayState extends MainState
 
 				combo++;
 
-				popUpCombo();
+				popUpCombo(rating);
 			}
 
 			if (note.sustain > 0.0)
 			{
-				score += ((500 / note.sustain) * FlxG.elapsed).floor();
+				score += ((500 * (note.sustain / conductor.stepCrochet)) * FlxG.elapsed).floor();
 				note.sustainActive = true;
 
 				var strum:StrumNote = strumList[note.side].members[note.direction];
@@ -814,7 +845,7 @@ class PlayState extends MainState
 		{
 			var endPosition:Float = note.strumTime + note.sustain;
 			if (determineStrums(note))
-				endPosition += conductor.stepCrochet / 2;
+				endPosition += conductor.stepCrochet;
 			if (songPosition > endPosition)
 				canRemoveNote = true;
 			note.parent.visible = false;
@@ -839,7 +870,9 @@ class PlayState extends MainState
 
 		stats.updateStatsText(score, misses, ratingHits / totalHits);
 
-		FlxG.sound.play(Assets.sfx('game/miss/missnote${FlxG.random.int(1, 3)}'), 0.4);
+		var missSound:FlxSound = FlxG.sound.load(Assets.sfx('game/miss/missnote${FlxG.random.int(1, 3)}'), 0.4);
+		soundList.push(missSound);
+		missSound.play();
 
 		destroyNote(note);
 	}
@@ -865,11 +898,34 @@ class PlayState extends MainState
 		}
 	}
 
-	public function popUpCombo():Void
+	public function hitSustainEnd(note:Note):Void
+	{
+		if (determineStrums(note))
+		{
+			var diff:Float = conductor.position - note.strumTime;
+			var rating:Rating = determineRatingByTime(diff);
+
+			score += 500;
+
+			ratingHits += 1.0;
+			totalHits++;
+
+			// health += rating.healthHit;
+			health += 0.75;
+
+			combo++;
+
+			popUpCombo(rating);
+
+			destroyNote(note);
+		}
+	}
+
+	public function popUpCombo(rating:Rating):Void
 	{
 		var ratingSpr = ratingGroup.recycle(FlxSprite);
 		ratingSpr.camera = hudCamera;
-		ratingSpr.loadGraphic(Assets.image('game/combo/ratings/sick'));
+		ratingSpr.loadGraphic(Assets.image('game/combo/ratings/${rating.name}'));
 
 		ratingSpr.scale.set(0.7, 0.7);
 		ratingSpr.updateHitbox();
@@ -921,6 +977,17 @@ class PlayState extends MainState
 
 			lastComboSpr = comboSpr;
 		}
+	}
+
+	private function determineRatingByTime(diff:Float = 0.0):Rating
+	{
+		for (rating in ratings)
+		{
+			if (diff >= rating.minTime && diff <= rating.maxTime)
+				return rating;
+		}
+
+		return missRating;
 	}
 
 	private function determineStrums(note:Note):Bool

@@ -11,6 +11,8 @@ typedef CharacterData =
 	@:optional var missList:Array<String>;
 	@:optional var singList:Array<String>;
 
+	@:optional var iconName:String;
+
     @:optional var flip:AxePointData;
     @:optional var scale:FloatPointData;
 }
