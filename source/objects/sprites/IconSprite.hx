@@ -2,6 +2,8 @@ package objects.sprites;
 
 class IconSprite extends FlxSprite
 {
+    public static var iconSize:Int = 150;
+
     public var name:String = "";
     public var states:Array<String> = ["idle", "lose"];
     public var curState(default, set):String = "";
@@ -22,6 +24,9 @@ class IconSprite extends FlxSprite
         super(x, y);
 
         changeIcon(iconName);
+
+        setGraphicSize(iconSize, iconSize);
+        updateHitbox();
     }
 
     public function changeIcon(iconName:String):Void
