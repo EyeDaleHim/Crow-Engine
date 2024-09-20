@@ -45,7 +45,6 @@ class IconSprite extends FlxSprite
         else
         {
             changeIcon('face');
-            return;
         }
     }
 }
