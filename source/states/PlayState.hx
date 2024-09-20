@@ -195,6 +195,7 @@ class PlayState extends MainState
 			Logs.error(NoChart(file, chartFile));
 		}
 
+		folder = folder.toLowerKebabCase();
 		if (FileSystem.exists(Assets.assetPath('songs/$folder/meta.json')) && songMeta == null)
 			songMeta = Json.parse(Assets.readText(Assets.assetPath('songs/$folder/meta.json')));
 
@@ -475,6 +476,7 @@ class PlayState extends MainState
 			var confirm:Bool = false;
 			var maxSustain:Float = 0.0;
 
+			var confirmedNotes:Array<Note> = [];
 			for (note in inputNotes)
 			{
 				if (note.canBeHit(songPosition, (safeFrames / 60.0) * 1000.0) && note.direction == dir && determineStrums(note))
@@ -482,8 +484,26 @@ class PlayState extends MainState
 					confirm = true;
 					maxSustain = Math.max(maxSustain, note.sustain);
 
-					hitNote(note);
+					confirmedNotes.push(note);
 				}
+			}
+			confirmedNotes.sort((note1:Note, note2:Note) ->
+			{
+				return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
+			});
+
+			var firstNote = confirmedNotes[0];
+
+			if (firstNote != null)
+				hitNote(firstNote);
+
+			for (i in 1...confirmedNotes.length)
+			{
+				var note:Note = confirmedNotes[i];
+				if (Math.abs(firstNote.strumTime - note.strumTime) < conductor.stepCrochet)
+					hitNote(note);
+				else
+					break;
 			}
 
 			if (confirm)
@@ -601,42 +621,43 @@ class PlayState extends MainState
 
 			for (i in 0...notes.length)
 			{
-				if (notes[i] == null)
+				var note:Note = notes[i];
+				if (note == null)
 					continue;
 
-				if (notes[i].strumTime - songPosition <= spawnTime)
+				if (note.strumTime - songPosition <= spawnTime)
 				{
 					var noteSpr:NoteSprite = activeNotes.recycle(NoteSprite, function()
 					{
-						return new NoteSprite(notes[i]);
+						return new NoteSprite(note);
 					});
 
 					noteSpr.visible = true;
-					noteSpr.noteData = notes[i];
+					noteSpr.noteData = note;
 					noteSpr.sustain = null;
 
 					activeNotes.add(noteSpr);
 
-					if (notes[i].sustain > 0.0)
+					if (note.sustain > 0.0)
 					{
 						var sustainSpr:SustainNote = sustainNotes.recycle(SustainNote, function()
 						{
-							return new SustainNote(notes[i], STRETCH, notes[i].sustain * songMeta.speed);
+							return new SustainNote(note, STRETCH, note.sustain * songMeta.speed);
 						});
 						noteSpr.sustain = sustainSpr;
 
-						sustainSpr.noteData = notes[i];
-						sustainSpr.length = notes[i].sustain * songMeta.speed;
+						sustainSpr.noteData = note;
+						sustainSpr.length = note.sustain * songMeta.speed;
 						sustainSpr.clipRect = null;
-						notes[i].sustainActive = false;
+						note.sustainActive = false;
 
 						sustainNotes.add(sustainSpr);
 					}
 
-					_removeNotes.push(notes[i]);
+					_removeNotes.push(note);
 
-					if (determineStrums(notes[i]))
-						inputNotes.push(notes[i]);
+					if (determineStrums(note) && !inputNotes.contains(note))
+						inputNotes.push(note);
 				}
 				else
 					break;
@@ -801,7 +822,6 @@ class PlayState extends MainState
 					var scoreSub:Int = 0;
 					scoreSub = FlxMath.remapToRange(absDiff, 10.0, nextRating.maxTime, 0, nextRating.score).floor();
 					score += scoreAdd - scoreSub;
-					trace(scoreAdd - scoreSub, absDiff, null);
 				}
 				else
 				{

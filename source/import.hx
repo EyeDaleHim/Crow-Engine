@@ -137,6 +137,7 @@ using Math;
 #if !macro
 using Utilities;
 using utils.ObjectUtils;
+using utils.StringUtils;
 using utils.ValidateUtils;
 #end
 using flixel.util.FlxColorTransformUtil;
