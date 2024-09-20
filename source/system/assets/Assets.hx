@@ -124,6 +124,10 @@ class Assets
 
 			FlxG.bitmap.addGraphic(graphic);
 		}
+		else
+		{
+			Logs.warn(MissingAsset(file, path), CONSOLE);
+		}
 
 		return graphic;
 	}
@@ -165,6 +169,10 @@ class Assets
 			sound = Sound.fromFile(file);
 
 			soundCache.set(file, sound);
+		}
+		else
+		{
+			Logs.warn(MissingAsset(file, path), CONSOLE);
 		}
 
 		return sound;

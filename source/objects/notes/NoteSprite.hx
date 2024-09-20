@@ -5,7 +5,7 @@ class NoteSprite extends FlxSprite
 	public var noteData(default, set):Note;
 	public var sustain:SustainNote;
 
-	override public function new(noteData:Note)
+	override public function new(?noteData:Note)
 	{
 		super();
 

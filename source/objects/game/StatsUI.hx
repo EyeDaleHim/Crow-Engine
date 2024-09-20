@@ -78,7 +78,7 @@ class StatsUI extends FlxSpriteGroup
 
 	public function beatHit(beat:Int):Void
 	{
-		if (active && beat % 2 == 0)
+		if (active)
 		{
 			leftIcon.scale.set(1.2, 1.2);
 			rightIcon.scale.set(1.2, 1.2);

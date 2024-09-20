@@ -10,7 +10,7 @@ class SustainNote extends FlxSprite
 
 	public var endNoteFrame:FlxFrame;
 
-	override public function new(noteData:Note, wrap:WrapMode = STRETCH, length:Float = 0.0)
+	override public function new(?noteData:Note, wrap:WrapMode = STRETCH, length:Float = 0.0)
 	{
 		super();
 

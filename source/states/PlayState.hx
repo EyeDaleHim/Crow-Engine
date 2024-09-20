@@ -45,9 +45,9 @@ class PlayState extends MainState
 
 	public var ratings:Array<Rating> = [
 		new Rating("sick"),
-		new Rating("good", -90.0, 90.0, 300),
-		new Rating("bad", -135.0, 135.0, 150),
-		new Rating("shit", -166.0, 166.0, -200),
+		new Rating("good", -90.0, 90.0, 0.75, 300),
+		new Rating("bad", -135.0, 135.0, 0.50, 150),
+		new Rating("shit", -166.0, 166.0, 0.25, -200),
 	];
 
 	public var lastRating(get, never):Rating;
@@ -287,7 +287,16 @@ class PlayState extends MainState
 		generateSong();
 
 		activeNotes = new FlxTypedGroup<NoteSprite>();
+		activeNotes.camera = hudCamera;
+		for (i in 0...15)
+			activeNotes.add(new NoteSprite());
+		activeNotes.killMembers();
+
 		sustainNotes = new FlxTypedGroup<SustainNote>();
+		sustainNotes.camera = hudCamera;
+		for (i in 0...15)
+			sustainNotes.add(new SustainNote());
+		sustainNotes.killMembers();
 
 		for (i in 0...(chartData.strumLength ?? 2))
 		{
@@ -481,7 +490,8 @@ class PlayState extends MainState
 			{
 				var player = playerList[0];
 				player.playAnimation(player.singList[dir], true);
-				player.singTimer = Math.max((maxSustain * 0.001) + ((conductor.crochet / 2) * 0.001), (conductor.crochet * 0.001) * 1.5);
+				player.singTimer = Math.max(player.singTimer,
+					Math.max((maxSustain * 0.001) + ((conductor.crochet / 2) * 0.001), (conductor.crochet * 0.001) * 1.5));
 
 				for (strum in controlledStrums)
 				{
@@ -598,10 +608,7 @@ class PlayState extends MainState
 				{
 					var noteSpr:NoteSprite = activeNotes.recycle(NoteSprite, function()
 					{
-						var noteInstance:NoteSprite = new NoteSprite(notes[i]);
-						noteInstance.camera = hudCamera;
-
-						return noteInstance;
+						return new NoteSprite(notes[i]);
 					});
 
 					noteSpr.visible = true;
@@ -614,10 +621,7 @@ class PlayState extends MainState
 					{
 						var sustainSpr:SustainNote = sustainNotes.recycle(SustainNote, function()
 						{
-							var noteInstance:SustainNote = new SustainNote(notes[i], STRETCH, notes[i].sustain * songMeta.speed);
-							noteInstance.camera = hudCamera;
-
-							return noteInstance;
+							return new SustainNote(notes[i], STRETCH, notes[i].sustain * songMeta.speed);
 						});
 						noteSpr.sustain = sustainSpr;
 
@@ -683,9 +687,6 @@ class PlayState extends MainState
 							}
 							else
 							{
-								trace(songPosition - (note.noteData.strumTime + note.noteData.sustain),
-									songPosition > note.noteData.strumTime + note.noteData.sustain + lastRating.minTime,
-									songPosition < note.noteData.strumTime + note.noteData.sustain + lastRating.maxTime);
 								missNote(note.noteData);
 							}
 						}
@@ -791,9 +792,23 @@ class PlayState extends MainState
 
 			if (!note.sustainActive)
 			{
-				score += 500;
+				var absDiff:Float = Math.abs(diff);
+				var nextRating:Rating = ratings[ratings.indexOf(rating) + 1];
 
-				ratingHits += 1.0;
+				var scoreAdd:Int = rating.score;
+				if (absDiff > 10.0 && nextRating != null)
+				{
+					var scoreSub:Int = 0;
+					scoreSub = FlxMath.remapToRange(absDiff, 10.0, nextRating.maxTime, 0, nextRating.score).floor();
+					score += scoreAdd - scoreSub;
+					trace(scoreAdd - scoreSub, absDiff, null);
+				}
+				else
+				{
+					score += scoreAdd;
+				}
+
+				ratingHits += rating.accuracyFactor;
 				totalHits++;
 
 				// health += rating.healthHit;
@@ -903,12 +918,9 @@ class PlayState extends MainState
 		if (determineStrums(note))
 		{
 			var diff:Float = conductor.position - note.strumTime;
-			var rating:Rating = determineRatingByTime(diff);
+			var rating:Rating = determineRatingByTime(diff, 2.0);
 
-			score += 500;
-
-			ratingHits += 1.0;
-			totalHits++;
+			score += (rating.score / 2).floor();
 
 			// health += rating.healthHit;
 			health += 0.75;
@@ -979,11 +991,11 @@ class PlayState extends MainState
 		}
 	}
 
-	private function determineRatingByTime(diff:Float = 0.0):Rating
+	private function determineRatingByTime(diff:Float = 0.0, mult:Float = 1.0):Rating
 	{
 		for (rating in ratings)
 		{
-			if (diff >= rating.minTime && diff <= rating.maxTime)
+			if (diff >= rating.minTime * mult && diff <= rating.maxTime * mult)
 				return rating;
 		}
 

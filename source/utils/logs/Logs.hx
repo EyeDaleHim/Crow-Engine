@@ -158,6 +158,8 @@ _______________________________
 				return '$message';
 			case NoChart(folder, file):
 				return 'The game was not able to find a chart data for $file. ($folder)';
+			case MissingAsset(folder, key):
+				return '[Assets] Could not find ${key} from $folder';
 		}
 	}
 
@@ -242,4 +244,5 @@ enum CommonLogs
 {
 	Custom(message:String);
 	NoChart(folder:String, file:String);
+	MissingAsset(folder:String, key:String);
 }
