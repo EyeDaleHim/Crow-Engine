@@ -14,6 +14,10 @@ class Chart
 				noteList.push(newNote);
 			}
 
+			noteList.sort((note1:Note, note2:Note) -> {
+				return FlxSort.byValues(FlxSort.ASCENDING, note1.strumTime, note2.strumTime);
+			});
+
 			return noteList;
 		} catch (e)
 		{
