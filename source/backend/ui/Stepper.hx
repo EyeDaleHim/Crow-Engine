@@ -166,14 +166,14 @@ class Stepper extends FlxObject
 
 typedef StepperStyle =
 {
-	@:optional var direction:FlxDirection;
+	var ?direction:FlxDirection;
 
-	@:optional var gap:Float;
+	var ?gap:Float;
 
-	@:optional var leftButtonStyle:ButtonStyle;
-	@:optional var rightButtonStyle:ButtonStyle;
+	var ?leftButtonStyle:ButtonStyle;
+	var ?rightButtonStyle:ButtonStyle;
 
-	@:optional var textColor:FlxColor;
-	@:optional var fontSize:Int;
-	@:optional var font:String;
+	var ?textColor:FlxColor;
+	var ?fontSize:Int;
+	var ?font:String;
 }

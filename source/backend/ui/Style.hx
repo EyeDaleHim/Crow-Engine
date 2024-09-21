@@ -2,14 +2,14 @@ package backend.ui;
 
 typedef Style =
 {
-	@:optional var width:Int;
-	@:optional var height:Int;
+	var ?width:Int;
+	var ?height:Int;
 
-	@:optional var bgColor:FlxColor;
+	var ?bgColor:FlxColor;
 
-	@:optional var topLeftSize:Float;
-	@:optional var topRightSize:Float;
-	@:optional var botLeftSize:Float;
-	@:optional var botRightSize:Float;
-	@:optional var cornerSize:Float;
+	var ?topLeftSize:Float;
+	var ?topRightSize:Float;
+	var ?botLeftSize:Float;
+	var ?botRightSize:Float;
+	var ?cornerSize:Float;
 }

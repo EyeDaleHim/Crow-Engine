@@ -2,17 +2,17 @@ package system.data;
 
 typedef CharacterData =
 {
-	@:optional var name:String;
-	@:optional var animations:Array<AnimationData>;
+	var ?name:String;
+	var ?animations:Array<AnimationData>;
 
-	@:optional var healthColor:FlxColor;
+	var ?healthColor:FlxColor;
 
-	@:optional var bopList:Array<String>;
-	@:optional var missList:Array<String>;
-	@:optional var singList:Array<String>;
+	var ?bopList:Array<String>;
+	var ?missList:Array<String>;
+	var ?singList:Array<String>;
 
-	@:optional var iconName:String;
+	var ?iconName:String;
 
-    @:optional var flip:AxePointData;
-    @:optional var scale:FloatPointData;
+    var ?flip:AxePointData;
+    var ?scale:FloatPointData;
 }

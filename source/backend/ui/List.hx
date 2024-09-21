@@ -138,15 +138,15 @@ class ListItem extends Button
 
 typedef ItemStyle =
 {
-	@:optional var widthRatio:Float;
-	@:optional var heightRatio:Float;
-	@:optional var buttonStyle:ButtonStyle;
-	@:optional var itemGap:Float;
+	var ?widthRatio:Float;
+	var ?heightRatio:Float;
+	var ?buttonStyle:ButtonStyle;
+	var ?itemGap:Float;
 };
 
 @:structInit
 typedef ItemData =
 {
 	var display:String;
-	@:optional var data:Dynamic;
+	var ?data:Dynamic;
 };

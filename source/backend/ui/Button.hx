@@ -146,20 +146,20 @@ class Button extends Box
 
 typedef ButtonStyle =
 {
-	@:optional var hoverColor:FlxColor;
-	@:optional var clickColor:FlxColor;
+	var ?hoverColor:FlxColor;
+	var ?clickColor:FlxColor;
 
-	@:optional var textColor:FlxColor;
+	var ?textColor:FlxColor;
 
-	@:optional var font:String;
-	@:optional var fontSize:Int;
+	var ?font:String;
+	var ?fontSize:Int;
 
-	@:optional var alignment:TextAlignment;
-	@:optional var alignGap:Float;
+	var ?alignment:TextAlignment;
+	var ?alignGap:Float;
 
-	@:optional var autoSize:FlxAxes;
+	var ?autoSize:FlxAxes;
 
-	@:optional var overrideStyle:Style;
+	var ?overrideStyle:Style;
 };
 
 enum TextAlignment
