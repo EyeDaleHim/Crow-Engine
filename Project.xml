@@ -69,6 +69,8 @@
 
 	<haxelib name="tjson"/>
 
+	<haxelib name="moonchart"/>
+
 	<haxelib name="hxdiscord_rpc" if="desktop cpp"/>
 	<haxelib name="hxcpp-debug-server" if="debug cpp"/>
 
