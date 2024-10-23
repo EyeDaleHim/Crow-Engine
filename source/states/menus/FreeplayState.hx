@@ -8,6 +8,9 @@ class FreeplayState extends MainState
 	public static final ENABLED_CUSTOM_SONGS:Bool = false;
 	#end
 
+	public static var holdTimerStart:Float = 1.0;
+	public static var holdTimerDelay:Float = 0.1;
+
 	public static var selected:Int = 0;
 
 	public var background:FlxSprite;
@@ -20,6 +23,8 @@ class FreeplayState extends MainState
 	public var customSongText:Alphabet;
 
 	public var controls:Array<ActionDigital> = [];
+
+	public var holdTimer:FlxTimer;
 
 	override function create()
 	{
@@ -90,6 +95,7 @@ class FreeplayState extends MainState
 
 			if (selected == customSongText.ID)
 			{
+				selectCustomSong();
 			}
 			else
 			{
@@ -100,17 +106,35 @@ class FreeplayState extends MainState
 			}
 		}));
 
-		controls.push(Controls.registerFunction(Control.UI_UP, JUST_PRESSED, function()
+		function pressKey(offset:Int)
 		{
 			if (songGroup.length > 1)
-				changeItem(-1);
+			{
+				changeItem(offset);
+				holdTimer.start(holdTimerStart, function(tmr:FlxTimer)
+				{
+					changeItem(offset);
+					holdTimer.start(holdTimerDelay, (_) -> changeItem(offset), 0);
+				});
+			}
+		}
+
+		controls.push(Controls.registerFunction(Control.UI_UP, JUST_PRESSED, pressKey.bind(-1)));
+		controls.push(Controls.registerFunction(Control.UI_DOWN, JUST_PRESSED, pressKey.bind(1)));
+
+		controls.push(Controls.registerFunction(Control.UI_UP, JUST_RELEASED, function()
+		{
+			if (!Control.UI_DOWN.checkStatus(PRESSED))
+				holdTimer.cancel();
 		}));
 
-		controls.push(Controls.registerFunction(Control.UI_DOWN, JUST_PRESSED, function()
+		controls.push(Controls.registerFunction(Control.UI_DOWN, JUST_RELEASED, function()
 		{
-			if (songGroup.length > 1)
-				changeItem(1);
+			if (!Control.UI_UP.checkStatus(PRESSED))
+				holdTimer.cancel();
 		}));
+
+		holdTimer = new FlxTimer();
 
 		super.create();
 	}

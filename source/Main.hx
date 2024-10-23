@@ -71,7 +71,10 @@ class Main extends Sprite
 				FlxG.switchState(() -> new ScreenEditorState());
 		}, {persist: true});
 
-		FlxG.stage.application.window.onDropFile.add(readFolderAndConvertChart);
+		FlxG.stage.application.window.onDropFile.add(function(str)
+		{
+			readFolderAndConvertChart(str);
+		});
 
 		if (FileSystem.exists(Assets.assetPath('data/weeks/meta.json')))
 		{
@@ -87,31 +90,51 @@ class Main extends Sprite
 		}
 	}
 
-	public static function readFolderAndConvertChart(rawPath:String)
+	public static function readFolderAndConvertChart(rawPath:String, ?outputPath:String)
 	{
+		FileSystem.createDirectory('converted_charts');
+
 		function convertChart(filePath:String)
 		{
 			var path:Path = new Path(filePath);
-			var data:Dynamic = Json.parse(File.getContent(path.toString()));
-			var convertedData:ChartData = ChartConverter.convertPsychToCrow(data);
-			FileSystem.createDirectory('converted_charts');
-			File.saveContent('converted_charts/${path.file}.${path.ext}', Json.stringify(convertedData));
+			var data:Dynamic = null;
+
+			try
+			{
+				data = Json.parse(File.getContent(path.toString()));
+			} catch (e)
+			{
+				trace(e.message);
+				data = null;
+			}
+
+			var convertedData:ChartData = ChartConverter.classifyAndConvert(data);
+
+			if (convertedData.crowIdentifer != null)
+			{
+				var filename:String = path.file;
+				if (!path.file.endsWith('-hard') && !path.file.endsWith('-easy'))
+					filename = '${path.file}-normal';
+
+				if (outputPath != null)
+					File.saveContent('$outputPath/$filename.${path.ext}', Json.stringify(convertedData));
+				else
+					File.saveContent('converted_charts/$filename', Json.stringify(convertedData));
+			}
 		}
 
 		if (FileSystem.isDirectory(rawPath))
 		{
-			for (file in FileSystem.readDirectory(rawPath))
+			var outputPath:String = 'converted_charts/${Path.withoutDirectory(rawPath)}';
+			FileSystem.createDirectory(outputPath);
+			for (folder in FileSystem.readDirectory(rawPath))
 			{
-				if (FileSystem.isDirectory(Path.join([rawPath, file])))
-					readFolderAndConvertChart(Path.join([rawPath, file]));
+				readFolderAndConvertChart(Path.join([rawPath, folder]), outputPath);
 			}
 		}
-		else
+		else if (rawPath.endsWith('.json'))
 		{
-			try
-			{
-				convertChart(rawPath);
-			}
+			convertChart(rawPath);
 		}
 	}
 }
