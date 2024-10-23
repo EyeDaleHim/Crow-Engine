@@ -29,4 +29,9 @@ class Rating
         else
             this.sounds = sounds;
     }
+
+    public function toString():String
+    {
+        return '{name: $name, timings: $minTime | $maxTime, score: $score}';
+    }
 }

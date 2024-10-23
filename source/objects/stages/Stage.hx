@@ -2,9 +2,9 @@ package objects.stages;
 
 class Stage extends FlxTypedGroup<FlxObject>
 {
-	public static final PLAYER_NAME:String = "boyfriend";
-	public static final SPECTATOR_NAME:String = "girlfriend";
-	public static final OPPONENT_NAME:String = "dad";
+	public static final PLAYER_NAME:String = "player";
+	public static final SPECTATOR_NAME:String = "spectator";
+	public static final OPPONENT_NAME:String = "opponent";
 
 	public var name:String = "";
 	public var uiSkin(default, null):String = "";

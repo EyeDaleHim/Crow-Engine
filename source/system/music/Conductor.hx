@@ -33,6 +33,11 @@ class Conductor extends FlxBasic
 	public var canWatch:Bool = true;
 	#end
 
+	public static function getTimeAtMeasure(measure:Int = 0, bpm:Float = 100.0):Float
+	{
+		return ((60 / bpm * 4) * measure) * 1000;
+	}
+
 	public static function createNewConductor(sound:FlxSound, bpm:Float = 100.0)
 	{
 		var newConductor:Conductor = new Conductor();

@@ -12,12 +12,16 @@ class ChartConverter
 		if (data.crowIdentifer != null)
 			return CROW;
 
-		// 2. PSYCH
+		// 2. PSYCH V1
+		if (data.song.format != null && data.song.format == "psych_v1_convert")
+			return PSYCH_V1;
+
+		// 3. PSYCH
 		trace(data.song.gfVersion);
 		if (data.song.gfVersion != null)
 			return PSYCH;
 
-		// 3. BASE LEGACY
+		// 4. BASE LEGACY
 		chartStruct.push(data.song.song);
 		chartStruct.push(data.song.notes);
 		chartStruct.push(data.song.bpm);
@@ -35,7 +39,7 @@ class ChartConverter
 
 		chartStruct.splice(0, chartStruct.length);
 
-		// 4. BASE WEEKEND V1
+		// 5. BASE WEEKEND V1
 		if (data.generatedBy != null)
 			return BASE_WEEKEND_V1;
 
@@ -53,7 +57,10 @@ class ChartConverter
 			return convertBaseLegacyToCrow(data);
 
 		if (type == PSYCH)
-			return convertPsychToCrow(data);
+			return convertPsychToCrow(data, false);
+
+		if (type == PSYCH_V1)
+			return convertPsychToCrow(data, true);
 
 		if (type == BASE_WEEKEND_V1)
 			return convertWeekendToCrow(data, 'hard');
@@ -71,16 +78,27 @@ class ChartConverter
 		throw "Not implemented";
 	}
 
-	public static function convertPsychToCrow(data:Dynamic):ChartData
+	public static function convertPsychToCrow(data:Dynamic, isV1:Bool = false):ChartData
 	{
 		var chartData:ChartData = {};
 		chartData.overrideMeta = {};
 		chartData.notes = [];
 		chartData.noteTypes = [];
+		chartData.events = [];
 
 		var sections:Array<Dynamic> = data.song.notes;
+		var lastSectionHit:Null<Bool> = null;
 		for (section in sections)
 		{
+			if (section.mustHitSection != lastSectionHit)
+			{
+				chartData.events.push({
+					name: 'Focus Camera',
+					contexts: [section.mustHitSection ? "player" : "opponent"],
+					time: Conductor.getTimeAtMeasure(sections.indexOf(section), data.song.bpm)
+				});
+			}
+
 			if (section.sectionNotes?.length > 0)
 			{
 				var sectionNotes:Array<Array<Dynamic>> = section.sectionNotes;
@@ -92,7 +110,7 @@ class ChartConverter
 
 					var gottaHitNote:Bool = section.mustHitSection;
 
-					if (dataNote[1] > 3)
+					if (!isV1 && dataNote[1] > 3)
 					{
 						gottaHitNote = !section.mustHitSection;
 					}
@@ -115,8 +133,13 @@ class ChartConverter
 			}
 		}
 
-		chartData.strumLength = 2;
-		chartData.playerControllers = [1];
+		chartData.strumList = {
+			controlledStrums: [1],
+			list: [
+				{length: 4, associatedChannel: "Voices-dad"},
+				{length: 4, associatedChannel: "Voices-bf"}
+			]
+		};
 
 		chartData.overrideMeta = {
 			characters: {
@@ -156,4 +179,5 @@ enum abstract ChartTypes(Int)
 	var BASE_WEEKEND_V1:ChartTypes = 2;
 
 	var PSYCH:ChartTypes = 3;
+	var PSYCH_V1:ChartTypes = 4;
 }

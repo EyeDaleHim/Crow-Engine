@@ -80,8 +80,10 @@ import system.WeekManager;
 import system.data.AnimationData;
 import system.data.ChartData;
 import system.data.CharacterData;
-import system.data.SongData;
+import system.data.EventData;
 import system.data.PointData;
+import system.data.SongData;
+import system.data.StrumData;
 import system.data.WeekMetadata;
 
 import system.gameplay.Chart;

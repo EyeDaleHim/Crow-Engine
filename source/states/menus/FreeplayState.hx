@@ -2,6 +2,12 @@ package states.menus;
 
 class FreeplayState extends MainState
 {
+	#if CUSTOM_SONGS_ALLOWED
+	public static final ENABLED_CUSTOM_SONGS:Bool = true;
+	#else
+	public static final ENABLED_CUSTOM_SONGS:Bool = false;
+	#end
+
 	public static var selected:Int = 0;
 
 	public var background:FlxSprite;
@@ -10,6 +16,10 @@ class FreeplayState extends MainState
 	public var songGroup:FlxTypedGroup<Alphabet>;
 
 	public var icons:FlxTypedGroup<IconSprite>;
+
+	public var customSongText:Alphabet;
+
+	public var controls:Array<ActionDigital> = [];
 
 	override function create()
 	{
@@ -23,7 +33,7 @@ class FreeplayState extends MainState
 
 		songGroup = new FlxTypedGroup<Alphabet>();
 		add(songGroup);
-		
+
 		icons = new FlxTypedGroup<IconSprite>();
 		add(icons);
 
@@ -62,25 +72,45 @@ class FreeplayState extends MainState
 			}
 		}
 
-		Controls.registerFunction(Control.ACCEPT, JUST_PRESSED, function()
+		customSongText = new Alphabet(20 * (1 + index), 60 * (1 + index), "Custom Song");
+		customSongText.ID = index;
+		customSongText.antialiasing = true;
+
+		if (index == selected)
+			customSongText.alpha = 1;
+		else
+			customSongText.alpha = 0.6;
+
+		songGroup.add(customSongText);
+
+		controls.push(Controls.registerFunction(Control.ACCEPT, JUST_PRESSED, function()
 		{
-			musicHandler.clearChannels();
-			conductor.sound = null;
+			for (control in controls)
+				control.active = false;
 
-			FlxG.switchState(() -> new PlayState(songs[selected].name, '${songs[selected].name.toLowerCase()}-hard'));
-		});
+			if (selected == customSongText.ID)
+			{
+			}
+			else
+			{
+				musicHandler.clearChannels();
+				conductor.sound = null;
 
-		Controls.registerFunction(Control.UI_UP, JUST_PRESSED, function()
+				FlxG.switchState(() -> new PlayState(songs[selected].name, '${songs[selected].name.toLowerCase()}-hard'));
+			}
+		}));
+
+		controls.push(Controls.registerFunction(Control.UI_UP, JUST_PRESSED, function()
 		{
 			if (songGroup.length > 1)
 				changeItem(-1);
-		});
+		}));
 
-		Controls.registerFunction(Control.UI_DOWN, JUST_PRESSED, function()
+		controls.push(Controls.registerFunction(Control.UI_DOWN, JUST_PRESSED, function()
 		{
 			if (songGroup.length > 1)
 				changeItem(1);
-		});
+		}));
 
 		super.create();
 	}
@@ -89,17 +119,30 @@ class FreeplayState extends MainState
 	{
 		songGroup.forEach(function(text:Alphabet)
 		{
+			if (text.ID == customSongText.ID)
+				return;
+
+			var mult:Float = 1.0;
+
+			if (selected == customSongText.ID)
+				mult = 1.2;
+
 			var textPos:FlxPoint = FlxPoint.get();
 
-			textPos.x = 90 + (35 * (text.ID - selected));
+			textPos.x = 90 + (35 * mult * (text.ID - selected));
 
 			var center:Float = (FlxG.height / 2) - (text.height / 2);
 
-			textPos.y = center + (165 * (text.ID - selected));
+			textPos.y = center + (165 * mult * (text.ID - selected));
 
 			text.x = FlxMath.lerp(text.x, textPos.x, FlxMath.bound(elapsed * 7, 0, 1));
 			text.y = FlxMath.lerp(text.y, textPos.y, FlxMath.bound(elapsed * 7, 0, 1));
 		});
+
+		var center:Float = (FlxG.height / 2) - (customSongText.height / 2);
+
+		customSongText.x = FlxMath.lerp(customSongText.x, 90 + (35 * (customSongText.ID - selected)), FlxMath.bound(elapsed * 7, 0, 1));
+		customSongText.y = FlxMath.lerp(customSongText.y, center + (165 * (customSongText.ID - selected)), FlxMath.bound(elapsed * 7, 0, 1));
 
 		icons.forEach(function(icon:IconSprite)
 		{
@@ -124,5 +167,9 @@ class FreeplayState extends MainState
 
 		if (songGroup.members[selected] != null)
 			songGroup.members[selected].alpha = 1.0;
+	}
+
+	public function selectCustomSong():Void
+	{
 	}
 }

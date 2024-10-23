@@ -2,7 +2,7 @@ package system.gameplay;
 
 class Chart
 {
-	public static function read(raw:ChartData):Array<Note>
+	public static function readNotes(raw:ChartData):Array<Note>
 	{
 		try
 		{

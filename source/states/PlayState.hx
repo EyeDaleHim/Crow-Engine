@@ -55,7 +55,7 @@ class PlayState extends MainState
 	function get_lastRating():Rating
 		return ratings[ratings.length - 1];
 
-	public var missRating = new Rating("miss", Math.NaN, Math.NaN, -100, 1, ["missnote1"]);
+	public var missRating = new Rating("miss", Math.NEGATIVE_INFINITY, Math.POSITIVE_INFINITY, -100, 1, ["missnote1"]);
 
 	// // managers
 	public var timerManager:FlxTimerManager;
@@ -67,7 +67,14 @@ class PlayState extends MainState
 	public var hudCamera:FlxCamera;
 	public var pauseCamera:FlxCamera;
 
+	// signals
+	public var inputPressSignal:FlxTypedSignal<Int->Void>;
+	public var inputReleaseSignal:FlxTypedSignal<Int->Void>;
+
+	public var hitNoteSignal:FlxTypedSignal<(Note, Bool)->Void>;
+
 	// events stuff
+	public var events:Array<EventData> = [];
 	public var focusedPoint:String = "";
 
 	// sprites
@@ -138,8 +145,16 @@ class PlayState extends MainState
 			{
 				conductor.active = true;
 
-				musicHandler.resumeChannel(0, 0.8, false);
-				musicHandler.resumeChannel(1, false);
+				for (channel in musicHandler.channels)
+				{
+					if (channel.exists)
+					{
+						if (channel.ID == 0)
+							musicHandler.resumeChannel(0, 0.8, false);
+						else
+							musicHandler.resumeChannel(channel.ID, false);
+					}
+				}
 			}
 			else
 				pauseMenu._songRestarted = false;
@@ -178,7 +193,7 @@ class PlayState extends MainState
 		conductor.position = 0.0;
 		conductor.active = false;
 
-		var file:String = Assets.assetPath('data/songs/${folder.toLowerCase()}/$chartFile.json');
+		var file:String = Assets.assetPath('data/songs/${folder.toLowerKebabCase()}/${chartFile.toLowerKebabCase()}.json');
 
 		if (FileSystem.exists(file))
 		{
@@ -299,7 +314,7 @@ class PlayState extends MainState
 			sustainNotes.add(new SustainNote());
 		sustainNotes.killMembers();
 
-		for (i in 0...(chartData.strumLength ?? 2))
+		for (i in 0...(chartData.strumList?.list?.length ?? 2))
 		{
 			createStrum(FlxG.width / 2);
 		}
@@ -309,7 +324,7 @@ class PlayState extends MainState
 
 		createHUD();
 
-		var controlledPlayers:Array<Int> = chartData.playerControllers ?? [1];
+		var controlledPlayers:Array<Int> = chartData.strumList?.controlledStrums ?? [1];
 		for (i in 0...controlledPlayers.length)
 		{
 			if (strumList[controlledPlayers[i]] != null)
@@ -320,14 +335,6 @@ class PlayState extends MainState
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, keyRelease);
-
-		conductor.onMeasure.add(function(measure:Int)
-		{
-			if (focusedPoint == Stage.PLAYER_NAME)
-				focusedPoint = Stage.OPPONENT_NAME;
-			else
-				focusedPoint = Stage.PLAYER_NAME;
-		});
 
 		super.create();
 	}
@@ -392,7 +399,20 @@ class PlayState extends MainState
 
 	public function generateSong():Void
 	{
-		notes = Chart.read(chartData);
+		notes = Chart.readNotes(chartData);
+		if (chartData.events != null)
+		{
+			events = [
+				for (event in chartData.events)
+					{
+						name: event.name,
+						time: event.time,
+						contexts: [for (context in event.contexts) context]
+					}
+			];
+		}
+		else
+			events = [];
 
 		for (note in notes) // artificial increase
 		{
@@ -561,8 +581,16 @@ class PlayState extends MainState
 
 	public function startSong():Void
 	{
-		musicHandler.playChannel(0, 0.8, false);
-		musicHandler.playChannel(1, false);
+		for (channel in musicHandler.channels)
+		{
+			if (channel.exists)
+			{
+				if (channel.ID == 0)
+					musicHandler.playChannel(0, 0.8, false);
+				else
+					musicHandler.playChannel(channel.ID, false);
+			}
+		}
 
 		conductor.sound = musicHandler.channels[0];
 		conductor.active = true;
@@ -612,6 +640,7 @@ class PlayState extends MainState
 	}
 
 	var _removeNotes:Array<Note> = [];
+	var _removeEvents:Array<EventData> = [];
 
 	override public function update(elapsed:Float)
 	{
@@ -665,6 +694,25 @@ class PlayState extends MainState
 
 			for (note in _removeNotes.splice(0, _removeNotes.length))
 				notes.remove(note);
+		}
+
+		if (gameStarted && !gameRestarted)
+		{
+			for (event in events)
+			{
+				if (conductor.position > event.time)
+					_removeEvents.push(event);
+				else
+					break;
+			}
+
+			for (event in _removeEvents)
+			{
+				events.remove(event);
+				onEvent(event);
+			}
+
+			_removeEvents.splice(0, _removeEvents.length);
 		}
 
 		activeNotes.forEachAlive(function(note:NoteSprite)
@@ -783,6 +831,18 @@ class PlayState extends MainState
 		updateCamera(elapsed);
 
 		super.update(elapsed);
+	}
+
+	public function onEvent(event:EventData):Void
+	{
+		switch (event.name)
+		{
+			case "Focus Camera":
+				{
+					focusedPoint = event.contexts[0];
+					trace(focusedPoint);
+				}
+		}
 	}
 
 	public function updateCamera(elapsed:Float):Void
@@ -937,8 +997,8 @@ class PlayState extends MainState
 	{
 		if (determineStrums(note))
 		{
-			var diff:Float = conductor.position - note.strumTime;
-			var rating:Rating = determineRatingByTime(diff, 2.0);
+			var diff:Float = conductor.position - (note.strumTime + note.sustain);
+			var rating:Rating = determineRatingByTime(diff, 1.25);
 
 			score += (rating.score / 2).floor();
 

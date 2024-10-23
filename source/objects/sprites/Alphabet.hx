@@ -216,9 +216,6 @@ class Alphabet extends FlxObject
 
 			_addedPoint.add(_flashRect.width, 0);
 
-			if (!camera.containsPoint(_point, _flashRect.width, _flashRect.height))
-				continue;
-
 			_point.copyToFlash(_flashPoint);
 			camera.copyPixels(_frame, _pixels, _flashRect, _flashPoint, colorTransform, blend, antialiasing);
 		}
