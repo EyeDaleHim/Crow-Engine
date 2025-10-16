@@ -2,9 +2,9 @@ package;
 
 import openfl.Lib;
 import flixel.FlxGame;
+import flixel.graphics.FlxGraphic;
 import flixel.input.keyboard.FlxKey;
 import openfl.display.DisplayObjectContainer;
-import openfl.events.KeyboardEvent;
 
 class Main extends DisplayObjectContainer
 {
@@ -22,6 +22,8 @@ class Main extends DisplayObjectContainer
 		#end
 
 		FlxGraphic.defaultPersist = true;
+
+		game = new FlxGame(true, false);
 
 		Lib.current.addChild(game);
 	}
