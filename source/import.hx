@@ -12,6 +12,13 @@ import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 
+import flixel.group.FlxGroup;
+import flixel.group.FlxContainer;
+
+import flixel.math.FlxMath;
+
+import flixel.util.FlxAxes;
+import flixel.util.FlxColor;
 import flixel.util.FlxSignal;
 import flixel.util.FlxSignal.FlxTypedSignal;
 

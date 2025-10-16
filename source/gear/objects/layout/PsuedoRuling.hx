@@ -1,5 +1,7 @@
 package gear.objects.layout;
 
+import gear.objects.layout.LayoutProperties;
+
 class PsuedoRuling
 {
 	public var direction:LayoutDirection = VERTICAL;

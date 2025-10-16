@@ -1,5 +1,7 @@
 package gear.objects.layout;
 
+import gear.objects.layout.Layout;
+import gear.objects.layout.LayoutProperties;
 
 class InteractableLayout extends Layout
 {
