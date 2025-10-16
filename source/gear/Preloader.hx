@@ -1,8 +1,6 @@
-package;
+package gear;
 
 import flixel.system.FlxBasePreloader;
-import flixel.util.FlxStringUtil;
-import openfl.system.System;
 
 class Preloader extends FlxBasePreloader
 {
