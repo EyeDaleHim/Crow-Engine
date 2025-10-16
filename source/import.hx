@@ -12,6 +12,9 @@ import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 
+import flixel.util.FlxSignal;
+import flixel.util.FlxSignal.FlxTypedSignal;
+
 import gear.assets.AssetCache;
 import gear.assets.AssetHistory;
 import gear.assets.Assets;

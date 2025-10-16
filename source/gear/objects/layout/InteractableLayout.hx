@@ -1,9 +1,6 @@
 package gear.objects.layout;
 
-/**
- * An extension of the Layout class that manages selection and interaction
- * with the UI components it contains.
- */
+
 class InteractableLayout extends Layout
 {
 	public static var addDefaultSignals:Bool = true;
@@ -14,14 +11,11 @@ class InteractableLayout extends Layout
 
 	public var selectedIndex(default, set):Int = 0;
 
-	/**
-	 * How `changeSelection` handles boundaries.
-	 */
 	public var selectionMode:SelectionMode = BOUND;
 
-	public var onSelect:TypedSignal<FlxObject->Void> = new TypedSignal();
-	public var onDeselect:TypedSignal<FlxObject->Void> = new TypedSignal();
-	public var onIndex:TypedSignal<Int->Int->Void> = new TypedSignal();
+	public var onSelect:FlxTypedSignal<FlxObject->Void> = new FlxTypedSignal();
+	public var onDeselect:FlxTypedSignal<FlxObject->Void> = new FlxTypedSignal();
+	public var onIndex:FlxTypedSignal<Int->Int->Void> = new FlxTypedSignal();
 
 	public var receiveSignals:Null<Bool> = null;
 
