@@ -38,6 +38,17 @@ class InteractableLayout extends Layout
 		}
 	}
 
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		// Assumes you've finished setting up your layout, then we can start allowing signals
+		if (receiveSignals == null)
+		{
+			receiveSignals = true;
+		}
+	}
+
 	public function changeSelection(amount:Int):Void
 	{
 		if (members.length == 0)
