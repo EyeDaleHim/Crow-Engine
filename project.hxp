@@ -1,0 +1,223 @@
+package;
+
+import hxp.*;
+import lime.tools.*;
+import sys.FileSystem;
+
+using StringTools;
+
+
+class Project extends HXProject 
+{
+	// =========================================================================
+	//                            Application Settings
+	// =========================================================================
+	static final APP_TITLE:String = "Friday Night Funkin': Gear Engine";
+	static final APP_FILE:String = "GearEngine";
+	static final APP_MAIN:String = "gear.Main";
+	static final APP_VERSION:String = "1.0.0";
+	static final APP_COMPANY:String = "EyeDaleHim";
+	static final APP_PRELOADER:String = "gear.Preloader";
+	static final APP_PACKAGE:String = "com.eyedalehim.fnfgearengine";
+
+  	static final PREBUILD_HX:String = "build/Prebuild.hx";
+  	static final POSTBUILD_HX:String = "build/Postbuild.hx";
+
+	// =========================================================================
+	//                               Path Settings
+	// =========================================================================
+	static final SOURCE_DIR:String = "source";
+	static final BUILD_DIR:String = "export";
+	static final IMAGE_ASSET_PATH:String = "assets/images";
+	static final SOUND_ASSET_PATH:String = "assets/sounds";
+	static final LAUNCH_IMAGE_PATH:String = "assets/images/splash.png";
+
+	public function new() 
+    {
+		super();
+
+		// Display basic info
+		info('Gear Engine ${APP_VERSION} - ${APP_COMPANY}');
+
+		// Configure core application properties
+		configureApp();
+
+		// Configure window properties
+		configureWindow();
+
+		// Configure paths and directories
+		configurePaths();
+
+		// Configure required libraries
+		configureHaxelibs();
+
+		// Configure compile-time definitions (haxedefs)
+		configureHaxedefs();
+
+		// Configure custom build backend.macros
+		configureMacros();
+	}
+
+	function configureApp() 
+    {
+		meta.title = APP_TITLE;
+		meta.version = APP_VERSION;
+		meta.company = APP_COMPANY;
+		meta.packageName = APP_PACKAGE;
+
+		app.main = APP_MAIN;
+		app.file = APP_FILE;
+		app.preloader = APP_PRELOADER;
+	
+		this.preBuildCallbacks.push(buildHaxeCLICommand(PREBUILD_HX));
+    	this.postBuildCallbacks.push(buildHaxeCLICommand(POSTBUILD_HX));
+	}
+
+	function configureWindow() 
+    {
+		window.width = 1280;
+		window.height = 720;
+		window.fps = 60;
+		window.background = 0xFF000000;
+		window.hardware = true;
+		window.vsync = false;
+
+		// Desktop-specific settings
+		if (isDesktop()) 
+        {
+			window.orientation = Orientation.LANDSCAPE;
+			window.fullscreen = false;
+			window.resizable = false;
+		}
+	}
+
+	function configurePaths() 
+    {
+		sources.push(SOURCE_DIR);
+
+		var buildDir = '$BUILD_DIR/${isDebug() ? 'debug' : 'release'}';
+		buildDir += "/";
+
+		info('Output directory: $buildDir');
+
+		app.path = buildDir;
+	}
+
+	function configureHaxelibs()
+    {
+		addHaxelib("flixel");
+		addHaxelib("flixel-addons");
+		addHaxelib("hscript");
+		addHaxelib("hscript-improved");
+
+		if (isDebug() && isCpp())
+			addHaxelib("hxcpp-debug-server");
+	}
+
+	function configureHaxedefs() 
+    {
+		setHaxedef("IMAGE_PATH", IMAGE_ASSET_PATH);
+		setHaxedef("SOUND_PATH", SOUND_ASSET_PATH);
+
+		// setHaxedef("ASSETS_PACKAGING");
+		setHaxedef("ASSETS_PACKAGING_COMPRESSION", "3"); // max is 9
+		setHaxedef("PRELOAD_ALL_ASSETS_VALUE", "20"); // measured in MB, if the asset bundle is below this size, all assets will be preloaded
+
+		setHaxedef("hscriptPos");
+
+        if (this.haxedefs.exists("TRACY_ENABLED"))
+        {
+            setHaxedef("HXCPP_TELEMETRY");
+            setHaxedef("HXCPP_TRACY");
+            setHaxedef("HXCPP_TRACY_MEMORY");
+            setHaxedef("HXCPP_TRACY_ON_DEMAND");
+        }
+
+		if (isCpp())
+		{
+			setHaxedef("openfl-enable-handle-error");
+
+			setHaxedef("HXCPP_CHECK_POINTER");
+			setHaxedef("HXCPP_STACK_LINE");
+			setHaxedef("HXCPP_STACK_TRACE");
+		}
+
+		if (isDesktop() && isDebug())
+			setHaxedef("EDITORS_ALLOWED");
+		
+		setHaxedef("FLX_NO_HEALTH");
+		setHaxedef("FLX_NO_FOCUS_LOST_SCREEN");
+
+		if (!isDebug())
+			setHaxedef("FLX_NO_DEBUG");
+
+		// Input Optimizations (Conditional)
+		if (isMobile()) 
+        {
+			setHaxedef("FLX_NO_MOUSE");
+			setHaxedef("FLX_NO_KEYBOARD");
+		}
+        
+		if (isDesktop())
+			setHaxedef("FLX_NO_TOUCH");
+
+		// Compiler / Build Settings
+		setHaxedef("message.reporting", "pretty");
+	}
+
+	function configureMacros() 
+    {
+		addHaxeFlag("--macro gear.macros.AssetsMacro.buildAssets()");
+		if (this.haxedefs.exists("ASSETS_PACKAGING"))
+			addHaxeFlag("--macro gear.macros.BundleMacro.build()");
+		addHaxeFlag("--macro addMetadata('@:build(gear.macros.FlxMacro.buildFlxBasic())', 'flixel.FlxBasic')");
+	}
+
+	public function buildHaxeCLICommand(path:String):CLICommand {
+   		return CommandHelper.interpretHaxe(path);
+  	}
+
+	inline function isDesktop():Bool 
+        return this.platformType == PlatformType.DESKTOP;
+
+	inline function isMobile():Bool 
+        return this.platformType == PlatformType.MOBILE;
+
+	inline function isDebug():Bool 
+        return this.debug;
+
+	public function isHashLink():Bool 
+		return this.targetFlags.exists("hl");
+	  
+	public function isNeko():Bool 
+		return this.targetFlags.exists("neko");
+	
+	public function isJava():Bool 
+		return this.targetFlags.exists("java");
+	  
+	public function isNodeJS():Bool
+		return this.targetFlags.exists("nodejs");
+	  
+	public function isCSharp():Bool
+		return this.targetFlags.exists("cs");
+	  
+	public function isCpp():Bool // no target flag for cpp, wtf???
+		return !isHashLink() && !isNeko() && !isJava() && !isNodeJS() && !isCSharp();
+
+	inline function setHaxedef(name:String, ?value:String):Void 
+        this.haxedefs.set(name, value == null ? "" : value);
+
+	inline function addHaxelib(name:String, ?version:String):Void 
+        this.haxelibs.push(new Haxelib(name, version));
+
+	inline function addHaxeFlag(value:String):Void 
+        this.haxeflags.push(value);
+
+	inline function info(message:String):Void 
+    {    
+        if (command != "display") 
+        { 
+            Log.info('[INFO] ${message}'); 
+        }
+    }
+}

@@ -10,6 +10,8 @@ class Preloader extends FlxBasePreloader
 	{
 		super();
 
-		Main.game = new FlxGame(0, 0, () -> new states.internals.InitState()); // if confused, use InitState
+		FlxGraphic.defaultPersist = true;
+
+		Main.game = new FlxGame(0, 0, () -> new gear.states.internals.InitState()); // if confused, use InitState
 	}
 }

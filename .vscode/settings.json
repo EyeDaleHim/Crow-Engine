@@ -1,4 +1,18 @@
 {
-  "search.exclude": { "export/**/*.hx": true },
-  "haxe.enableExtendedIndentation": true
+	"search.exclude": {
+		"export/**/*.*": true
+	},
+	"[haxe]": {
+		"editor.formatOnSaveMode": "modifications",
+		"editor.formatOnPaste": false
+	},
+	"haxe.enableExtendedIndentation": true,
+	"files.associations": {
+		"*.hxp": "haxe",
+		"*.hscript": "haxe",
+		"*.haxe": "haxe",
+		"*.hxs": "haxe",
+		"*.hxc": "haxe"
+	},
+	"search.useIgnoreFiles": true,
 }

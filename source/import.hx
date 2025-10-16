@@ -9,6 +9,18 @@ import flixel.FlxCamera;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 
-import states.internals.InitState;
-import states.internals.MainState;
+import flixel.graphics.FlxGraphic;
+import flixel.graphics.frames.FlxAtlasFrames;
+
+import gear.assets.AssetCache;
+import gear.assets.AssetHistory;
+import gear.assets.Assets;
+import gear.assets.Bundle;
+
+import gear.states.internals.InitState;
+import gear.states.internals.MainState;
 #end
+
+import haxe.io.Path;
+
+using StringTools;
