@@ -10,6 +10,10 @@ class Preloader extends FlxBasePreloader
 
 		FlxGraphic.defaultPersist = true;
 
+		Assets.init();
+
+		Assets.loadContext("persistent");
+
 		Main.game = new FlxGame(0, 0, () -> new gear.states.internals.InitState()); // if confused, use InitState
 	}
 }

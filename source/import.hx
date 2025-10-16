@@ -31,6 +31,12 @@ import gear.states.internals.InitState;
 import gear.states.internals.MainState;
 #end
 
+#if sys
+import sys.FileSystem;
+import sys.io.File;
+#end
+
+import haxe.Json;
 import haxe.io.Path;
 
 using StringTools;

@@ -42,4 +42,26 @@ class AssetCache
 			_cache.set(id, data);
 		}
 	}
+
+	/**
+	 * Removes an asset from the cache.
+	 */
+	public function remove(id:String):Void
+	{
+		if (enabled)
+		{
+			_cache.remove(id);
+		}
+	}
+
+	/**
+	 * Clears all assets from the cache.
+	 */
+	public function clear():Void
+	{
+		if (enabled)
+		{
+			_cache = new StringMap<Dynamic>();
+		}
+	}
 }

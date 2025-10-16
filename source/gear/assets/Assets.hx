@@ -5,15 +5,15 @@ import flixel.system.frontEnds.AssetFrontEnd;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
 import openfl.text.Font;
-import sys.FileSystem;
-import sys.io.File;
 import gear.assets.AssetHistory;
 import gear.assets.AssetCache;
+import gear.assets.AssetPaths;
 
 class Assets
 {
 	public static var history:Array<AssetHistory> = [];
 	public static var cache:AssetCache = new AssetCache();
+	public static var contexts:Array<AssetContext> = [];
 
 	private static function getCallerClassName():String
 	{
@@ -71,7 +71,7 @@ class Assets
 			}
 			#end
 
-			return exists(path(id, type));
+			return exists(AssetPaths.from(id, type));
 		};
 
 		final oldLocal = assets.isLocal;
@@ -96,45 +96,59 @@ class Assets
 		final oldGet = assets.getAssetUnsafe;
 		assets.getAssetUnsafe = (id, type, cache = true) ->
 		{
+			if (AssetContext.dirtyContexts)
+			{
+				var orphanedAssets:Array<String> = [];
+				@:privateAccess
+				for (assetId in Assets.cache._cache.keys())
+				{
+					var foundInContext:Bool = false;
+					for (context in contexts)
+					{
+						if (context.findAsset(assetId))
+						{
+							foundInContext = true;
+							break;
+						}
+					}
+					if (!foundInContext)
+					{
+						orphanedAssets.push(assetId);
+					}
+				}
+
+				for (orphanedId in orphanedAssets)
+				{
+					Assets.cache.remove(orphanedId);
+				}
+				AssetContext.dirtyContexts = false;
+			}
+
 			if (StringTools.startsWith(id, "flixel/") || StringTools.contains(id, ':'))
 			{
 				return oldGet(id, type, cache);
 			}
 
 			final canUseCache = cache && Assets.cache.enabled;
-			final path = path(id, type);
+			final path = AssetPaths.from(id, type);
 
 			if (canUseCache && Assets.cache.has(id))
 			{
 				pushHistory(CACHE_FETCH, type, path);
 				return Assets.cache.get(id);
 			}
-			
+
 			final asset:Any = switch type
 			{
-				case null:
-					var textAsset:String = null;
-					#if ASSETS_PACKAGING
-					textAsset = Game.bundle.getString(Assets.path(id, type));
-					#else
-					textAsset = sys.io.File.getContent(Assets.path(id, type));
-					#end
-
-					pushHistory(textAsset != null ? IO_SUCCESS : FAILURE, TEXT, Assets.path(id, type));
-					return textAsset;
-				// No caching
 				case TEXT:
-					// band-aid fix for xmls
-					if (id.toLowerCase().endsWith('.xml'))
-						type = null;
 					var textAsset:String = null;
 					#if ASSETS_PACKAGING
-					textAsset = Game.bundle.getString(Assets.path(id, type));
+					textAsset = Game.bundle.getString(AssetPaths.from(id, type));
 					#else
-					textAsset = sys.io.File.getContent(Assets.path(id, type));
+					textAsset = sys.io.File.getContent(AssetPaths.from(id, type));
 					#end
 
-					pushHistory(textAsset != null ? IO_SUCCESS : FAILURE, TEXT, Assets.path(id, type));
+					pushHistory(textAsset != null ? IO_SUCCESS : FAILURE, TEXT, AssetPaths.from(id, type));
 					return textAsset;
 				case BINARY:
 					var binaryAsset:haxe.io.Bytes = null;
@@ -234,40 +248,60 @@ class Assets
 		};
 	}
 
-	public static function getBitmapFont(id:String):String
+	public static function loadContext(fileInput:String):AssetContext
 	{
-		var path:String = 'assets/images/$id.fnt';
-		if (exists(path))
+		final context = new AssetContext(fileInput);
+		contexts.push(context);
+
+		for (entry in context.entries)
 		{
-			final text = #if ASSETS_PACKAGING Game.bundle.getString(path) #else sys.io.File.getContent(path) #end;
-			return text;
+			for (file in entry.files)
+			{
+				FlxG.assets.getAssetUnsafe(file, entry.type);
+			}
 		}
 
-		return '';
+		return context;
 	}
 
-	public static function path(id:String, type:FlxAssetType):String
+	public static function unloadContext(fileInput:String):Void
 	{
-		var p = switch type
+		for (context in contexts)
 		{
-			case BINARY: 'assets/data/game/$id';
-			case TEXT: 'assets/data/game/$id';
-			case IMAGE: 'assets/images/$id.png';
-			case SOUND: 'assets/sounds/$id.ogg';
-			case FONT: 'assets/fonts/$id.ttf';
-			case null: 'assets/$id';
-		};
-		return p;
+			if (context.name == fileInput)
+			{
+				AssetContext.dirtyContexts = true;
+				contexts.remove(context);
+			}
+		}
+	}
+
+	public static function unloadAllContexts():Void
+	{
+		for (context in contexts)
+		{
+			for (entry in context.entries)
+			{
+				for (file in entry.files)
+				{
+					if (cache.has(file))
+					{
+						cache.remove(file);
+					}
+				}
+			}
+		}
+		contexts = [];
 	}
 
 	public static function frames(id:String):FlxAtlasFrames
 	{
-		if (!FlxG.assets.exists(id, IMAGE) && !FlxG.assets.exists(Path.join(['images', id + '.xml']), null))
+		if (!FlxG.assets.exists(id, IMAGE) && !FlxG.assets.exists(Path.join(['textures', id + '.xml']), null))
 		{
 			return null;
 		}
 
-		return FlxAtlasFrames.fromSparrow(id, Path.join(['images', id + '.xml']));
+		return FlxAtlasFrames.fromSparrow(id, 'assets/textures/$id.xml');
 	}
 
 	// equivalent to FileSystem.isDirectory and/or Bundle.isDirectory
@@ -306,7 +340,7 @@ class Assets
 			return true;
 		}
 
-		if (Game.bundle.exists(Assets.path(path, null)))
+		if (Game.bundle.exists(AssetPaths.from(path, null)))
 		{
 			return true;
 		}
@@ -316,7 +350,7 @@ class Assets
 			return true;
 		}
 
-		if (FileSystem.exists(Assets.path(path, null)))
+		if (FileSystem.exists(AssetPaths.from(path, null)))
 		{
 			return true;
 		}
