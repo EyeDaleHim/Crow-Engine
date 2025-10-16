@@ -1,0 +1,10 @@
+[
+    {
+        "type": "image",
+        "files": ["textures/ui/maintext.png", "textures/ui/maintext.xml"]
+    },
+    {
+        "type": "image",
+        "files": ["textures/game/ui/healthbar.png"]
+    }
+]
