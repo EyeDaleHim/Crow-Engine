@@ -21,13 +21,6 @@ class Main extends DisplayObjectContainer
 		});
 		#end
 
-		openfl.Lib.current.stage.addEventListener(openfl.events.Event.EXIT_FRAME, (e:openfl.events.Event) ->
-		{
-			backend.engine.external.AudioContextManager.checkDeviceChange();
-		});
-
-		backend.engine.external.DPIAwareness.registerAsDPICompatible();
-
 		FlxGraphic.defaultPersist = true;
 
 		Lib.current.addChild(game);
