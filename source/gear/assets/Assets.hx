@@ -101,9 +101,15 @@ class Assets
 				return oldGet(id, type, cache);
 			}
 
-			// load from custom assets directory
 			final canUseCache = cache && Assets.cache.enabled;
 			final path = path(id, type);
+
+			if (canUseCache && Assets.cache.has(id))
+			{
+				pushHistory(CACHE_FETCH, type, path);
+				return Assets.cache.get(id);
+			}
+			
 			final asset:Any = switch type
 			{
 				case null:
@@ -139,23 +145,6 @@ class Assets
 					#end
 					pushHistory(binaryAsset != null ? IO_SUCCESS : FAILURE, BINARY, path);
 					return binaryAsset;
-
-				// Check cache
-				case IMAGE if (canUseCache && Assets.cache.has(id)):
-					{
-						pushHistory(CACHE_FETCH, IMAGE, path);
-						Assets.cache.get(id);
-					}
-				case SOUND if (canUseCache && Assets.cache.has(id)):
-					{
-						pushHistory(CACHE_FETCH, SOUND, path);
-						Assets.cache.get(id);
-					}
-				case FONT if (canUseCache && Assets.cache.has(id)):
-					{
-						pushHistory(CACHE_FETCH, FONT, path);
-						Assets.cache.get(id);
-					}
 
 				// Get asset and set cache
 				case IMAGE:
