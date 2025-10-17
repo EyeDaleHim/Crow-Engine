@@ -50,7 +50,7 @@ class BundleMacro
 			#end
 		}
 		var exportPath:String = Path.join(['export', #if debug 'debug' #else 'release' #end, target, 'bin']);
-		var outputBundleFile = Path.join([exportPath, constants.MiscConstants.ASSET_BUNDLE_FILE]);
+		var outputBundleFile = Path.join([exportPath, 'assets.bundle']);
 		var outputCacheFile = Path.join([exportPath, cacheFile]);
 
 		// Read cache

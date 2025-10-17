@@ -7,6 +7,7 @@ import openfl.display.DisplayObjectContainer;
 class Main extends DisplayObjectContainer
 {
 	public static var game:FlxGame;
+	public static var bundle:Bundle;
 
 	public function new()
 	{

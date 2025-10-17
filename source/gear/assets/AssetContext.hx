@@ -20,7 +20,7 @@ class AssetContext
     {
         this.name = file;
 
-        entries = Json.parse(FlxG.assets.getTextUnsafe(Path.join([contextDirectory, file, '.json'])));
+        entries = Json.parse(FlxG.assets.getTextUnsafe(Path.join([contextDirectory, '$file.json'])));
     }
 
     public function findAsset(fullPath:String):Bool

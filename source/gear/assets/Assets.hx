@@ -143,7 +143,7 @@ class Assets
 				case TEXT:
 					var textAsset:String = null;
 					#if ASSETS_PACKAGING
-					textAsset = Game.bundle.getString(AssetPaths.from(id, type));
+					textAsset = Main.bundle.getString(AssetPaths.from(id, type));
 					#else
 					textAsset = sys.io.File.getContent(AssetPaths.from(id, type));
 					#end
@@ -153,7 +153,7 @@ class Assets
 				case BINARY:
 					var binaryAsset:haxe.io.Bytes = null;
 					#if ASSETS_PACKAGING
-					binaryAsset = Game.bundle.getBytes(path);
+					binaryAsset = Main.bundle.getBytes(path);
 					#else
 					binaryAsset = sys.io.File.getBytes(path);
 					#end
@@ -164,7 +164,7 @@ class Assets
 				case IMAGE:
 					var bitmap:BitmapData = null;
 					#if ASSETS_PACKAGING
-					var bytes = Game.bundle.getBytes(path);
+					var bytes = Main.bundle.getBytes(path);
 					if (bytes != null)
 						bitmap = BitmapData.fromBytes(bytes);
 					#else
@@ -199,7 +199,7 @@ class Assets
 				case SOUND:
 					var sound:Sound = null;
 					#if ASSETS_PACKAGING
-					var bytes = Game.bundle.getBytes(path);
+					var bytes = Main.bundle.getBytes(path);
 					if (bytes != null)
 						sound = Sound.fromAudioBuffer(lime.media.AudioBuffer.fromBytes(bytes));
 					#else
@@ -222,7 +222,7 @@ class Assets
 				case FONT:
 					var font:Font = null;
 					#if ASSETS_PACKAGING
-					var bytes = Game.bundle.getBytes(path);
+					var bytes = Main.bundle.getBytes(path);
 					if (bytes != null)
 						font = Font.fromBytes(bytes);
 					#else
@@ -310,7 +310,7 @@ class Assets
 		#if macro
 		return sys.FileSystem.isDirectory(path);
 		#elseif ASSETS_PACKAGING
-		return Game.bundle.isDirectory(path);
+		return Main.bundle.isDirectory(path);
 		#else
 		return FileSystem.isDirectory(path);
 		#end
@@ -323,7 +323,7 @@ class Assets
 		if (exists(path))
 		{
 			#if ASSETS_PACKAGING
-			list = Game.bundle.readDirectory(path);
+			list = Main.bundle.readDirectory(path);
 			#else
 			list = FileSystem.readDirectory(path);
 			#end
@@ -335,12 +335,12 @@ class Assets
 	public static function exists(path:String):Bool
 	{
 		#if ASSETS_PACKAGING
-		if (Game.bundle.exists(path))
+		if (Main.bundle.exists(path))
 		{
 			return true;
 		}
 
-		if (Game.bundle.exists(AssetPaths.from(path, null)))
+		if (Main.bundle.exists(AssetPaths.from(path, null)))
 		{
 			return true;
 		}
