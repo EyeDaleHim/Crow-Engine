@@ -28,8 +28,6 @@ class Project extends HXProject
 	// =========================================================================
 	static final SOURCE_DIR:String = "source";
 	static final BUILD_DIR:String = "export";
-	static final IMAGE_ASSET_PATH:String = "assets/images";
-	static final SOUND_ASSET_PATH:String = "assets/sounds";
 	static final LAUNCH_IMAGE_PATH:String = "assets/images/splash.png";
 
 	public function new() 
@@ -116,9 +114,6 @@ class Project extends HXProject
 
 	function configureHaxedefs() 
     {
-		setHaxedef("IMAGE_PATH", IMAGE_ASSET_PATH);
-		setHaxedef("SOUND_PATH", SOUND_ASSET_PATH);
-
 		setHaxedef("ASSETS_PACKAGING");
 		setHaxedef("ASSETS_PACKAGING_COMPRESSION", "3"); // max is 9
 		setHaxedef("PRELOAD_ALL_ASSETS_VALUE", "20"); // measured in MB, if the asset bundle is below this size, all assets will be preloaded

@@ -9,16 +9,6 @@ import haxe.io.Path;
 
 class AssetsMacro
 {
-	public static macro function getImagePath():haxe.macro.Expr.ExprOf<String>
-	{
-		return macro $v{Context.definedValue("IMAGE_PATH") ?? "assets/images"};
-	}
-
-	public static macro function getSoundPath():haxe.macro.Expr.ExprOf<String>
-	{
-		return macro $v{Context.definedValue("SOUND_PATH") ?? "assets/sounds"};
-	}
-
 	public static macro function getProjectPath():haxe.macro.Expr.ExprOf<String>
 	{
 		return macro $v{Sys.getCwd()};

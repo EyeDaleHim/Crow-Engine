@@ -5,15 +5,20 @@ import flixel.system.frontEnds.AssetFrontEnd;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
 import openfl.text.Font;
+
 import gear.assets.AssetHistory;
 import gear.assets.AssetCache;
 import gear.assets.AssetPaths;
+import gear.assets.AssetContext;
+import gear.assets.stitching.AtlasStitchData;
+import gear.assets.stitching.StitchedAtlas;
 
 class Assets
 {
 	public static var history:Array<AssetHistory> = [];
 	public static var cache:AssetCache = new AssetCache();
 	public static var contexts:Array<AssetContext> = [];
+	public static var stitches:Array<StitchedAtlas> = [];
 
 	private static function getCallerClassName():String
 	{
@@ -248,6 +253,17 @@ class Assets
 		};
 	}
 
+	/**
+	 * Loads the stitched atlas metadata. This does not load the atlas itself.
+	 */
+	public static function loadStitchedAtlas(atlasInput:String):AtlasStitchData
+	{
+		final path = Path.join([AssetContext.contextDirectory, '$atlasInput.json']);
+		final rawAtlasData:AtlasStitchData = Json.parse(FlxG.assets.getTextUnsafe(path));
+
+		return rawAtlasData;
+	}
+
 	public static function loadContext(fileInput:String):AssetContext
 	{
 		final context = new AssetContext(fileInput);
@@ -255,9 +271,12 @@ class Assets
 
 		for (entry in context.entries)
 		{
-			for (file in entry.files)
+			if (entry.files != null)
 			{
-				FlxG.assets.getAssetUnsafe(file, entry.type);
+				final path = entry.files.path;
+				final type = entry.files.type;
+
+				FlxG.assets.getAssetUnsafe(path, type, true);
 			}
 		}
 
@@ -278,19 +297,8 @@ class Assets
 
 	public static function unloadAllContexts():Void
 	{
-		for (context in contexts)
-		{
-			for (entry in context.entries)
-			{
-				for (file in entry.files)
-				{
-					if (cache.has(file))
-					{
-						cache.remove(file);
-					}
-				}
-			}
-		}
+		// unloading every context implies clearing the cache
+		cache.clear();
 		contexts = [];
 	}
 

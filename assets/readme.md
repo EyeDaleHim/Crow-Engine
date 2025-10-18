@@ -15,3 +15,13 @@ assets
  ├── sounds: `.ogg` files that provide audio such as music or sound effects for the game. Subdirectory for organizing is optional.
  ├── stages: `.json` files containing information for how stages are rendered in the game.
  ├── textures: `.png` and `.xml` files that are used for rendering images and animations. Subdirectory for organizing is optional. For atlases, contexts are recommended to load them together.
+
+# Atlas Stitching
+Atlas Stitching is a way for the game to merge separate image files into a single atlas at runtime.
+
+If an image is requested by the game, the game will first check if an image is in any stitched atlas, if there is, it will extract the FlxGraphic from that stitched atlas to represent as the image.
+
+If no image exists in any stitched atlas, the game loads the image from the assets as usual.
+
+# Game Behavior
+All stitched atlas load in their metadata when the game is initialized, and once the game loads an image related to that stitched atlas, all images are loaded in that atlas too.
