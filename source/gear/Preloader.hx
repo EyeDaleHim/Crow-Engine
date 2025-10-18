@@ -16,6 +16,6 @@ class Preloader extends FlxBasePreloader
 
 		Assets.loadContext("persistent");
 
-		Main.game = new FlxGame(0, 0, () -> new gear.states.internals.InitState()); // if confused, use InitState
+		Main.game = new FlxGame(0, 0, () -> new gear.states.internals.InitState());
 	}
 }

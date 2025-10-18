@@ -271,13 +271,7 @@ class Assets
 
 		for (entry in context.entries)
 		{
-			if (entry.files != null)
-			{
-				final path = entry.files.path;
-				final type = entry.files.type;
-
-				FlxG.assets.getAssetUnsafe(path, type, true);
-			}
+			FlxG.assets.getAssetUnsafe(entry.path, entry.type, true);
 		}
 
 		return context;

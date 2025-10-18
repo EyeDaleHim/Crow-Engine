@@ -1,10 +1,6 @@
 package gear.assets;
 
-import sys.FileSystem;
-import sys.io.File;
 import haxe.Json;
-import gear.assets.paths.PathDirectoryStruct;
-import gear.assets.paths.PathFileStruct;
 import flixel.system.frontEnds.AssetFrontEnd.FlxAssetType;
 import flixel.FlxG;
 import haxe.io.Path;
@@ -21,92 +17,69 @@ class AssetContext
 	public static var dirtyContexts:Bool = false;
 
 	public var name(default, null):String;
-	public var entries(default, null):AssetContextFile;
+	public var entries(default, null):Array<AssetEntry>;
 
 	public function new(file:String)
 	{
 		this.name = file;
 
-		final rawJson = FlxG.assets.getText(Path.join([contextDirectory, '$file.json']));
+		final rawJson = FlxG.assets.getTextUnsafe(Path.join([contextDirectory, '$file.json']));
 		if (rawJson == null)
 		{
 			this.entries = [];
 			return;
 		}
 
-		var rawEntries:AssetContextFile = Json.parse(rawJson);
-		this.entries = [];
-
-		for (entry in rawEntries)
+		try
 		{
-			if (entry.files != null)
+			var parsedEntries:Array<AssetEntry> = cast Json.parse(rawJson);
+			final uniqueEntries = new Map<String, AssetEntry>();
+			for (entry in parsedEntries)
 			{
-				this.entries.push({files: entry.files});
-			}
-
-			if (entry.directories != null)
-			{
-				for (dirPath in entry.directories.paths)
+				// The `type` from JSON is a string, we need to convert it to FlxAssetType enum
+				final assetType:FlxAssetType = switch (cast(entry.type, String).toLowerCase().trim())
 				{
-					addDirectoryFiles(dirPath, entry.directories.recursive, entry.directories.type);
+					case "image": IMAGE;
+					case "sound": SOUND;
+					case "text": TEXT;
+					case "font": FONT;
+					case "binary": BINARY;
+					default: null;
 				}
+
+				uniqueEntries.set(entry.path, {path: entry.path, type: assetType});
 			}
+			this.entries = [for (entry in uniqueEntries.keys()) uniqueEntries.get(entry)];
+
+			trace('Populated entries: $entries');
 		}
-
-		final uniqueEntries = new Map<String, AssetContextEntry>();
-		for (entry in this.entries)
+		catch (e)
 		{
-			if (entry.files != null)
-			{
-				uniqueEntries.set(entry.files.path, entry);
-			}
-		}
-		this.entries = [for (entry in uniqueEntries) entry];
-	}
-
-	private function addDirectoryFiles(directory:String, recursive:Bool, ?type:FlxAssetType):Void
-	{
-		if (!Assets.exists(directory) || !Assets.isList(directory))
-			return;
-
-		for (fileName in Assets.list(directory))
-		{
-			final fullPath = Path.join([directory, fileName]);
-			if (Assets.isList(fullPath))
-			{
-				if (recursive)
-				{
-					addDirectoryFiles(fullPath, true, type);
-				}
-			}
-			else
-			{
-				entries.push({files: {path: fullPath, type: type}});
-			}
+			trace('Error parsing context file $file: $e');
+			this.entries = [];
 		}
 	}
 
-	public function findAsset(fullPath:String):Bool
+	public function findAsset(path:String):Bool
 	{
 		for (entry in entries)
 		{
-			if (entry.files != null)
+			if (entry.path == path)
 			{
-				if (entry.files.path == fullPath)
-				{
-					return true;
-				}
+				return true;
 			}
 		}
-
 		return false;
 	}
 }
 
-typedef AssetContextFile = Array<AssetContextEntry>;
-
-typedef AssetContextEntry =
+/**
+ * Represents a single asset entry in a context file.
+ * The `type` is a string when parsed from JSON and then converted
+ * to `FlxAssetType` in the `AssetContext` constructor.
+ */
+typedef AssetEntry =
 {
-	var ?files:PathFileStruct;
-	var ?directories:PathDirectoryStruct;
-};
+	var path:String;
+	var type:FlxAssetType;
+}
