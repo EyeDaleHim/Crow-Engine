@@ -5,7 +5,6 @@ import flixel.system.frontEnds.AssetFrontEnd;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
 import openfl.text.Font;
-
 import gear.assets.AssetHistory;
 import gear.assets.AssetCache;
 import gear.assets.AssetPaths;
@@ -103,29 +102,7 @@ class Assets
 		{
 			if (AssetContext.dirtyContexts)
 			{
-				var orphanedAssets:Array<String> = [];
-				@:privateAccess
-				for (assetId in Assets.cache._cache.keys())
-				{
-					var foundInContext:Bool = false;
-					for (context in contexts)
-					{
-						if (context.findAsset(assetId))
-						{
-							foundInContext = true;
-							break;
-						}
-					}
-					if (!foundInContext)
-					{
-						orphanedAssets.push(assetId);
-					}
-				}
-
-				for (orphanedId in orphanedAssets)
-				{
-					Assets.cache.remove(orphanedId);
-				}
+				checkOrphanedAssets();
 				AssetContext.dirtyContexts = false;
 			}
 
@@ -264,9 +241,15 @@ class Assets
 		return rawAtlasData;
 	}
 
-	public static function loadContext(fileInput:String):AssetContext
+	public static function loadContext(fileInput:String, ?reload:Bool = false):AssetContext
 	{
-		final context = new AssetContext(fileInput);
+		var context = findContext(fileInput);
+		if (context != null && !reload)
+		{
+			return context;
+		}
+
+		context = new AssetContext(fileInput);
 		contexts.push(context);
 
 		for (entry in context.entries)
@@ -294,6 +277,20 @@ class Assets
 		// unloading every context implies clearing the cache
 		cache.clear();
 		contexts = [];
+	}
+
+	public static function findContext(fileInput:String):AssetContext
+	{
+		// Why am I finding the context this way again???
+		for (context in contexts)
+		{
+			if (context.name == fileInput)
+			{
+				return context;
+			}
+		}
+
+		return null;
 	}
 
 	public static function frames(id:String):FlxAtlasFrames
@@ -359,6 +356,33 @@ class Assets
 		#end
 
 		return false;
+	}
+
+	private static function checkOrphanedAssets():Void
+	{
+		var orphanedAssets:Array<String> = [];
+		@:privateAccess
+		for (assetId in Assets.cache._cache.keys())
+		{
+			var foundInContext:Bool = false;
+			for (context in contexts)
+			{
+				if (context.findAsset(assetId))
+				{
+					foundInContext = true;
+					break;
+				}
+			}
+			if (!foundInContext)
+			{
+				orphanedAssets.push(assetId);
+			}
+		}
+
+		for (orphanedId in orphanedAssets)
+		{
+			Assets.cache.remove(orphanedId);
+		}
 	}
 
 	private static function pushHistory(context:LoadContext, type:FlxAssetType, filePath:String):Void

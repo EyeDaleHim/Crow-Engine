@@ -17,6 +17,8 @@ import flixel.group.FlxContainer;
 
 import flixel.math.FlxMath;
 
+import flixel.sound.FlxSound;
+
 import flixel.util.FlxAxes;
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal;
@@ -26,6 +28,8 @@ import gear.assets.AssetCache;
 import gear.assets.AssetHistory;
 import gear.assets.Assets;
 import gear.assets.Bundle;
+
+import gear.music.Music;
 
 import gear.states.internals.InitState;
 import gear.states.internals.MainState;

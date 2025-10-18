@@ -1,5 +1,26 @@
 [
     {
-        
+        "type": "image",
+        "path": "ui/title/gfDanceTitle"
+    },
+    {
+        "type": "text",
+        "path": "ui/title/gfDanceTitle.xml"
+    },
+    {
+        "type": "image",
+        "path": "ui/game/logoBumpin"
+    },
+    {
+        "type": "text",
+        "path": "ui/game/logoBumpin.xml"
+    },
+    {
+        "type": "image",
+        "path": "ui/game/titleEnter"
+    },
+    {
+        "type": "text",
+        "path": "ui/game/titleEnter.xml"
     }
 ]

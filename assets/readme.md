@@ -12,7 +12,7 @@ assets
  ├── fonts: A subdirectory of font files that can display text on screen.
  ├──    ├── bitmap: `.png` and `.fnt` files. Typically made with BMFont.
  ├──    ├── vector: `.ttf` and `.otf` files.
- ├── sounds: `.ogg` files that provide audio such as music or sound effects for the game. Subdirectory for organizing is optional.
+ ├── sounds: `.ogg` files that provide audio such as music or sound effects for the game. They are also provided with a `.json` file of the same name for metadata about the song, like BPM or time changes. Subdirectory for organizing is optional. Providing a metadata file is optional too.
  ├── stages: `.json` files containing information for how stages are rendered in the game.
  ├── textures: `.png` and `.xml` files that are used for rendering images and animations. Subdirectory for organizing is optional. For atlases, contexts are recommended to load them together.
 

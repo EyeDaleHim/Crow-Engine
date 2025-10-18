@@ -1,7 +1,7 @@
 [
     {
         "type": "image",
-        "path": "ui/generic/mainText.png"
+        "path": "ui/generic/mainText"
     },
     {
         "type": "text",
@@ -9,6 +9,6 @@
     },
     {
         "type": "image",
-        "path": "ui/game/healthbar.png"
+        "path": "ui/game/healthbar"
     }
 ]
