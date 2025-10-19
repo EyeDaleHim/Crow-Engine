@@ -9,7 +9,7 @@ class TitleState extends MainState
         Assets.loadContext("title");
 
         // load music as test
-        menuMusic = new Music("music/menu/main", "music/menu/main");
+        menuMusic = new Music("music/menu/main");
         menuMusic.play();
         add(menuMusic);
     }

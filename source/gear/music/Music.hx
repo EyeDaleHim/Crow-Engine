@@ -8,6 +8,16 @@ class Music extends FlxBasic
 	public static var defaultTimeSignature:TimeSignatureStruct = {beat: 0, numerator: 4, denominator: 4};
 
 	/**
+	 * The signal that dispatches when a new step happens.
+	 */
+	public var onBeat:FlxTypedSignal<Int->Void>;
+
+	/**
+	 * The signal that dispatches when a new beat happens.
+	 */
+	public var onStep:FlxTypedSignal<Int->Void>;
+
+	/**
 	 * The current beat of the sound, in integers.
 	 */
 	public var beat(get, never):Int;
@@ -55,7 +65,7 @@ class Music extends FlxBasic
 	public var updateFields:Bool = true;
 
 	/**
-	 * If true, the position will increment every frame to account for audio latency.
+	 * If true, the position will try to compensate for granularity in-between audio updates.
 	 */
 	public var syncWithGame:Bool = false;
 
@@ -66,24 +76,38 @@ class Music extends FlxBasic
 
 	private var _lastPosition:Float = 0.0;
 
-	public function new(soundFile:String, ?metadataFile:String)
+	private var _lastBeat:Int = 0;
+	private var _lastStep:Int = 0;
+
+	private var _tempoMap:Array<{time:Float, beat:Float, tempo:Float}>;
+
+	/**
+	 * The amount of steps per beat.
+	 */
+	public static inline var STEPS_PER_BEAT:Int = 4;
+
+	public function new(soundFile:String)
 	{
 		super();
 
-		load(soundFile, metadataFile);
+		load(soundFile);
 	}
 
-	public function load(soundFile:String, ?metadataFile:String):Void
+	public function load(soundFile:String):Void
 	{
-		if (metadataFile != null)
+		if (soundFile != null)
 		{
 			try
 			{
-				this.metadata = cast Json.parse(FlxG.assets.getTextUnsafe(metadataFile));
+				final path = Path.join(['sounds', '$soundFile.json']);
+				if (FlxG.assets.exists(path))
+				{
+					this.metadata = cast Json.parse(FlxG.assets.getTextUnsafe(path));
+				}
 			}
 			catch (e)
 			{
-				trace('Error parsing sound metadata file $metadataFile: $e');
+				trace('Error parsing sound metadata file $soundFile: $e');
 				this.metadata = null;
 			}
 		}
@@ -99,6 +123,8 @@ class Music extends FlxBasic
 			soundObject.volume = metadata.volume;
 			soundObject.looped = metadata.looped;
 		}
+
+		_precalculateTempoMap();
 	}
 
 	public function pause():Void
@@ -126,17 +152,17 @@ class Music extends FlxBasic
 		{
 			if (syncWithGame)
 			{
-                if (soundObject.time == _lastPosition)
-                {
-                    position += elapsed * 1000;
-                }
-                else
-                {
-                    position = soundObject.time;
-                }
-                
-                _lastPosition = soundObject.time;
-            }
+				if (soundObject.time == _lastPosition)
+				{
+					position += elapsed * 1000;
+				}
+				else
+				{
+					position = soundObject.time;
+				}
+
+				_lastPosition = soundObject.time;
+			}
 			else
 			{
 				position = soundObject.time;
@@ -176,6 +202,19 @@ class Music extends FlxBasic
 					timeSignature = metadata.timeSignature;
 				}
 			}
+
+			if (_lastBeat != beat)
+			{
+				onBeat.dispatch(beat);
+			}
+
+			if (_lastStep != step)
+			{
+				onStep.dispatch(step);
+			}
+
+			_lastBeat = beat;
+			_lastStep = step;
 		}
 	}
 
@@ -192,52 +231,65 @@ class Music extends FlxBasic
 	// Get the current step in decimals
 	function get_stepDec():Float
 	{
-		if (metadata == null)
+		if (_tempoMap == null || _tempoMap.length == 0)
 		{
 			// If there's no metadata, calculate steps using the simple tempo.
 			// (tempo / 60 seconds) / 1000 ms = beats per millisecond
 			var beatsPerMs = tempo / 60000;
-			return position * beatsPerMs * 4; // 4 steps per beat
+			return position * beatsPerMs * STEPS_PER_BEAT;
 		}
 
-		var tempoChanges:Array<TempoStruct> = metadata.tempoChanges ?? [];
-
-		var stepTime:Float = 0.0;
-		var totalBeats:Float = 0.0;
-		var currentTempo:Float = metadata.tempo;
-
-		for (change in tempoChanges)
+		// Find the correct tempo segment using the pre-calculated map
+		var segment = _tempoMap[0];
+		for (i in 1..._tempoMap.length)
 		{
-			var beatsInSegment = change.beat - totalBeats;
-			if (beatsInSegment <= FlxMath.EPSILON) // Process multiple events at the same beat
-			{
-				currentTempo = change.newTempo;
-				continue;
-			}
-
-			var msPerBeat = 60000.0 / currentTempo;
-			var segmentDuration = beatsInSegment * msPerBeat;
-
-			if (position < stepTime + segmentDuration)
-			{
-				// Position is within this segment.
-				var beatsIntoSegment = (position - stepTime) / msPerBeat;
-				return (totalBeats + beatsIntoSegment) * 4; // 4 steps per beat
-			}
-
-			stepTime += segmentDuration;
-			totalBeats = change.beat;
-			currentTempo = change.newTempo;
+			if (position < _tempoMap[i].time)
+				break;
+			segment = _tempoMap[i];
 		}
 
-		// Position is after the last tempo change event.
-		var msPerBeat = 60000.0 / currentTempo;
-		var beatsAfterLastEvent = (position - stepTime) / msPerBeat;
-		return (totalBeats + beatsAfterLastEvent) * 4; // 4 steps per beat
+		var msPerBeat = 60000 / segment.tempo;
+		var beatsIntoSegment = (position - segment.time) / msPerBeat;
+		return (segment.beat + beatsIntoSegment) * STEPS_PER_BEAT;
 	}
 
 	function get_beatDec():Float
 	{
-		return stepDec / 4;
+		return stepDec / STEPS_PER_BEAT;
+	}
+
+	private function _precalculateTempoMap()
+	{
+		if (metadata == null || metadata.tempo == null)
+		{
+			_tempoMap = null;
+			return;
+		}
+
+		_tempoMap = [];
+		_tempoMap.push({time: 0, beat: 0, tempo: metadata.tempo});
+
+		var tempoChanges:Array<TempoStruct> = metadata.tempoChanges ?? [];
+		if (tempoChanges.length == 0)
+			return;
+
+		// Sort by beat to ensure correct processing order
+		tempoChanges.sort((a, b) -> a.beat < b.beat ? -1 : 1);
+
+		var lastBeat:Float = 0;
+		var lastTime:Float = 0;
+		var lastTempo:Float = metadata.tempo;
+
+		for (change in tempoChanges)
+		{
+			var beatsSinceLast = change.beat - lastBeat;
+			if (beatsSinceLast <= 0)
+				continue; // Skip same-beat changes, only use the last one
+
+			lastTime += beatsSinceLast * (60000 / lastTempo);
+			_tempoMap.push({time: lastTime, beat: change.beat, tempo: change.newTempo});
+			lastBeat = change.beat;
+			lastTempo = change.newTempo;
+		}
 	}
 }
