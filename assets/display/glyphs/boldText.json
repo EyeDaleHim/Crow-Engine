@@ -1,0 +1,106 @@
+[
+    {
+        "chars": ["A", "a"],
+        "animationPrefix": "A bold"
+    },
+    {
+        "chars": ["B", "b"],
+        "animationPrefix": "B bold"
+    },
+    {
+        "chars": ["C", "c"],
+        "animationPrefix": "C bold"
+    },
+    {
+        "chars": ["D", "d"],
+        "animationPrefix": "D bold"
+    },
+    {
+        "chars": ["E", "e"],
+        "animationPrefix": "E bold"
+    },
+    {
+        "chars": ["F", "f"],
+        "animationPrefix": "F bold"
+    },
+    {
+        "chars": ["G", "g"],
+        "animationPrefix": "G bold"
+    },
+    {
+        "chars": ["H", "h"],
+        "animationPrefix": "H bold"
+    },
+    {
+        "chars": ["I", "i"],
+        "animationPrefix": "I bold"
+    },
+    {
+        "chars": ["J", "j"],
+        "animationPrefix": "J bold"
+    },
+    {
+        "chars": ["K", "k"],
+        "animationPrefix": "K bold"
+    },
+    {
+        "chars": ["L", "l"],
+        "animationPrefix": "L bold"
+    },
+    {
+        "chars": ["M", "m"],
+        "animationPrefix": "M bold"
+    },
+    {
+        "chars": ["N", "n"],
+        "animationPrefix": "N bold"
+    },
+    {
+        "chars": ["O", "o"],
+        "animationPrefix": "O bold"
+    },
+    {
+        "chars": ["P", "p"],
+        "animationPrefix": "P bold"
+    },
+    {
+        "chars": ["Q", "q"],
+        "animationPrefix": "Q bold"
+    },
+    {
+        "chars": ["R", "r"],
+        "animationPrefix": "R bold"
+    },
+    {
+        "chars": ["S", "s"],
+        "animationPrefix": "S bold"
+    },
+    {
+        "chars": ["T", "t"],
+        "animationPrefix": "T bold"
+    },
+    {
+        "chars": ["U", "u"],
+        "animationPrefix": "U bold"
+    },
+    {
+        "chars": ["V", "v"],
+        "animationPrefix": "V bold"
+    },
+    {
+        "chars": ["W", "w"],
+        "animationPrefix": "W bold"
+    },
+    {
+        "chars": ["X", "x"],
+        "animationPrefix": "X bold"
+    },
+    {
+        "chars": ["Y", "y"],
+        "animationPrefix": "Y bold"
+    },
+    {
+        "chars": ["Z", "z"],
+        "animationPrefix": "Z bold"
+    }
+]

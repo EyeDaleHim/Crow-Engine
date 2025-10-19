@@ -1,4 +1,4 @@
-package gear.assets.sound;
+package gear.assets.metadata;
 
 import gear.music.TempoStruct;
 import gear.music.TimeSignatureStruct;

@@ -9,12 +9,19 @@ import haxe.io.Path;
  * An AssetContext allows to load and unload certain assets, an asset's existence in the cache
  * is often retained as long as one AssetContext containing that asset's entry is still active.
  * 
+ * The best practice is that every asset must be associated with a context, any asset without a
+ * context is considered an orphaned asset and may face redundant unloading and loading, 
+ * this is a deliberate opinion to avoid bad habits and inconsistencies. You can automate
+ * preventing orphaned assets by setting `enforceAssetContext` to true.
+ * 
  * AssetContexts can be populated with a JSON file.
  */
 class AssetContext
 {
 	public static var contextDirectory:String = "contexts";
+
 	public static var dirtyContexts:Bool = false;
+	public static var enforceAssetContext:Bool = false; // TODO: implement
 
 	public var name(default, null):String;
 	public var entries(default, null):Array<AssetEntry>;
@@ -49,7 +56,7 @@ class AssetContext
 
 				uniqueEntries.set(entry.path, {path: entry.path, type: assetType});
 			}
-			this.entries = [for (entry in uniqueEntries.keys()) uniqueEntries.get(entry)];
+			this.entries = [for (entry in uniqueEntries.iterator()) entry];
 
 			trace('Populated entries: $entries');
 		}

@@ -1,6 +1,6 @@
 package gear.music;
 
-import gear.assets.sound.SoundMetadata;
+import gear.assets.metadata.SoundMetadata;
 
 class Music extends FlxBasic
 {

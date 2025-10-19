@@ -1,0 +1,366 @@
+[
+    {
+        "chars": ["A"],
+        "animationPrefix": "A capital"
+    },
+    {
+        "chars": ["B"],
+        "animationPrefix": "B capital"
+    },
+    {
+        "chars": ["C"],
+        "animationPrefix": "C capital"
+    },
+    {
+        "chars": ["D"],
+        "animationPrefix": "D capital"
+    },
+    {
+        "chars": ["E"],
+        "animationPrefix": "E capital"
+    },
+    {
+        "chars": ["F"],
+        "animationPrefix": "F capital"
+    },
+    {
+        "chars": ["G"],
+        "animationPrefix": "G capital"
+    },
+    {
+        "chars": ["H"],
+        "animationPrefix": "H capital"
+    },
+    {
+        "chars": ["I"],
+        "animationPrefix": "I capital"
+    },
+    {
+        "chars": ["J"],
+        "animationPrefix": "J capital"
+    },
+    {
+        "chars": ["K"],
+        "animationPrefix": "K capital"
+    },
+    {
+        "chars": ["L"],
+        "animationPrefix": "L capital"
+    },
+    {
+        "chars": ["M"],
+        "animationPrefix": "M capital"
+    },
+    {
+        "chars": ["N"],
+        "animationPrefix": "N capital"
+    },
+    {
+        "chars": ["O"],
+        "animationPrefix": "O capital"
+    },
+    {
+        "chars": ["P"],
+        "animationPrefix": "P capital"
+    },
+    {
+        "chars": ["Q"],
+        "animationPrefix": "Q capital"
+    },
+    {
+        "chars": ["R"],
+        "animationPrefix": "R capital"
+    },
+    {
+        "chars": ["S"],
+        "animationPrefix": "S capital"
+    },
+    {
+        "chars": ["T"],
+        "animationPrefix": "T capital"
+    },
+    {
+        "chars": ["U"],
+        "animationPrefix": "U capital"
+    },
+    {
+        "chars": ["V"],
+        "animationPrefix": "V capital"
+    },
+    {
+        "chars": ["W"],
+        "animationPrefix": "W capital"
+    },
+    {
+        "chars": ["X"],
+        "animationPrefix": "X capital"
+    },
+    {
+        "chars": ["Y"],
+        "animationPrefix": "Y capital"
+    },
+    {
+        "chars": ["Z"],
+        "animationPrefix": "Z capital"
+    },
+    {
+        "chars": ["a"],
+        "animationPrefix": "a lowercase"
+    },
+    {
+        "chars": ["b"],
+        "animationPrefix": "b lowercase"
+    },
+    {
+        "chars": ["c"],
+        "animationPrefix": "c lowercase"
+    },
+    {
+        "chars": ["d"],
+        "animationPrefix": "d lowercase"
+    },
+    {
+        "chars": ["e"],
+        "animationPrefix": "e lowercase"
+    },
+    {
+        "chars": ["f"],
+        "animationPrefix": "f lowercase"
+    },
+    {
+        "chars": ["g"],
+        "animationPrefix": "g lowercase"
+    },
+    {
+        "chars": ["h"],
+        "animationPrefix": "h lowercase"
+    },
+    {
+        "chars": ["i"],
+        "animationPrefix": "i lowercase"
+    },
+    {
+        "chars": ["j"],
+        "animationPrefix": "j lowercase"
+    },
+    {
+        "chars": ["k"],
+        "animationPrefix": "k lowercase"
+    },
+    {
+        "chars": ["l"],
+        "animationPrefix": "l lowercase"
+    },
+    {
+        "chars": ["m"],
+        "animationPrefix": "m lowercase"
+    },
+    {
+        "chars": ["n"],
+        "animationPrefix": "n lowercase"
+    },
+    {
+        "chars": ["o"],
+        "animationPrefix": "o lowercase"
+    },
+    {
+        "chars": ["p"],
+        "animationPrefix": "p lowercase"
+    },
+    {
+        "chars": ["q"],
+        "animationPrefix": "q lowercase"
+    },
+    {
+        "chars": ["r"],
+        "animationPrefix": "r lowercase"
+    },
+    {
+        "chars": ["s"],
+        "animationPrefix": "s lowercase"
+    },
+    {
+        "chars": ["t"],
+        "animationPrefix": "t lowercase"
+    },
+    {
+        "chars": ["u"],
+        "animationPrefix": "u lowercase"
+    },
+    {
+        "chars": ["v"],
+        "animationPrefix": "v lowercase"
+    },
+    {
+        "chars": ["w"],
+        "animationPrefix": "w lowercase"
+    },
+    {
+        "chars": ["x"],
+        "animationPrefix": "x lowercase"
+    },
+    {
+        "chars": ["y"],
+        "animationPrefix": "y lowercase"
+    },
+    {
+        "chars": ["z"],
+        "animationPrefix": "z lowercase"
+    },
+    {
+        "chars": ["0"],
+        "animationPrefix": "0"
+    },
+    {
+        "chars": ["1"],
+        "animationPrefix": "1"
+    },
+    {
+        "chars": ["2"],
+        "animationPrefix": "2"
+    },
+    {
+        "chars": ["3"],
+        "animationPrefix": "3"
+    },
+    {
+        "chars": ["4"],
+        "animationPrefix": "4"
+    },
+    {
+        "chars": ["5"],
+        "animationPrefix": "5"
+    },
+    {
+        "chars": ["6"],
+        "animationPrefix": "6"
+    },
+    {
+        "chars": ["7"],
+        "animationPrefix": "7"
+    },
+    {
+        "chars": ["8"],
+        "animationPrefix": "8"
+    },
+    {
+        "chars": ["9"],
+        "animationPrefix": "9"
+    },
+    {
+        "chars": ["."],
+        "animationPrefix": "period"
+    },
+    {
+        "chars": ["'"],
+        "animationPrefix": "apostraphie"
+    },
+    {
+        "chars": ["?"],
+        "animationPrefix": "question mark"
+    },
+    {
+        "chars": ["!"],
+        "animationPrefix": "exclamation point"
+    },
+    {
+        "chars": ["#"],
+        "animationPrefix": "hashtag"
+    },
+    {
+        "chars": ["$"],
+        "animationPrefix": "dollarsign"
+    },
+    {
+        "chars": ["%"],
+        "animationPrefix": "%"
+    },
+    {
+        "chars": ["&"],
+        "animationPrefix": "amp"
+    },
+    {
+        "chars": ["("],
+        "animationPrefix": "("
+    },
+    {
+        "chars": [")"],
+        "animationPrefix": ")"
+    },
+    {
+        "chars": ["*"],
+        "animationPrefix": "*"
+    },
+    {
+        "chars": ["+"],
+        "animationPrefix": "+"
+    },
+    {
+        "chars": ["-"],
+        "animationPrefix": "-"
+    },
+    {
+        "chars": [":"],
+        "animationPrefix": ":"
+    },
+    {
+        "chars": [";"],
+        "animationPrefix": ";"
+    },
+    {
+        "chars": ["<"],
+        "animationPrefix": "<"
+    },
+    {
+        "chars": ["="],
+        "animationPrefix": "="
+    },
+    {
+        "chars": [">"],
+        "animationPrefix": ">"
+    },
+    {
+        "chars": ["@"],
+        "animationPrefix": "@"
+    },
+    {
+        "chars": ["["],
+        "animationPrefix": "["
+    },
+    {
+        "chars": ["\\"],
+        "animationPrefix": "\\"
+    },
+    {
+        "chars": ["]"],
+        "animationPrefix": "]"
+    },
+    {
+        "chars": ["^"],
+        "animationPrefix": "^"
+    },
+    {
+        "chars": ["_"],
+        "animationPrefix": "_"
+    },
+    {
+        "chars": [","],
+        "animationPrefix": "comma"
+    },
+    {
+        "chars": ["/"],
+        "animationPrefix": "forward slash"
+    },
+    {
+        "chars": ["|"],
+        "animationPrefix": "|"
+    },
+    {
+        "chars": ["~"],
+        "animationPrefix": "~"
+    },
+    {
+        "chars": [" "],
+        "presentsWhitespace": true
+    }
+]

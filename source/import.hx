@@ -13,7 +13,9 @@ import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 import flixel.group.FlxGroup;
+import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxContainer;
+import flixel.group.FlxSpriteContainer;
 
 import flixel.math.FlxMath;
 

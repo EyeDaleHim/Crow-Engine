@@ -2,10 +2,12 @@ package gear.states.menus;
 
 class TitleState extends MainState
 {
+	// INTRO
 	/**
-	 * 
+	 * The components contained for the intro in this scene.
+	 * Only plays once during bootup and can be skipped.
 	 */
-   // public var 
+   	public var introScene:FlxContainer;
 
 	public function new()
 	{
