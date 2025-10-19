@@ -12,9 +12,10 @@ assets
  ├── fonts: A subdirectory of font files that can display text on screen.
  ├──    ├── bitmap: `.png` and `.fnt` files. Typically made with BMFont.
  ├──    ├── vector: `.ttf` and `.otf` files.
- ├── sounds: `.ogg` files that provide audio such as music or sound effects for the game. They are also provided with a `.json` file of the same name for metadata about the song, like BPM or time changes. Subdirectory for organizing is optional. Providing a metadata file is optional too.
+ ├── sounds: `.ogg` files that provide audio such as music or sound effects for the game. They are also provided with a `.json` file of the same name for metadata about the song, like BPM, time changes, or whether it should loop or be streamed. Subdirectory for organizing is optional. Providing a metadata file is optional too.
  ├── stages: `.json` files containing information for how stages are rendered in the game.
  ├── textures: `.png` and `.xml` files that are used for rendering images and animations. Subdirectory for organizing is optional. For atlases, contexts are recommended to load them together.
+ ├── videos: `.mp4` files that are used for rendering videos in the game. Subdirectory for organizing is optional.
 
 # Atlas Stitching
 Atlas Stitching is a way for the game to merge separate image files into a single atlas at runtime.

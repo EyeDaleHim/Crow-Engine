@@ -2,26 +2,32 @@ package gear.states.menus;
 
 class TitleState extends MainState
 {
-    public function new()
-    {
-        super();
+	/**
+	 * 
+	 */
+   // public var 
 
-        Assets.loadContext("title");
+	public function new()
+	{
+		super();
 
-        // load music as test
-        menuMusic = new Music("music/menu/main");
-        menuMusic.play();
-        add(menuMusic);
-    }
+		Assets.loadContext("title");
 
-    override public function update(elapsed:Float):Void
-    {
-        super.update(elapsed);
+		// load music as test
+		menuMusic = new Music("music/menu/main");
+		menuMusic.play();
+		menuMusic.onBeat.add((beat) ->
+		{
+			if (menuMusic.soundObject.playing)
+			{
+				trace('Beat: ${menuMusic.beat}, Step: ${menuMusic.step}');
+			}
+		});
+		add(menuMusic);
+	}
 
-        if (menuMusic.soundObject.playing)
-        {
-            trace('Beat: ${menuMusic.beat}, Step: ${menuMusic.step}');
-        }
-        
-    }
+	override public function update(elapsed:Float):Void
+	{
+		super.update(elapsed);
+	}
 }

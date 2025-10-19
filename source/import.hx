@@ -19,6 +19,9 @@ import flixel.math.FlxMath;
 
 import flixel.sound.FlxSound;
 
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+
 import flixel.util.FlxAxes;
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal;

@@ -90,6 +90,9 @@ class Music extends FlxBasic
 	{
 		super();
 
+		onBeat = new FlxTypedSignal<Int->Void>();
+		onStep = new FlxTypedSignal<Int->Void>();
+
 		load(soundFile);
 	}
 
