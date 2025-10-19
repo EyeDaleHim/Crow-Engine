@@ -9,6 +9,9 @@ class TitleState extends MainState
 	 */
    	public var introScene:FlxContainer;
 
+	public var background:FlxSprite;
+	public var testText:AnimatedText;
+
 	public function new()
 	{
 		super();
@@ -18,14 +21,10 @@ class TitleState extends MainState
 		// load music as test
 		menuMusic = new Music("music/menu/main");
 		menuMusic.play();
-		menuMusic.onBeat.add((beat) ->
-		{
-			if (menuMusic.soundObject.playing)
-			{
-				trace('Beat: ${menuMusic.beat}, Step: ${menuMusic.step}');
-			}
-		});
 		add(menuMusic);
+
+		testText = new AnimatedText(70, 70, "generic/mainText", "boldText", "test 123\nline break test");
+		add(testText);
 	}
 
 	override public function update(elapsed:Float):Void

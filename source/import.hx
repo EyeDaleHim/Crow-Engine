@@ -36,6 +36,8 @@ import gear.assets.Bundle;
 
 import gear.music.Music;
 
+import gear.objects.ui.AnimatedText;
+
 import gear.states.internals.InitState;
 import gear.states.internals.MainState;
 #end

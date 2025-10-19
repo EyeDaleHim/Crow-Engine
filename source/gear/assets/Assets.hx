@@ -295,12 +295,14 @@ class Assets
 
 	public static function frames(id:String):FlxAtlasFrames
 	{
-		if (!FlxG.assets.exists(id, IMAGE) && !FlxG.assets.exists(Path.join(['textures', id + '.xml']), null))
+		final xmlId:String = Path.join(['textures', id + '.xml']);
+		if (!FlxG.assets.exists(id, IMAGE) && !FlxG.assets.exists(xmlId, null))
 		{
 			return null;
 		}
+		trace('$id not null');
 
-		return FlxAtlasFrames.fromSparrow(id, 'assets/textures/$id.xml');
+		return FlxAtlasFrames.fromSparrow(id, xmlId);
 	}
 
 	// equivalent to FileSystem.isDirectory and/or Bundle.isDirectory

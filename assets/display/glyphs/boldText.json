@@ -102,5 +102,45 @@
     {
         "chars": ["Z", "z"],
         "animationPrefix": "Z bold"
+    },
+        {
+        "chars": ["0"],
+        "animationPrefix": "0"
+    },
+    {
+        "chars": ["1"],
+        "animationPrefix": "1"
+    },
+    {
+        "chars": ["2"],
+        "animationPrefix": "2"
+    },
+    {
+        "chars": ["3"],
+        "animationPrefix": "3"
+    },
+    {
+        "chars": ["4"],
+        "animationPrefix": "4"
+    },
+    {
+        "chars": ["5"],
+        "animationPrefix": "5"
+    },
+    {
+        "chars": ["6"],
+        "animationPrefix": "6"
+    },
+    {
+        "chars": ["7"],
+        "animationPrefix": "7"
+    },
+    {
+        "chars": ["8"],
+        "animationPrefix": "8"
+    },
+    {
+        "chars": ["9"],
+        "animationPrefix": "9"
     }
 ]
