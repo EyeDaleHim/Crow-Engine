@@ -16,7 +16,7 @@ class TitleState extends MainState
 	{
 		super();
 
-		Assets.loadContext("title");
+		Main.assets.loadContext("title");
 
 		// load music as test
 		menuMusic = new Music("music/menu/main");

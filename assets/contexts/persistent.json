@@ -1,14 +1,14 @@
 [
     {
         "type": "image",
-        "path": "ui/generic/mainText"
+        "path": "textures/generic/mainText"
     },
     {
         "type": "text",
-        "path": "ui/generic/mainText.xml"
+        "path": "textures/generic/mainText.xml"
     },
     {
         "type": "image",
-        "path": "ui/game/healthbar"
+        "path": "textures/game/healthbar"
     }
 ]

@@ -14,10 +14,19 @@ import gear.assets.stitching.StitchedAtlas;
 
 class Assets
 {
-	public static var history:Array<AssetHistory> = [];
-	public static var cache:AssetCache = new AssetCache();
-	public static var contexts:Array<AssetContext> = [];
-	public static var stitches:Array<StitchedAtlas> = [];
+	public static final classExclusions:Array<String> = [
+		'flixel',
+		#if cpp
+		"gear.assets.Assets", "gear.assets.AssetHistory"
+		#elseif hl
+		"gear.assets.$Assets", "gear.assets.$AssetHistory"
+		#end
+	];
+
+	public var history:Array<AssetHistory>;
+	public var cache:AssetCache;
+	public var contexts:Array<AssetContext>;
+	public var stitches:Array<StitchedAtlas>;
 
 	private static function getCallerClassName():String
 	{
@@ -42,10 +51,7 @@ class Assets
 		for (item in stack)
 		{
 			final className = getClassName(item);
-			if (className != null
-				&& !StringTools.startsWith(className, 'flixel')
-				&& !StringTools.startsWith(className, "gear.assets.Assets")
-				&& !StringTools.startsWith(className, "gear.assets.AssetHistory"))
+			if (className != null && !classExclusions.contains(className))
 			{
 				return className;
 			}
@@ -54,8 +60,13 @@ class Assets
 		return "unknown";
 	}
 
-	public static function init():Void
+	public function new():Void
 	{
+		history = [];
+		contexts = [];
+		stitches = [];
+		cache = new AssetCache();
+
 		cache.enabled = true;
 		final assets = FlxG.assets;
 
@@ -79,11 +90,11 @@ class Assets
 		};
 
 		final oldLocal = assets.isLocal;
-		assets.isLocal = (id, ?type, cache = true) ->
+		assets.isLocal = (id, ?type, canCache = true) ->
 		{
 			if (StringTools.startsWith(id, "flixel/") || StringTools.contains(id, ':'))
 			{
-				return oldLocal(id, type, cache);
+				return oldLocal(id, type, canCache);
 			}
 
 			#if FLX_DEFAULT_SOUND_EXT
@@ -98,7 +109,7 @@ class Assets
 		};
 
 		final oldGet = assets.getAssetUnsafe;
-		assets.getAssetUnsafe = (id, type, cache = true) ->
+		assets.getAssetUnsafe = (id, type, canCache = true) ->
 		{
 			if (AssetContext.dirtyContexts)
 			{
@@ -108,16 +119,16 @@ class Assets
 
 			if (StringTools.startsWith(id, "flixel/") || StringTools.contains(id, ':'))
 			{
-				return oldGet(id, type, cache);
+				return oldGet(id, type, canCache);
 			}
 
-			final canUseCache = cache && Assets.cache.enabled;
+			final canUseCache = canCache && cache.enabled;
 			final path = AssetPaths.from(id, type);
 
-			if (canUseCache && Assets.cache.has(id))
+			if (canUseCache && cache.has(id))
 			{
 				pushHistory(CACHE_FETCH, type, path);
-				return Assets.cache.get(id);
+				return cache.get(id);
 			}
 
 			final asset:Any = switch type
@@ -141,8 +152,6 @@ class Assets
 					#end
 					pushHistory(binaryAsset != null ? IO_SUCCESS : FAILURE, BINARY, path);
 					return binaryAsset;
-
-				// Get asset and set cache
 				case IMAGE:
 					var bitmap:BitmapData = null;
 					#if ASSETS_PACKAGING
@@ -163,20 +172,12 @@ class Assets
 					var graphic:FlxGraphic = null;
 					if (bitmap != null)
 					{
-						graphic = FlxGraphic.fromBitmapData(bitmap, id);
+						graphic = FlxG.bitmap.add(bitmap, false, id);
+						if (canUseCache)
+							cache.set(id, bitmap);
 					}
 
-					if (canUseCache && bitmap != null)
-					{
-						Assets.cache.set(id, bitmap);
-					}
-
-					if (graphic != null)
-					{
-						FlxG.bitmap.addGraphic(graphic);
-					}
-
-					pushHistory(bitmap != null ? IO_SUCCESS : FAILURE, IMAGE, path);
+					pushHistory(graphic != null ? IO_SUCCESS : FAILURE, IMAGE, path);
 					bitmap;
 				case SOUND:
 					var sound:Sound = null;
@@ -196,7 +197,7 @@ class Assets
 					#end
 					if (canUseCache && sound != null)
 					{
-						Assets.cache.set(id, sound);
+						cache.set(id, sound);
 					}
 
 					pushHistory(sound != null ? IO_SUCCESS : FAILURE, SOUND, path);
@@ -219,7 +220,7 @@ class Assets
 					#end
 					if (canUseCache && font != null)
 					{
-						Assets.cache.set(id, font);
+						cache.set(id, font);
 						Font.registerFont(font);
 					}
 					pushHistory(font != null ? IO_SUCCESS : FAILURE, FONT, path);
@@ -233,7 +234,7 @@ class Assets
 	/**
 	 * Loads the stitched atlas metadata. This does not load the atlas itself.
 	 */
-	public static function loadStitchedAtlas(atlasInput:String):AtlasStitchData
+	public function loadStitchedAtlas(atlasInput:String):AtlasStitchData
 	{
 		final path = Path.join([AssetContext.contextDirectory, '$atlasInput.json']);
 		final rawAtlasData:AtlasStitchData = Json.parse(FlxG.assets.getTextUnsafe(path));
@@ -241,45 +242,48 @@ class Assets
 		return rawAtlasData;
 	}
 
-	public static function loadContext(fileInput:String, ?reload:Bool = false):AssetContext
+	public function loadContext(fileInput:String, ?reload:Bool = false):AssetContext
 	{
 		var context = findContext(fileInput);
 		if (context != null && !reload)
 		{
+			trace('CONTEXT - Used existing context: $fileInput');
 			return context;
 		}
 
+		trace('CONTEXT - Loaded new context: $fileInput');
 		context = new AssetContext(fileInput);
 		contexts.push(context);
 
 		for (entry in context.entries)
 		{
-			FlxG.assets.getAssetUnsafe(entry.path, entry.type, true);
+			FlxG.assets.getAsset(entry.path, entry.type, true);
 		}
 
 		return context;
 	}
 
-	public static function unloadContext(fileInput:String):Void
+	public function unloadContext(fileInput:String):Void
 	{
 		for (context in contexts)
 		{
 			if (context.name == fileInput)
 			{
 				AssetContext.dirtyContexts = true;
+				trace('CONTEXT - Unloaded context: $fileInput');
 				contexts.remove(context);
 			}
 		}
 	}
 
-	public static function unloadAllContexts():Void
+	public function unloadAllContexts():Void
 	{
 		// unloading every context implies clearing the cache
 		cache.clear();
 		contexts = [];
 	}
 
-	public static function findContext(fileInput:String):AssetContext
+	public function findContext(fileInput:String):AssetContext
 	{
 		// Why am I finding the context this way again???
 		for (context in contexts)
@@ -293,20 +297,28 @@ class Assets
 		return null;
 	}
 
-	public static function frames(id:String):FlxAtlasFrames
+	public function frames(id:String):FlxAtlasFrames
 	{
-		final xmlId:String = Path.join(['textures', id + '.xml']);
-		if (!FlxG.assets.exists(id, IMAGE) && !FlxG.assets.exists(xmlId, null))
+		final xmlPath:String = Path.join(['textures', id + '.xml']);
+		if (!FlxG.assets.exists(id, IMAGE) || !FlxG.assets.exists(xmlPath, TEXT))
 		{
 			return null;
 		}
 		trace('$id not null');
 
-		return FlxAtlasFrames.fromSparrow(id, xmlId);
+		final graphic = FlxG.assets.getBitmapDataUnsafe(id, true);
+		final xml = FlxG.assets.getTextUnsafe(xmlPath, true);
+
+		var theFuckingFrames = FlxAtlasFrames.fromSparrow(graphic, xml);
+		trace('is the graphics null: ${graphic == null}');
+		trace('is the xml null: ${xml == null}');
+		trace('is the frames null: ${theFuckingFrames == null}');
+
+		return theFuckingFrames;
 	}
 
 	// equivalent to FileSystem.isDirectory and/or Bundle.isDirectory
-	public static function isList(path:String):Bool
+	public function isList(path:String):Bool
 	{
 		#if macro
 		return sys.FileSystem.isDirectory(path);
@@ -317,7 +329,7 @@ class Assets
 		#end
 	}
 
-	public static function list(path:String):Array<String>
+	public function list(path:String):Array<String>
 	{
 		var list:Array<String> = [];
 
@@ -333,7 +345,7 @@ class Assets
 		return list;
 	}
 
-	public static function exists(path:String):Bool
+	public function exists(path:String):Bool
 	{
 		#if ASSETS_PACKAGING
 		if (Main.bundle.exists(path))
@@ -360,11 +372,11 @@ class Assets
 		return false;
 	}
 
-	private static function checkOrphanedAssets():Void
+	private function checkOrphanedAssets():Void
 	{
 		var orphanedAssets:Array<String> = [];
 		@:privateAccess
-		for (assetId in Assets.cache._cache.keys())
+		for (assetId in cache._cache.keys())
 		{
 			var foundInContext:Bool = false;
 			for (context in contexts)
@@ -383,12 +395,12 @@ class Assets
 
 		for (orphanedId in orphanedAssets)
 		{
-			Assets.cache.remove(orphanedId);
+			cache.remove(orphanedId);
 		}
 	}
 
-	private static function pushHistory(context:LoadContext, type:FlxAssetType, filePath:String):Void
+	private function pushHistory(context:LoadContext, type:FlxAssetType, filePath:String):Void
 	{
-		Assets.history.push(new AssetHistory(context, type, getCallerClassName(), filePath));
+		history.push(new AssetHistory(context, type, getCallerClassName(), filePath));
 	}
 }

@@ -114,7 +114,7 @@ class Project extends HXProject
 
 	function configureHaxedefs() 
     {
-		setHaxedef("ASSETS_PACKAGING");
+		// setHaxedef("ASSETS_PACKAGING");
 		setHaxedef("ASSETS_PACKAGING_COMPRESSION", "3"); // max is 9
 		setHaxedef("PRELOAD_ALL_ASSETS_VALUE", "20"); // measured in MB, if the asset bundle is below this size, all assets will be preloaded
 

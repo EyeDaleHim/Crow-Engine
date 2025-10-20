@@ -33,7 +33,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 	 */
 	public var alignment:TextAlignment = LEFT;
 
-	public var textAnimation:FlxAnimationController;
+	public var framesReference:FlxFramesCollection;
 
 	public function new(?x:Float = 0.0, ?y:Float = 0.0, framesPath:String, glyphPath:String, ?text:String = "")
 	{
@@ -41,9 +41,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 
 		this.text = text;
 
-		this.frames = Assets.frames(framesPath);
-		trace(this.frames);
-		textAnimation = new FlxAnimationController(this);
+		framesReference = Main.assets.frames(framesPath);
 
 		final glyphsDir = "display/glyphs";
 		final rawJson = FlxG.assets.getTextUnsafe(Path.join([glyphsDir, '$glyphPath.json']));
@@ -61,17 +59,6 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 		{
 			trace('Error parsing glyph file $glyphPath: $e');
 			this.glyphs = [];
-		}
-
-		for (glyph in this.glyphs)
-		{
-			if (glyph.animationPrefix != null && glyph.animationPrefix != "")
-			{
-				for (char in glyph.chars)
-				{
-					textAnimation.addByPrefix(char, glyph.animationPrefix, 24, false);
-				}
-			}
 		}
 
 		regenerate();
@@ -136,13 +123,24 @@ class AnimatedTextLine extends FlxSprite
 		super();
 		this.parentText = parent;
 
+		this.frames = parentText.framesReference;
+
 		this.text = text;
 		this.lineWidth = lineWidth;
 
 		this.alignment = alignment;
 
 		// Copy animations from the parent
-		animation.copyFrom(parentText.textAnimation);
+		for (glyph in parentText.glyphs)
+		{
+			if (glyph.animationPrefix != null && glyph.animationPrefix != "")
+			{
+				for (char in glyph.chars)
+				{
+					animation.addByPrefix(char, glyph.animationPrefix, 24, false);
+				}
+			}
+		}
 
 		updateGlyphs(text);
 	}
@@ -162,7 +160,7 @@ class AnimatedTextLine extends FlxSprite
 			final isColored = (transform != null #if !html5 && transform.hasRGBMultipliers() #end);
 			final hasColorOffsets:Bool = (transform != null && transform.hasRGBAOffsets());
 
-			var batch:FlxDrawQuadsItem = camera.startQuadBatch(parentText.frames.parent, isColored, hasColorOffsets, blend, antialiasing, shader);
+			var batch:FlxDrawQuadsItem = camera.startQuadBatch(frames.parent, isColored, hasColorOffsets, blend, antialiasing, shader);
 			var matrix = this._matrix;
 			for (drawable in _drawableGlyphs)
 			{
@@ -171,7 +169,7 @@ class AnimatedTextLine extends FlxSprite
 					continue;
 
 				// Single frame for now
-				final frame = parentText.frames.frames[anim.frames[0]];
+				final frame = frames.frames[anim.frames[0]];
 				if (frame == null)
 					continue;
 
@@ -230,7 +228,7 @@ class AnimatedTextLine extends FlxSprite
 				final anim = animation.getByName(char);
 				if (anim != null && anim.frames.length > 0)
 				{
-					frame = parentText.frames.frames[anim.frames[0]];
+					frame = frames.frames[anim.frames[0]];
 				}
 			}
 
@@ -250,9 +248,6 @@ class AnimatedTextLine extends FlxSprite
 				lineMaxHeight = frame.sourceSize.y;
 			}
 		}
-
-		trace(lineWidth);
-		trace(currentX);
 
 		final newWidth = Math.max(lineWidth, currentX);
 

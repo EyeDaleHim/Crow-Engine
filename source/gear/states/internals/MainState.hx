@@ -5,6 +5,13 @@ import flixel.util.typeLimit.NextState;
 
 class MainState extends FlxSubState
 {
+	public var main(get, never):Class<Main>;
+
+	function get_main():Class<Main>
+	{
+		return Main;
+	}
+
 	public var menuMusic:Music;
 	public var transitionObject:TransitionObject;
 

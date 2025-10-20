@@ -29,6 +29,8 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSignal;
 import flixel.util.FlxSignal.FlxTypedSignal;
 
+import gear.Main;
+
 import gear.assets.AssetCache;
 import gear.assets.AssetHistory;
 import gear.assets.Assets;

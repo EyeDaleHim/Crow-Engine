@@ -57,8 +57,6 @@ class AssetContext
 				uniqueEntries.set(entry.path, {path: entry.path, type: assetType});
 			}
 			this.entries = [for (entry in uniqueEntries.iterator()) entry];
-
-			trace('Populated entries: $entries');
 		}
 		catch (e)
 		{

@@ -309,7 +309,7 @@
     },
     {
         "chars": ["<"],
-        "animationPrefix": "<"
+        "animationPrefix": "left arrow bracket"
     },
     {
         "chars": ["="],

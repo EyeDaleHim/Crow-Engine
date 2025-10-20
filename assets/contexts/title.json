@@ -1,26 +1,26 @@
 [
     {
         "type": "image",
-        "path": "ui/title/gfDanceTitle"
+        "path": "textures/ui/title/gfDanceTitle"
     },
     {
         "type": "text",
-        "path": "ui/title/gfDanceTitle.xml"
+        "path": "textures/ui/title/gfDanceTitle.xml"
     },
     {
         "type": "image",
-        "path": "ui/game/logoBumpin"
+        "path": "textures/ui/game/logoBumpin"
     },
     {
         "type": "text",
-        "path": "ui/game/logoBumpin.xml"
+        "path": "textures/ui/game/logoBumpin.xml"
     },
     {
         "type": "image",
-        "path": "ui/game/titleEnter"
+        "path": "textures/ui/game/titleEnter"
     },
     {
         "type": "text",
-        "path": "ui/game/titleEnter.xml"
+        "path": "textures/ui/game/titleEnter.xml"
     }
 ]

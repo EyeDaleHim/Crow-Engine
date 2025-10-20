@@ -9,6 +9,8 @@ class Main extends DisplayObjectContainer
 	public static var game:FlxGame;
 	public static var bundle:Bundle;
 
+	public static var assets:Assets;
+
 	public function new()
 	{
 		super();

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas imagePath="alphabet.png">
+<TextureAtlas imagePath="mainText.png">
 	<SubTexture name="hashtag 0000" x="0" y="0" width="39" height="44" />
 	<SubTexture name="hashtag 0001" x="0" y="0" width="39" height="44" />
 	<SubTexture name="hashtag 0002" x="49" y="0" width="39" height="44" />
@@ -84,10 +84,10 @@
 	<SubTexture name=";0001" x="747" y="74" width="15" height="44" />
 	<SubTexture name=";0002" x="772" y="74" width="15" height="44" />
 	<SubTexture name=";0003" x="772" y="74" width="15" height="44" />
-	<SubTexture name="<0000" x="797" y="74" width="38" height="56" />
-	<SubTexture name="<0001" x="797" y="74" width="38" height="56" />
-	<SubTexture name="<0002" x="845" y="74" width="38" height="55" frameX="0" frameY="0" frameWidth="38" frameHeight="56" />
-	<SubTexture name="<0003" x="845" y="74" width="38" height="55" frameX="0" frameY="0" frameWidth="38" frameHeight="56" />
+	<SubTexture name="left_arrow bracket0000" x="797" y="74" width="38" height="56" />
+	<SubTexture name="left_arrow bracket0001" x="797" y="74" width="38" height="56" />
+	<SubTexture name="left_arrow bracket0002" x="845" y="74" width="38" height="55" frameX="0" frameY="0" frameWidth="38" frameHeight="56" />
+	<SubTexture name="left_arrow bracket0003" x="845" y="74" width="38" height="55" frameX="0" frameY="0" frameWidth="38" frameHeight="56" />
 	<SubTexture name="=0000" x="893" y="74" width="39" height="29" />
 	<SubTexture name="=0001" x="893" y="74" width="39" height="29" />
 	<SubTexture name="=0002" x="942" y="74" width="39" height="29" />
