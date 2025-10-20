@@ -6,12 +6,12 @@ assets
  ├── contexts: `.json` files containing information about what assets to load or unload during parts of the game.
  ├── display: `.json` files containing information for how the game displays animated content.
  ├──    ├── characters: `.json` files containing information for how the game displays characters.
- ├──    ├── glyphs: `.json` files that contain information for how the game displays animated glyphs.
  ├── data: A subdirectory that contains the game's data.
  ├──    ├── levels: `.json` files containing level data. In other engines, this can be referred as songs. Subdirectory for organizing is optional.
  ├──    ├── playlist: `.json` files containing level playlist data. In other engines, this can be referred as story mode or weeks. (example: `week1.json`)
  ├──    ├── menus: Various `.json` files containing menu data.
  ├── fonts: A subdirectory of font files that can display text on screen.
+ ├──    ├── animated: `.json` files containing information for how the game displays animated fonts and glyphs.
  ├──    ├── bitmap: `.png` and `.fnt` files. Typically made with BMFont.
  ├──    ├── vector: `.ttf` and `.otf` files.
  ├── sounds: `.ogg` files that provide audio such as music or sound effects for the game. They are also provided with a `.json` file of the same name for metadata about the song, like BPM, time changes, or whether it should loop or be streamed. Subdirectory for organizing is optional. Providing a metadata file is optional too.

@@ -23,7 +23,8 @@ class TitleState extends MainState
 		menuMusic.play();
 		add(menuMusic);
 
-		testText = new AnimatedText(70, 70, "generic/mainText", "boldText", "test 123\nline break test");
+		testText = new AnimatedText(70, 70, "boldText", "abcdefghijklmnop\nqrstuvwxyz");
+		testText.alignment = CENTER;
 		add(testText);
 	}
 

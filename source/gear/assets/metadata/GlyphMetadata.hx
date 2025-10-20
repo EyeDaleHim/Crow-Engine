@@ -41,6 +41,17 @@ typedef Glyph =
 
 	/**
 	 * The offset of the glyph from the baseline. The baseline is the text line's y position.
+	 * 
+	 * Keep in mind that regardless of baseline, offsetY will still be applied from top of the glyph.
 	 */
 	var ?offsetY:Float;
+	
+	/**
+	 * The baseline of the glyph to reference on.
+	 * The default is "top", which sets the glyph at the top of the line.
+	 * If "center", the glyph will be centered vertically.
+	 * If "bottom", the glyph will be at the bottom of the line.
+	 * If it's none of those values, "top" will be used as fallback.
+	 */
+	var ?baseline:String;
 };

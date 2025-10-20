@@ -1,65 +1,59 @@
 package gear.objects.ui;
 
-import flixel.animation.FlxAnimationController;
 import flixel.graphics.tile.FlxDrawQuadsItem;
 import flixel.graphics.frames.FlxFrame;
-import flixel.graphics.frames.FlxFramesCollection;
+import gear.assets.metadata.AnimatedFontMetadata;
 import gear.assets.metadata.GlyphMetadata;
-import gear.assets.Assets;
 
 using flixel.util.FlxColorTransformUtil;
 
 class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 {
 	/**
-	 * The metadata of the glyphs. This contains information for how characters are spaced
+	 * It also has the metadata of the glyphs, which contains information for how characters are spaced
 	 * between each other, how line breaks work, etc.
 	 */
-	public var glyphs:GlyphMetadata;
+	public var font:AnimatedFontMetadata;
 
 	/**
 	 * The content to display.
 	 */
-	public var text:String = "";
+	public var text(default, set):String = "";
 
 	/**
 	 * The width of the text field.
 	 * If 0, it will automatically adjust to the text's width.
 	 */
-	public var fieldWidth:Float = 0.0;
+	public var fieldWidth(default, set):Float = 0.0;
 
 	/**
 	 * The alignment of the text.
 	 */
-	public var alignment:TextAlignment = LEFT;
+	public var alignment(default, set):TextAlignment = LEFT;
 
-	public var framesReference:FlxFramesCollection;
-
-	public function new(?x:Float = 0.0, ?y:Float = 0.0, framesPath:String, glyphPath:String, ?text:String = "")
+	public function new(?x:Float = 0.0, ?y:Float = 0.0, path:String, ?text:String = "")
 	{
 		super(x, y);
 
-		this.text = text;
-
-		framesReference = Main.assets.frames(framesPath);
-
-		final glyphsDir = "display/glyphs";
-		final rawJson = FlxG.assets.getTextUnsafe(Path.join([glyphsDir, '$glyphPath.json']));
+		final fontsDir = "fonts/animated";
+		final rawJson = FlxG.assets.getTextUnsafe(Path.join([fontsDir, '$path.json']));
 		if (rawJson == null)
 		{
-			this.glyphs = [];
+			font = {glyphs: [], framesPath: ""};
 			return;
 		}
 
 		try
 		{
-			this.glyphs = cast Json.parse(rawJson);
+			font = cast Json.parse(rawJson);
 		}
 		catch (e)
 		{
-			trace('Error parsing glyph file $glyphPath: $e');
-			this.glyphs = [];
+			trace('Error parsing font file $path: $e');
+			font = {glyphs: [], framesPath: ""};
 		}
+
+		this.text = text;
 
 		regenerate();
 	}
@@ -75,6 +69,8 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 			if (i < members.length)
 			{
 				line = members[i];
+				line.lineWidth = fieldWidth;
+				line.alignment = alignment;
 				if (line.text != lines[i])
 				{
 					line.updateGlyphs(lines[i]);
@@ -82,7 +78,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 			}
 			else
 			{
-				line = new AnimatedTextLine(this, lines[i]);
+				line = new AnimatedTextLine(this, alignment, fieldWidth, lines[i]);
 				add(line);
 			}
 			line.y = y + lineY;
@@ -101,7 +97,59 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 	override function destroy()
 	{
 		super.destroy();
-		glyphs = null;
+		font = null;
+	}
+
+	private function set_text(value:String):String
+	{
+		if (text == value)
+			return value;
+
+		text = value;
+		regenerate();
+		return value;
+	}
+
+	private function set_fieldWidth(value:Float):Float
+	{
+		if (fieldWidth == value)
+			return value;
+
+		fieldWidth = value;
+		// TODO: Implement word wrapping behavior. For now, it just updates line widths.
+		updateAlignment();
+		return value;
+	}
+
+	private function set_alignment(value:TextAlignment):TextAlignment
+	{
+		if (alignment == value)
+			return value;
+
+		alignment = value;
+		updateAlignment();
+		return value;
+	}
+
+	private function updateAlignment():Void
+	{
+		var maxWidth:Float = fieldWidth;
+		if (maxWidth == 0)
+		{
+			// If fieldWidth is 0, find the widest line to align against.
+			for (line in members)
+			{
+				@:privateAccess
+				if (line._textWidth > maxWidth)
+					maxWidth = line._textWidth;
+			}
+		}
+
+		for (line in members)
+		{
+			line.lineWidth = maxWidth;
+			line.alignment = alignment;
+		}
 	}
 }
 
@@ -113,17 +161,17 @@ class AnimatedTextLine extends FlxSprite
 	public var text:String;
 	public var lineWidth:Float = 0.0; // 0.0 means auto
 
-	public var alignment:TextAlignment = LEFT;
+	public var alignment(default, set):TextAlignment = LEFT;
 
 	private var _drawableGlyphs:Array<DrawableGlyph> = [];
-	private var _alignmentStartX:Float = 0.0;
+	private var _textWidth:Float = 0.0;
 
 	public function new(parent:AnimatedText, alignment:TextAlignment = LEFT, lineWidth:Float = 0.0, text:String)
 	{
 		super();
-		this.parentText = parent;
 
-		this.frames = parentText.framesReference;
+		this.parentText = parent;
+		this.frames = Main.assets.frames(parentText.font.framesPath);
 
 		this.text = text;
 		this.lineWidth = lineWidth;
@@ -131,7 +179,7 @@ class AnimatedTextLine extends FlxSprite
 		this.alignment = alignment;
 
 		// Copy animations from the parent
-		for (glyph in parentText.glyphs)
+		for (glyph in parentText.font.glyphs)
 		{
 			if (glyph.animationPrefix != null && glyph.animationPrefix != "")
 			{
@@ -143,6 +191,42 @@ class AnimatedTextLine extends FlxSprite
 		}
 
 		updateGlyphs(text);
+	}
+
+	private function set_alignment(value:TextAlignment):TextAlignment
+	{
+		if (alignment == value)
+			return value;
+
+		alignment = value;
+		updateAlignment();
+		return value;
+	}
+
+	public function set_lineWidth(value:Float):Float
+	{
+		if (lineWidth == value)
+			return value;
+
+		lineWidth = value;
+		updateAlignment();
+		return value;
+	}
+
+	private function updateAlignment():Void
+	{
+		final newWidth = Math.max(lineWidth, _textWidth);
+		switch (alignment)
+		{
+			case LEFT:
+				x = parentText.x;
+			case RIGHT:
+				x = parentText.x + newWidth - _textWidth;
+			case CENTER:
+				x = parentText.x + (newWidth - _textWidth) / 2;
+			case _:
+				x = parentText.x;
+		}
 	}
 
 	override public function draw()
@@ -176,7 +260,7 @@ class AnimatedTextLine extends FlxSprite
 				matrix.identity();
 				getScreenPosition(_point, camera).subtract(offset);
 				matrix.translate(_point.x, _point.y);
-				matrix.translate(x + drawable.x + _alignmentStartX, y + drawable.y);
+				matrix.translate(drawable.x, drawable.y);
 				matrix.scale(scale.x, scale.y);
 
 				if (isPixelPerfectRender(camera))
@@ -204,13 +288,13 @@ class AnimatedTextLine extends FlxSprite
 		_drawableGlyphs = [];
 		this.text = text;
 
-		var currentX:Float = 0;
+		// First pass: determine line height and gather glyph data
 		var lineMaxHeight:Float = 0;
-
+		var glyphsToProcess:Array<{char:String, glyphData:Glyph, frame:FlxFrame}> = [];
 		for (char in text.split(""))
 		{
 			var glyphData:Null<Glyph> = null;
-			for (g in parentText.glyphs)
+			for (g in parentText.font.glyphs)
 			{
 				if (g.chars.indexOf(char) != -1)
 				{
@@ -227,42 +311,47 @@ class AnimatedTextLine extends FlxSprite
 			{
 				final anim = animation.getByName(char);
 				if (anim != null && anim.frames.length > 0)
-				{
 					frame = frames.frames[anim.frames[0]];
-				}
+			}
+
+			glyphsToProcess.push({char: char, glyphData: glyphData, frame: frame});
+
+			// Determine line height from the tallest glyph
+			if (frame != null && frame.sourceSize.y > lineMaxHeight)
+				lineMaxHeight = frame.sourceSize.y;
+		}
+
+		// Second pass: create drawable glyphs with correct positions
+		var currentX:Float = 0;
+		for (item in glyphsToProcess)
+		{
+			final glyphData = item.glyphData;
+			final frame = item.frame;
+
+			var glyphY:Float = (glyphData.offsetY ?? 0);
+			switch (glyphData.baseline)
+			{
+				case "center":
+					glyphY += (lineMaxHeight - (frame != null ? frame.sourceSize.y : 0)) / 2;
+				case "bottom":
+					glyphY += lineMaxHeight - (frame != null ? frame.sourceSize.y : 0);
+				case "top" | _: // "top" is default
 			}
 
 			final drawable:DrawableGlyph = {
-				char: char,
+				char: item.char,
 				glyph: glyphData,
 				x: currentX + (glyphData.offsetX ?? 0),
-				y: (glyphData.offsetY ?? 0)
+				y: glyphY
 			};
 			_drawableGlyphs.push(drawable);
 
 			currentX += (frame != null ? frame.sourceSize.x : 0) + (glyphData.advanceX ?? 0);
-
-			// Determine line height from the tallest glyph
-			if (frame != null && frame.sourceSize.y > lineMaxHeight)
-			{
-				lineMaxHeight = frame.sourceSize.y;
-			}
 		}
 
-		final newWidth = Math.max(lineWidth, currentX);
-
-		switch (alignment)
-		{
-			case LEFT:
-				_alignmentStartX = 0;
-			case RIGHT:
-				_alignmentStartX = newWidth - currentX;
-			case CENTER:
-				_alignmentStartX = (newWidth - currentX) / 2;
-			case _:
-				_alignmentStartX = 0;
-		}
-		makeGraphic(Math.ceil(newWidth), Math.ceil(lineMaxHeight), FlxColor.TRANSPARENT, true);
+		_textWidth = currentX;
+		updateAlignment();
+		setSize(Math.max(lineWidth, _textWidth), lineMaxHeight);
 	}
 }
 
