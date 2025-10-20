@@ -304,17 +304,12 @@ class Assets
 		{
 			return null;
 		}
-		trace('$id not null');
 
 		final graphic = FlxG.assets.getBitmapDataUnsafe(id, true);
 		final xml = FlxG.assets.getTextUnsafe(xmlPath, true);
+		final frames = FlxAtlasFrames.fromSparrow(graphic, xml);
 
-		var theFuckingFrames = FlxAtlasFrames.fromSparrow(graphic, xml);
-		trace('is the graphics null: ${graphic == null}');
-		trace('is the xml null: ${xml == null}');
-		trace('is the frames null: ${theFuckingFrames == null}');
-
-		return theFuckingFrames;
+		return frames;
 	}
 
 	// equivalent to FileSystem.isDirectory and/or Bundle.isDirectory

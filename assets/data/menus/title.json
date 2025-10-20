@@ -1,0 +1,80 @@
+{
+	"randomTextPairs": [
+		[ "NOT MADE IN", "HAXEFLIXEL" ],
+		[ "UNLICENSED", "FOR CONSOLES" ],
+		[ "AS SEEN ON", "NEWGROUNDS" ],
+		[ "MAY CAUSE", "BRAIN DAMAGE" ],
+		[ "NOT FOR", "RESALE" ],
+		[ "RIP", "ADOBE FLASH" ],
+		[ "friday", "night funkin" ],
+		[ "haxe", "is cool" ],
+		[ "it's just a", "burning memory" ],
+		[ "it's just a", "nightmare" ]
+	],
+	"beatEvents": [
+		{
+			"beat": 1,
+			"actions": [ { "setText": [ "Funkin' Crew" ] } ]
+		},
+		{
+			"beat": 3,
+			"actions": [ { "addText": "presents" } ]
+		},
+		{
+			"beat": 4,
+			"actions": [ { "wipeText": true } ]
+		},
+		{
+			"beat": 5,
+			"actions": [ { "setText": [ "In association", "with" ] } ]
+		},
+		{
+			"beat": 7,
+			"actions": [
+				{ "addText": "newgrounds" },
+				{ "associationSprite": { "key": "title/newgroundsLogo", "visible": true } }
+			]
+		},
+		{
+			"beat": 8,
+			"actions": [
+				{ "wipeText": true },
+				{ "associationSprite": { "visible": false } }
+			]
+		},
+		{
+			"beat": 9,
+			"actions": [
+				{ "useRandomText": 0 }
+			]
+		},
+		{
+			"beat": 11,
+			"actions": [
+				{ "addText": "" },
+				{ "useRandomText": 1 }
+			]
+		},
+		{
+			"beat": 12,
+			"actions": [ { "wipeText": true } ]
+		},
+		{
+			"beat": 13,
+			"actions": [ { "addText": "Friday" } ]
+		},
+		{
+			"beat": 14,
+			"actions": [ { "addText": "Night" } ]
+		},
+		{
+			"beat": 15,
+			"actions": [ { "addText": "Funkin'" } ]
+		},
+		{
+			"beat": 16,
+			"actions": [],
+			"killIntro": true
+		}
+	]
+}

@@ -28,6 +28,7 @@ import flixel.util.FlxAxes;
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal;
 import flixel.util.FlxSignal.FlxTypedSignal;
+import flixel.util.FlxTimer;
 
 import gear.Main;
 

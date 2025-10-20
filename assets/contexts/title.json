@@ -1,26 +1,30 @@
 [
     {
         "type": "image",
-        "path": "textures/ui/title/gfDanceTitle"
+        "path": "textures/title/gfDanceTitle"
     },
     {
         "type": "text",
-        "path": "textures/ui/title/gfDanceTitle.xml"
+        "path": "textures/title/gfDanceTitle.xml"
     },
     {
         "type": "image",
-        "path": "textures/ui/game/logoBumpin"
+        "path": "textures/title/logoBumpin"
     },
     {
         "type": "text",
-        "path": "textures/ui/game/logoBumpin.xml"
+        "path": "textures/title/logoBumpin.xml"
     },
     {
         "type": "image",
-        "path": "textures/ui/game/titleEnter"
+        "path": "textures/title/titleEnter"
     },
     {
         "type": "text",
-        "path": "textures/ui/game/titleEnter.xml"
+        "path": "textures/title/titleEnter.xml"
+    },
+    {
+        "type": "image",
+        "path": "textures/title/newgroundsLogo"
     }
 ]

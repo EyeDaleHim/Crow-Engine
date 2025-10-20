@@ -242,6 +242,178 @@
             ],
             "animationPrefix": "9"
         },
+               {
+            "chars": [
+                "."
+            ],
+            "animationPrefix": "period"
+        },
+        {
+            "chars": [
+                "'"
+            ],
+            "animationPrefix": "apostraphie"
+        },
+        {
+            "chars": [
+                "?"
+            ],
+            "animationPrefix": "question mark"
+        },
+        {
+            "chars": [
+                "!"
+            ],
+            "animationPrefix": "exclamation point"
+        },
+        {
+            "chars": [
+                "#"
+            ],
+            "animationPrefix": "hashtag"
+        },
+        {
+            "chars": [
+                "$"
+            ],
+            "animationPrefix": "dollarsign"
+        },
+        {
+            "chars": [
+                "%"
+            ],
+            "animationPrefix": "%"
+        },
+        {
+            "chars": [
+                "&"
+            ],
+            "animationPrefix": "amp"
+        },
+        {
+            "chars": [
+                "("
+            ],
+            "animationPrefix": "("
+        },
+        {
+            "chars": [
+                ")"
+            ],
+            "animationPrefix": ")"
+        },
+        {
+            "chars": [
+                "*"
+            ],
+            "animationPrefix": "*"
+        },
+        {
+            "chars": [
+                "+"
+            ],
+            "animationPrefix": "+"
+        },
+        {
+            "chars": [
+                "-"
+            ],
+            "animationPrefix": "-"
+        },
+        {
+            "chars": [
+                ":"
+            ],
+            "animationPrefix": ":"
+        },
+        {
+            "chars": [
+                ";"
+            ],
+            "animationPrefix": ";"
+        },
+        {
+            "chars": [
+                "<"
+            ],
+            "animationPrefix": "left arrow bracket",
+            "baseline": "center"
+        },
+        {
+            "chars": [
+                "="
+            ],
+            "animationPrefix": "=",
+            "baseline": "center"
+        },
+        {
+            "chars": [
+                ">"
+            ],
+            "animationPrefix": ">"
+        },
+        {
+            "chars": [
+                "@"
+            ],
+            "animationPrefix": "@"
+        },
+        {
+            "chars": [
+                "["
+            ],
+            "animationPrefix": "["
+        },
+        {
+            "chars": [
+                "\\"
+            ],
+            "animationPrefix": "\\"
+        },
+        {
+            "chars": [
+                "]"
+            ],
+            "animationPrefix": "]"
+        },
+        {
+            "chars": [
+                "^"
+            ],
+            "animationPrefix": "^"
+        },
+        {
+            "chars": [
+                "_"
+            ],
+            "animationPrefix": "_",
+            "baseline": "bottom"
+        },
+        {
+            "chars": [
+                ","
+            ],
+            "animationPrefix": "comma"
+        },
+        {
+            "chars": [
+                "/"
+            ],
+            "animationPrefix": "forward slash"
+        },
+        {
+            "chars": [
+                "|"
+            ],
+            "animationPrefix": "|"
+        },
+        {
+            "chars": [
+                "~"
+            ],
+            "animationPrefix": "~",
+            "baseline": "center"
+        },
         {
             "chars": [
                 " "

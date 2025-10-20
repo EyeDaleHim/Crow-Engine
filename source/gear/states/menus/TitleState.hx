@@ -1,16 +1,17 @@
 package gear.states.menus;
 
+import gear.assets.metadata.TitleIntroMetadata;
+
 class TitleState extends MainState
 {
 	// INTRO
-	/**
-	 * The components contained for the intro in this scene.
-	 * Only plays once during bootup and can be skipped.
-	 */
-   	public var introScene:FlxContainer;
+	public var introMetadata:TitleIntroMetadata;
 
-	public var background:FlxSprite;
-	public var testText:AnimatedText;
+	public var introScene:FlxContainer;
+
+	public var introText:AnimatedText;
+	public var associationSprite:FlxSprite;
+	public var randomPair:Array<String>;
 
 	public function new()
 	{
@@ -18,14 +19,138 @@ class TitleState extends MainState
 
 		Main.assets.loadContext("title");
 
-		// load music as test
 		menuMusic = new Music("music/menu/main");
-		menuMusic.play();
+		menuMusic.onBeat.add(introBeatHit);
 		add(menuMusic);
 
-		testText = new AnimatedText(70, 70, "boldText", "abcdefghijklmnop\nqrstuvwxyz");
-		testText.alignment = CENTER;
-		add(testText);
+		// Load the intro sequence from the JSON file.
+
+		var rawJson = FlxG.assets.getTextUnsafe('data/menus/title.json');
+		if (rawJson == null)
+			return;
+
+		try
+		{
+			introMetadata = cast Json.parse(rawJson);
+		}
+		catch (e)
+		{
+			trace('Error parsing title intro file: $e');
+		}
+
+		if (introMetadata != null && introMetadata.randomTextPairs != null && introMetadata.randomTextPairs.length > 0)
+		{
+			randomPair = FlxG.random.getObject(introMetadata.randomTextPairs);
+		}
+
+		// Setup the scene for intro elements.
+		introScene = new FlxContainer();
+		add(introScene);
+
+		var blackBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		introScene.add(blackBG);
+
+		introText = new AnimatedText(0, 0, "boldText");
+		introText.fieldWidth = FlxG.width;
+		introText.alignment = CENTER;
+		introText.y = 200;
+		introScene.add(introText);
+
+		associationSprite = new FlxSprite();
+		associationSprite.screenCenter(X);
+		associationSprite.y = FlxG.height * 0.6;
+		associationSprite.visible = false;
+		introScene.add(associationSprite);
+
+		FlxTimer.wait(1, () ->
+		{
+			menuMusic.play();
+			menuMusic.soundObject.fadeIn(4, 0, 0.7);
+		});
+
+		openCallback = onReturn;
+	}
+
+	public function onReturn():Void
+	{
+		FlxTimer.wait(1, () ->
+		{
+			skipIntro();
+		});
+	}
+
+	public function introBeatHit(curBeat:Int)
+	{
+		if (introMetadata == null)
+			return;
+
+		for (event in introMetadata.beatEvents)
+		{
+			if (event.beat == curBeat)
+			{
+				for (action in event.actions)
+				{
+					if (action.useRandomText != null && randomPair != null)
+					{
+						final lineIndex = action.useRandomText;
+						if (lineIndex >= 0 && lineIndex < randomPair.length)
+						{
+							final chosenText = randomPair[lineIndex];
+							introText.text += chosenText;
+						}
+					}
+					else if (action.setText != null)
+					{
+						introText.text = action.setText.join("\n");
+					}
+
+					if (action.addText != null)
+					{
+						introText.text += "\n" + action.addText;
+					}
+
+					if (action.wipeText == true)
+					{
+						introText.text = "";
+					}
+
+					if (action.associationSprite != null)
+					{
+						final spriteInfo = action.associationSprite;
+						if (spriteInfo.visible)
+						{
+							// Load graphic, set visible, and update hitbox.
+							associationSprite.loadGraphic(spriteInfo.key);
+							associationSprite.scale.set(0.8, 0.8);
+							associationSprite.updateHitbox();
+							associationSprite.screenCenter(X);
+							associationSprite.visible = true;
+						}
+						else
+						{
+							associationSprite.visible = false;
+						}
+					}
+				}
+
+				if (event.killIntro == true)
+				{
+					skipIntro();
+				}
+				break; // Found and processed the event for this beat.
+			}
+		}
+	}
+
+	private function skipIntro():Void
+	{
+		if (introScene == null || !introScene.exists)
+			return;
+
+		introScene.destroy();
+		introScene = null;
+		FlxG.camera.flash(FlxColor.WHITE, 1);
+		// TODO: Transition to the interactive part of the title menu.
 	}
 
 	override public function update(elapsed:Float):Void

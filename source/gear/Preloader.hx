@@ -12,7 +12,9 @@ class Preloader extends FlxBasePreloader
 
 		Main.assets = new Assets();
 
+		#if ASSETS_PACKAGING
 		Main.bundle = Bundle.load('assets.bundle');
+		#end
 
 		Main.assets.loadContext("persistent");
 
