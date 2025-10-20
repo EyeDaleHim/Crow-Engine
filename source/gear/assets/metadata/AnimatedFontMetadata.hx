@@ -4,6 +4,6 @@ typedef AnimatedFontMetadata =
 {
     var glyphs:GlyphMetadata;
 
-    var ?frameRate:Float;
+    var ?frameRate:Float; // default is 24
     var framesPath:String;
 };

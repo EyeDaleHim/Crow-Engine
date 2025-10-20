@@ -165,6 +165,12 @@ class AnimatedTextLine extends FlxSprite
 
 	private var _drawableGlyphs:Array<DrawableGlyph> = [];
 	private var _textWidth:Float = 0.0;
+	private var _animationStates:Map<String, {curFrame:Int, timer:Float}> = [];
+
+	/**
+	 * The frame rate of the animations, in frames per second.
+	 */
+	public var frameRate(default, set):Float = 24;
 
 	public function new(parent:AnimatedText, alignment:TextAlignment = LEFT, lineWidth:Float = 0.0, text:String)
 	{
@@ -177,6 +183,7 @@ class AnimatedTextLine extends FlxSprite
 		this.lineWidth = lineWidth;
 
 		this.alignment = alignment;
+		this.frameRate = parentText.font.frameRate ?? 24;
 
 		// Copy animations from the parent
 		for (glyph in parentText.font.glyphs)
@@ -191,6 +198,30 @@ class AnimatedTextLine extends FlxSprite
 		}
 
 		updateGlyphs(text);
+	}
+
+	override function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		if (frameRate <= 0)
+			return;
+
+		final frameDelay = 1 / frameRate;
+		for (char in _animationStates.keys())
+		{
+			final state = _animationStates.get(char);
+			final anim = animation.getByName(char);
+			if (anim != null && anim.frames.length > 1)
+			{
+				state.timer += elapsed;
+				if (state.timer >= frameDelay)
+				{
+					state.curFrame = (state.curFrame + 1) % anim.frames.length;
+					state.timer -= frameDelay;
+				}
+			}
+		}
 	}
 
 	private function set_alignment(value:TextAlignment):TextAlignment
@@ -210,6 +241,15 @@ class AnimatedTextLine extends FlxSprite
 
 		lineWidth = value;
 		updateAlignment();
+		return value;
+	}
+
+	private function set_frameRate(value:Float):Float
+	{
+		if (frameRate == value)
+			return value;
+
+		frameRate = value;
 		return value;
 	}
 
@@ -244,7 +284,8 @@ class AnimatedTextLine extends FlxSprite
 			final isColored = (transform != null #if !html5 && transform.hasRGBMultipliers() #end);
 			final hasColorOffsets:Bool = (transform != null && transform.hasRGBAOffsets());
 
-			var batch:FlxDrawQuadsItem = camera.startQuadBatch(frames.parent, isColored, hasColorOffsets, blend, antialiasing, shader);
+			var batch:FlxDrawQuadsItem = camera.startQuadBatch(frames.parent, isColored, hasColorOffsets, parentText.blend, parentText.antialiasing,
+				parentText.shader);
 			var matrix = this._matrix;
 			for (drawable in _drawableGlyphs)
 			{
@@ -252,8 +293,13 @@ class AnimatedTextLine extends FlxSprite
 				if (anim == null || anim.frames.length == 0)
 					continue;
 
-				// Single frame for now
-				final frame = frames.frames[anim.frames[0]];
+				var frameIndex = 0;
+				if (_animationStates.exists(drawable.char))
+				{
+					frameIndex = _animationStates.get(drawable.char).curFrame;
+				}
+
+				final frame = frames.frames[anim.frames[frameIndex]];
 				if (frame == null)
 					continue;
 
@@ -286,6 +332,7 @@ class AnimatedTextLine extends FlxSprite
 	public function updateGlyphs(text:String):Void
 	{
 		_drawableGlyphs = [];
+		_animationStates = [];
 		this.text = text;
 
 		// First pass: determine line height and gather glyph data
@@ -311,7 +358,16 @@ class AnimatedTextLine extends FlxSprite
 			{
 				final anim = animation.getByName(char);
 				if (anim != null && anim.frames.length > 0)
+				{
+					if (!_animationStates.exists(char))
+					{
+						_animationStates.set(char, {
+							curFrame: 0,
+							timer: 0.0
+						});
+					}
 					frame = frames.frames[anim.frames[0]];
+				}
 			}
 
 			glyphsToProcess.push({char: char, glyphData: glyphData, frame: frame});
