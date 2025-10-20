@@ -54,8 +54,6 @@ typedef TitleAction =
 	/**
 	 * An array of strings to display on the screen. Each string is a new line of text.
 	 * This will replace any existing text.
-     * 
-     * This takes priority over `setRandomText`.
 	 */
 	var ?setText:Array<String>;
 
