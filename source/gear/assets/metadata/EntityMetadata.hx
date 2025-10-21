@@ -1,5 +1,6 @@
 package gear.assets.metadata;
 
+import gear.assets.metadata.AnimationMetadata;
 import gear.utils.AxeData;
 
 typedef EntityMetadata =
@@ -52,6 +53,12 @@ typedef SpriteMetadata =
 	 * is false.
 	 */
 	var ?usingAtlas:Bool;
+
+	/**
+	 * The metadata for the sprite's animation. Has no effect if
+	 * usingAtlas is false.
+	 */
+	var ?animations:Array<AnimationMetadata>;
 
 	/**
 	 * The position of this sprite relative to its parent entity.

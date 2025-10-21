@@ -6,7 +6,14 @@
 			"name": "logo",
 			"assetPath": "title/logoBumpin",
 			"usingAtlas": true,
-			"position": { "x": 0, "y": 0 }
+			"position": { "x": 0, "y": 0 },
+			"animations": [
+				{
+					"name": "bump",
+					"prefix": "logo bumpin",
+					"frameRate": 24
+				}
+			]
 		}
 	],
 	"listeners": [

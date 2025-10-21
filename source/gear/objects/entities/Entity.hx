@@ -51,6 +51,21 @@ class Entity extends FlxSpriteContainer
 			{
 				final frames = Main.assets.frames(spriteMeta.assetPath);
 				sprite.frames = frames;
+
+				if (spriteMeta.animations != null)
+				{
+					for (anim in spriteMeta.animations)
+					{
+						if (anim.indices != null)
+						{
+							sprite.animation.addByIndices(anim.name, anim.prefix, anim.indices, "", anim.frameRate, anim.loop);
+						}
+						else
+						{
+							sprite.animation.addByPrefix(anim.name, anim.prefix, anim.frameRate, anim.loop);
+						}
+					}
+				}
 			}
 			else
 			{
@@ -104,7 +119,9 @@ class Entity extends FlxSpriteContainer
 				// Condition: beat_modulo
 				if (listener.condition.type == "beat_modulo")
 				{
-					if (beat == null || listener.condition.value == null || beat % listener.condition.value[0] != listener.condition.value[1])
+					if (beat == null
+						|| listener.condition.value == null
+						|| beat % listener.condition.value[0] != listener.condition.value[1])
 						continue;
 				}
 

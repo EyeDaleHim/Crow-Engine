@@ -82,6 +82,12 @@ class TitleState extends MainState
 			menuMusic.soundObject.fadeIn(4, 0, 0.7);
 		});
 
+		menuMusic.onBeat.add((beat) ->
+		{
+			gfCharacter.onEvent("beat", beat);
+			logo.onEvent("beat", beat);
+		});
+
 		openCallback = onReturn;
 	}
 
