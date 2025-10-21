@@ -3,21 +3,37 @@ Assets in Gear Engine have the following directory structure:
 
 assets
  ├── atlases: `.json` files that contain information to stitch image files together into a runtime atlas to incur batching in the rendering.
+ 
  ├── contexts: `.json` files containing information about what assets to load or unload during parts of the game.
+ 
  ├── entities: `.json` files containing information for how the game displays animated content. This includes things like boppers and stage props.
- ├──    ├── characters: Special `.json` files that contain data about a character's death screen, icon health, and other information. Subdirectory for organizing is optional.
+ 
+ ├──        ├── characters: Special `.json` files that contain data about a character's death screen, icon health, and other information. Subdirectory for organizing is optional.
+ 
  ├── data: A subdirectory that contains the game's data.
- ├──    ├── levels: `.json` files containing level data. In other engines, this can be referred as songs. Subdirectory for organizing is optional.
- ├──    ├── playlist: `.json` files containing level playlist data. In other engines, this can be referred as story mode or weeks. (example: `week1.json`)
- ├──    ├── menus: Various `.json` files containing menu data.
+ 
+ ├──        ├── levels: `.json` files containing level data. In other engines, this can be referred as songs. Subdirectory for organizing is optional.
+ 
+ ├──        ├── playlist: `.json` files containing level playlist data. In other engines, this can be referred as story mode or weeks. (example: `week1.json`)
+ 
+ ├──        ├── menus: Various `.json` files containing menu data.
+ 
  ├── fonts: A subdirectory of font files that can display text on screen.
- ├──    ├── animated: `.json` files containing information for how the game displays animated fonts and glyphs.
- ├──    ├── bitmap: `.png` and `.fnt` files. Typically made with BMFont.
- ├──    ├── vector: `.ttf` and `.otf` files.
+ 
+ ├──        ├── animated: `.json` files containing information for how the game displays animated fonts and glyphs.
+ 
+ ├──        ├── bitmap: `.png` and `.fnt` files. Typically made with BMFont.
+ 
+ ├──        ├── vector: `.ttf` and `.otf` files.
+ 
  ├── noteskins: `.json` files that contain information for how the game displays notes. This includes things like note colors, note animations, and note effects.
+ 
  ├── sounds: `.ogg` files that provide audio such as music or sound effects for the game. They are also provided with a `.json` file of the same name for metadata about the song, like BPM, time changes, or whether it should loop or be streamed. Subdirectory for organizing is optional. Providing a metadata file is optional too.
+ 
  ├── stages: `.json` files containing information for how stages are rendered in the game.
+ 
  ├── textures: `.png` and `.xml` files that are used for rendering images and animations. Subdirectory for organizing is optional. For atlases, contexts are recommended to load them together.
+ 
  ├── videos: `.mp4` files that are used for rendering videos in the game. Subdirectory for organizing is optional.
 
 # Atlas Stitching
