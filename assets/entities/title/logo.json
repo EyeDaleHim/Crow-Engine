@@ -1,0 +1,25 @@
+{
+	"name": "title-logo",
+	"position": { "x": -150, "y": -100 },
+	"sprites": [
+		{
+			"name": "logo",
+			"assetPath": "title/logoBumpin",
+			"usingAtlas": true,
+			"position": { "x": 0, "y": 0 }
+		}
+	],
+	"listeners": [
+		{
+			"event": "beat",
+			"actions": [
+				{
+					"type": "play_animation",
+					"sprite": "logo",
+					"values": ["bump"],
+					"force": true
+				}
+			]
+		}
+	]
+}

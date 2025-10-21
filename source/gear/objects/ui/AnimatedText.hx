@@ -69,8 +69,6 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 			if (i < members.length)
 			{
 				line = members[i];
-				line.lineWidth = fieldWidth;
-				line.alignment = alignment;
 				if (line.text != lines[i])
 				{
 					line.updateGlyphs(lines[i]);
@@ -78,7 +76,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 			}
 			else
 			{
-				line = new AnimatedTextLine(this, alignment, fieldWidth, lines[i]);
+				line = new AnimatedTextLine(this, lines[i]);
 				add(line);
 			}
 			line.y = y + lineY;
@@ -92,6 +90,8 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 			member.destroy();
 			i--;
 		}
+
+		updateAlignment();
 	}
 
 	override function destroy()
@@ -147,9 +147,28 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 
 		for (line in members)
 		{
-			line.lineWidth = maxWidth;
-			line.alignment = alignment;
+			line.alignIn(maxWidth, alignment);
 		}
+	}
+
+	override function get_width():Float
+	{
+		if (fieldWidth > 0)
+			return x + fieldWidth;
+
+		var maxWidth:Float = 0;
+		if (members != null)
+		{
+			for (line in members)
+			{
+				@:privateAccess
+				if (line._textWidth > maxWidth)
+				{
+					maxWidth = line._textWidth;
+				}
+			}
+		}
+		return x + maxWidth;
 	}
 }
 
@@ -160,9 +179,7 @@ class AnimatedTextLine extends FlxSprite
 
 	public var text:String;
 	public var lineWidth:Float = 0.0; // 0.0 means auto
-
-	public var alignment(default, set):TextAlignment = LEFT;
-
+	
 	private var _drawableGlyphs:Array<DrawableGlyph> = [];
 	private var _textWidth:Float = 0.0;
 	private var _animationStates:Map<String, {curFrame:Int, timer:Float}> = [];
@@ -172,17 +189,12 @@ class AnimatedTextLine extends FlxSprite
 	 */
 	public var frameRate(default, set):Float = 24;
 
-	public function new(parent:AnimatedText, alignment:TextAlignment = LEFT, lineWidth:Float = 0.0, text:String)
+	public function new(parent:AnimatedText, text:String)
 	{
 		super();
 
 		this.parentText = parent;
 		this.frames = Main.assets.frames(parentText.font.framesPath);
-
-		this.text = text;
-		this.lineWidth = lineWidth;
-
-		this.alignment = alignment;
 		this.frameRate = parentText.font.frameRate ?? 24;
 
 		// Copy animations from the parent
@@ -224,38 +236,18 @@ class AnimatedTextLine extends FlxSprite
 		}
 	}
 
-	private function set_alignment(value:TextAlignment):TextAlignment
-	{
-		if (alignment == value)
-			return value;
-
-		alignment = value;
-		updateAlignment();
-		return value;
-	}
-
-	public function set_lineWidth(value:Float):Float
-	{
-		if (lineWidth == value)
-			return value;
-
-		lineWidth = value;
-		updateAlignment();
-		return value;
-	}
-
 	private function set_frameRate(value:Float):Float
 	{
 		if (frameRate == value)
 			return value;
-
 		frameRate = value;
 		return value;
 	}
 
-	private function updateAlignment():Void
+	public function alignIn(width:Float, alignment:TextAlignment):Void
 	{
-		final newWidth = Math.max(lineWidth, _textWidth);
+		final newWidth = Math.max(width, _textWidth);
+
 		switch (alignment)
 		{
 			case LEFT:
@@ -267,6 +259,7 @@ class AnimatedTextLine extends FlxSprite
 			case _:
 				x = parentText.x;
 		}
+		this.lineWidth = width;
 	}
 
 	override public function draw()
@@ -406,8 +399,7 @@ class AnimatedTextLine extends FlxSprite
 		}
 
 		_textWidth = currentX;
-		updateAlignment();
-		setSize(Math.max(lineWidth, _textWidth), lineMaxHeight);
+		setSize(_textWidth, lineMaxHeight);
 	}
 }
 

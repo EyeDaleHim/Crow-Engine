@@ -4,7 +4,7 @@ package cpp.vm.tracy;
  * Pulled from Tracey profiler PR
  * @see https://github.com/HaxeFoundation/haxe/pull/11772
  */
-#if (!HXCPP_TRACY)
+#if (!HXCPP_TRACY && !display)
 #error "This class cannot be used without -D HXCPP_TRACY"
 #end
 enum abstract PlotFormatType(cpp.UInt8) from cpp.UInt8 to cpp.UInt8

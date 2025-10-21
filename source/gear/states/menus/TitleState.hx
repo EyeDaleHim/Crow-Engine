@@ -1,5 +1,6 @@
 package gear.states.menus;
 
+import gear.objects.entities.Entity;
 import gear.assets.metadata.TitleIntroMetadata;
 
 class TitleState extends MainState
@@ -13,10 +14,17 @@ class TitleState extends MainState
 	public var associationSprite:FlxSprite;
 	public var randomPair:Array<String>;
 
+	// TITLE
+	public var gfCharacter:Entity;
+	public var logo:Entity;
+
+	private var lastBeatHit:Int = -1;
+
 	public function new()
 	{
 		super();
 
+		Main.assets.loadContext("persistent");
 		Main.assets.loadContext("title");
 
 		menuMusic = new Music("music/menu/main");
@@ -42,6 +50,12 @@ class TitleState extends MainState
 		{
 			randomPair = FlxG.random.getObject(introMetadata.randomTextPairs);
 		}
+
+		gfCharacter = new Entity("title/gf");
+		add(gfCharacter);
+
+		logo = new Entity("title/logo");
+		add(logo);
 
 		// Setup the scene for intro elements.
 		introScene = new FlxContainer();
@@ -73,6 +87,12 @@ class TitleState extends MainState
 
 	public function onReturn():Void
 	{
+		menuMusic.onBeat.add((beat) ->
+		{
+			gfCharacter.onEvent("beat", beat);
+			logo.onEvent("beat", beat);
+		});
+
 		FlxTimer.wait(1, () ->
 		{
 			skipIntro();
@@ -81,74 +101,78 @@ class TitleState extends MainState
 
 	public function introBeatHit(curBeat:Int)
 	{
-		if (introMetadata == null)
+		if (introMetadata == null || curBeat <= lastBeatHit)
 			return;
 
-		for (event in introMetadata.beatEvents)
+		for (beat in (lastBeatHit + 1)...(curBeat + 1))
 		{
-			if (event.beat == curBeat)
+			for (event in introMetadata.beatEvents)
 			{
-				for (action in event.actions)
+				if (event.beat == beat)
 				{
-					if (action.useRandomText != null && randomPair != null)
+					for (action in event.actions)
 					{
-						final lineIndex = action.useRandomText;
-						if (lineIndex >= 0 && lineIndex < randomPair.length)
+						if (action.useRandomText != null && randomPair != null)
 						{
-							final chosenText = randomPair[lineIndex];
-							introText.text += chosenText;
+							final lineIndex = action.useRandomText;
+							if (lineIndex >= 0 && lineIndex < randomPair.length)
+							{
+								final chosenText = randomPair[lineIndex];
+								introText.text += chosenText;
+							}
+						}
+						else if (action.setText != null)
+						{
+							introText.text = action.setText.join("\n");
+						}
+
+						if (action.addText != null)
+						{
+							introText.text += "\n" + action.addText;
+						}
+
+						if (action.wipeText == true)
+						{
+							introText.text = "";
+						}
+
+						if (action.associationSprite != null)
+						{
+							final spriteInfo = action.associationSprite;
+							if (spriteInfo.visible)
+							{
+								// Load graphic, set visible, and update hitbox.
+								associationSprite.loadGraphic(spriteInfo.key);
+								associationSprite.scale.set(0.8, 0.8);
+								associationSprite.updateHitbox();
+								associationSprite.screenCenter(X);
+								associationSprite.visible = true;
+							}
+							else
+							{
+								associationSprite.visible = false;
+							}
 						}
 					}
-					else if (action.setText != null)
-					{
-						introText.text = action.setText.join("\n");
-					}
 
-					if (action.addText != null)
+					if (event.killIntro == true)
 					{
-						introText.text += "\n" + action.addText;
+						skipIntro();
+						return; // Stop processing any more beats.
 					}
-
-					if (action.wipeText == true)
-					{
-						introText.text = "";
-					}
-
-					if (action.associationSprite != null)
-					{
-						final spriteInfo = action.associationSprite;
-						if (spriteInfo.visible)
-						{
-							// Load graphic, set visible, and update hitbox.
-							associationSprite.loadGraphic(spriteInfo.key);
-							associationSprite.scale.set(0.8, 0.8);
-							associationSprite.updateHitbox();
-							associationSprite.screenCenter(X);
-							associationSprite.visible = true;
-						}
-						else
-						{
-							associationSprite.visible = false;
-						}
-					}
+					break; // Found and processed the event for this beat.
 				}
-
-				if (event.killIntro == true)
-				{
-					skipIntro();
-				}
-				break; // Found and processed the event for this beat.
 			}
 		}
+
+		lastBeatHit = curBeat;
 	}
 
 	private function skipIntro():Void
 	{
-		if (introScene == null || !introScene.exists)
-			return;
+		menuMusic.onBeat.remove(introBeatHit);
 
-		introScene.destroy();
-		introScene = null;
+		introScene.kill();
 		FlxG.camera.flash(FlxColor.WHITE, 1);
 		// TODO: Transition to the interactive part of the title menu.
 	}
@@ -156,5 +180,14 @@ class TitleState extends MainState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+
+		if (FlxG.keys.justPressed.ENTER)
+		{
+			if (introScene.exists)
+			{
+				skipIntro();
+			}
+			else {}
+		}
 	}
 }

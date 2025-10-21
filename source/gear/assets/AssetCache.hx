@@ -64,4 +64,25 @@ class AssetCache
 			_cache = new StringMap<Dynamic>();
 		}
 	}
+
+	public function toString():String
+	{
+		var list:Array<String> = [];
+		for (key in _cache.keys())
+		{
+			list.push('$key: ${_cache.get(key)}');
+		}
+		return list.join('\n');
+	}
+
+	public function toStringMinimal():String
+	{
+		var list:Array<String> = [];
+		for (key in _cache.keys())
+		{
+			list.push('$key');
+		}
+		return list.join(', ');
+		
+	}
 }

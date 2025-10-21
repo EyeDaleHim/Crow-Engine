@@ -20,8 +20,17 @@ class AssetContext
 {
 	public static var contextDirectory:String = "contexts";
 
+	/**
+	 * The flag that indicates whether any context has been unloaded, which means 
+	 * that the cache needs to be checked for orphaned assets.
+	 */
 	public static var dirtyContexts:Bool = false;
-	public static var enforceAssetContext:Bool = false; // TODO: implement
+
+	/**
+	 * If true, all assets will be required to have an associated asset context, they will not
+	 * load otherwise.
+	 */
+	public static var enforceAssetContext:Bool = false;
 
 	public var name(default, null):String;
 	public var entries(default, null):Array<AssetEntry>;

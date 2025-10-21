@@ -16,8 +16,6 @@ class Preloader extends FlxBasePreloader
 		Main.bundle = Bundle.load('assets.bundle');
 		#end
 
-		Main.assets.loadContext("persistent");
-
 		Main.game = new FlxGame(0, 0, () -> new gear.states.menus.TitleState());
 	}
 }

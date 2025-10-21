@@ -1,0 +1,55 @@
+{
+	"name": "title-gf",
+	"position": { "x": 512, "y": 40 },
+	"initialState": {
+		"idle_mode": false,
+		"dancing_left": false
+	},
+	"sprites": [
+		{
+			"name": "gf",
+			"assetPath": "title/gfDanceTitle",
+			"usingAtlas": true,
+			"position": { "x": 0, "y": 0 }
+		}
+	],
+	"listeners": [
+		{
+			"event": "beat",
+			"actions": [
+				{
+					"stateChange": "toggle_bool",
+					"values": ["dancing_left"]
+				}
+			]
+		},
+		{
+			"event": "beat",
+			"condition": {
+				"checkState": "dancing_left"
+			},
+			"actions": [
+				{
+					"type": "play_animation",
+					"sprite": "gf",
+					"values": ["danceLeft"],
+					"force": true
+				}
+			]
+		},
+		{
+			"event": "beat",
+			"condition": {
+				"checkState": "!dancing_left"
+			},
+			"actions": [
+				{
+					"type": "play_animation",
+					"sprite": "gf",
+					"values": ["danceRight"],
+					"force": true
+				}
+			]
+		}
+	]
+}

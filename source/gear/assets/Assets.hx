@@ -122,6 +122,24 @@ class Assets
 				return oldGet(id, type, canCache);
 			}
 
+			if (AssetContext.enforceAssetContext)
+			{
+				var foundInContext:Bool = false;
+				for (context in contexts)
+				{
+					if (context.findAsset(id))
+					{
+						foundInContext = true;
+						break;
+					}
+				}
+				if (!foundInContext)
+				{
+					trace('ASSET - Blocked orphaned asset load: $id (enforceAssetContext is true)');
+					return null;
+				}
+			}
+
 			final canUseCache = canCache && cache.enabled;
 			final path = AssetPaths.from(id, type);
 
@@ -141,6 +159,9 @@ class Assets
 					textAsset = sys.io.File.getContent(AssetPaths.from(id, type));
 					#end
 
+					if (canUseCache)
+						cache.set(id, textAsset);
+
 					pushHistory(textAsset != null ? IO_SUCCESS : FAILURE, TEXT, AssetPaths.from(id, type));
 					return textAsset;
 				case BINARY:
@@ -150,6 +171,10 @@ class Assets
 					#else
 					binaryAsset = sys.io.File.getBytes(path);
 					#end
+
+					if (canUseCache)
+						cache.set(id, binaryAsset);
+
 					pushHistory(binaryAsset != null ? IO_SUCCESS : FAILURE, BINARY, path);
 					return binaryAsset;
 				case IMAGE:
@@ -172,7 +197,7 @@ class Assets
 					var graphic:FlxGraphic = null;
 					if (bitmap != null)
 					{
-						graphic = FlxG.bitmap.add(bitmap, false, id);
+						graphic = FlxG.bitmap.add(bitmap, false, path);
 						if (canUseCache)
 							cache.set(id, bitmap);
 					}
@@ -257,7 +282,14 @@ class Assets
 
 		for (entry in context.entries)
 		{
-			FlxG.assets.getAsset(entry.path, entry.type, true);
+			if (FlxG.assets.exists(entry.path, entry.type))
+			{
+				FlxG.assets.getAssetUnsafe(entry.path, entry.type, true);
+			}
+			else
+			{
+				trace('CONTEXT - Asset not found: ${AssetPaths.from(entry.path, entry.type)}');
+			}
 		}
 
 		return context;

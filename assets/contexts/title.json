@@ -1,7 +1,7 @@
 [
     {
         "type": "image",
-        "path": "textures/title/gfDanceTitle"
+        "path": "title/gfDanceTitle"
     },
     {
         "type": "text",
@@ -9,7 +9,7 @@
     },
     {
         "type": "image",
-        "path": "textures/title/logoBumpin"
+        "path": "title/logoBumpin"
     },
     {
         "type": "text",
@@ -17,7 +17,7 @@
     },
     {
         "type": "image",
-        "path": "textures/title/titleEnter"
+        "path": "title/titleEnter"
     },
     {
         "type": "text",
@@ -25,6 +25,6 @@
     },
     {
         "type": "image",
-        "path": "textures/title/newgroundsLogo"
+        "path": "title/newgroundsLogo"
     }
 ]

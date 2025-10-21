@@ -1,7 +1,6 @@
 package gear;
 
 import openfl.Lib;
-import flixel.input.keyboard.FlxKey;
 import openfl.display.DisplayObjectContainer;
 
 class Main extends DisplayObjectContainer
