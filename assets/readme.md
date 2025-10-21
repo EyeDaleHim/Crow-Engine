@@ -2,6 +2,7 @@
 Assets in Gear Engine have the following directory structure:
 
 assets
+
  ├── atlases: `.json` files that contain information to stitch image files together into a runtime atlas to incur batching in the rendering.
  
  ├── contexts: `.json` files containing information about what assets to load or unload during parts of the game.
