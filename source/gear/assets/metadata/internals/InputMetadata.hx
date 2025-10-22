@@ -1,8 +1,5 @@
 package gear.assets.metadata.internals;
 
-import flixel.input.keyboard.FlxKey;
-import flixel.util.typeLimit.OneOfThree;
-
 /**
  * Defines the structure for the default input bindings configuration file.
  * This metadata is loaded at startup to establish the initial state of all game inputs,
