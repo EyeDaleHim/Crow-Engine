@@ -105,7 +105,7 @@ class Music extends FlxBasic
 				final path = Path.join(['sounds', '$soundFile.json']);
 				if (FlxG.assets.exists(path))
 				{
-					this.metadata = cast Json.parse(UsonComment.removeComments(FlxG.assets.getTextUnsafe(path)));
+					this.metadata = cast Json.parse(JsonComment.removeComments(FlxG.assets.getTextUnsafe(path)));
 				}
 			}
 			catch (e)
