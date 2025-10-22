@@ -8,6 +8,7 @@ assets
 *   `entities`: `.json` files containing information for how the game displays animated content. This includes things like boppers and stage props.
     *   `characters`: Special `.json` files that contain data about a character's death screen, icon health, and other information. Subdirectory for organizing is optional.
 *   `data`: A subdirectory that contains the game's data.
+    *   `config`: Special `.json` files that contain information about the game's configuration. Unlike other directories, some paths may be forced.
     *   `levels`: `.json` files containing level data. In other engines, this can be referred as songs. Subdirectory for organizing is optional.
     *   `playlist`: `.json` files containing level playlist data. In other engines, this can be referred as story mode or weeks. (example: `week1.json`)
     *   `menus`: Various `.json` files containing menu data.

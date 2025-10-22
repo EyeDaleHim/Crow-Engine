@@ -16,10 +16,11 @@ class Assets
 {
 	public static final classExclusions:Array<String> = [
 		'flixel',
+		'flixel.system.frontEnds.AssetFrontEnd',
 		#if cpp
 		"gear.assets.Assets", "gear.assets.AssetHistory"
 		#elseif hl
-		"gear.assets.$Assets", "gear.assets.$AssetHistory"
+		"gear.assets.$Assets", "gear.assets.$AssetHistory", "gear.assets.Assets", "gear.assets.AssetHistory"
 		#end
 	];
 

@@ -3,13 +3,19 @@ package gear.predicates;
 import gear.predicates.PredicateOperatorCode;
 import gear.predicates.PredicateType;
 import gear.assets.metadata.PredicateMetadata;
+import gear.predicates.PredicateValidator;
 
 /**
  * A utility class for evaluating predicate conditions defined by `PredicateMetadata`.
  */
 class PredicateEvaluator
 {
-    public static var disallowUnknowns:Bool = false;
+    /**
+     * Requires predicates to be valid and type-safe before it is processed on-demand.
+	 * 
+	 * Disabling this will incurs some performance benefit.
+     */
+    public static var requireValidation:Bool = true;
 
 	/**
 	 * Evaluates a predicate against an entity's state and context.
@@ -21,6 +27,12 @@ class PredicateEvaluator
 	{
 		if (predicate == null)
 			return true;
+		
+		if (requireValidation)
+		{
+			if (!PredicateValidator.validate(predicate))
+				return false; // If validation fails, the predicate cannot be evaluated.
+		}
 
 		return switch (predicate.type)
 		{
@@ -53,10 +65,6 @@ class PredicateEvaluator
 				return check(predicate, state);
 
 			default:
-                if (disallowUnknowns)
-                {
-                    throw 'Unknown predicate';
-                }
                 return true;
 		}
 	}

@@ -1,4 +1,4 @@
-package gear.assets.metadata;
+package gear.assets.metadata.menus;
 
 /**
  * Defines the structure for the title screen intro, including beat-timed events

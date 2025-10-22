@@ -2,6 +2,7 @@ package gear.objects.ui;
 
 import flixel.graphics.tile.FlxDrawQuadsItem;
 import flixel.graphics.frames.FlxFrame;
+import flixel.graphics.frames.FlxFramesCollection;
 import gear.assets.metadata.AnimatedFontMetadata;
 import gear.assets.metadata.GlyphMetadata;
 
@@ -31,6 +32,8 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 	 */
 	public var alignment(default, set):TextAlignment = LEFT;
 
+	private var _frames:FlxFramesCollection;
+
 	public function new(?x:Float = 0.0, ?y:Float = 0.0, path:String, ?text:String = "")
 	{
 		super(x, y);
@@ -40,6 +43,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 		if (rawJson == null)
 		{
 			font = {glyphs: [], framesPath: ""};
+			_frames = null;
 			return;
 		}
 
@@ -51,6 +55,12 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 		{
 			trace('Error parsing font file $path: $e');
 			font = {glyphs: [], framesPath: ""};
+		}
+
+		if (font != null && font.framesPath != null && font.framesPath != "")
+		{
+			// This is assuming Main.assets.frames is the intended way to get frames.
+			_frames = Main.assets.frames(font.framesPath);
 		}
 
 		this.text = text;
@@ -76,7 +86,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 			}
 			else
 			{
-				line = new AnimatedTextLine(this, lines[i]);
+				line = new AnimatedTextLine(this, _frames, lines[i]);
 				add(line);
 			}
 			line.y = y + lineY;
@@ -98,6 +108,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 	{
 		super.destroy();
 		font = null;
+		_frames = null;
 	}
 
 	private function set_text(value:String):String
@@ -189,12 +200,12 @@ class AnimatedTextLine extends FlxSprite
 	 */
 	public var frameRate(default, set):Float = 24;
 
-	public function new(parent:AnimatedText, text:String)
+	public function new(parent:AnimatedText, frames:FlxFramesCollection, text:String)
 	{
 		super();
 
 		this.parentText = parent;
-		this.frames = Main.assets.frames(parentText.font.framesPath);
+		this.frames = frames;
 		this.frameRate = parentText.font.frameRate ?? 24;
 
 		// Copy animations from the parent

@@ -39,6 +39,8 @@ import gear.assets.Bundle;
 
 import gear.entities.Entity;
 
+import gear.input.Input;
+
 import gear.music.Music;
 
 import gear.objects.ui.AnimatedText;

@@ -9,6 +9,7 @@ class Main extends DisplayObjectContainer
 	public static var bundle:Bundle;
 
 	public static var assets:Assets;
+	public static var input:Input;
 
 	public function new()
 	{
