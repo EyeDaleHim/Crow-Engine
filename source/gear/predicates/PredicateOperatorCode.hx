@@ -1,6 +1,7 @@
 package gear.predicates;
 
-enum abstract PredicateOperatorCode(String) from String to String {
+enum abstract PredicateOperatorCode(String) from String to String
+{
 	var EQ = "EQ";
 	var NEQ = "NEQ";
 	var GT = "GT";

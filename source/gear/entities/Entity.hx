@@ -116,14 +116,14 @@ class Entity extends FlxSpriteContainer
 
 			// If a beat is provided, temporarily add it to the state for evaluation.
 			if (beat != null)
-				state.set("_beat", beat);
+				state.set("_musicBeat", beat);
 
 			// Evaluate the condition using the new PredicateEvaluator
 			final conditionMet = PredicateEvaluator.evaluate(listener.condition, this.state);
 
 			// Clean up the temporary state variable.
 			if (beat != null)
-				state.remove("_beat");
+				state.remove("_musicBeat");
 
 			if (!conditionMet)
 				continue;
