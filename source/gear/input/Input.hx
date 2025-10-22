@@ -18,8 +18,8 @@ class Input
 
 	/**
 	 * Reads an internal input file.
-	 * @param inputFile The path to the input configuration JSON file.
 	 * @param stage The OpenFL Stage to attach event listeners to. If null, FlxG.stage is used.
+	 * @param inputFile The path to the input configuration JSON file.
 	 */
 	public function new(?stage:Stage, inputFile:String)
 	{
