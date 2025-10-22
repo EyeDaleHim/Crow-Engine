@@ -329,9 +329,17 @@
                     "inputs": [
                         {
                             "device": "keyboard",
+                            "code": "SHIFT"
+                        
+                        },
+                        {
+                            "device": "keyboard",
                             "code": "EIGHT"
                         }
-                    ]
+                    ],
+                    "orderSensitive": true,
+                    "exclusive": true
+
                 }
             ]
         }
