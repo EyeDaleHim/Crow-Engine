@@ -38,7 +38,7 @@ class TitleState extends MainState
 
 		try
 		{
-			introMetadata = cast Json.parse(rawJson);
+			introMetadata = cast Json.parse(JsonComment.removeComments(rawJson));
 		}
 		catch (e)
 		{

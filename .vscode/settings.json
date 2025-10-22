@@ -12,7 +12,8 @@
 		"*.hscript": "haxe",
 		"*.haxe": "haxe",
 		"*.hxs": "haxe",
-		"*.hxc": "haxe"
+		"*.hxc": "haxe",
+		"*.json": "jsonc"
 	},
 	"search.useIgnoreFiles": true,
 }

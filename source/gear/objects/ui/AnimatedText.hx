@@ -45,7 +45,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 
 		try
 		{
-			font = cast Json.parse(rawJson);
+			font = cast Json.parse(JsonComment.removeComments(rawJson));
 		}
 		catch (e)
 		{

@@ -48,7 +48,7 @@ class AssetContext
 
 		try
 		{
-			var parsedEntries:Array<AssetEntry> = cast Json.parse(rawJson);
+			var parsedEntries:Array<AssetEntry> = cast Json.parse(JsonComment.removeComments(rawJson));
 			final uniqueEntries = new Map<String, AssetEntry>();
 			for (entry in parsedEntries)
 			{

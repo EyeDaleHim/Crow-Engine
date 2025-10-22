@@ -28,7 +28,7 @@ class Entity extends FlxSpriteContainer
 	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String)
 	{
 		final jsonContent = FlxG.assets.getTextUnsafe(Path.join(['entities', '$inputFile.json']));
-		final metadata:EntityMetadata = Json.parse(jsonContent);
+		final metadata:EntityMetadata = Json.parse(JsonComment.removeComments(jsonContent));
 
 		super(metadata.position.x, metadata.position.y);
 

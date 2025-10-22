@@ -262,7 +262,7 @@ class Assets
 	public function loadStitchedAtlas(atlasInput:String):AtlasStitchData
 	{
 		final path = Path.join([AssetContext.contextDirectory, '$atlasInput.json']);
-		final rawAtlasData:AtlasStitchData = Json.parse(FlxG.assets.getTextUnsafe(path));
+		final rawAtlasData:AtlasStitchData = Json.parse(JsonComment.removeComments(FlxG.assets.getTextUnsafe(path)));
 
 		return rawAtlasData;
 	}
