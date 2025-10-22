@@ -1,0 +1,339 @@
+{
+    "binds": [
+        {
+            "id": "note_left",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "D"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "LEFT"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "note_down",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "F"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "DOWN"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "note_up",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "J"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "UP"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "note_right",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "K"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "RIGHT"
+                        }
+                    ]
+                }
+            ]
+        },
+        // --- UI Navigation ---
+        {
+            "id": "ui_up",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "W"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "UP"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "ui_left",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "A"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "LEFT"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "ui_down",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "S"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "DOWN"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "ui_right",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "D"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "RIGHT"
+                        }
+                    ]
+                }
+            ]
+        },
+        // --- General Actions ---
+        {
+            "id": "accept",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "SPACE"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "ENTER"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "back",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "BACKSPACE"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "ESCAPE"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "pause",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "ENTER"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "ESCAPE"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "reset",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "R"
+                        }
+                    ]
+                }
+            ]
+        },
+        // --- Volume Controls ---
+        {
+            "id": "volume_mute",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "ZERO"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "volume_up",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "NUMPADPLUS"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "PLUS"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "volume_down",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "NUMPADMINUS"
+                        }
+                    ]
+                },
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "MINUS"
+                        }
+                    ]
+                }
+            ]
+        },
+        // --- Debug Keys ---
+        {
+            "id": "debug_1",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "SHIFT"
+                        },
+                        {
+                            "device": "keyboard",
+                            "code": "SEVEN"
+                        }
+                    ],
+                    "orderSensitive": true,
+                    "exclusive": true
+                }
+            ]
+        },
+        {
+            "id": "debug_2",
+            "triggers": [
+                {
+                    "inputs": [
+                        {
+                            "device": "keyboard",
+                            "code": "EIGHT"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

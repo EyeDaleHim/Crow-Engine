@@ -22,6 +22,12 @@ class Main extends DisplayObjectContainer
 		});
 		#end
 
+		Main.input = new Input(Input.inputPath);
+		FlxG.signals.preUpdate.add(() ->
+		{
+			Main.input.update(FlxG.elapsed);
+		});
+
 		Lib.current.addChild(game);
 	}
 }

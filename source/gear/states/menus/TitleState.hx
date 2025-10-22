@@ -186,7 +186,7 @@ class TitleState extends MainState
 	{
 		super.update(elapsed);
 
-		if (FlxG.keys.justPressed.ENTER)
+		if (Main.input.isPressed("accept"))
 		{
 			if (introScene.exists)
 			{
