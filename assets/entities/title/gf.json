@@ -40,15 +40,21 @@
 			"event": "beat",
 			"actions": [
 				{
-					"stateChange": "toggle_bool",
-					"values": ["dancing_left"]
+					"type": "state_change",
+					"stateChange": {
+						"changeType": "TOGGLE",
+						"stateKey": "dancing_left"
+					}
 				}
 			]
 		},
 		{
 			"event": "beat",
 			"condition": {
-				"checkState": "dancing_left"
+				"type": "CHECK",
+				"stateKey": "dancing_left",
+				"operatorCode": "EQ",
+				"targetValues": [true]
 			},
 			"actions": [
 				{
@@ -62,7 +68,10 @@
 		{
 			"event": "beat",
 			"condition": {
-				"checkState": "!dancing_left"
+				"type": "CHECK",
+				"stateKey": "dancing_left",
+				"operatorCode": "EQ",
+				"targetValues": [false]
 			},
 			"actions": [
 				{

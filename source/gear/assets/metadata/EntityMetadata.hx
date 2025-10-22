@@ -2,6 +2,8 @@ package gear.assets.metadata;
 
 import gear.assets.metadata.AnimationMetadata;
 import gear.utils.AxeData;
+import gear.assets.metadata.ActionMetadata;
+import gear.assets.metadata.PredicateMetadata;
 
 typedef EntityMetadata =
 {
@@ -12,8 +14,11 @@ typedef EntityMetadata =
 
 	/**
 	 * The position of this entity.
+	 * 
+	 * However, it can always be overrided by the current state upon
+	 * creation.
 	 */
-	var position:AxeData<Float>;
+	var ?position:AxeData<Float>;
 
 	/**
 	 * The list of sprites for this entity to render.
@@ -89,8 +94,10 @@ typedef EntityListenerMetadata = {
 
 	/**
 	 * A condition that must be met for the actions to be triggered.
+	 * 
+	 * This condition must return true for all `actions` to trigger.
 	 */
-	var ?condition:ListenerConditionMetadata;
+	var ?condition:PredicateMetadata;
 
 	/**
 	 * The list of actions to perform when the event is triggered.
@@ -105,57 +112,31 @@ typedef ListenerActionMetadata = {
 	/**
 	 * The type of action to perform.
 	 * 
-	 * Example: "play_animation"
+	 * Example: "play_animation", "state_change"
 	 */
 	var type:String;
 
 	/**
 	 * The name of the sprite to target with this action.
-	 * If null, this does nothing.
+	 * Required for sprite-specific actions like "play_animation".
 	 */
 	var ?sprite:String;
 
 	/**
-	 * The type of state modification to perform.
-	 * Example: "toggle_bool"
+	 * For "state_change" actions, this defines the modification to perform.
 	 */
-	var ?stateChange:String;
+	var ?stateChange:ActionMetadata;
 
 	/**
 	 * A list of values/arguments for the action. The interpretation
 	 * of these values depends on the action `type`.
 	 * 
-	 * For "play_animation", this could be a list of animation names to cycle through.
+	 * For "play_animation", this is the animation name: `["animationName"]`.
 	 */
 	var ?values:Array<String>;
 
 	/**
-	 * If true, the action will force the animation to restart if it's already playing.
+	 * For "play_animation", if true, the animation will restart if it's already playing.
 	 */
 	var ?force:Bool;
-};
-
-
-// Ideally, I should make a predicate system instead of having this.
-/**
- * Defines a condition for an event listener.
- */
-typedef ListenerConditionMetadata = {
-	/**
-	 * The type of condition to check.
-	 * 
-	 * Example: "beat_modulo"
-	 */
-	var ?type:String;
-
-	/**
-	 * The value(s) to use for the condition check.
-	 * For "beat_modulo", this would be `[divisor, remainder]`.
-	 */
-	var ?value:Array<Int>;
-
-	/**
-	 * Checks a state variable on the entity.
-	 */
-	var ?checkState:String;
 };

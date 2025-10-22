@@ -23,11 +23,6 @@ typedef AnimationMetadata = {
 	var ?loop:Bool;
 
 	/**
-	 * Whether the animation should be reversed.
-	 */
-	var ?reversed:Bool;
-
-	/**
 	 * The indices of the frames to use for the animation.
 	 */
 	var ?indices:Array<Int>;

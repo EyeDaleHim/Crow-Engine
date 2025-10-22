@@ -1,6 +1,5 @@
 package gear.states.menus;
 
-import gear.objects.entities.Entity;
 import gear.assets.metadata.TitleIntroMetadata;
 
 class TitleState extends MainState

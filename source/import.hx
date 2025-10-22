@@ -37,9 +37,13 @@ import gear.assets.AssetHistory;
 import gear.assets.Assets;
 import gear.assets.Bundle;
 
+import gear.entities.Entity;
+
 import gear.music.Music;
 
 import gear.objects.ui.AnimatedText;
+
+import gear.predicates.PredicateEvaluator;
 
 import gear.states.internals.InitState;
 import gear.states.internals.MainState;

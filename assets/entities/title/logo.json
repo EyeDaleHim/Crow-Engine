@@ -23,7 +23,7 @@
 				{
 					"type": "play_animation",
 					"sprite": "logo",
-					"values": ["bump"],
+					"values": ["bump"], 
 					"force": true
 				}
 			]

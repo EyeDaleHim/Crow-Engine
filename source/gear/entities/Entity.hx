@@ -1,4 +1,4 @@
-package gear.objects.entities;
+package gear.entities;
 
 import gear.assets.metadata.EntityMetadata;
 
@@ -25,7 +25,7 @@ class Entity extends FlxSpriteContainer
 
 	private var _listeners:Array<EntityListenerMetadata> = [];
 
-	public function new(inputFile:String)
+	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String)
 	{
 		final jsonContent = FlxG.assets.getTextUnsafe(Path.join(['entities', '$inputFile.json']));
 		final metadata:EntityMetadata = Json.parse(jsonContent);
@@ -114,58 +114,54 @@ class Entity extends FlxSpriteContainer
 			if (listener.event != eventName)
 				continue;
 
-			if (listener.condition != null)
-			{
-				// Condition: beat_modulo
-				if (listener.condition.type == "beat_modulo")
-				{
-					if (beat == null
-						|| listener.condition.value == null
-						|| beat % listener.condition.value[0] != listener.condition.value[1])
-						continue;
-				}
+			// If a beat is provided, temporarily add it to the state for evaluation.
+			if (beat != null)
+				state.set("_beat", beat);
 
-				// Condition: checkState
-				if (listener.condition.checkState != null)
-				{
-					var stateVar = listener.condition.checkState;
-					var expected = true;
-					if (stateVar.startsWith("!"))
-					{
-						stateVar = stateVar.substring(1);
-						expected = false;
-					}
+			// Evaluate the condition using the new PredicateEvaluator
+			final conditionMet = PredicateEvaluator.evaluate(listener.condition, this.state);
 
-					if (state.get(stateVar) != expected)
-						continue;
-				}
-			}
+			// Clean up the temporary state variable.
+			if (beat != null)
+				state.remove("_beat");
+
+			if (!conditionMet)
+				continue;
 
 			// All conditions passed, execute actions
 			for (action in listener.actions)
 			{
-				// Action: play_animation
-				if (action.type == "play_animation" && action.sprite != null && action.values != null)
+				switch (action.type)
 				{
-					final sprite = spritesMap.get(action.sprite);
-					if (sprite != null)
-					{
-						final animName = action.values[0];
-						final force = action.force == true;
-						sprite.animation.play(animName, force);
-					}
-				}
-
-				// Action: stateChange
-				if (action.stateChange != null && action.values != null)
-				{
-					final stateVar = action.values[0];
-					switch (action.stateChange)
-					{
-						case "toggle_bool":
-							if (state.exists(stateVar) && Std.isOfType(state.get(stateVar), Bool))
-								state.set(stateVar, !state.get(stateVar));
-					}
+					case "play_animation":
+						if (action.sprite != null && action.values != null)
+						{
+							final sprite = spritesMap.get(action.sprite);
+							if (sprite != null)
+							{
+								final animName = action.values[0];
+								final force = action.force == true;
+								sprite.animation.play(animName, force);
+							}
+						}
+					case "state_change":
+						if (action.stateChange != null)
+						{
+							final change = action.stateChange;
+							switch (change.changeType)
+							{
+								case "SET":
+									state.set(change.stateKey, change.value);
+								case "INCREMENT":
+									if (state.exists(change.stateKey))
+										state.set(change.stateKey, state.get(change.stateKey) + change.value);
+								case "TOGGLE":
+									if (state.exists(change.stateKey) && Std.isOfType(state.get(change.stateKey), Bool))
+										state.set(change.stateKey, !state.get(change.stateKey));
+								// "CALL_SYSTEM_FUNCTION" would be implemented here if needed
+								default: // Do nothing for unknown change types
+							}
+						}
 				}
 			}
 		}
