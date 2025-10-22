@@ -1,4 +1,4 @@
-package gear.utils.parsers;
+package gear.utils;
 
 class JsonComment
 {
