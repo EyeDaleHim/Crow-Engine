@@ -42,4 +42,20 @@ enum abstract MouseButton(String) from String to String
 			default: -1;
 		}
 	}
+
+	/**
+	 * Converts a unique integer ID to its string representation (e.g., 0 -> "LMB").
+	 * @param id The integer ID to convert.
+	 * @return The string representation, or null if not found.
+	 */
+	public static function idToString(id:Int):String
+	{
+		return switch (id)
+		{
+			case ID_LEFT: Left;
+			case ID_MIDDLE: Middle;
+			case ID_RIGHT: Right;
+			default: null;
+		}
+	}
 }

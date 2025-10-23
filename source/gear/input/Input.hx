@@ -116,13 +116,14 @@ class Input
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 		{
-			impulse = new InputImpulse(InputDevice.Keyboard, code);
+			impulse = new InputImpulse(impulseKey);
 			_inputImpulses.set(impulseKey, impulse);
 		}
 
 		if (!impulse.active)
 		{ // Only process if it was not active (i.e., just pressed)
 			impulse.active = true;
+			impulse.timestamp = System.getTimer();
 			_justPressedImpulses.push(impulse);
 			_activeImpulses.push(impulse);
 		}
@@ -159,13 +160,14 @@ class Input
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 		{
-			impulse = new InputImpulse(InputDevice.Mouse, code);
+			impulse = new InputImpulse(impulseKey);
 			_inputImpulses.set(impulseKey, impulse);
 		}
 
 		if (!impulse.active)
 		{
 			impulse.active = true;
+			impulse.timestamp = System.getTimer();
 			_justPressedImpulses.push(impulse);
 			_activeImpulses.push(impulse);
 		}
@@ -365,11 +367,7 @@ class Input
 			if (checkJustPressed)
 			{
 				// For an order-sensitive combo to be "just pressed", the last key must have been just pressed.
-				// All other keys in the combo must also be "just pressed" (duration == 0)
-				// and their press order must be correct.
-				var lastInput = trigger.inputs[trigger.inputs.length - 1];
-				var lastImpulseKey = '${lastInput.device}:${lastInput.code}';
-				var lastImpulse = _getImpulseFromSource(lastInput);
+				var lastImpulse = _getImpulseFromSource(trigger.inputs[trigger.inputs.length - 1]);
 				if (lastImpulse == null || !_justPressedImpulses.contains(lastImpulse))
 					return false; // Last key wasn't just pressed.
 
