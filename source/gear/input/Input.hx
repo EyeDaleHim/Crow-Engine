@@ -15,7 +15,7 @@ class Input
 	public static final inputPath:String = 'data/config/inputs.json';
 
 	private var _actionBinds:Map<String, ActionBind>;
-	private var _inputImpulses:Map<String, InputImpulse>; // Key: "device:code"
+	private var _inputImpulses:Map<Int, InputImpulse>; // Key: (device << 24) | code
 	private var _activeImpulses:Array<InputImpulse>; // List of impulses currently held down
 	private var _justPressedImpulses:Array<InputImpulse>; // Impulses that became active THIS frame
 	private var _justReleasedImpulses:Array<InputImpulse>; // Impulses that became inactive THIS frame
@@ -33,7 +33,7 @@ class Input
 		}
 
 		_actionBinds = new Map<String, ActionBind>();
-		_inputImpulses = new Map<String, InputImpulse>();
+		_inputImpulses = new Map<Int, InputImpulse>();
 		_activeImpulses = [];
 		_justPressedImpulses = [];
 		_justReleasedImpulses = [];
@@ -91,11 +91,11 @@ class Input
 	public function update(elapsed:Float):Void
 	{
 		// Clear just pressed/released states from previous frame
-		_justPressedImpulses = [];
-		_justReleasedImpulses = [];
+		_justPressedImpulses.splice(0, _justPressedImpulses.length);
+		_justReleasedImpulses.splice(0, _justReleasedImpulses.length);
 
 		// Update duration for active impulses
-		for (impulse in _inputImpulses)
+		for (impulse in _activeImpulses)
 		{
 			if (impulse.active)
 			{
@@ -112,7 +112,7 @@ class Input
 		if (code == null)
 			return; // Unknown or unmapped key
 
-		final impulseKey = '${InputDevice.Keyboard}:$code';
+		final impulseKey = _getImpulseKey(InputDevice.Keyboard, e.keyCode);
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 		{
@@ -124,10 +124,7 @@ class Input
 		{ // Only process if it was not active (i.e., just pressed)
 			impulse.active = true;
 			_justPressedImpulses.push(impulse);
-			if (!_activeImpulses.contains(impulse))
-			{
-				_activeImpulses.push(impulse);
-			}
+			_activeImpulses.push(impulse);
 		}
 	}
 
@@ -137,7 +134,7 @@ class Input
 		if (code == null)
 			return;
 
-		final impulseKey = '${InputDevice.Keyboard}:$code';
+		final impulseKey = _getImpulseKey(InputDevice.Keyboard, e.keyCode);
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 			return; // Key was never tracked as pressed
@@ -155,7 +152,10 @@ class Input
 		if (code == null)
 			return;
 
-		final impulseKey = '${InputDevice.Mouse}:$code';
+		final buttonId = MouseButton.toId(code);
+		if (buttonId == -1) return;
+
+		final impulseKey = _getImpulseKey(InputDevice.Mouse, buttonId);
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 		{
@@ -167,10 +167,7 @@ class Input
 		{
 			impulse.active = true;
 			_justPressedImpulses.push(impulse);
-			if (!_activeImpulses.contains(impulse))
-			{
-				_activeImpulses.push(impulse);
-			}
+			_activeImpulses.push(impulse);
 		}
 	}
 
@@ -179,7 +176,10 @@ class Input
 		if (code == null)
 			return;
 
-		final impulseKey = '${InputDevice.Mouse}:$code';
+		final buttonId = MouseButton.toId(code);
+		if (buttonId == -1) return;
+
+		final impulseKey = _getImpulseKey(InputDevice.Mouse, buttonId);
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 			return;
@@ -278,7 +278,7 @@ class Input
 				var currentTriggerMinDuration:Float = Math.POSITIVE_INFINITY;
 				for (inputSource in trigger.inputs)
 				{
-					final impulse = _inputImpulses.get('${inputSource.device}:${inputSource.code}');
+					final impulse = _getImpulseFromSource(inputSource);
 					if (impulse != null && impulse.active)
 					{
 						currentTriggerMinDuration = Math.min(currentTriggerMinDuration, impulse.duration);
@@ -316,7 +316,7 @@ class Input
 
 			for (inputSource in trigger.inputs)
 			{
-				final impulse = _inputImpulses.get('${inputSource.device}:${inputSource.code}');
+				final impulse = _getImpulseFromSource(inputSource);
 				if (impulse == null || !impulse.active)
 				{
 					return false;
@@ -332,8 +332,7 @@ class Input
 		for (i in 0...trigger.inputs.length)
 		{
 			var inputSource = trigger.inputs[i];
-			final impulseKey = '${inputSource.device}:${inputSource.code}';
-			var impulse = _inputImpulses.get(impulseKey);
+			var impulse = _getImpulseFromSource(inputSource);
 
 			if (impulse == null)
 			{
@@ -370,8 +369,7 @@ class Input
 				// and their press order must be correct.
 				var lastInput = trigger.inputs[trigger.inputs.length - 1];
 				var lastImpulseKey = '${lastInput.device}:${lastInput.code}';
-				var lastImpulse = _inputImpulses.get(lastImpulseKey);
-
+				var lastImpulse = _getImpulseFromSource(lastInput);
 				if (lastImpulse == null || !_justPressedImpulses.contains(lastImpulse))
 					return false; // Last key wasn't just pressed.
 
@@ -380,7 +378,7 @@ class Input
 				// still applies, but `impulse1.duration >= impulse2.duration` will be `0 >= 0`, which is true.
 				for (inputSource in trigger.inputs)
 				{
-					if (_inputImpulses.get('${inputSource.device}:${inputSource.code}').duration > 0)
+					if (_getImpulseFromSource(inputSource).duration > 0)
 					{
 						return false;
 					}
@@ -396,7 +394,7 @@ class Input
 					// "LAST": Only the last key in the sequence being released triggers the event,
 					// while all other keys are still held.
 					var lastInput = trigger.inputs[trigger.inputs.length - 1];
-					var lastImpulse = _inputImpulses.get('${lastInput.device}:${lastInput.code}');
+					var lastImpulse = _getImpulseFromSource(lastInput);
 
 					if (lastImpulse == null || !_justReleasedImpulses.contains(lastImpulse))
 					{
@@ -406,7 +404,7 @@ class Input
 					// Check that all other keys are still active (held).
 					for (i in 0...trigger.inputs.length - 1)
 					{
-						var impulse = _inputImpulses.get('${trigger.inputs[i].device}:${trigger.inputs[i].code}');
+						var impulse = _getImpulseFromSource(trigger.inputs[i]);
 						if (impulse == null || !impulse.active)
 						{
 							return false; // An earlier key in the sequence is not being held.
@@ -422,7 +420,7 @@ class Input
 					var activeCount = 0;
 					for (inputSource in trigger.inputs)
 					{
-						var impulse = _inputImpulses.get('${inputSource.device}:${inputSource.code}');
+						var impulse = _getImpulseFromSource(inputSource);
 						if (impulse != null)
 						{
 							if (_justReleasedImpulses.contains(impulse))
@@ -446,8 +444,8 @@ class Input
 				// and their press durations must be in descending order.
 				for (i in 0...(trigger.inputs.length - 1))
 				{
-					var impulse1 = _inputImpulses.get('${trigger.inputs[i].device}:${trigger.inputs[i].code}');
-					var impulse2 = _inputImpulses.get('${trigger.inputs[i + 1].device}:${trigger.inputs[i + 1].code}');
+					var impulse1 = _getImpulseFromSource(trigger.inputs[i]);
+					var impulse2 = _getImpulseFromSource(trigger.inputs[i + 1]);
 					if (impulse1.duration < impulse2.duration)
 					{
 						allInputsMatch = false;
@@ -458,6 +456,35 @@ class Input
 		}
 
 		return allInputsMatch;
+	}
+
+	private function _getImpulseFromSource(source:InputSource):InputImpulse
+	{
+		var deviceId:Int = switch (source.device)
+		{
+			case InputDevice.Keyboard: 0;
+			case InputDevice.Mouse: 1;
+			default: -1;
+		}
+
+		if (deviceId == -1) return null;
+
+		var code:Int = switch (source.device)
+		{
+			case InputDevice.Keyboard: FlxKey.fromString(source.code); // e.g., "A" -> 65
+			case InputDevice.Mouse: MouseButton.stringToId(source.code); // e.g., "LMB" -> 0
+			default: -1; // Or handle other devices like Gamepad
+		}
+
+		if (code == -1) return null;
+
+		return _inputImpulses.get(_getImpulseKey(source.device, code));
+	}
+
+	private inline function _getImpulseKey(device:InputDevice, code:Int):Int
+	{
+		final deviceId:Int = (device == InputDevice.Mouse) ? 1 : 0; // Simplified for current devices
+		return (deviceId << 24) | code;
 	}
 
 	private function getKeyboardCode(keyCode:Int):String
