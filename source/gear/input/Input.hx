@@ -3,8 +3,12 @@ package gear.input;
 import openfl.display.Stage;
 import openfl.events.KeyboardEvent;
 import openfl.events.MouseEvent;
+import lime.system.System;
 import flixel.input.keyboard.FlxKey; // For mapping key codes
 import gear.assets.metadata.internals.InputMetadata;
+import gear.input.ComboReleaseCondition;
+import gear.input.InputDevice;
+import gear.input.MouseButton;
 
 class Input
 {
@@ -39,12 +43,12 @@ class Input
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, (e) -> onMouseDown("LMB"));
-			stage.addEventListener(MouseEvent.MOUSE_UP, (e) -> onMouseUp("LMB"));
-			stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, (e) -> onMouseDown("MMB"));
-			stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, (e) -> onMouseUp("MMB"));
-			stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, (e) -> onMouseDown("RMB"));
-			stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, (e) -> onMouseUp("RMB"));
+			stage.addEventListener(MouseEvent.MOUSE_DOWN, (e) -> onMouseDown(MouseButton.Left));
+			stage.addEventListener(MouseEvent.MOUSE_UP, (e) -> onMouseUp(MouseButton.Left));
+			stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, (e) -> onMouseDown(MouseButton.Middle));
+			stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, (e) -> onMouseUp(MouseButton.Middle));
+			stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, (e) -> onMouseDown(MouseButton.Right));
+			stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, (e) -> onMouseUp(MouseButton.Right));
 		}
 		else
 		{
@@ -108,11 +112,11 @@ class Input
 		if (code == null)
 			return; // Unknown or unmapped key
 
-		final impulseKey = 'keyboard:$code';
+		final impulseKey = '${InputDevice.Keyboard}:$code';
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 		{
-			impulse = new InputImpulse("keyboard", code);
+			impulse = new InputImpulse(InputDevice.Keyboard, code);
 			_inputImpulses.set(impulseKey, impulse);
 		}
 
@@ -133,7 +137,7 @@ class Input
 		if (code == null)
 			return;
 
-		final impulseKey = 'keyboard:$code';
+		final impulseKey = '${InputDevice.Keyboard}:$code';
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 			return; // Key was never tracked as pressed
@@ -146,16 +150,16 @@ class Input
 		}
 	}
 
-	private function onMouseDown(code:String):Void
+	private function onMouseDown(code:MouseButton):Void
 	{
 		if (code == null)
 			return;
 
-		final impulseKey = 'mouse:$code';
+		final impulseKey = '${InputDevice.Mouse}:$code';
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 		{
-			impulse = new InputImpulse("mouse", code);
+			impulse = new InputImpulse(InputDevice.Mouse, code);
 			_inputImpulses.set(impulseKey, impulse);
 		}
 
@@ -170,12 +174,12 @@ class Input
 		}
 	}
 
-	private function onMouseUp(code:String):Void
+	private function onMouseUp(code:MouseButton):Void
 	{
 		if (code == null)
 			return;
 
-		final impulseKey = 'mouse:$code';
+		final impulseKey = '${InputDevice.Mouse}:$code';
 		var impulse = _inputImpulses.get(impulseKey);
 		if (impulse == null)
 			return;
@@ -385,9 +389,9 @@ class Input
 			else if (checkJustReleased)
 			{
 				// Handle "just released" for order-sensitive combos based on the `comboRelease` condition.
-				final releaseCondition = (trigger.comboRelease == "LAST") ? "LAST" : "ANY";
+				final releaseCondition:ComboReleaseCondition = (trigger.comboRelease == Last) ? Last : Any;
 
-				if (releaseCondition == "LAST")
+				if (releaseCondition == Last)
 				{
 					// "LAST": Only the last key in the sequence being released triggers the event,
 					// while all other keys are still held.

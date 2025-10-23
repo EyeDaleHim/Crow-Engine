@@ -13,5 +13,5 @@ The idea of Gear Engine's data-driven design comes from the fact that developers
 # Credits
 
 - [EyeDaleHim](https://github.com/EyeDaleHim) Main developer and maintainer of Gear Engine.
-  
 - [FNF Team](https://github.com/FunkinCrew) For making the funky rhythm game we all know and love.
+- [Rudyrue](https://github.com/Rudyrue/) Menu references as seen [here](https://github.com/Rudyrue/custom-psych).
