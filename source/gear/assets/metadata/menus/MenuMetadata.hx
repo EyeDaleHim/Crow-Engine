@@ -2,6 +2,7 @@ package gear.assets.metadata.menus;
 
 import gear.utils.AxeData;
 import gear.objects.layout.LayoutProperties;
+import gear.assets.metadata.logics.LogicMetadata;
 
 /**
  * The base structure for menu layouts and input handling.
@@ -32,6 +33,11 @@ typedef MenuMetadata =
 	 * This allows for data-driven control flow.
 	 */
 	var ?inputActions:Array<MenuInput>;
+
+	/**
+	 * Logic properties for the menu, including initial state and listeners.
+	 */
+	var ?logic:LogicMetadata;
 };
 
 /**

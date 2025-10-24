@@ -1,4 +1,4 @@
-package gear.assets.metadata;
+package gear.assets.metadata.logics;
 
 typedef PredicateMetadata =
 {
