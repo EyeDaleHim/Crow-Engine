@@ -76,5 +76,40 @@
 			"actions": [],
 			"killIntro": true
 		}
+	],
+	"decorations": [
+		{
+			"entity": "title/gf",
+			"position": {
+				"x": 512,
+				"y": 40
+			}
+		},
+		{
+			"entity": "title/logo",
+			"position": { "x": -150, "y": -100 }
+		}
+	],
+	"items": [
+		{
+			"name": "press_enter",
+			"entity": "title/press_enter", // This entity will define the "Press Enter to Begin" visual.
+			"position": {
+				"x": 100,
+				"y": 576
+			},
+			"onAccept": {
+				"type": "open_state",
+				"args": [ "MainMenuState" ]
+			}
+		}
+	],
+	"inputActions": [
+		{
+			"input": "accept",
+			"action": {
+				"type": "accept_selection"
+			}
+		}
 	]
 }

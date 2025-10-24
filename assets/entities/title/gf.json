@@ -1,6 +1,5 @@
 {
 	"name": "title-gf",
-	"position": { "x": 512, "y": 40 },
 	"initialState": {
 		"idle_mode": false,
 		"dancing_left": false

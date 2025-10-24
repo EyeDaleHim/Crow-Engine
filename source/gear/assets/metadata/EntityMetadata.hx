@@ -13,14 +13,6 @@ typedef EntityMetadata =
 	var name:String;
 
 	/**
-	 * The position of this entity.
-	 * 
-	 * However, it can always be overrided by the current state upon
-	 * creation.
-	 */
-	var ?position:AxeData<Float>;
-
-	/**
 	 * The list of sprites for this entity to render.
 	 * 
 	 * Rendering order depends on the order of elements in this array.
@@ -74,6 +66,13 @@ typedef SpriteMetadata =
 	 * The scale of this sprite. Width and height will be updated.
 	 */
     var ?scale:AxeData<Float>;
+
+	/**
+	 * The scroll factor of this sprite.
+	 * 
+	 * Default is (1, 1) which implies it scrolls at the same rate as the camera.
+	 */
+	var ?scrollFactor:AxeData<Float>;
 
 	/**
 	 * The rotation of this sprite, in degrees.

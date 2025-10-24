@@ -59,6 +59,8 @@ import sys.io.File;
 import haxe.Json;
 import haxe.io.Path;
 
+import gear.utils.AxeData;
 import gear.utils.JsonComment;
 
 using StringTools;
+using Lambda;

@@ -3,8 +3,11 @@ package gear.assets.metadata.menus;
 /**
  * Defines the structure for the title screen intro, including beat-timed events
  * and a list of random text pairs to be chosen from.
+ * 
+ * This also includes general menu properties for when the intro transitions
+ * into an interactive menu.
  */
-typedef TitleIntroMetadata =
+typedef TitleIntroMetadata = MenuMetadata &
 {
 	/**
 	 * An array of text pairs. One pair will be chosen at random when the intro starts.

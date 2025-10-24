@@ -1,0 +1,28 @@
+{
+	"name": "press_enter_button",
+	"sprites": [
+		{
+			"name": "text_sprite",
+			"assetPath": "title/titleEnter",
+			"usingAtlas": true,
+			"position": {
+				"x": 0,
+				"y": 0
+			},
+			"animations": [
+				{
+					"name": "idle",
+					"prefix": "Press Enter to Begin",
+					"frameRate": 24,
+					"looped": true
+				},
+				{
+					"name": "press",
+					"prefix": "ENTER PRESSED",
+					"frameRate": 24,
+					"looped": false
+				}
+			]
+		}
+	]
+}

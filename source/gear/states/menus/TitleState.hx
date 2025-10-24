@@ -1,8 +1,9 @@
 package gear.states.menus;
 
 import gear.assets.metadata.menus.TitleIntroMetadata;
+import gear.states.internals.BaseMenuState;
 
-class TitleState extends MainState
+class TitleState extends BaseMenuState
 {
 	// INTRO
 	public var introMetadata:TitleIntroMetadata;
@@ -12,10 +13,6 @@ class TitleState extends MainState
 	public var introText:AnimatedText;
 	public var associationSprite:FlxSprite;
 	public var randomPair:Array<String>;
-
-	// TITLE
-	public var gfCharacter:Entity;
-	public var logo:Entity;
 
 	private var lastBeatHit:Int = -1;
 
@@ -39,6 +36,7 @@ class TitleState extends MainState
 		try
 		{
 			introMetadata = cast Json.parse(JsonComment.removeComments(rawJson));
+			menuMetadata = introMetadata; // Assign to the base class property.
 		}
 		catch (e)
 		{
@@ -50,11 +48,17 @@ class TitleState extends MainState
 			randomPair = FlxG.random.getObject(introMetadata.randomTextPairs);
 		}
 
-		gfCharacter = new Entity("title/gf");
-		add(gfCharacter);
+		// Build the main menu elements (decorations and layout) immediately.
+		buildMenu();
 
-		logo = new Entity("title/logo");
-		add(logo);
+		// But hide them until the intro is over.
+		if (menuLayout != null)
+			menuLayout.visible = false;
+
+		for (entity in menuEntities)
+		{
+			entity.visible = false;
+		}
 
 		// Setup the scene for intro elements.
 		introScene = new FlxContainer();
@@ -83,8 +87,11 @@ class TitleState extends MainState
 
 		menuMusic.onBeat.add((beat) ->
 		{
-			gfCharacter.onEvent("beat", beat);
-			logo.onEvent("beat", beat);
+			// Forward beat events to entities managed by the menu state.
+			for (entity in menuEntities)
+			{
+				entity.onEvent("beat", beat);
+			}
 		});
 
 		openCallback = onReturn;
@@ -94,8 +101,10 @@ class TitleState extends MainState
 	{
 		menuMusic.onBeat.add((beat) ->
 		{
-			gfCharacter.onEvent("beat", beat);
-			logo.onEvent("beat", beat);
+			for (entity in menuEntities)
+			{
+				entity.onEvent("beat", beat);
+			}
 		});
 
 		FlxTimer.wait(1, () ->
@@ -175,24 +184,43 @@ class TitleState extends MainState
 
 	private function skipIntro():Void
 	{
+		if (introScene == null || !introScene.exists)
+			return;
+
 		menuMusic.onBeat.remove(introBeatHit);
 
-		introScene.kill();
+		if (introScene != null)
+		{
+			introScene.destroy();
+			introScene = null;
+		}
+
+		if (menuLayout != null)
+		{
+			menuLayout.visible = true;
+		}
+
+		for (entity in menuEntities)
+		{
+			entity.visible = true;
+		}
+
 		FlxG.camera.flash(FlxColor.WHITE, 1);
-		// TODO: Transition to the interactive part of the title menu.
 	}
 
 	override public function update(elapsed:Float):Void
 	{
-		super.update(elapsed);
-
+		// Only handle intro-skipping input if the intro is active.
 		if (Main.input.isPressed("accept"))
 		{
-			if (introScene.exists)
+			if (introScene != null && introScene.exists)
 			{
 				skipIntro();
 			}
-			else {}
 		}
+
+		// Call the base class update method to handle menu input
+		// after the intro is complete.
+		super.update(elapsed);
 	}
 }

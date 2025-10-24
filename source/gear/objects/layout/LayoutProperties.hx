@@ -3,59 +3,66 @@ package gear.objects.layout;
 /**
  * The direction to arrange child components in a `Layout`.
  */
-enum LayoutDirection
+enum abstract LayoutDirection(String) to String
 {
-	VERTICAL;
-	HORIZONTAL;
+	var VERTICAL = "VERTICAL";
+	var HORIZONTAL = "HORIZONTAL";
 }
 
 /**
  * How to align children along the main axis.
  */
-enum JustifyContent
+enum abstract JustifyContent(String) to String
 {
-	START;
-	END;
-	CENTER;
-	SPACE_BETWEEN;
-	SPACE_AROUND;
-	SPACE_EVENLY;
+	var START = "START";
+	var END = "END";
+	var CENTER = "CENTER";
+	var SPACE_BETWEEN = "SPACE_BETWEEN";
+	var SPACE_AROUND = "SPACE_AROUND";
+	var SPACE_EVENLY = "SPACE_EVENLY";
 }
 
 /**
  * How to align children along the cross axis.
  */
-enum AlignItems
+enum abstract AlignItems(String) to String
 {
-	START;
-	END;
-	CENTER;
+	var START = "START";
+	var END = "END";
+	var CENTER = "CENTER";
 }
 
 /**
  * How the gap is applied between children.
  */
-enum GapBehavior
+enum abstract GapBehavior(String) to String
 {
-	AFTER_CHILD;
-	FIXED_OFFSET;
+	var AFTER_CHILD = "AFTER_CHILD";
+	var FIXED_OFFSET = "FIXED_OFFSET";
 }
 
 /**
  * How to handle items that overflow the main axis.
  */
-enum FlexWrap
+enum abstract FlexWrap(String) to String
 {
-	NO_WRAP;
-	WRAP;
-	WRAP_REVERSE;
+	var NO_WRAP = "NO_WRAP";
+	var WRAP = "WRAP";
+	var WRAP_REVERSE = "WRAP_REVERSE";
 }
 
 /**
  * Defines how changing the `selectedIndex` in an `InteractableLayout` deals with boundaries.
  */
-enum SelectionMode
+enum abstract SelectionMode(String) to String
 {
-	WRAP; // Selection wraps around from the last item to the first, and vice-versa.
-	BOUND; // Selection stops at the first and last items.
+	/**
+	 * Selection wraps around from the last item to the first, and vice-versa.
+	 */
+	var WRAP = "WRAP";
+
+	/**
+	 * Selection stops at the first and last items.
+	 */
+	var BOUND = "BOUND";
 }

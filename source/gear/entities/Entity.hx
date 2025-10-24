@@ -30,7 +30,7 @@ class Entity extends FlxSpriteContainer
 		final jsonContent = FlxG.assets.getTextUnsafe(Path.join(['entities', '$inputFile.json']));
 		final metadata:EntityMetadata = Json.parse(JsonComment.removeComments(jsonContent));
 
-		super(metadata.position.x, metadata.position.y);
+		super(x, y);
 
 		this.entityName = metadata.name;
 
@@ -77,6 +77,9 @@ class Entity extends FlxSpriteContainer
 
 			if (spriteMeta.scale != null)
 				sprite.scale.set(spriteMeta.scale.x, spriteMeta.scale.y);
+
+			if (spriteMeta.scrollFactor != null)
+				sprite.scrollFactor.set(spriteMeta.scrollFactor.x, spriteMeta.scrollFactor.y);
 
 			if (spriteMeta.angle != null)
 				sprite.angle = spriteMeta.angle;
