@@ -3,8 +3,8 @@ package gear.objects.ui;
 import flixel.graphics.tile.FlxDrawQuadsItem;
 import flixel.graphics.frames.FlxFrame;
 import flixel.graphics.frames.FlxFramesCollection;
-import gear.assets.metadata.AnimatedFontMetadata;
-import gear.assets.metadata.GlyphMetadata;
+import gear.assets.metadata.display.AnimatedFontMetadata;
+import gear.assets.metadata.display.GlyphMetadata;
 
 using flixel.util.FlxColorTransformUtil;
 
@@ -288,8 +288,10 @@ class AnimatedTextLine extends FlxSprite
 			final isColored = (transform != null #if !html5 && transform.hasRGBMultipliers() #end);
 			final hasColorOffsets:Bool = (transform != null && transform.hasRGBAOffsets());
 
+			// Flixel kindly helps us re-use the last line's batch automatically here
 			var batch:FlxDrawQuadsItem = camera.startQuadBatch(frames.parent, isColored, hasColorOffsets, parentText.blend, parentText.antialiasing,
 				parentText.shader);
+
 			var matrix = this._matrix;
 			for (drawable in _drawableGlyphs)
 			{

@@ -1,8 +1,8 @@
 package gear.predicates;
 
+import gear.assets.metadata.logics.PredicateMetadata;
 import gear.predicates.PredicateOperatorCode;
 import gear.predicates.PredicateType;
-import gear.assets.metadata.PredicateMetadata;
 import gear.predicates.PredicateValidator;
 
 /**

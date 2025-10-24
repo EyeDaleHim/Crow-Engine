@@ -1,6 +1,6 @@
 package gear.predicates;
 
-import gear.assets.metadata.PredicateMetadata;
+import gear.assets.metadata.logics.PredicateMetadata;
 
 /**
  * A utility class for validating the structure and basic correctness of `PredicateMetadata` objects.

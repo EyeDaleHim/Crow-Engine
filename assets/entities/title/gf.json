@@ -1,9 +1,5 @@
 {
 	"name": "title-gf",
-	"initialState": {
-		"idle_mode": false,
-		"dancing_left": false
-	},
 	"sprites": [
 		{
 			"name": "gf",
@@ -30,54 +26,6 @@
 					"prefix": "gfDance",
 					"frameRate": 24,
 					"looped": false
-				}
-			]
-		}
-	],
-	"listeners": [
-		{
-			"event": "beat",
-			"actions": [
-				{
-					"type": "state_change",
-					"stateChange": {
-						"changeType": "TOGGLE",
-						"stateKey": "dancing_left"
-					}
-				}
-			]
-		},
-		{
-			"event": "beat",
-			"condition": {
-				"type": "CHECK",
-				"stateKey": "dancing_left",
-				"operatorCode": "EQ",
-				"targetValues": [true]
-			},
-			"actions": [
-				{
-					"type": "play_animation",
-					"sprite": "gf",
-					"values": ["danceLeft"],
-					"force": true
-				}
-			]
-		},
-		{
-			"event": "beat",
-			"condition": {
-				"type": "CHECK",
-				"stateKey": "dancing_left",
-				"operatorCode": "EQ",
-				"targetValues": [false]
-			},
-			"actions": [
-				{
-					"type": "play_animation",
-					"sprite": "gf",
-					"values": ["danceRight"],
-					"force": true
 				}
 			]
 		}

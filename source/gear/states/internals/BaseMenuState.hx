@@ -1,5 +1,6 @@
 package gear.states.internals;
 
+import gear.assets.metadata.logics.ActionMetadata;
 import gear.assets.metadata.menus.MenuMetadata;
 import gear.objects.layout.InteractableLayout;
 import gear.objects.layout.LayoutProperties;
@@ -25,6 +26,11 @@ class BaseMenuState extends MainState
 	 */
 	public var menuMetadata:MenuMetadata;
 
+	/**
+	 * The internal state for the menu's logic, which can be modified by listeners.
+	 */
+	public var logicState:Map<String, Dynamic> = [];
+
 	public function new()
 	{
 		super();
@@ -42,6 +48,15 @@ class BaseMenuState extends MainState
 			return;
 		}
 
+		// Initialize logic state from metadata
+		if (menuMetadata.logic != null && menuMetadata.logic.initialState != null)
+		{
+			for (key in Reflect.fields(menuMetadata.logic.initialState))
+			{
+				logicState.set(key, Reflect.field(menuMetadata.logic.initialState, key));
+			}
+		}
+
 		if (menuMetadata.decorations != null)
 		{
 			buildDecorations(menuMetadata.decorations);
@@ -56,6 +71,9 @@ class BaseMenuState extends MainState
 		}
 
 		menuLayout.updateLayout();
+
+		// Trigger the "create" event for any initial setup logic.
+		onEvent("create");
 	}
 
 	/**
@@ -148,6 +166,8 @@ class BaseMenuState extends MainState
 	{
 		super.update(elapsed);
 
+		onEvent("update");
+
 		if (menuLayout == null || menuMetadata.inputActions == null)
 			return;
 
@@ -187,6 +207,87 @@ class BaseMenuState extends MainState
 						handleMenuAction(selectedItemData.onAccept);
 					}
 				}
+		}
+	}
+
+	/**
+	 * Triggers actions for any listeners associated with the given event.
+	 * This is the core of the data-driven logic system for menus.
+	 * @param eventName The name of the event to trigger (e.g., "beat", "update").
+	 * @param ?args A map of additional data to be temporarily available in the state for predicate evaluation.
+	 */
+	public function onEvent(eventName:String, ?args:Map<String, Dynamic>):Void
+	{
+		if (menuMetadata?.logic?.listeners == null)
+			return;
+
+		for (listener in menuMetadata.logic.listeners)
+		{
+			if (listener.event != eventName)
+				continue;
+
+			// If args are provided, temporarily add them to the state for evaluation.
+			if (args != null)
+			{
+				for (key in args.keys())
+					logicState.set(key, args.get(key));
+			}
+
+			// Evaluate the condition.
+			final conditionMet = PredicateEvaluator.evaluate(listener.condition, this.logicState);
+
+			// Clean up the temporary state variables.
+			if (args != null)
+			{
+				for (key in args.keys())
+					logicState.remove(key);
+			}
+
+			if (!conditionMet)
+				continue;
+
+			// All conditions passed, execute actions.
+			for (action in listener.actions)
+			{
+				switch (action.type)
+				{
+					case "play_animation":
+						if (action.sprite != null && action.values != null && action.values.length > 0)
+						{
+							// Find the entity that contains the target sprite.
+							for (entity in menuEntities)
+							{
+								if (entity.spritesMap.exists(action.sprite))
+								{
+									final sprite = entity.spritesMap.get(action.sprite);
+									final animName = action.values[0];
+									final force = action.force == true;
+									sprite.animation.play(animName, force);
+									break; // Assume sprite names are unique across entities for now.
+								}
+							}
+						}
+
+					case "state_change":
+						if (action.stateChange != null)
+						{
+							final change = action.stateChange;
+							switch (change.changeType)
+							{
+								case "SET":
+									logicState.set(change.stateKey, change.value);
+								case "INCREMENT":
+									if (logicState.exists(change.stateKey) && Std.isOfType(logicState.get(change.stateKey), Float))
+										logicState.set(change.stateKey, logicState.get(change.stateKey) + change.value);
+								case "TOGGLE":
+									if (logicState.exists(change.stateKey) && Std.isOfType(logicState.get(change.stateKey), Bool))
+										logicState.set(change.stateKey, !logicState.get(change.stateKey));
+								// "CALL_SYSTEM_FUNCTION" would be implemented here if needed.
+								default: // Do nothing for unknown change types.
+							}
+						}
+				}
+			}
 		}
 	}
 }

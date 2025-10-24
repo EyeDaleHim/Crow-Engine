@@ -14,18 +14,5 @@
 				}
 			]
 		}
-	],
-	"listeners": [
-		{
-			"event": "beat",
-			"actions": [
-				{
-					"type": "play_animation",
-					"sprite": "logo",
-					"values": ["bump"], 
-					"force": true
-				}
-			]
-		}
 	]
 }
