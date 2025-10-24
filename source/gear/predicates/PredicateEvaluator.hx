@@ -13,7 +13,7 @@ class PredicateEvaluator
     /**
      * Requires predicates to be valid and type-safe before it is processed on-demand.
 	 * 
-	 * Disabling this will incurs some performance benefit.
+	 * Disabling this will incur some performance benefit.
      */
     public static var requireValidation:Bool = true;
 

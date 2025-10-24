@@ -27,6 +27,11 @@ class Entity extends FlxSpriteContainer
 
 		this.entityName = metadata.name;
 
+		if (metadata.visible != null)
+		{
+			this.visible = metadata.visible;
+		}
+
 		for (spriteMeta in metadata.sprites)
 		{
 			final sprite = new FlxSprite();
@@ -48,6 +53,11 @@ class Entity extends FlxSpriteContainer
 							sprite.animation.addByPrefix(anim.name, anim.prefix, anim.frameRate, anim.loop);
 						}
 					}
+
+					if (spriteMeta.startingAnimation != null)
+					{
+						sprite.animation.play(spriteMeta.startingAnimation);
+					}
 				}
 			}
 			else
@@ -55,17 +65,20 @@ class Entity extends FlxSpriteContainer
 				sprite.loadGraphic(spriteMeta.assetPath);
 			}
 
-			sprite.x = spriteMeta.position.x;
-			sprite.y = spriteMeta.position.y;
+			if (spriteMeta.position != null)
+			{
+				sprite.x = spriteMeta.position.x ?? 0.0;
+				sprite.y = spriteMeta.position.y ?? 0.0;
+			}
 
 			if (spriteMeta.scale != null)
-				sprite.scale.set(spriteMeta.scale.x, spriteMeta.scale.y);
+				sprite.scale.set(spriteMeta.scale.x ?? 1.0, spriteMeta.scale.y ?? 1.0);
 
 			if (spriteMeta.scrollFactor != null)
-				sprite.scrollFactor.set(spriteMeta.scrollFactor.x, spriteMeta.scrollFactor.y);
+				sprite.scrollFactor.set(spriteMeta.scrollFactor.x ?? 1.0, spriteMeta.scrollFactor.y ?? 1.0);
 
 			if (spriteMeta.angle != null)
-				sprite.angle = spriteMeta.angle;
+				sprite.angle = spriteMeta.angle ?? 1.0;
 
 			add(sprite);
 			spritesMap.set(spriteMeta.name, sprite);

@@ -100,6 +100,12 @@ typedef MenuDecoration =
 	 * An optional position to place the entity, overriding its default.
 	 */
 	var ?position:AxeData<Float>;
+	
+	/**
+	 * If true, the entity will be centered on the screen.
+	 * This overrides any `position` property.
+	 */
+	var ?screenCenter:AxeData<Bool>;
 };
 
 /**

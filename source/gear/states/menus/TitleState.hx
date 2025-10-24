@@ -1,6 +1,7 @@
 package gear.states.menus;
 
 import gear.states.internals.BaseMenuState;
+import gear.assets.metadata.menus.TitleIntroMetadata;
 
 class TitleState extends BaseMenuState
 {
@@ -8,9 +9,9 @@ class TitleState extends BaseMenuState
 	public var introScene:FlxContainer;
 
 	public var introText:AnimatedText;
-	public var associationSprite:FlxSprite;
-	public var randomPair:Array<String>;
 
+	public var randomPair:Array<String>;
+	private var introMetadata:TitleIntroMetadata;
 	private var lastBeatHit:Int = -1;
 
 	public function new()
@@ -30,17 +31,17 @@ class TitleState extends BaseMenuState
 
 		try
 		{
-			menuMetadata = cast Json.parse(JsonComment.removeComments(rawJson));
+			introMetadata = cast Json.parse(JsonComment.removeComments(rawJson));
+			menuMetadata = introMetadata;
 		}
 		catch (e)
 		{
 			trace('Error parsing title intro file: $e');
 		}
 
-		final randomTextPairs:Array<Array<String>> = Reflect.getProperty(menuMetadata, "randomTextPairs");
-		if (randomTextPairs != null && randomTextPairs.length > 0)
+		if (introMetadata.randomTextPairs != null && introMetadata.randomTextPairs.length > 0)
 		{
-			randomPair = FlxG.random.getObject(randomTextPairs);
+			randomPair = FlxG.random.getObject(introMetadata.randomTextPairs);
 		}
 		
 		buildMenu();
@@ -48,7 +49,7 @@ class TitleState extends BaseMenuState
 		introScene = new FlxContainer();
 		add(introScene);
 
-		var blackBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		final blackBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		introScene.add(blackBG);
 
 		introText = new AnimatedText(0, 0, "boldText");
@@ -56,12 +57,6 @@ class TitleState extends BaseMenuState
 		introText.alignment = CENTER;
 		introText.y = 200;
 		introScene.add(introText);
-
-		associationSprite = new FlxSprite();
-		associationSprite.screenCenter(X);
-		associationSprite.y = FlxG.height * 0.6;
-		associationSprite.visible = false;
-		introScene.add(associationSprite);
 
 		FlxTimer.wait(1, () ->
 		{
@@ -131,50 +126,46 @@ class TitleState extends BaseMenuState
 	{
 		super.onEvent(eventName, args);
 
-		if (menuMetadata?.logic?.listeners == null)
+		if (eventName != "beat" || introMetadata?.beatEvents == null)
 			return;
 
-		for (listener in menuMetadata.logic.listeners)
+		final beat:Int = args.get("beat");
+
+		for (event in introMetadata.beatEvents)
 		{
-			if (listener.event != eventName)
+			if (event.beat != beat)
 				continue;
 
-			// Temporarily add args to the state for evaluation
-			if (args != null) for (key in args.keys()) logicState.set(key, args.get(key));
-
-			final conditionMet = PredicateEvaluator.evaluate(listener.condition, this.logicState);
-
-			// Clean up temporary state
-			if (args != null) for (key in args.keys()) logicState.remove(key);
-
-			if (!conditionMet)
-				continue;
-
-			for (action in listener.actions)
+			if (event.actions != null)
 			{
-				switch (action.type)
+				for (action in event.actions)
 				{
-					case "set_intro_text":
-						introText.text = action.values.join("\n");
-					case "add_intro_text":
-						introText.text += "\n" + action.values.join("\n");
-					case "wipe_intro_text":
+					if (action.setText != null)
+						introText.text = action.setText.join("\n");
+
+					if (action.addText != null)
+						introText.text += (introText.text == "" ? "" : "\n") + action.addText;
+
+					if (action.wipeText == true)
 						introText.text = "";
-					case "use_random_text":
-						if (randomPair != null && action.values != null)
-						{
-							final index = Std.parseInt(action.values[0]);
-							if (index >= 0 && index < randomPair.length)
-								introText.text += randomPair[index];
-						}
-					case "set_association_sprite":
-						associationSprite.visible = (action.values[1] == "true");
-						if (associationSprite.visible && action.values[0] != null && action.values[0] != "")
-							associationSprite.loadGraphic(action.values[0]);
-					case "skip_intro":
-						skipIntro();
+
+					if (action.useRandomText != null && randomPair != null)
+					{
+						final index = action.useRandomText;
+						if (index >= 0 && index < randomPair.length)
+							introText.text += randomPair[index];
+					}
+
+					if (action.associationSprite != null)
+					{
+						if (menuEntities.exists("association_sprite"))
+							menuEntities.get("association_sprite").visible = action.associationSprite.visible;
+					}
 				}
 			}
+
+			if (event.killIntro == true)
+				skipIntro();
 		}
 	}
 }

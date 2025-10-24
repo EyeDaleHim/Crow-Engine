@@ -86,12 +86,22 @@ class BaseMenuState extends MainState
 		{
 			var x:Float = 0;
 			var y:Float = 0;
+
 			if (decoData.position != null)
 			{
 				x = decoData.position.x;
 				y = decoData.position.y;
 			}
+
 			final entity = new Entity(x, y, decoData.entity);
+			if (decoData.screenCenter != null)
+			{
+				if (decoData.screenCenter.x)
+					entity.screenCenter(X);
+				if (decoData.screenCenter.y)
+					entity.screenCenter(Y);
+			}
+		
 			add(entity);
 			menuEntities.set(entity.entityName, entity);
 		}

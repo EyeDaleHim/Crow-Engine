@@ -1,0 +1,11 @@
+{
+	"name": "association_sprite",
+	"visible": false,
+	"sprites": [
+		{
+			"name": "logo",
+			"assetPath": "title/newgroundsLogo",
+			"usingAtlas": false
+		}
+	]
+}

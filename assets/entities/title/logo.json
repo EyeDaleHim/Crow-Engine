@@ -12,7 +12,8 @@
 					"prefix": "logo bumpin",
 					"frameRate": 24
 				}
-			]
+			],
+			"startingAnimation": "bump"
 		}
 	]
 }

@@ -22,7 +22,8 @@
 					"frameRate": 24,
 					"looped": false
 				}
-			]
+			],
+			"startingAnimation": "idle"
 		}
 	]
 }

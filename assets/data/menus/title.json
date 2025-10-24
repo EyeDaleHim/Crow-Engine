@@ -1,164 +1,195 @@
 {
-  "randomTextPairs": [
-    ["NOT MADE IN", "HAXEFLIXEL"],
-    ["UNLICENSED", "FOR CONSOLES"],
-    ["AS SEEN ON", "NEWGROUNDS"],
-    ["MAY CAUSE", "BRAIN DAMAGE"],
-    ["NOT FOR", "RESALE"],
-    ["RIP", "ADOBE FLASH"],
-    ["friday", "night funkin"],
-    ["haxe", "is cool"],
-    ["it's just a", "burning memory"],
-    ["it's just a", "nightmare"]
-  ],
-  "logic": {
-    "initialState": {
-      "dancing_left": false
-    },
-    "listeners": [
-      // Intro text events
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [1] },
-        "actions": [{ "type": "set_intro_text", "values": ["Funkin' Crew"] }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [3] },
-        "actions": [{ "type": "add_intro_text", "values": ["presents"] }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [4] },
-        "actions": [{ "type": "wipe_intro_text" }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [5] },
-        "actions": [{ "type": "set_intro_text", "values": ["In association", "with"] }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [7] },
-        "actions": [
-          { "type": "add_intro_text", "values": ["newgrounds"] },
-          { "type": "set_association_sprite", "values": ["title/newgroundsLogo", "true"] }
-        ]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [8] },
-        "actions": [
-          { "type": "wipe_intro_text" },
-          { "type": "set_association_sprite", "values": ["", "false"] }
-        ]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [9] },
-        "actions": [{ "type": "use_random_text", "values": ["0"] }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [11] },
-        "actions": [
-          { "type": "add_intro_text", "values": [""] },
-          { "type": "use_random_text", "values": ["1"] }
-        ]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [12] },
-        "actions": [{ "type": "wipe_intro_text" }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [13] },
-        "actions": [{ "type": "add_intro_text", "values": ["Friday"] }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [14] },
-        "actions": [{ "type": "add_intro_text", "values": ["Night"] }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [15] },
-        "actions": [{ "type": "add_intro_text", "values": ["Funkin'"] }]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "beat", "operatorCode": "EQ", "targetValues": [16] },
-        "actions": [{ "type": "skip_intro" }]
-      },
-
-      // Logo bump animation on every beat
-      {
-        "event": "beat",
-        "actions": [
-          { "type": "play_animation", "sprite": "logo", "values": ["bump"], "force": true }
-        ]
-      },
-
-      // GF dance logic on every beat
-      {
-        "event": "beat",
-        "actions": [
-          {
-            "type": "state_change",
-            "stateChange": { "changeType": "TOGGLE", "stateKey": "dancing_left" }
-          }
-        ]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "dancing_left", "operatorCode": "EQ", "targetValues": [true] },
-        "actions": [
-          { "type": "play_animation", "sprite": "gf", "values": ["danceLeft"], "force": true }
-        ]
-      },
-      {
-        "event": "beat",
-        "condition": { "type": "CHECK", "stateKey": "dancing_left", "operatorCode": "EQ", "targetValues": [false] },
-        "actions": [
-          { "type": "play_animation", "sprite": "gf", "values": ["danceRight"], "force": true }
-        ]
-      }
-    ]
-  },
-  "decorations": [
-    {
-      "entity": "title/gf",
-      "position": {
-        "x": 512,
-        "y": 40
-      }
-    },
-    {
-      "entity": "title/logo",
-      "position": { "x": -150, "y": -100 }
-    }
-  ],
-  "items": [
-    {
-      "name": "press_enter",
-      "entity": "title/press_enter",
-      "position": {
-        "x": 100,
-        "y": 576
-      },
-      "onAccept": {
-        "type": "open_state",
-        "args": ["MainMenuState"]
-      }
-    }
-  ],
-  "inputActions": [
-    {
-      "input": "accept",
-      "action": {
-        "type": "accept_selection"
-      }
-    }
-  ]
+	"randomTextPairs": [
+		[
+			"NOT MADE IN",
+			"HAXEFLIXEL"
+		],
+		[
+			"UNLICENSED",
+			"FOR CONSOLES"
+		],
+		[
+			"AS SEEN ON",
+			"NEWGROUNDS"
+		],
+		[
+			"MAY CAUSE",
+			"BRAIN DAMAGE"
+		],
+		[
+			"NOT FOR",
+			"RESALE"
+		],
+		[
+			"RIP",
+			"ADOBE FLASH"
+		],
+		[
+			"friday",
+			"night funkin"
+		],
+		[
+			"haxe",
+			"is cool"
+		],
+		[
+			"it's just a",
+			"burning memory"
+		],
+		[
+			"it's just a",
+			"nightmare"
+		]
+	],
+	"logic": {
+		"initialState": {
+			"dancing_left": false
+		},
+		"listeners": [
+			// Logo bump animation on every beat
+			{
+				"event": "beat",
+				"actions": [
+					{
+						"type": "play_animation",
+						"sprite": "logo",
+						"values": [
+							"bump"
+						],
+						"force": true
+					}
+				]
+			},
+			// GF dance logic on every beat
+			{
+				"event": "beat",
+				"actions": [
+					{
+						"type": "state_change",
+						"stateChange": {
+							"changeType": "TOGGLE",
+							"stateKey": "dancing_left"
+						}
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "dancing_left",
+					"operatorCode": "EQ",
+					"targetValues": [
+						true
+					]
+				},
+				"actions": [
+					{
+						"type": "play_animation",
+						"sprite": "gf",
+						"values": [
+							"danceLeft"
+						],
+						"force": true
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "dancing_left",
+					"operatorCode": "EQ",
+					"targetValues": [
+						false
+					]
+				},
+				"actions": [
+					{
+						"type": "play_animation",
+						"sprite": "gf",
+						"values": [
+							"danceRight"
+						],
+						"force": true
+					}
+				]
+			}
+		]
+	},
+	"beatEvents": [
+		{ "beat": 1, "actions": [{ "setText": ["Funkin' Crew"] }] },
+		{ "beat": 3, "actions": [{ "addText": "presents" }] },
+		{ "beat": 4, "actions": [{ "wipeText": true }] },
+		{ "beat": 5, "actions": [{ "setText": ["In association", "with"] }] },
+		{
+			"beat": 7,
+			"actions": [
+				{ "addText": "newgrounds" },
+				{ "associationSprite": { "visible": true } }
+			]
+		},
+		{
+			"beat": 8,
+			"actions": [
+				{ "wipeText": true },
+				{ "associationSprite": { "visible": false } }
+			]
+		},
+		{ "beat": 9, "actions": [{ "useRandomText": 0 }] },
+		{ "beat": 11, "actions": [{ "addText": "" }, { "useRandomText": 1 }] },
+		{ "beat": 12, "actions": [{ "wipeText": true }] },
+		{ "beat": 13, "actions": [{ "addText": "Friday" }] },
+		{ "beat": 14, "actions": [{ "addText": "Night" }] },
+		{ "beat": 15, "actions": [{ "addText": "Funkin'" }] },
+		{ "beat": 16, "killIntro": true }
+	],
+	"decorations": [
+		{
+			"entity": "title/gf",
+			"position": {
+				"x": 512,
+				"y": 40
+			}
+		},
+		{
+			"entity": "title/logo",
+			"position": {
+				"x": -150,
+				"y": -100
+			}
+		},
+		{
+			"entity": "title/association_sprite",
+			"position": {
+				"x": 0,
+				"y": 432
+			},
+			"screenCenter": {"x": true, "y": false}
+		}
+	],
+	"items": [
+		{
+			"name": "press_enter",
+			"entity": "title/press_enter",
+			"position": {
+				"x": 100,
+				"y": 576
+			}/*,
+			"onAccept": {
+				"type": "open_state",
+				"args": [
+					"MainMenuState"
+				]
+			}*/
+		}
+	],
+	"inputActions": [
+		{
+			"input": "accept",
+			"action": {
+				"type": "accept_selection"
+			}
+		}
+	]
 }

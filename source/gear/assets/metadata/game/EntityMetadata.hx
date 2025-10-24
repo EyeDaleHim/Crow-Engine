@@ -11,6 +11,11 @@ typedef EntityMetadata =
 	var name:String;
 
 	/**
+	 * Whether the entity is visible on creation. Defaults to true.
+	 */
+	var ?visible:Bool;
+
+	/**
 	 * The list of sprites for this entity to render.
 	 * 
 	 * Rendering order depends on the order of elements in this array.
@@ -43,9 +48,18 @@ typedef SpriteMetadata =
 	var ?animations:Array<AnimationMetadata>;
 
 	/**
-	 * The position of this sprite relative to its parent entity.
+	 * The animation to play when this sprite is initialized.
+	 * 
+	 * If the animation is not found, no animation will be played.
 	 */
-	var position:AxeData<Float>;
+	var ?startingAnimation:String;
+
+	/**
+	 * The position of this sprite relative to its parent entity.
+	 * 
+	 * If left blank, it will default to its parent entity's position.
+	 */
+	var ?position:AxeData<Float>;
 
 	/**
 	 * The scale of this sprite. Width and height will be updated.
