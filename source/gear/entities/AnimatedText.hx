@@ -1,4 +1,4 @@
-package gear.objects.ui;
+package gear.entities;
 
 import flixel.graphics.tile.FlxDrawQuadsItem;
 import flixel.graphics.frames.FlxFrame;

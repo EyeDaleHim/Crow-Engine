@@ -3,9 +3,10 @@
 	"sprites": [
 		{
 			"name": "gf",
-			"assetPath": "title/gfDanceTitle",
-			"usingAtlas": true,
-			"position": { "x": 0, "y": 0 },
+			"method": {
+				"type": "atlas",
+				"path": "title/gfDanceTitle"
+			},
 			"animations": [
 				{
 					"name": "danceLeft",

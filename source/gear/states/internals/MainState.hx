@@ -12,17 +12,16 @@ class MainState extends FlxSubState
 		return Main;
 	}
 
-	public var menuMusic:Music;
 	public var transitionObject:TransitionObject;
 
 	public function new()
 	{
 		super();
 
-        if (transitionObject != null)
-        {
-            transitionObject.startIn();
-        }
+		if (transitionObject != null)
+		{
+			transitionObject.startIn();
+		}
 
 		bgColor = 0xFF000000;
 		destroySubStates = false;
@@ -70,8 +69,7 @@ class MainState extends FlxSubState
 				var castedState = cast(state, MainState);
 				if (transferAttributes)
 				{
-					castedState.menuMusic = menuMusic;
-                    castedState.transitionObject = transitionObject;
+					transferAttributeHelper(castedState);
 				}
 				transitionOut(() ->
 				{
@@ -79,6 +77,15 @@ class MainState extends FlxSubState
 				});
 			}
 		}
+	}
+
+	/**
+	 * Helper function to transfer common attributes to the next state.
+	 * This can be overridden by subclasses to transfer additional state.
+	 */
+	public function transferAttributeHelper(state:MainState):Void
+	{
+		state.transitionObject = transitionObject;
 	}
 
 	private function checkTransition():Void

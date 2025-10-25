@@ -43,9 +43,9 @@ import gear.input.Input;
 
 import gear.music.Music;
 
-import gear.objects.ui.AnimatedText;
+import gear.entities.AnimatedText;
 
-import gear.predicates.PredicateEvaluator;
+import gear.logics.PredicateEvaluator;
 
 import gear.states.internals.InitState;
 import gear.states.internals.MainState;

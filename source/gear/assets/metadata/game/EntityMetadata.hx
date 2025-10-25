@@ -1,6 +1,8 @@
 package gear.assets.metadata.game;
 
 import gear.utils.AxeData;
+import gear.utils.ColorData;
+import flixel.util.FlxColor;
 import gear.assets.metadata.display.AnimationMetadata;
 
 typedef EntityMetadata =
@@ -23,6 +25,51 @@ typedef EntityMetadata =
 	var sprites:Array<SpriteMetadata>;
 };
 
+/**
+ * Defines how a sprite's graphic should be loaded or created. This is a base
+ * type; the `type` field determines which other fields are available.
+ *
+ * Available types:
+ * - `simple`: Loads a single image.
+ *   - `path`: `String` - The path to the image file.
+ * - `atlas`: Loads from a texture atlas.
+ *   - `path`: `String` - The path/prefix for the texture atlas files.
+ * - `graphic`: Creates a solid-colored rectangle.
+ *   - `width`: `Int`
+ *   - `height`: `Int`
+ *   - `color`: `FlxColor`
+ */
+typedef SpriteAssetMethod =
+{
+	/**
+	 * The type of asset method. Can be "simple", "atlas", or "graphic".
+	 */
+	var type:String;
+
+	/**
+	 * The path to the asset file. Used by `simple` and `atlas` types.
+	 */
+	var ?path:String;
+
+	/**
+	 * The width of the graphic. Used by the `graphic` type.
+	 */
+	var ?width:Int;
+	/**
+	 * The height of the graphic. Used by the `graphic` type.
+	 */
+	var ?height:Int;
+
+	/**
+	 * The color of the graphic. Used by the `graphic` type.
+	 * 
+	 * The difference between this method's `color` and the `color` field in `SpriteMetadata` is that this `color` 
+	 * field applies a tint to the entire sprite after it has been loaded or created, whereas the `color` in 
+	 * here is used to define the base color of a `graphic` type sprite.
+	 */
+	var ?color:ColorData;
+};
+
 typedef SpriteMetadata =
 {
 	/**
@@ -31,19 +78,13 @@ typedef SpriteMetadata =
 	var name:String;
 
 	/**
-	 * The path to the sprite's image file.
+	 * The method used to load or create the sprite's graphic.
 	 */
-	var assetPath:String;
-
-	/**
-	 * Whether or not this sprite uses an atlas. The default value
-	 * is false.
-	 */
-	var ?usingAtlas:Bool;
+	var method:SpriteAssetMethod;
 
 	/**
 	 * The metadata for the sprite's animation. Has no effect if
-	 * usingAtlas is false.
+	 * the method type is not "atlas".
 	 */
 	var ?animations:Array<AnimationMetadata>;
 
@@ -77,4 +118,9 @@ typedef SpriteMetadata =
 	 * The rotation of this sprite, in degrees.
 	 */
     var ?angle:Float;
+
+	/**
+	 * The color tint of this sprite.
+	 */
+	var ?color:ColorData;
 };

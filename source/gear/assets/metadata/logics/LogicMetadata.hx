@@ -42,6 +42,13 @@ typedef ListenerMetadata =
 	var ?condition:PredicateMetadata;
 
 	/**
+	 * If true, this listener will be removed after its actions are executed once.
+	 * 
+	 * The removal comes after all listeners are processed.
+	 */
+	var ?weak:Bool;
+
+	/**
 	 * The list of actions to perform when the event is triggered.
 	 */
 	var actions:Array<ListenerActionMetadata>;
@@ -49,7 +56,6 @@ typedef ListenerMetadata =
 
 /**
  * Defines an action to be performed by an event listener.
- * This was formerly `ListenerActionMetadata` inside `EntityMetadata`.
  */
 typedef ListenerActionMetadata =
 {

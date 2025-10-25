@@ -3,11 +3,9 @@
 	"sprites": [
 		{
 			"name": "text_sprite",
-			"assetPath": "title/titleEnter",
-			"usingAtlas": true,
-			"position": {
-				"x": 0,
-				"y": 0
+			"method": {
+				"type": "atlas",
+				"path": "title/titleEnter"
 			},
 			"animations": [
 				{

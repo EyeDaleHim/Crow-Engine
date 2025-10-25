@@ -4,8 +4,10 @@
 	"sprites": [
 		{
 			"name": "logo",
-			"assetPath": "title/newgroundsLogo",
-			"usingAtlas": false
+			"method": {
+				"type": "simple",
+				"path": "title/newgroundsLogo"
+			}
 		}
 	]
 }

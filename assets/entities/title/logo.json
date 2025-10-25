@@ -3,9 +3,10 @@
 	"sprites": [
 		{
 			"name": "logo",
-			"assetPath": "title/logoBumpin",
-			"usingAtlas": true,
-			"position": { "x": 0, "y": 0 },
+			"method": {
+				"type": "atlas",
+				"path": "title/logoBumpin"
+			},
 			"animations": [
 				{
 					"name": "bump",

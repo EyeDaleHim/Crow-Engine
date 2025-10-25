@@ -1,4 +1,4 @@
-package gear.predicates;
+package gear.logics;
 
 import gear.assets.metadata.logics.PredicateMetadata;
 

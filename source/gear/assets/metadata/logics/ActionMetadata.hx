@@ -1,9 +1,11 @@
 package gear.assets.metadata.logics;
 
+import gear.logics.ActionChangeType;
+
 typedef ActionMetadata =
 {
-	// Defines the change type: "SET", "INCREMENT", "TOGGLE", "CALL_SYSTEM_FUNCTION"
-	var changeType:String;
+	// Defines the change type: "SET", "INCREMENT", "TOGGLE"
+	var changeType:ActionChangeType;
 
 	// The state key to modify (e.g., "isToggled", "positionX")
 	var stateKey:String;

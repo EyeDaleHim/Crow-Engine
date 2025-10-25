@@ -1,9 +1,10 @@
 package gear.states.internals;
 
-import gear.assets.metadata.logics.ActionMetadata;
+import gear.assets.metadata.logics.LogicMetadata;
 import gear.assets.metadata.menus.MenuMetadata;
 import gear.objects.layout.InteractableLayout;
-import gear.objects.layout.LayoutProperties;
+import gear.logics.LogicEvaluator;
+import gear.logics.PredicateEvaluator;
 
 /**
  * A base state for creating data-driven, interactive menus.
@@ -11,6 +12,13 @@ import gear.objects.layout.LayoutProperties;
  */
 class BaseMenuState extends MainState
 {
+	/**
+	 * The music that plays during this menu state.
+	 * 
+	 * The music is carried over between menu states.
+	 */
+	public var menuMusic:Music;
+
 	/**
 	 * The root layout container for the entire menu.
 	 */
@@ -101,7 +109,7 @@ class BaseMenuState extends MainState
 				if (decoData.screenCenter.y)
 					entity.screenCenter(Y);
 			}
-		
+
 			add(entity);
 			menuEntities.set(entity.entityName, entity);
 		}
@@ -224,12 +232,14 @@ class BaseMenuState extends MainState
 	 * Triggers actions for any listeners associated with the given event.
 	 * This is the core of the data-driven logic system for menus.
 	 * @param eventName The name of the event to trigger (e.g., "beat", "update").
-	 * @param ?args A map of additional data to be temporarily available in the state for predicate evaluation.
+	 * @param args A map of additional data to be temporarily available in the state for predicate evaluation.
 	 */
 	public function onEvent(eventName:String, ?args:Map<String, Dynamic>):Void
 	{
 		if (menuMetadata?.logic?.listeners == null)
 			return;
+
+		var listenersToRemove:Array<ListenerMetadata> = null;
 
 		for (listener in menuMetadata.logic.listeners)
 		{
@@ -257,47 +267,33 @@ class BaseMenuState extends MainState
 				continue;
 
 			// All conditions passed, execute actions.
-			for (action in listener.actions)
-			{
-				switch (action.type)
-				{
-					case "play_animation":
-						if (action.sprite != null && action.values != null && action.values.length > 0)
-						{
-							// Find the entity that contains the target sprite.
-							for (entity in menuEntities)
-							{
-								if (entity.spritesMap.exists(action.sprite))
-								{
-									final sprite = entity.spritesMap.get(action.sprite);
-									final animName = action.values[0];
-									final force = action.force == true;
-									sprite.animation.play(animName, force);
-									break; // Assume sprite names are unique across entities for now.
-								}
-							}
-						}
+			LogicEvaluator.execute(listener.actions, this.logicState, this.menuEntities);
 
-					case "state_change":
-						if (action.stateChange != null)
-						{
-							final change = action.stateChange;
-							switch (change.changeType)
-							{
-								case "SET":
-									logicState.set(change.stateKey, change.value);
-								case "INCREMENT":
-									if (logicState.exists(change.stateKey) && Std.isOfType(logicState.get(change.stateKey), Float))
-										logicState.set(change.stateKey, logicState.get(change.stateKey) + change.value);
-								case "TOGGLE":
-									if (logicState.exists(change.stateKey) && Std.isOfType(logicState.get(change.stateKey), Bool))
-										logicState.set(change.stateKey, !logicState.get(change.stateKey));
-								// "CALL_SYSTEM_FUNCTION" would be implemented here if needed.
-								default: // Do nothing for unknown change types.
-							}
-						}
-				}
+			// If the listener is weak, mark it for removal.
+			if (listener.weak)
+			{
+				if (listenersToRemove == null)
+					listenersToRemove = [];
+				listenersToRemove.push(listener);
 			}
 		}
+
+		// Remove any weak listeners that were triggered.
+		if (listenersToRemove != null)
+		{
+			for (listener in listenersToRemove)
+				menuMetadata.logic.listeners.remove(listener);
+		}
+	}
+
+	/**
+	 * Transfers attributes to the next `MainState`.
+	 * Overrides the base implementation to also transfer `menuMusic`.
+	 */
+	override public function transferAttributeHelper(state:MainState):Void
+	{
+		super.transferAttributeHelper(state);
+		if (Std.isOfType(state, BaseMenuState))
+			cast(state, BaseMenuState).menuMusic = this.menuMusic;
 	}
 }

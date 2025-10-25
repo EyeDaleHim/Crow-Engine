@@ -1,4 +1,4 @@
-package gear.predicates;
+package gear.logics;
 
 enum abstract PredicateOperatorCode(String) from String to String
 {

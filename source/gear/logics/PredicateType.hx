@@ -1,4 +1,4 @@
-package gear.predicates;
+package gear.logics;
 
 /**
  * Defines the types of logical operations for predicates.

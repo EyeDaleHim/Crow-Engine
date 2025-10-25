@@ -1,9 +1,9 @@
-package gear.predicates;
+package gear.logics;
 
 import gear.assets.metadata.logics.PredicateMetadata;
-import gear.predicates.PredicateOperatorCode;
-import gear.predicates.PredicateType;
-import gear.predicates.PredicateValidator;
+import gear.logics.PredicateOperatorCode;
+import gear.logics.PredicateType;
+import gear.logics.PredicateValidator;
 
 /**
  * A utility class for evaluating predicate conditions defined by `PredicateMetadata`.
