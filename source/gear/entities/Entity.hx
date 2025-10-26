@@ -93,10 +93,8 @@ class Entity extends FlxSpriteContainer
 						}
 					}
 				case "graphic":
-					trace(spriteMeta.method);
-					trace(spriteMeta.method.color);
 					final color:FlxColor = ColorData.fromDynamic(spriteMeta.method.color) ?? FlxColor.WHITE;
-					
+
 					var width = spriteMeta.method.width ?? 1;
 					if (width == -1)
 						width = FlxG.width;
@@ -114,7 +112,10 @@ class Entity extends FlxSpriteContainer
 		}
 
 		if (spriteMeta.scale != null)
+		{
 			sprite.scale.set(spriteMeta.scale.x ?? 1.0, spriteMeta.scale.y ?? 1.0);
+			sprite.updateHitbox();
+		}
 
 		if (spriteMeta.scrollFactor != null)
 			sprite.scrollFactor.set(spriteMeta.scrollFactor.x ?? 1.0, spriteMeta.scrollFactor.y ?? 1.0);
@@ -131,12 +132,7 @@ class Entity extends FlxSpriteContainer
 		final textObj = new AnimatedText(textMeta.position?.x ?? 0.0, textMeta.position?.y ?? 0.0, textMeta.font, textMeta.text);
 
 		if (textMeta.fieldWidth != null)
-		{
-			if (textMeta.fieldWidth == -1)
-				textObj.fieldWidth = FlxG.width;
-			else
-				textObj.fieldWidth = textMeta.fieldWidth;
-		}
+			textObj.fieldWidth = textMeta.fieldWidth;
 
 		if (textMeta.alignment != null)
 			textObj.alignment = textMeta.alignment;
