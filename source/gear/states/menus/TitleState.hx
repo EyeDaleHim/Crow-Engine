@@ -5,12 +5,7 @@ import gear.assets.metadata.menus.TitleIntroMetadata;
 
 class TitleState extends BaseMenuState
 {
-	// INTRO
-	public var introScene:FlxContainer;
-
-	public var introText:AnimatedText;
-
-	public var randomPair:Array<String>;
+	private var randomPair:Array<String>;
 	private var introMetadata:TitleIntroMetadata;
 	private var lastBeatHit:Int = -1;
 
@@ -46,18 +41,6 @@ class TitleState extends BaseMenuState
 		
 		buildMenu();
 
-		introScene = new FlxContainer();
-		add(introScene);
-
-		final blackBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		introScene.add(blackBG);
-
-		introText = new AnimatedText(0, 0, "boldText");
-		introText.fieldWidth = FlxG.width;
-		introText.alignment = CENTER;
-		introText.y = 200;
-		introScene.add(introText);
-
 		FlxTimer.wait(1, () ->
 		{
 			menuMusic.play();
@@ -91,15 +74,12 @@ class TitleState extends BaseMenuState
 
 	private function skipIntro():Void
 	{
+		final introScene = menuEntities.get("title_intro");
 		if (introScene == null || !introScene.exists)
-			return;
-
-		if (introScene != null)
-		{
-			introScene.destroy();
-			introScene = null;
-		}
-
+			return;		
+		introScene.destroy();
+		// Remove it from the map so it can't be found again.
+		menuEntities.remove("title_intro");
 		FlxG.camera.flash(FlxColor.WHITE, 1);
 	}
 
@@ -107,7 +87,8 @@ class TitleState extends BaseMenuState
 	{
 		// Only handle intro-skipping input if the intro is active.
 		if (Main.input.isPressed("accept"))
-		{
+		{	
+			final introScene = menuEntities.get("title_intro");
 			if (introScene != null && introScene.exists)
 			{
 				skipIntro();
@@ -128,6 +109,14 @@ class TitleState extends BaseMenuState
 
 		if (eventName != "beat" || introMetadata?.beatEvents == null)
 			return;
+
+		// Don't process beat events if the intro is gone.
+		final introScene = menuEntities.get("title_intro");
+		if (introScene == null)
+			return;
+
+		final introText:AnimatedText = cast(introScene.spritesMap.get("intro_text"), AnimatedText);
+		if (introText == null) return;
 
 		final beat:Int = args.get("beat");
 

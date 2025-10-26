@@ -1,12 +1,15 @@
 {
 	"name": "association_sprite",
 	"visible": false,
-	"sprites": [
+	"objects": [
 		{
-			"name": "logo",
-			"method": {
-				"type": "simple",
-				"path": "title/newgroundsLogo"
+			"type": "sprite",
+			"data": {
+				"name": "logo",
+				"method": {
+					"type": "simple",
+					"path": "title/newgroundsLogo"
+				}
 			}
 		}
 	]

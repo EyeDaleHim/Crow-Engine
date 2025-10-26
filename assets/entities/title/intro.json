@@ -1,0 +1,27 @@
+{
+	"name": "title_intro",
+	"objects": [
+		{
+			"type": "sprite",
+			"data": {
+				"name": "black_bg",
+				"method": {
+					"type": "graphic",
+					"width": 1280,
+					"height": 720,
+					"color": {"r": 0, "g": 0, "b": 0, "a": 255}
+				}
+			}
+		},
+		{
+			"type": "animated_text",
+			"data": {
+				"name": "intro_text",
+				"font": "boldText",
+				"fieldWidth": -1,
+				"alignment": "CENTER",
+				"position": { "y": 200 }
+			}
+		}
+	]
+}

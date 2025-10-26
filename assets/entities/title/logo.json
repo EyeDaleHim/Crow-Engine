@@ -1,20 +1,23 @@
 {
 	"name": "title-logo",
-	"sprites": [
+	"objects": [
 		{
-			"name": "logo",
-			"method": {
-				"type": "atlas",
-				"path": "title/logoBumpin"
-			},
-			"animations": [
-				{
-					"name": "bump",
-					"prefix": "logo bumpin",
-					"frameRate": 24
-				}
-			],
-			"startingAnimation": "bump"
+			"type": "sprite",
+			"data": {
+				"name": "logo",
+				"method": {
+					"type": "atlas",
+					"path": "title/logoBumpin"
+				},
+				"animations": [
+					{
+						"name": "bump",
+						"prefix": "logo bumpin",
+						"frameRate": 24
+					}
+				],
+				"startingAnimation": "bump"
+			}
 		}
 	]
 }

@@ -1,27 +1,30 @@
 {
 	"name": "press_enter_button",
-	"sprites": [
+	"objects": [
 		{
-			"name": "text_sprite",
-			"method": {
-				"type": "atlas",
-				"path": "title/titleEnter"
-			},
-			"animations": [
-				{
-					"name": "idle",
-					"prefix": "Press Enter to Begin",
-					"frameRate": 24,
-					"looped": true
+			"type": "sprite",
+			"data": {
+				"name": "text_sprite",
+				"method": {
+					"type": "atlas",
+					"path": "title/titleEnter"
 				},
-				{
-					"name": "press",
-					"prefix": "ENTER PRESSED",
-					"frameRate": 24,
-					"looped": false
-				}
-			],
-			"startingAnimation": "idle"
+				"animations": [
+					{
+						"name": "idle",
+						"prefix": "Press Enter to Begin",
+						"frameRate": 24,
+						"looped": true
+					},
+					{
+						"name": "press",
+						"prefix": "ENTER PRESSED",
+						"frameRate": 24,
+						"looped": false
+					}
+				],
+				"startingAnimation": "idle"
+			}
 		}
 	]
 }

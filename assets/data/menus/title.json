@@ -118,31 +118,124 @@
 		]
 	},
 	"beatEvents": [
-		{ "beat": 1, "actions": [{ "setText": ["Funkin' Crew"] }] },
-		{ "beat": 3, "actions": [{ "addText": "presents" }] },
-		{ "beat": 4, "actions": [{ "wipeText": true }] },
-		{ "beat": 5, "actions": [{ "setText": ["In association", "with"] }] },
+		{
+			"beat": 1,
+			"actions": [
+				{
+					"setText": [
+						"Funkin' Crew"
+					]
+				}
+			]
+		},
+		{
+			"beat": 3,
+			"actions": [
+				{
+					"addText": "presents"
+				}
+			]
+		},
+		{
+			"beat": 4,
+			"actions": [
+				{
+					"wipeText": true
+				}
+			]
+		},
+		{
+			"beat": 5,
+			"actions": [
+				{
+					"setText": [
+						"In association",
+						"with"
+					]
+				}
+			]
+		},
 		{
 			"beat": 7,
 			"actions": [
-				{ "addText": "newgrounds" },
-				{ "associationSprite": { "visible": true } }
+				{
+					"addText": "newgrounds"
+				},
+				{
+					"associationSprite": {
+						"visible": true
+					}
+				}
 			]
 		},
 		{
 			"beat": 8,
 			"actions": [
-				{ "wipeText": true },
-				{ "associationSprite": { "visible": false } }
+				{
+					"wipeText": true
+				},
+				{
+					"associationSprite": {
+						"visible": false
+					}
+				}
 			]
 		},
-		{ "beat": 9, "actions": [{ "useRandomText": 0 }] },
-		{ "beat": 11, "actions": [{ "addText": "" }, { "useRandomText": 1 }] },
-		{ "beat": 12, "actions": [{ "wipeText": true }] },
-		{ "beat": 13, "actions": [{ "addText": "Friday" }] },
-		{ "beat": 14, "actions": [{ "addText": "Night" }] },
-		{ "beat": 15, "actions": [{ "addText": "Funkin'" }] },
-		{ "beat": 16, "killIntro": true }
+		{
+			"beat": 9,
+			"actions": [
+				{
+					"useRandomText": 0
+				}
+			]
+		},
+		{
+			"beat": 11,
+			"actions": [
+				{
+					"addText": ""
+				},
+				{
+					"useRandomText": 1
+				}
+			]
+		},
+		{
+			"beat": 12,
+			"actions": [
+				{
+					"wipeText": true
+				}
+			]
+		},
+		{
+			"beat": 13,
+			"actions": [
+				{
+					"addText": "Friday"
+				}
+			]
+		},
+		{
+			"beat": 14,
+			"actions": [
+				{
+					"addText": "Night"
+				}
+			]
+		},
+		{
+			"beat": 15,
+			"actions": [
+				{
+					"addText": "Funkin'"
+				}
+			]
+		},
+		{
+			"beat": 16,
+			"killIntro": true
+		}
 	],
 	"decorations": [
 		{
@@ -160,28 +253,25 @@
 			}
 		},
 		{
+			"entity": "title/press_enter",
+			"position": {
+				"x": 100,
+				"y": 576
+			}
+		},
+		{
+			"entity": "title/intro"
+		},
+		{
 			"entity": "title/association_sprite",
 			"position": {
 				"x": 0,
 				"y": 432
 			},
-			"screenCenter": {"x": true, "y": false}
-		}
-	],
-	"items": [
-		{
-			"name": "press_enter",
-			"entity": "title/press_enter",
-			"position": {
-				"x": 100,
-				"y": 576
-			}/*,
-			"onAccept": {
-				"type": "open_state",
-				"args": [
-					"MainMenuState"
-				]
-			}*/
+			"screenCenter": {
+				"x": true,
+				"y": false
+			}
 		}
 	],
 	"inputActions": [
