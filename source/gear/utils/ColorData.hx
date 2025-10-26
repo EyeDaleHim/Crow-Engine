@@ -3,8 +3,9 @@ package gear.utils;
 import flixel.util.FlxColor;
 
 /**
- * An abstract type that facilitates converting various color representations
- * (from JSON or other sources) into a `FlxColor`.
+ * A utility class that facilitates converting various color representations
+ * (from JSON or other sources) into a `FlxColor`. This is often used
+ * with `@:genericBuild` to provide automatic type coercion.
  *
  * It can handle:
  * - Integers (e.g., `0xFF0000`)
@@ -12,17 +13,10 @@ import flixel.util.FlxColor;
  * - Objects with optional `r`, `g`, `b` properties (e.g., `{ "r": 255, "g": 0, "b": 0 }`). Missing fields default to 0.
  *   - An optional `a` property (0-255) can be included for alpha.
  */
-@:forward
-abstract ColorData(Null<FlxColor>) from Null<FlxColor> to Null<FlxColor>
+@:final
+class ColorData
 {
-	/**
-	 * Creates a `ColorData` instance from a dynamic value. This is the primary
-	 * conversion method used when parsing data from sources like JSON.
-	 * @param value The dynamic value representing a color.
-	 * @return A `ColorData` instance, or `null` if the conversion fails.
-	 */
-	@:from
-	public static function fromDynamic(value:Dynamic):ColorData
+	public static function fromDynamic(value:Dynamic):Null<FlxColor>
 	{
 		if (value == null)
 			return null;
