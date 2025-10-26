@@ -217,7 +217,7 @@ class BaseMenuState extends MainState
 			case "accept_selection":
 				// Find the selected item and trigger its `onAccept` action.
 				final selectedIndex = menuLayout.selectedIndex;
-				if (selectedIndex >= 0 && selectedIndex < menuMetadata.items.length)
+				if (menuMetadata.items != null && selectedIndex >= 0 && selectedIndex < menuMetadata.items.length)
 				{
 					final selectedItemData = menuMetadata.items[selectedIndex];
 					if (selectedItemData.onAccept != null)
