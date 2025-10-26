@@ -113,6 +113,9 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 
 	private function set_text(value:String):String
 	{
+		if (value == null)
+			value = "";
+
 		if (text == value)
 			return value;
 
@@ -158,7 +161,7 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 
 		for (line in members)
 		{
-			line.alignIn(maxWidth, alignment);
+			line.alignIn(maxWidth, TextAlignment.fromString(alignment));
 		}
 	}
 
@@ -424,9 +427,26 @@ private typedef DrawableGlyph =
 	y:Float
 }
 
-enum abstract TextAlignment(String)
+enum abstract TextAlignment(String) to String
 {
 	var LEFT = "left";
 	var CENTER = "center";
 	var RIGHT = "right";
+
+	@:from
+	public static function fromString(value:String):TextAlignment
+	{
+		if (value == null)
+			return LEFT;
+
+		return switch (value.trim().toLowerCase())
+		{
+			case "center":
+				CENTER;
+			case "right":
+				RIGHT;
+			default: // "left" and any other value
+				LEFT;
+		}
+	}
 }
