@@ -306,6 +306,9 @@ class Input
 
 	private function isTriggerActive(trigger:InputTrigger, checkJustPressed:Bool, checkJustReleased:Bool):Bool
 	{
+		if (FlxG.vcr.paused)
+			return false;
+
 		// 1. Handle exclusive logic
 		if (trigger.exclusive != null && trigger.exclusive)
 		{
