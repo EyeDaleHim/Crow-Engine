@@ -42,6 +42,60 @@ typedef EntityObject =
 }
 
 /**
+ * Metadata for a static text object.
+ */
+typedef TextObjectData =
+{
+	/**
+	 * The name of the text object.
+	 */
+	var name:String;
+
+	/**
+	 * The text content to display.
+	 */
+	var ?text:UnicodeString;
+
+	/**
+	 * The path to the font file.
+	 * 
+	 * If empty, it uses Flixel's default font.
+	 */
+	var ?font:String;
+
+	/**
+	 * The size of the font.
+	 */
+	var ?size:Int;
+
+	/**
+	 * The color of the text.
+	 */
+	var ?color:ColorData;
+
+	/**
+	 * The position of this object relative to its parent entity.
+	 */
+	var ?position:AxeData<Float>;
+
+	/**
+	 * The width of the text field. If 0, it will automatically adjust.
+	 */
+	var ?fieldWidth:Float;
+
+	/**
+	 * The alignment of the text.
+	 */
+	var ?alignment:TextAlignment;
+
+	/**
+	 * The scroll factor of this object.
+	 */
+	var ?scrollFactor:AxeData<Float>;
+	
+};
+
+/**
  * Metadata for an animated text object.
  */
 typedef AnimatedTextObjectData =
@@ -59,7 +113,7 @@ typedef AnimatedTextObjectData =
 	/**
 	 * The text content to display.
 	 */
-	var ?text:String;
+	var ?text:UnicodeString;
 
 	/**
 	 * The position of this object relative to its parent entity.
@@ -216,6 +270,7 @@ typedef SpriteObjectData =
 enum abstract EntityType(String) from String to String
 {
 	var SPRITE = "sprite";
+	var TEXT = "text";
 	var ANIMATED_TEXT = "animated_text";
 	var NESTED_ENTITY = "nested_entity";
 }

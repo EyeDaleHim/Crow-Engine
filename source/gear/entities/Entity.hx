@@ -20,6 +20,17 @@ class Entity extends FlxSpriteContainer
 	 */
 	public var spritesMap:Map<String, FlxSprite> = [];
 
+	/**
+	 * A map of sprites that contain the reference to their metadata, accessible by name.
+	 */
+	public var membersMetricsMap:Map<String, Dynamic> = [];
+
+	/**
+	 * A list of tags associated with this entity.
+	 * Tags can be used for filtering and targeting entities in logic.
+	 */
+	public var tags:Array<String> = [];
+
 	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String)
 	{
 		final jsonContent = FlxG.assets.getTextUnsafe(Path.join(['entities', '$inputFile.json']));
@@ -40,6 +51,8 @@ class Entity extends FlxSpriteContainer
 			{
 				case SPRITE:
 					createSprite(object.data);
+				case TEXT:
+					// TODO: Handle text objects
 				case ANIMATED_TEXT:
 					createAnimatedText(object.data);
 				case NESTED_ENTITY:
@@ -57,6 +70,7 @@ class Entity extends FlxSpriteContainer
 	private function createSprite(spriteMeta:SpriteObjectData, ?parentContainer:FlxSpriteContainer):Void
 	{
 		final sprite = new FlxSprite();
+		membersMetricsMap.set(spriteMeta.name, spriteMeta);
 
 		if (spriteMeta.method != null)
 		{
@@ -130,6 +144,7 @@ class Entity extends FlxSpriteContainer
 	private function createAnimatedText(textMeta:AnimatedTextObjectData, ?parentContainer:FlxSpriteContainer):Void
 	{
 		final textObj = new AnimatedText(textMeta.position?.x ?? 0.0, textMeta.position?.y ?? 0.0, textMeta.font, textMeta.text);
+		membersMetricsMap.set(textMeta.name, textMeta);
 
 		if (textMeta.fieldWidth != null)
 			textObj.fieldWidth = textMeta.fieldWidth;
@@ -147,6 +162,7 @@ class Entity extends FlxSpriteContainer
 	private function createNestedEntity(entityMeta:NestedEntityObjectData):Void
 	{
 		final nestedEntity = new Entity(0, 0, entityMeta.entityFile);
+		membersMetricsMap.set(entityMeta.name, entityMeta);
 
 		if (entityMeta.position != null)
 		{
