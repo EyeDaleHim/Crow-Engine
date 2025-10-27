@@ -1,12 +1,10 @@
 package gear.states.menus;
 
 import gear.states.internals.BaseMenuState;
-import gear.assets.metadata.menus.TitleIntroMetadata;
 
 class TitleState extends BaseMenuState
 {
 	private var randomPair:Array<String>;
-	private var introMetadata:TitleIntroMetadata;
 	private var lastBeatHit:Int = -1;
 
 	public function new()
@@ -26,19 +24,20 @@ class TitleState extends BaseMenuState
 
 		try
 		{
-			introMetadata = cast Json.parse(JsonComment.removeComments(rawJson));
-			menuMetadata = introMetadata;
+			menuMetadata = cast Json.parse(JsonComment.removeComments(rawJson));
 		}
 		catch (e)
 		{
 			trace('Error parsing title intro file: $e');
 		}
 
-		if (introMetadata.randomTextPairs != null && introMetadata.randomTextPairs.length > 0)
+		if (Reflect.hasField(menuMetadata, "randomTextPairs"))
 		{
-			randomPair = FlxG.random.getObject(introMetadata.randomTextPairs);
+			final randomTextPairs:Array<Array<String>> = Reflect.field(menuMetadata, "randomTextPairs");
+			if (randomTextPairs != null && randomTextPairs.length > 0)
+				randomPair = FlxG.random.getObject(randomTextPairs);
 		}
-		
+
 		buildMenu();
 
 		FlxTimer.wait(1, () ->
@@ -55,10 +54,7 @@ class TitleState extends BaseMenuState
 	public function onReturn():Void
 	{
 		menuMusic.onBeat.add(onBeat);
-		FlxTimer.wait(1, () ->
-		{
-			skipIntro();
-		});
+		FlxTimer.wait(1, () -> onEvent("skipIntro"));
 	}
 
 	private function onBeat(beat:Int):Void
@@ -66,7 +62,11 @@ class TitleState extends BaseMenuState
 		if (beat <= lastBeatHit)
 			return;
 
-		for (b in (lastBeatHit + 1)...(beat + 1)) {
+		for (b in (lastBeatHit + 1)...(beat + 1))
+		{
+			if (randomPair != null)
+				logicState.set("randomText", randomPair);
+
 			onEvent("beat", ["beat" => b]);
 		}
 		lastBeatHit = beat;
@@ -74,87 +74,19 @@ class TitleState extends BaseMenuState
 
 	private function skipIntro():Void
 	{
-		final introScene = menuEntities.get("title_intro");
-		if (introScene == null || !introScene.exists)
-			return;		
-		introScene.destroy();
-		// Remove it from the map so it can't be found again.
-		menuEntities.remove("title_intro");
+		onEvent("skipIntro");
+
 		FlxG.camera.flash(FlxColor.WHITE, 1);
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		// Only handle intro-skipping input if the intro is active.
-		if (Main.input.isPressed("accept"))
-		{	
-			final introScene = menuEntities.get("title_intro");
-			if (introScene != null && introScene.exists)
-			{
-				skipIntro();
-			}
-		}
+		if (menuEntities.exists("title_intro") && Main.input.isPressed("accept"))
+			skipIntro();
 
 		// Call the base class update method to handle menu input
 		// after the intro is complete.
 		super.update(elapsed);
-	}
-
-	/**
-	 * Overrides the base `onEvent` to handle title-specific intro actions.
-	 */
-	override public function onEvent(eventName:String, ?args:Map<String, Dynamic>):Void
-	{
-		super.onEvent(eventName, args);
-
-		if (eventName != "beat" || introMetadata?.beatEvents == null)
-			return;
-
-		// Don't process beat events if the intro is gone.
-		final introScene = menuEntities.get("title_intro");
-		if (introScene == null)
-			return;
-
-		final introText:AnimatedText = cast(introScene.spritesMap.get("intro_text"), AnimatedText);
-		if (introText == null) return;
-
-		final beat:Int = args.get("beat");
-
-		for (event in introMetadata.beatEvents)
-		{
-			if (event.beat != beat)
-				continue;
-
-			if (event.actions != null)
-			{
-				for (action in event.actions)
-				{
-					if (action.setText != null)
-						introText.text = action.setText.join("\n");
-
-					if (action.addText != null)
-						introText.text += (introText.text == "" ? "" : "\n") + action.addText;
-
-					if (action.wipeText == true)
-						introText.text = "";
-
-					if (action.useRandomText != null && randomPair != null)
-					{
-						final index = action.useRandomText;
-						if (index >= 0 && index < randomPair.length)
-							introText.text += randomPair[index];
-					}
-
-					if (action.associationSprite != null)
-					{
-						if (menuEntities.exists("association_sprite"))
-							menuEntities.get("association_sprite").visible = action.associationSprite.visible;
-					}
-				}
-			}
-
-			if (event.killIntro == true)
-				skipIntro();
-		}
 	}
 }

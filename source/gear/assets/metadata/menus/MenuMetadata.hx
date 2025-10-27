@@ -16,17 +16,11 @@ typedef MenuMetadata =
 	var ?layout:MenuLayout;
 
 	/**
-	 * A list of items to be displayed in the menu.
+	 * A list of elements to be displayed in the menu, including both interactive items and decorations.
 	 * The logic for how these are displayed and interacted with
 	 * is handled by the state that loads this metadata.
 	 */
-	var ?items:Array<MenuItem>;
-
-	/**
-	 * A list of decorative entities to display. These are not part of the
-	 * interactive layout and are purely for visual effect.
-	 */
-	var ?decorations:Array<MenuDecoration>;
+	var ?elements:Array<MenuItem>;
 
 	/**
 	 * Defines actions to be taken on specific inputs.
@@ -84,26 +78,10 @@ typedef MenuItem =
 	 * An optional position to place the entity, overriding its default and any layout calculations.
 	 */
 	var ?position:AxeData<Float>;
-};
-
-/**
- * Represents a decorative entity within a menu scene.
- */
-typedef MenuDecoration =
-{
-	/**
-	 * The path to the entity file to load.
-	 */
-	var entity:String;
-
-	/**
-	 * An optional position to place the entity, overriding its default.
-	 */
-	var ?position:AxeData<Float>;
 	
 	/**
 	 * If true, the entity will be centered on the screen.
-	 * This overrides any `position` property.
+	 * This overrides the `position` property for the specified axes.
 	 */
 	var ?screenCenter:AxeData<Bool>;
 };
@@ -142,7 +120,7 @@ typedef MenuAction =
 {
 	/**
 	 * The type of action to perform.
-	 * Examples: "navigate", "accept_selection", "open_state", "close_menu"
+	 * Examples: "navigate", "accept_selection", "open_state", "close_menu", "dispatch_event"
 	 */
 	var type:String;
 

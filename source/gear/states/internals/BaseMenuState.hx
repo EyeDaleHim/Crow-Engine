@@ -25,7 +25,7 @@ class BaseMenuState extends MainState
 	public var menuLayout:InteractableLayout;
 
 	/**
-	 * A map of all entities loaded for this menu, including decorations and items.
+	 * A map of all entities loaded for this menu.
 	 */
 	public var menuEntities:Map<String, Entity> = [];
 
@@ -65,17 +65,12 @@ class BaseMenuState extends MainState
 			}
 		}
 
-		if (menuMetadata.decorations != null)
-		{
-			buildDecorations(menuMetadata.decorations);
-		}
-
 		menuLayout = new InteractableLayout();
 		add(menuLayout);
 
-		if (menuMetadata.items != null)
+		if (menuMetadata.elements != null)
 		{
-			buildLayoutFromItems(menuMetadata.items, menuLayout, menuMetadata.layout);
+			buildElements(menuMetadata.elements, menuLayout, menuMetadata.layout);
 		}
 
 		menuLayout.updateLayout();
@@ -85,43 +80,12 @@ class BaseMenuState extends MainState
 	}
 
 	/**
-	 * Creates and adds decorative entities to the state.
-	 * @param decorations An array of decoration metadata.
-	 */
-	private function buildDecorations(decorations:Array<MenuDecoration>):Void
-	{
-		for (decoData in decorations)
-		{
-			var x:Float = 0;
-			var y:Float = 0;
-
-			if (decoData.position != null)
-			{
-				x = decoData.position.x;
-				y = decoData.position.y;
-			}
-
-			final entity = new Entity(x, y, decoData.entity);
-			if (decoData.screenCenter != null)
-			{
-				if (decoData.screenCenter.x)
-					entity.screenCenter(X);
-				if (decoData.screenCenter.y)
-					entity.screenCenter(Y);
-			}
-
-			add(entity);
-			menuEntities.set(entity.entityName, entity);
-		}
-	}
-
-	/**
 	 * Recursively builds an `InteractableLayout` from an array of `MenuItem`s.
 	 * @param items The list of menu items to process.
 	 * @param parentLayout The layout to add the created objects to.
 	 * @param layoutProps The layout properties to apply to the `parentLayout`.
 	 */
-	private function buildLayoutFromItems(items:Array<MenuItem>, parentLayout:InteractableLayout, ?layoutProps:MenuLayout):Void
+	private function buildElements(elements:Array<MenuItem>, parentLayout:InteractableLayout, ?layoutProps:MenuLayout):Void
 	{
 		if (layoutProps != null)
 		{
@@ -139,41 +103,49 @@ class BaseMenuState extends MainState
 				parentLayout.wrap = layoutProps.wrap;
 		}
 
-		for (itemData in items)
+		for (elementData in elements)
 		{
 			var menuObject:FlxObject = null;
+			var isDecoration:Bool = elementData.onAccept == null && elementData.items == null;
 
-			if (itemData.items != null)
+			if (elementData.items != null)
 			{
 				// This item is a sub-menu (a nested layout).
 				final subLayout = new InteractableLayout();
-				buildLayoutFromItems(itemData.items, subLayout, itemData.layout);
+				buildElements(elementData.items, subLayout, elementData.layout);
 				menuObject = subLayout;
 			}
-			else if (itemData.entity != null)
+			else if (elementData.entity != null)
 			{
 				// This item is a single, data-driven entity.
-				final entity = new Entity(0, 0, itemData.entity);
+				final entity = new Entity(0, 0, elementData.entity);
 				menuObject = entity;
 				menuEntities.set(entity.entityName, entity);
 			}
 
 			if (menuObject != null)
 			{
-				// If an explicit position is set, add it directly to the state
-				// and bypass the layout system for this object.
-				if (itemData.position != null)
+				if (elementData.position != null || elementData.screenCenter != null || isDecoration)
 				{
-					menuObject.x = itemData.position.x;
-					menuObject.y = itemData.position.y;
+					if (elementData.position != null)
+					{
+						menuObject.x = elementData.position.x;
+						menuObject.y = elementData.position.y;
+					}
+					if (elementData.screenCenter != null && Std.isOfType(menuObject, Entity))
+					{
+						final entity:Entity = cast menuObject;
+						if (elementData.screenCenter.x) entity.screenCenter(X);
+						if (elementData.screenCenter.y) entity.screenCenter(Y);
+					}
 					add(menuObject);
 				}
-				else // Otherwise, add it to the layout to be positioned automatically.
+				else
 				{
 					parentLayout.add(menuObject);
-					if (itemData.alignSelf != null)
+					if (elementData.alignSelf != null)
 					{
-						parentLayout.getLayoutData(menuObject).alignSelf = itemData.alignSelf;
+						parentLayout.getLayoutData(menuObject).alignSelf = elementData.alignSelf;
 					}
 				}
 			}
@@ -217,12 +189,12 @@ class BaseMenuState extends MainState
 			case "accept_selection":
 				// Find the selected item and trigger its `onAccept` action.
 				final selectedIndex = menuLayout.selectedIndex;
-				if (menuMetadata.items != null && selectedIndex >= 0 && selectedIndex < menuMetadata.items.length)
+				if (menuMetadata.elements != null && selectedIndex >= 0 && selectedIndex < menuMetadata.elements.length)
 				{
-					final selectedItemData = menuMetadata.items[selectedIndex];
-					if (selectedItemData.onAccept != null)
+					final selectedElement = menuMetadata.elements[selectedIndex];
+					if (selectedElement.onAccept != null)
 					{
-						handleMenuAction(selectedItemData.onAccept);
+						handleMenuAction(selectedElement.onAccept);
 					}
 				}
 		}
@@ -267,7 +239,8 @@ class BaseMenuState extends MainState
 				continue;
 
 			// All conditions passed, execute actions.
-			LogicEvaluator.execute(listener.actions, this.logicState, this.menuEntities);
+			if (listener.actions != null)
+				LogicEvaluator.execute(listener.actions, this.logicState, this.menuEntities, this);
 
 			// If the listener is weak, mark it for removal.
 			if (listener.weak)

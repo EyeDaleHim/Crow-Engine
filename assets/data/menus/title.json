@@ -52,11 +52,15 @@
 				"actions": [
 					{
 						"type": "play_animation",
-						"sprite": "logo",
-						"values": [
-							"bump"
+						"targets": [
+							{
+								"name": "title-logo"
+							}
 						],
-						"force": true
+						"values": [
+							"bump",
+							true
+						]
 					}
 				]
 			},
@@ -66,10 +70,12 @@
 				"actions": [
 					{
 						"type": "state_change",
-						"stateChange": {
-							"changeType": "TOGGLE",
-							"stateKey": "dancing_left"
-						}
+						"values": [
+							{
+								"changeType": "TOGGLE",
+								"stateKey": "dancing_left"
+							}
+						]
 					}
 				]
 			},
@@ -86,11 +92,15 @@
 				"actions": [
 					{
 						"type": "play_animation",
-						"sprite": "gf",
-						"values": [
-							"danceLeft"
+						"targets": [
+							{
+								"name": "title-gf"
+							}
 						],
-						"force": true
+						"values": [
+							"danceLeft",
+							true
+						]
 					}
 				]
 			},
@@ -107,137 +117,358 @@
 				"actions": [
 					{
 						"type": "play_animation",
-						"sprite": "gf",
-						"values": [
-							"danceRight"
+						"targets": [
+							{
+								"name": "title-gf"
+							}
 						],
-						"force": true
+						"values": [
+							"danceRight",
+							true
+						]
+					}
+				]
+			},
+			// --- Intro Sequence Listeners ---
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						1
+					]
+				},
+				"actions": [
+					{
+						"type": "set_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"Funkin' Crew"
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						3
+					]
+				},
+				"actions": [
+					{
+						"type": "add_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"presents"
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						4
+					]
+				},
+				"actions": [
+					{
+						"type": "clear_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						5
+					]
+				},
+				"actions": [
+					{
+						"type": "set_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"In association",
+							"with"
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						7
+					]
+				},
+				"actions": [
+					{
+						"type": "add_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"newgrounds"
+						]
+					},
+					{
+						"type": "set_visibility",
+						"targets": [
+							{
+								"name": "association_sprite"
+							}
+						],
+						"values": [
+							true
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						8
+					]
+				},
+				"actions": [
+					{
+						"type": "clear_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						]
+					},
+					{
+						"type": "set_visibility",
+						"targets": [
+							{
+								"name": "association_sprite"
+							}
+						],
+						"values": [
+							false
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						9
+					]
+				},
+				"actions": [
+					{
+						"type": "set_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"${randomText[0]}"
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						11
+					]
+				},
+				"actions": [
+					{
+						"type": "add_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"${randomText[1]}"
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						12
+					]
+				},
+				"actions": [
+					{
+						"type": "clear_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						13
+					]
+				},
+				"actions": [
+					{
+						"type": "add_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"Friday"
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						14
+					]
+				},
+				"actions": [
+					{
+						"type": "add_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"Night"
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						15
+					]
+				},
+				"actions": [
+					{
+						"type": "add_text",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						],
+						"values": [
+							"Funkin'"
+						]
+					}
+				]
+			},
+			{
+				"event": "beat",
+				"condition": {
+					"type": "CHECK",
+					"stateKey": "beat",
+					"operatorCode": "EQ",
+					"targetValues": [
+						16
+					]
+				},
+				"actions": [
+					{
+						"type": "dispatch_event",
+						"values": [
+							"skipIntro"
+						]
+					}
+				]
+			},
+			// Listener to skip the intro
+			{
+				"event": "skipIntro",
+				"weak": true,
+				"actions": [
+					{
+						"type": "destroy_entity",
+						"targets": [
+							{
+								"name": "title_intro"
+							}
+						]
 					}
 				]
 			}
 		]
 	},
-	"beatEvents": [
-		{
-			"beat": 1,
-			"actions": [
-				{
-					"setText": [
-						"Funkin' Crew"
-					]
-				}
-			]
-		},
-		{
-			"beat": 3,
-			"actions": [
-				{
-					"addText": "presents"
-				}
-			]
-		},
-		{
-			"beat": 4,
-			"actions": [
-				{
-					"wipeText": true
-				}
-			]
-		},
-		{
-			"beat": 5,
-			"actions": [
-				{
-					"setText": [
-						"In association",
-						"with"
-					]
-				}
-			]
-		},
-		{
-			"beat": 7,
-			"actions": [
-				{
-					"addText": "newgrounds"
-				},
-				{
-					"associationSprite": {
-						"visible": true
-					}
-				}
-			]
-		},
-		{
-			"beat": 8,
-			"actions": [
-				{
-					"wipeText": true
-				},
-				{
-					"associationSprite": {
-						"visible": false
-					}
-				}
-			]
-		},
-		{
-			"beat": 9,
-			"actions": [
-				{
-					"useRandomText": 0
-				}
-			]
-		},
-		{
-			"beat": 11,
-			"actions": [
-				{
-					"addText": ""
-				},
-				{
-					"useRandomText": 1
-				}
-			]
-		},
-		{
-			"beat": 12,
-			"actions": [
-				{
-					"wipeText": true
-				}
-			]
-		},
-		{
-			"beat": 13,
-			"actions": [
-				{
-					"addText": "Friday"
-				}
-			]
-		},
-		{
-			"beat": 14,
-			"actions": [
-				{
-					"addText": "Night"
-				}
-			]
-		},
-		{
-			"beat": 15,
-			"actions": [
-				{
-					"addText": "Funkin'"
-				}
-			]
-		},
-		{
-			"beat": 16,
-			"killIntro": true
-		}
-	],
-	"decorations": [
+	"elements": [
 		{
 			"entity": "title/gf",
 			"position": {

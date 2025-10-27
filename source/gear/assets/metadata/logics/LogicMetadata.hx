@@ -51,8 +51,33 @@ typedef ListenerMetadata =
 	/**
 	 * The list of actions to perform when the event is triggered.
 	 */
-	var actions:Array<ListenerActionMetadata>;
+	var ?actions:Array<ListenerActionMetadata>;
 };
+
+/**
+ * Defines a filter to select entities for an action.
+ * If omitted, the action applies to all relevant entities.
+ */
+typedef EntityFilterMetadata =
+{
+	/**
+	 * Filter by entity type (e.g., "Sprite", "Text", "Group").
+	 * If this field is omitted, entities of any type can be selected.
+	 */
+	var ?type:String;
+
+	/**
+	 * Filter by a specific tag assigned to the entity.
+	 * If this field is omitted, entities with any tag or no tag can be selected.
+	 */
+	var ?tag:String;
+
+	/**
+	 * Filter by a specific name assigned to the entity.
+	 * If this field is omitted, entities with any name can be selected.
+	 */
+	var ?name:String;
+}
 
 /**
  * Defines an action to be performed by an event listener.
@@ -60,8 +85,15 @@ typedef ListenerMetadata =
 typedef ListenerActionMetadata =
 {
 	var type:String; // e.g., "play_animation", "state_change"
-	var ?sprite:String; // Target sprite for sprite-specific actions
-	var ?stateChange:ActionMetadata; // For "state_change" actions
-	var ?values:Array<String>; // Arguments, e.g., animation name
-	var ?force:Bool; // For "play_animation", forces restart
+	
+	/**
+	 * Defines a filter to select entities for this action.
+	 * If omitted, the action applies to all entities.
+	 * 
+	 * The order of filters matter as each filter uses the list of candidates from the
+	 * last filter to narrow down the selection.
+	 */
+	var ?targets:Array<EntityFilterMetadata>; // Filter for the action (e.g., by type, tag, or name).
+
+	var ?values:Array<Dynamic>; // Arguments, e.g., animation name, state change data
 };
