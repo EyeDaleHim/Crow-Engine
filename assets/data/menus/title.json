@@ -140,6 +140,7 @@
 						1
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "set_text",
@@ -164,6 +165,7 @@
 						3
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "add_text",
@@ -188,6 +190,7 @@
 						4
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "clear_text",
@@ -209,6 +212,7 @@
 						5
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "set_text",
@@ -234,6 +238,7 @@
 						7
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "add_text",
@@ -269,6 +274,7 @@
 						8
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "clear_text",
@@ -301,6 +307,7 @@
 						9
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "set_text",
@@ -325,6 +332,7 @@
 						11
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "add_text",
@@ -349,6 +357,7 @@
 						12
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "clear_text",
@@ -370,6 +379,7 @@
 						13
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "add_text",
@@ -394,6 +404,7 @@
 						14
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "add_text",
@@ -418,6 +429,7 @@
 						15
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "add_text",
@@ -442,6 +454,7 @@
 						16
 					]
 				},
+				"weak": true,
 				"actions": [
 					{
 						"type": "dispatch_event",
