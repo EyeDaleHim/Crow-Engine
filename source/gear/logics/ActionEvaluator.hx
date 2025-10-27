@@ -18,9 +18,12 @@ class ActionEvaluator
 		{
 			case SET:
 				state.set(action.stateKey, action.value);
-			case INCREMENT:
+			case INCREMENT | DECREMENT:
 				if (state.exists(action.stateKey) && Std.isOfType(state.get(action.stateKey), Float))
-					state.set(action.stateKey, state.get(action.stateKey) + action.value);
+				{
+					final value:Float = (action.changeType == INCREMENT) ? action.value : -action.value;
+					state.set(action.stateKey, state.get(action.stateKey) + value);
+				}
 			case TOGGLE:
 				if (state.exists(action.stateKey) && Std.isOfType(state.get(action.stateKey), Bool))
 					state.set(action.stateKey, !state.get(action.stateKey));
