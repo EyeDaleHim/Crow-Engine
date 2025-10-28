@@ -1,5 +1,6 @@
 package gear.assets.metadata.menus;
 
+import gear.assets.metadata.logics.PredicateMetadata;
 import gear.utils.AxeData;
 import gear.objects.layout.LayoutProperties;
 import gear.assets.metadata.logics.LogicMetadata;
@@ -78,7 +79,7 @@ typedef MenuItem =
 	 * An optional position to place the entity, overriding its default and any layout calculations.
 	 */
 	var ?position:AxeData<Float>;
-	
+
 	/**
 	 * If true, the entity will be centered on the screen.
 	 * This overrides the `position` property for the specified axes.
@@ -109,8 +110,32 @@ typedef MenuLayout =
  */
 typedef MenuInput =
 {
+	/**
+	 * The input ID to check, as defined in the input configuration.
+	 * e.g., "accept", "back", "ui_up", "ui_down"
+	 */
 	var input:String; // e.g., "accept", "back", "up", "down"
+
+	/**
+	 * The action to perform when the input condition is met.
+	 */
 	var action:MenuAction;
+
+	/**
+	 * The tags for this input action to be identified as.
+	 */
+	var ?tags:Array<String>;
+
+	/**
+	 * The type of input check to perform. Defaults to `JustPressed`.
+	 */
+	var ?check:MenuInputCheck;
+
+	/**
+	 * An optional condition that must be met for this input to be processed.
+	 * The condition is evaluated against the menu's `logicState`.
+	 */
+	var ?condition:PredicateMetadata;
 };
 
 /**
@@ -126,8 +151,21 @@ typedef MenuAction =
 
 	/**
 	 * An array of arguments for the action.
-     * 
-     * For developers, it is up to you to code in the logic for these arguments.
 	 */
 	var ?args:Array<Dynamic>;
 };
+
+enum abstract MenuInputCheck(String) from String to String 
+{
+	/** Triggers once when the input is first pressed. */
+	var JustPressed = "just_pressed";
+
+	/** Triggers continuously while the input is held down. */
+	var Pressed = "pressed";
+
+	/** Triggers once when the input is released. */
+	var JustReleased = "just_released";
+
+	/** Triggers continuously while the input is not held down (is up). */
+	var Released = "released";
+}

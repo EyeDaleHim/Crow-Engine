@@ -173,7 +173,29 @@ class BaseMenuState extends MainState implements IEventExecutor
 		// Process data-driven input actions.
 		for (inputAction in menuMetadata.inputActions)
 		{
-			if (Main.input.isPressed(inputAction.input))
+			// Evaluate condition first to potentially skip input checks
+			if (inputAction.condition != null && !PredicateEvaluator.evaluate(inputAction.condition, this.logicState))
+			{
+				continue;
+			}
+
+			// TODO: This input doesn't work, wtf???
+			final checkType:MenuInputCheck = inputAction.check ?? JustPressed;
+			var triggered:Bool = false;
+
+			switch (checkType)
+			{
+				case JustPressed:
+					triggered = Main.input.isJustPressed(inputAction.input);
+				case JustReleased:
+					triggered = Main.input.isJustPressed(inputAction.input) == false;
+				case Pressed:
+					triggered = Main.input.isPressed(inputAction.input);
+				case Released:
+					triggered = Main.input.isPressed(inputAction.input) == false;
+			}
+
+			if (triggered)
 			{
 				handleMenuAction(inputAction.action);
 			}
@@ -206,6 +228,9 @@ class BaseMenuState extends MainState implements IEventExecutor
 						handleMenuAction(selectedElement.onAccept);
 					}
 				}
+			default:
+				final listenerAction:ListenerActionMetadata = {type: action.type, values: action.args};
+				LogicEvaluator.execute([listenerAction], this.logicState, this.menuEntities, this);
 		}
 	}
 
