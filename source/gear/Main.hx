@@ -28,18 +28,6 @@ class Main extends DisplayObjectContainer
 			Main.input.update(FlxG.elapsed);
 		});
 
-		// testing my bullshit
-		var msgPack = gear.assets.format.MessagePack.serialize({
-			test: 1,
-			test2: "hello",
-			test3: [1, 2, 3],
-			test4:
-			{
-				test5: 1
-			}
-		});
-		trace(gear.assets.format.MessagePack.parse(msgPack));
-
 		Lib.current.addChild(game);
 	}
 }
