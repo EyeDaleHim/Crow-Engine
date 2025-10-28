@@ -118,6 +118,11 @@ class Project extends HXProject
 		setHaxedef("ASSETS_PACKAGING_COMPRESSION", "3"); // max is 9
 		setHaxedef("PRELOAD_ALL_ASSETS_VALUE", "20"); // measured in MB, if the asset bundle is below this size, all assets will be preloaded
 
+		// If JSON_TO_MESSAGEPACK is defined, then all JSON assets will be converted to MessagePack.
+		// This is useful for reducing file size and improving parsing performance.
+		// This is only recommended for release builds, as it will make the assets unreadable.		
+		// setHaxedef("JSON_TO_MESSAGEPACK");
+
 		setHaxedef("hscriptPos");
 
 		if (isCpp())

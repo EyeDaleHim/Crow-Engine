@@ -1,6 +1,8 @@
 package gear.assets;
 
 import haxe.CallStack;
+import haxe.zip.Compress;
+import haxe.zip.Uncompress;
 import flixel.system.frontEnds.AssetFrontEnd;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
@@ -343,6 +345,27 @@ class Assets
 		final frames = FlxAtlasFrames.fromSparrow(graphic, xml);
 
 		return frames;
+	}
+
+	public function json(id:String):Dynamic
+	{
+		#if JSON_TO_MESSAGEPACK
+		final path ='$id.msgp';
+		final msgpBytes = FlxG.assets.getBytesUnsafe(path);
+		if (msgpBytes == null)
+		{
+			return null;
+		}
+		return gear.assets.format.MessagePack.parse(msgpBytes);
+		#else
+		final path = '$id.json';
+		final jsonString = FlxG.assets.getTextUnsafe(path);
+		if (jsonString == null)
+		{
+			return null;
+		}
+		return Json.parse(JsonComment.removeComments(jsonString));
+		#end
 	}
 
 	// equivalent to FileSystem.isDirectory and/or Bundle.isDirectory

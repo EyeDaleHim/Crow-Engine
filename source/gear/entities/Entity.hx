@@ -33,10 +33,15 @@ class Entity extends FlxSpriteContainer
 
 	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String)
 	{
-		final jsonContent = FlxG.assets.getTextUnsafe(Path.join(['entities', '$inputFile.json']));
-		final metadata:EntityMetadata = Json.parse(JsonComment.removeComments(jsonContent));
-
 		super(x, y);
+
+		final metadata:EntityMetadata = Main.assets.json(Path.join(['entities', inputFile]));
+		trace(metadata);
+		if (metadata == null)
+		{
+			trace('Error: Entity metadata file not found or empty: $inputFile');
+			return;
+		}
 
 		this.entityName = metadata.name;
 

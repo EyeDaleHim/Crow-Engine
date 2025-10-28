@@ -39,16 +39,14 @@ class AssetContext
 	{
 		this.name = file;
 
-		final rawJson = FlxG.assets.getTextUnsafe(Path.join([contextDirectory, '$file.json']));
-		if (rawJson == null)
-		{
-			this.entries = [];
-			return;
-		}
-
 		try
 		{
-			var parsedEntries:Array<AssetEntry> = cast Json.parse(JsonComment.removeComments(rawJson));
+			var parsedEntries:Array<AssetEntry> = cast Main.assets.json(Path.join([contextDirectory, file]));
+			if (parsedEntries == null)
+			{
+				this.entries = [];
+				return;
+			}
 			final uniqueEntries = new Map<String, AssetEntry>();
 			for (entry in parsedEntries)
 			{

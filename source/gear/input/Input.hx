@@ -12,7 +12,7 @@ import gear.input.MouseButton;
 
 class Input
 {
-	public static final inputPath:String = 'data/config/inputs.json';
+	public static final inputPath:String = 'data/config/inputs';
 
 	private var _actionBinds:Map<String, ActionBind>;
 	private var _inputImpulses:Map<Int, InputImpulse>; // Key: (device << 24) | code
@@ -60,17 +60,13 @@ class Input
 
 	public function read(inputFile:String):Void
 	{
-		var rawContents = FlxG.assets.getTextUnsafe(inputFile);
-		if (rawContents == null)
-		{
-			trace('Error: Input metadata file not found or empty: $inputFile');
-			return;
-		}
-
 		try
 		{
-			var rawJson = Json.parse(JsonComment.removeComments(rawContents));
-			var inputMetadata:InputMetadata = cast rawJson;
+			var inputMetadata:InputMetadata = cast Main.assets.json(inputFile);
+			if (inputMetadata == null)
+			{
+				trace('Error: Input metadata file not found or empty: $inputFile');
+			}
 
 			for (actionBind in inputMetadata.binds)
 			{

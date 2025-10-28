@@ -39,17 +39,16 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 		super(x, y);
 
 		final fontsDir = "fonts/animated";
-		final rawJson = FlxG.assets.getTextUnsafe(Path.join([fontsDir, '$path.json']));
-		if (rawJson == null)
-		{
-			font = {glyphs: [], framesPath: ""};
-			_frames = null;
-			return;
-		}
 
 		try
 		{
-			font = cast Json.parse(JsonComment.removeComments(rawJson));
+			font = Main.assets.json(Path.join([fontsDir, path]));
+			if (font == null)
+			{
+				font = {glyphs: [], framesPath: ""};
+				_frames = null;
+				return;
+			}
 		}
 		catch (e)
 		{
@@ -59,7 +58,6 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 
 		if (font != null && font.framesPath != null && font.framesPath != "")
 		{
-			// This is assuming Main.assets.frames is the intended way to get frames.
 			_frames = Main.assets.frames(font.framesPath);
 		}
 
@@ -193,7 +191,7 @@ class AnimatedTextLine extends FlxSprite
 
 	public var text:String;
 	public var lineWidth:Float = 0.0; // 0.0 means auto
-	
+
 	private var _drawableGlyphs:Array<DrawableGlyph> = [];
 	private var _textWidth:Float = 0.0;
 	private var _animationStates:Map<String, {curFrame:Int, timer:Float}> = [];

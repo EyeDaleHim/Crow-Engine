@@ -5,7 +5,8 @@ import sys.io.File;
 #if macro
 import haxe.macro.Context;
 #end
-import haxe.io.Path;
+import gear.assets.format.MessagePack;
+import haxe.zip.Compress;
 
 class AssetsMacro
 {
@@ -70,8 +71,44 @@ class AssetsMacro
 
 		for (item in list)
 		{
-			var exportItemPath:String = Path.join([exportPath, item]);
-			File.copy(item, exportItemPath);
+			#if JSON_TO_MESSAGEPACK
+			if (Path.extension(item) == 'json')
+			{
+				try
+				{
+					final jsonContent = File.getContent(item);
+					final parsedJson = Json.parse(JsonComment.removeComments(jsonContent));
+					final msgpBytes = MessagePack.serialize(parsedJson);
+
+					var exportItemPath:String = Path.join([exportPath, item]);
+					var msgpPath = Path.withExtension(exportItemPath, 'msgp');
+					File.saveBytes(msgpPath, msgpBytes);
+				}
+				catch (e)
+				{
+					Context.warning('Failed to convert ${item} to MessagePack: ${e}. Copying original file.', Context.currentPos());
+
+					// stack trace
+					for (stackItem in e.stack)
+					{
+						switch (stackItem)
+						{
+							case FilePos(s, file, line, col):
+								Context.warning('	at ${file}:${line}:${col}', Context.currentPos());
+							default:
+						}
+					}
+
+					var exportItemPath:String = Path.join([exportPath, item]);
+					File.copy(item, exportItemPath);
+				}
+			}
+			else
+			#end
+			{
+				var exportItemPath:String = Path.join([exportPath, item]);
+				File.copy(item, exportItemPath);
+			}
 		}
 		#end
 

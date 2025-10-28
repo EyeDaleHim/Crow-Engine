@@ -18,13 +18,9 @@ class TitleState extends BaseMenuState
 		menuMusic.onBeat.add(onBeat);
 		add(menuMusic);
 
-		var rawJson = FlxG.assets.getTextUnsafe('data/menus/title.json');
-		if (rawJson == null)
-			return;
-
 		try
 		{
-			menuMetadata = cast Json.parse(JsonComment.removeComments(rawJson));
+			menuMetadata = cast Main.assets.json('data/menus/title');
 		}
 		catch (e)
 		{
