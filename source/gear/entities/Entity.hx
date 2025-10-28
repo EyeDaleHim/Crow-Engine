@@ -36,7 +36,6 @@ class Entity extends FlxSpriteContainer
 		super(x, y);
 
 		final metadata:EntityMetadata = Main.assets.json(Path.join(['entities', inputFile]));
-		trace(metadata);
 		if (metadata == null)
 		{
 			trace('Error: Entity metadata file not found or empty: $inputFile');

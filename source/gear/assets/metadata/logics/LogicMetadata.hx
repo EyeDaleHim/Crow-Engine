@@ -85,15 +85,34 @@ typedef EntityFilterMetadata =
 typedef ListenerActionMetadata =
 {
 	var type:String; // e.g., "play_animation", "state_change"
-	
+
+	/**
+	 * The tags for this listener to be identified as.
+	 */
+	var ?tags:Array<String>;
+
 	/**
 	 * Defines a filter to select entities for this action.
 	 * If omitted, the action applies to all entities.
 	 * 
 	 * The order of filters matter as each filter uses the list of candidates from the
-	 * last filter to narrow down the selection.
+	 * last filter to narrow down the selection. This can often be a point
+	 * of confusion for some users, but an important simplification is to see `targets` as
+	 * a sequential filter, not a parallel one.
 	 */
 	var ?targets:Array<EntityFilterMetadata>; // Filter for the action (e.g., by type, tag, or name).
+
+	/**
+	 * Defines a list of actions to be performed after all listeners are processed.
+	 * This is useful for triggering follow-up events or state changes that
+	 * depend on the outcome of all listeners in the current event cycle.
+	 * 
+	 * If the `type` is asynchronous (e.g. a tween or a timer),
+	 * which will trigger if the tween or timed event is completed.
+	 * If the `type` is not asynchronous, all events in `postListenerEvents` get executed
+	 * immediately, it's better to use `actions` instead.
+	 */
+	var ?postListenerEvents:Array<ListenerActionMetadata>;
 
 	var ?values:Array<Dynamic>; // Arguments, e.g., animation name, state change data
 };

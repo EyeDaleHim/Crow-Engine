@@ -2,15 +2,18 @@ package gear.states.internals;
 
 import gear.assets.metadata.logics.LogicMetadata;
 import gear.assets.metadata.menus.MenuMetadata;
+import gear.entities.managers.TimerManager;
+import gear.entities.managers.TweenManager;
 import gear.objects.layout.InteractableLayout;
 import gear.logics.LogicEvaluator;
 import gear.logics.PredicateEvaluator;
+import gear.logics.IEventExecutor;
 
 /**
  * A base state for creating data-driven, interactive menus.
  * This class handles parsing menu metadata, building layouts, and processing input.
  */
-class BaseMenuState extends MainState
+class BaseMenuState extends MainState implements IEventExecutor
 {
 	/**
 	 * The music that plays during this menu state.
@@ -39,9 +42,15 @@ class BaseMenuState extends MainState
 	 */
 	public var logicState:Map<String, Dynamic> = [];
 
+	public var timerManager:TimerManager;
+	public var tweenManager:TweenManager;
+
 	public function new()
 	{
 		super();
+
+		timerManager = new TimerManager();
+		tweenManager = new TweenManager();
 	}
 
 	/**
