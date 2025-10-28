@@ -43,7 +43,6 @@ class TitleState extends BaseMenuState
 		});
 
 		menuMusic.onBeat.add(onBeat);
-
 		openCallback = onReturn;
 	}
 
@@ -56,6 +55,8 @@ class TitleState extends BaseMenuState
 	private function onBeat(beat:Int):Void
 	{
 		if (beat <= lastBeatHit)
+			lastBeatHit = -1;
+		else if (beat == lastBeatHit)
 			return;
 
 		for (b in (lastBeatHit + 1)...(beat + 1))
@@ -66,23 +67,5 @@ class TitleState extends BaseMenuState
 			onEvent("beat", ["beat" => b]);
 		}
 		lastBeatHit = beat;
-	}
-
-	private function skipIntro():Void
-	{
-		onEvent("skipIntro");
-
-		FlxG.camera.flash(FlxColor.WHITE, 1);
-	}
-
-	override public function update(elapsed:Float):Void
-	{
-		// Only handle intro-skipping input if the intro is active.
-		if (menuEntities.exists("title_intro") && Main.input.isPressed("accept"))
-			skipIntro();
-
-		// Call the base class update method to handle menu input
-		// after the intro is complete.
-		super.update(elapsed);
 	}
 }

@@ -476,6 +476,14 @@
 								"name": "title_intro"
 							}
 						]
+					},
+					{
+						"type": "camera_effect",
+						"values": [
+							"flash",
+							"WHITE",
+							1
+						]
 					}
 				]
 			}
@@ -522,7 +530,10 @@
 		{
 			"input": "accept",
 			"action": {
-				"type": "accept_selection"
+				"type": "dispatch_event",
+				"values": [
+					"skipIntro"
+				]
 			}
 		}
 	]
