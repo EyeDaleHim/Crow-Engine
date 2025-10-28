@@ -252,7 +252,7 @@
 						]
 					},
 					{
-						"type": "set_visibility",
+						"type": "set_visible",
 						"targets": [
 							{
 								"name": "association_sprite"
@@ -285,7 +285,7 @@
 						]
 					},
 					{
-						"type": "set_visibility",
+						"type": "set_visible",
 						"targets": [
 							{
 								"name": "association_sprite"
