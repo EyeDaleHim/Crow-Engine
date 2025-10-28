@@ -334,7 +334,7 @@ class Assets
 
 	public function frames(id:String):FlxAtlasFrames
 	{
-		final xmlPath:String = Path.join(['textures', id + '.xml']);
+		final xmlPath:String = Path.join(['textures', '$id.xml']);
 		if (!FlxG.assets.exists(id, IMAGE) || !FlxG.assets.exists(xmlPath, TEXT))
 		{
 			return null;
@@ -350,7 +350,7 @@ class Assets
 	public function json(id:String):Dynamic
 	{
 		#if JSON_TO_MESSAGEPACK
-		final path ='$id.msgp';
+		final path = '$id.msgp';
 		final msgpBytes = FlxG.assets.getBytesUnsafe(path);
 		if (msgpBytes == null)
 		{
@@ -366,6 +366,8 @@ class Assets
 		}
 		return Json.parse(JsonComment.removeComments(jsonString));
 		#end
+
+		throw "Not implemented";
 	}
 
 	// equivalent to FileSystem.isDirectory and/or Bundle.isDirectory
@@ -375,9 +377,9 @@ class Assets
 		return sys.FileSystem.isDirectory(path);
 		#elseif ASSETS_PACKAGING
 		return Main.bundle.isDirectory(path);
-		#else
-		return FileSystem.isDirectory(path);
 		#end
+
+		throw "Not implemented";
 	}
 
 	public function list(path:String):Array<String>
