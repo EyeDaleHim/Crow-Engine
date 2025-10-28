@@ -62,19 +62,16 @@ class LogicEvaluator
 							}
 						});
 					});
-
 				case "set_visible":
 					final visible:Null<Bool> = getValue(values, 0);
 					if (visible == null)
 						continue;
 					handleEntityAction(targetedEntities, (entity) -> entity.visible = visible);
-
 				case "set_alpha":
 					final alpha:Null<Float> = getValue(values, 0);
 					if (alpha == null)
 						continue;
 					handleEntityAction(targetedEntities, (entity) -> entity.alpha = alpha);
-
 				case "play_sound":
 					final soundId:String = getValue(values, 0);
 					if (soundId == null)
