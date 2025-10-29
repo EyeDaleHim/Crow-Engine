@@ -129,6 +129,30 @@
 					}
 				]
 			},
+			// --- Initial Music Setup ---
+			{
+				"event": "create",
+				"weak": true,
+				"actions": [
+					{
+						"type": "music_load",
+						"values": [
+							"music/menu/main"
+						]
+					},
+					{
+						"type": "create_timer",
+						"values": [
+							"start_music_timer",
+							1
+						],
+						"postListenerEvents": [
+							{ "type": "music_play" },
+							{ "type": "music_fade_in", "values": [4, 0, 0.7] }
+						]
+					}
+				]
+			},
 			// --- Intro Sequence Listeners ---
 			{
 				"event": "beat",

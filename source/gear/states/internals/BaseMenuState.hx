@@ -20,7 +20,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * 
 	 * The music is carried over between menu states.
 	 */
-	public var menuMusic:Music;
+	public var music:Music;
 
 	/**
 	 * The root layout container for the entire menu.
@@ -59,8 +59,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 	{
 		super();
 
-		menuMusic = new Music();
-		add(menuMusic);
+		music = new Music();
+		add(music);
 
 		timerManager = new TimerManager();
 		tweenManager = new TweenManager();
@@ -78,8 +78,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 			return;
 		}
 
-		menuMusic.onBeat.add(onBeat);
-		menuMusic.onStep.add(onStep);
+		music.onBeat.add(onBeat);
+		music.onStep.add(onStep);
 
 		// Initialize logic state from metadata
 		if (menuMetadata.logic != null && menuMetadata.logic.initialState != null)
@@ -268,7 +268,18 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 		for (listener in menuMetadata.logic.listeners)
 		{
-			if (listener.event != eventName)
+			// Determine the events this listener is listening for.
+			var listenerEvents:Array<String> = listener.events;
+			if (listenerEvents == null || listenerEvents.length == 0)
+			{
+				if (listener.event != null)
+					listenerEvents = [listener.event];
+				else
+					continue; // No events defined for this listener.
+			}
+
+			// Check if the current event is one of the events this listener is interested in.
+			if (!listenerEvents.contains(eventName))
 				continue;
 
 			// If args are provided, temporarily add them to the state for evaluation.
@@ -362,7 +373,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 	/**
 	 * Transfers attributes to the next `MainState`.
-	 * Overrides the base implementation to also transfer `menuMusic`.
+	 * Overrides the base implementation to also transfer `music`.
 	 */
 	override public function transferAttributeHelper(state:MainState):Void
 	{
@@ -370,8 +381,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 		if (Std.isOfType(state, BaseMenuState))
 		{
 			final castedState = cast(state, BaseMenuState);
-			if (this.menuMusic != null)
-				castedState.menuMusic.swapAttributes(this.menuMusic.getAttributes());
+			if (this.music != null)
+				castedState.music.swapAttributes(this.music.getAttributes());
 		}
 	}
 }

@@ -30,11 +30,20 @@ typedef ListenerMetadata =
 {
 	/**
 	 * The event to listen for.
+	 * This is a shorthand for `events[0]`.
+	 * If `events` is also defined, `events` takes precedence.
 	 * 
 	 * Examples: "beat", "update", "create"
 	 */
-	var event:String;
+	var ?event:String;
 
+	/**
+	 * The list of events to listen for.
+	 * If this is defined, it overrides the `event` field.
+	 * 
+	 * Examples: ["beat", "update", "create"]
+	 */
+	var ?events:Array<String>;
 	/**
 	 * A condition that must be met for the actions to be triggered.
 	 * This condition must return true for all `actions` to trigger.

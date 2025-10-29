@@ -190,6 +190,50 @@ class LogicEvaluator
 							entities.remove(entity.entityName); // Remove from map after destroying
 						}
 					});
+				case "music_load" | "music_play" | "music_pause" | "music_stop" | "music_fade_in" | "music_fade_out":
+					if (executor == null || executor.music == null)
+					{
+						trace('Executor with a music object is required for music actions: $action.type');
+						continue;
+					}
+					switch (action.type)
+					{
+						case "music_load":
+							final soundId:String = getValue(values, 0);
+							if (soundId != null) executor.music.load(soundId);
+						case "music_play":
+							executor.music.play();
+						case "music_pause":
+							executor.music.pause();
+						case "music_stop":
+							executor.music.stop();
+						case "music_fade_in":
+							final duration:Float = getValue(values, 0, 1.0);
+							final from:Null<Float> = getValue(values, 1);
+							final to:Null<Float> = getValue(values, 2);
+							if (executor.music.soundObject != null)
+							{
+								executor.music.soundObject.fadeIn(duration, from, to, (_) ->
+								{
+									if (onComplete != null)
+										onComplete();
+								});
+							}
+							else if (onComplete != null) onComplete();
+						case "music_fade_out":
+							final duration:Float = getValue(values, 0, 1.0);
+							final to:Null<Float> = getValue(values, 1);
+							if (executor.music.soundObject != null)
+							{
+								executor.music.soundObject.fadeOut(duration, to, (_) ->
+								{
+									if (onComplete != null)
+										onComplete();
+								});
+							}
+							else if (onComplete != null) onComplete();
+						default:
+					}
 				default:
 					// Other actions can be added here.
 			}
