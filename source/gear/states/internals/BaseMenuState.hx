@@ -23,11 +23,6 @@ class BaseMenuState extends MainState implements IEventExecutor
 	public var menuMusic:Music;
 
 	/**
-	 * The last beat that was processed. Used to prevent duplicate beat events.
-	 */
-	public var lastBeatHit:Int = -1;
-
-	/**
 	 * The root layout container for the entire menu.
 	 */
 	public var menuLayout:InteractableLayout;
@@ -47,12 +42,25 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 */
 	public var logicState:Map<String, Dynamic> = [];
 
+	/**
+	 * The last beat that was processed. Used to prevent duplicate beat events.
+	 */
+	public var lastBeatHit:Int = -1;
+
+	/**
+	 * The last step that was processed. Used to prevent duplicate step events.
+	 */
+	public var lastStepHit:Int = -1;
+
 	public var timerManager:TimerManager;
 	public var tweenManager:TweenManager;
 
 	public function new()
 	{
 		super();
+
+		menuMusic = new Music();
+		add(menuMusic);
 
 		timerManager = new TimerManager();
 		tweenManager = new TweenManager();
@@ -69,6 +77,9 @@ class BaseMenuState extends MainState implements IEventExecutor
 			trace("Error: menuMetadata is null. Cannot build menu.");
 			return;
 		}
+
+		menuMusic.onBeat.add(onBeat);
+		menuMusic.onStep.add(onStep);
 
 		// Initialize logic state from metadata
 		if (menuMetadata.logic != null && menuMetadata.logic.initialState != null)
@@ -149,8 +160,10 @@ class BaseMenuState extends MainState implements IEventExecutor
 					if (elementData.screenCenter != null && Std.isOfType(menuObject, Entity))
 					{
 						final entity:Entity = cast menuObject;
-						if (elementData.screenCenter.x) entity.screenCenter(X);
-						if (elementData.screenCenter.y) entity.screenCenter(Y);
+						if (elementData.screenCenter.x)
+							entity.screenCenter(X);
+						if (elementData.screenCenter.y)
+							entity.screenCenter(Y);
 					}
 					add(menuObject);
 				}
@@ -322,6 +335,31 @@ class BaseMenuState extends MainState implements IEventExecutor
 			onEvent("beat", ["beat" => b]);
 		lastBeatHit = beat;
 	}
+
+	/**
+	 * A general-purpose step event handler.
+	 * This should be connected to a `Music` object's `onStep` signal.
+	 * It handles step skipping and fires the "step" event for logic listeners.
+	 * @param step The current step number from the music.
+	 */
+	public function onStep(step:Int):Void
+	{
+		if (step <= lastStepHit)
+		{
+			// Step has reset (e.g., song looped), so reset our tracker.
+			lastStepHit = -1;
+		}
+		else if (step == lastStepHit)
+		{
+			// Step was already processed, do nothing.
+			return;
+		}
+
+		for (s in (lastStepHit + 1)...(step + 1))
+			onEvent("step", ["step" => s]);
+		lastStepHit = step;
+	}
+
 	/**
 	 * Transfers attributes to the next `MainState`.
 	 * Overrides the base implementation to also transfer `menuMusic`.
@@ -330,6 +368,10 @@ class BaseMenuState extends MainState implements IEventExecutor
 	{
 		super.transferAttributeHelper(state);
 		if (Std.isOfType(state, BaseMenuState))
-			cast(state, BaseMenuState).menuMusic = this.menuMusic;
+		{
+			final castedState = cast(state, BaseMenuState);
+			if (this.menuMusic != null)
+				castedState.menuMusic.swapAttributes(this.menuMusic.getAttributes());
+		}
 	}
 }

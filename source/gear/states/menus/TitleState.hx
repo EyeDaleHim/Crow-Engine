@@ -13,10 +13,6 @@ class TitleState extends BaseMenuState
 		Main.assets.loadContext("persistent");
 		Main.assets.loadContext("title");
 
-		menuMusic = new Music("music/menu/main");
-		menuMusic.onBeat.add(onBeat);
-		add(menuMusic);
-
 		try
 		{
 			menuMetadata = cast Main.assets.json('data/menus/title');
@@ -35,19 +31,23 @@ class TitleState extends BaseMenuState
 
 		buildMenu();
 
-		FlxTimer.wait(1, () ->
+		if (menuMusic != null)
 		{
-			menuMusic.play();
-			menuMusic.soundObject.fadeIn(4, 0, 0.7);
-		});
+			menuMusic.load("music/menu/main");
+			FlxTimer.wait(1, () ->
+			{
+				menuMusic.play();
+				menuMusic.soundObject.fadeIn(4, 0, 0.7);
+			});
+		}
 
-		menuMusic.onBeat.add(onBeat);
 		openCallback = onReturn;
 	}
 
 	public function onReturn():Void
 	{
 		menuMusic.onBeat.add(onBeat);
+		menuMusic.onStep.add(onStep);
 		FlxTimer.wait(1, () -> onEvent("skipIntro"));
 	}
 }

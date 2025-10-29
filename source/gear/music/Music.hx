@@ -86,7 +86,13 @@ class Music extends FlxBasic
 	 */
 	public static inline var STEPS_PER_BEAT:Int = 4;
 
-	public function new(soundFile:String)
+	/**
+	 * Creates a new `Music` object.
+	 * @param soundFile The ID of the sound file to load (e.g., "music/menu/main").
+	 * @param soundAttributes Used internally by the engine to transfer music in-between states.
+	 * If null, no sound is loaded initially.
+	 */
+	public function new(?soundFile:String, ?soundAttributes:MusicAttributes)
 	{
 		super();
 
@@ -94,6 +100,10 @@ class Music extends FlxBasic
 		onStep = new FlxTypedSignal<Int->Void>();
 
 		load(soundFile);
+		if (soundAttributes != null)
+		{
+			swapAttributes(soundAttributes);
+		}
 	}
 
 	public function load(soundFile:String):Void
@@ -110,13 +120,13 @@ class Music extends FlxBasic
 				trace('Error parsing sound metadata file $soundFile: $e');
 				this.metadata = null;
 			}
+
+			soundObject = FlxG.sound.load(soundFile);
 		}
 		else
 		{
 			this.metadata = null;
 		}
-
-		soundObject = FlxG.sound.load(soundFile);
 
 		if (this.metadata != null)
 		{
@@ -125,6 +135,30 @@ class Music extends FlxBasic
 		}
 
 		_precalculateTempoMap();
+	}
+
+	public function swapAttributes(attributes:MusicAttributes):Void
+	{
+		soundObject = attributes.sound;
+		metadata = attributes.metadata;
+
+		_lastBeat = attributes.lastBeat;
+		_lastStep = attributes.lastStep;
+		_lastPosition = attributes.lastPosition;
+
+		_precalculateTempoMap();
+		
+	}
+
+	public function getAttributes():MusicAttributes
+	{
+		return {
+			sound: soundObject,
+			metadata: metadata,
+			lastBeat: _lastBeat,
+			lastStep: _lastStep,
+			lastPosition: _lastPosition
+		};
 	}
 
 	public function pause():Void
@@ -293,3 +327,11 @@ class Music extends FlxBasic
 		}
 	}
 }
+
+typedef MusicAttributes = {
+	sound:FlxSound,
+	metadata:SoundMetadata,
+	lastBeat:Int,
+	lastStep:Int,
+	lastPosition:Float
+};

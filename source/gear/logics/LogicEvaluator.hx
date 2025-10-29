@@ -25,6 +25,7 @@ class LogicEvaluator
 
 			final targetedEntities = (entities != null && action.targets != null) ? EntityFilter.filterEntities(entities, action.targets) : null;
 
+			// TODO: create a jump table
 			switch (action.type)
 			{
 				case "play_animation":
