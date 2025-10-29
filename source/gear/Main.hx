@@ -27,6 +27,10 @@ class Main extends DisplayObjectContainer
 		{
 			Main.input.update(FlxG.elapsed);
 		});
+		FlxG.signals.postUpdate.add(() ->
+		{
+			Main.input.postUpdate();
+		});
 
 		Lib.current.addChild(game);
 	}

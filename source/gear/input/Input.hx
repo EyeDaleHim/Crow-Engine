@@ -86,10 +86,6 @@ class Input
 	 */
 	public function update(elapsed:Float):Void
 	{
-		// Clear just pressed/released states from previous frame
-		_justPressedImpulses.splice(0, _justPressedImpulses.length);
-		_justReleasedImpulses.splice(0, _justReleasedImpulses.length);
-
 		// Update duration for active impulses
 		for (impulse in _activeImpulses)
 		{
@@ -98,6 +94,16 @@ class Input
 				impulse.duration += elapsed;
 			}
 		}
+	}
+
+	/**
+	 * Call this method after the main game update to clear frame-specific input states.
+	 */
+	public function postUpdate():Void
+	{
+		// Clear just pressed/released states from this frame, preparing for the next.
+		_justPressedImpulses.splice(0, _justPressedImpulses.length);
+		_justReleasedImpulses.splice(0, _justReleasedImpulses.length);
 	}
 
 	// --- Event Handlers ---
