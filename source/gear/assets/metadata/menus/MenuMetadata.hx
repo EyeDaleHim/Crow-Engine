@@ -35,6 +35,11 @@ typedef MenuMetadata =
 	var ?inputActions:Array<MenuInput>;
 
 	/**
+	 * Defines asset contexts to be loaded or unloaded with the menu.
+	 */
+	var ?contexts:MenuContexts;
+
+	/**
 	 * Logic properties for the menu, including initial state and listeners.
 	 */
 	var ?logic:LogicMetadata;
@@ -110,6 +115,22 @@ typedef MenuLayout =
 	var ?gapBehavior:GapBehavior;
 };
 
+/**
+ * Defines asset contexts to be loaded or unloaded with the menu.
+ * These are processed by the state that loads the menu metadata.
+ */
+typedef MenuContexts =
+{
+	/**
+	 * A list of asset context names to load when the menu is created.
+	 */
+	var ?load:Array<String>;
+
+	/**
+	 * A list of asset context names to unload when the menu is destroyed.
+	 */
+	var ?unload:Array<String>;
+};
 /**
  * Maps a game input to a specific action.
  */

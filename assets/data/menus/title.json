@@ -1,4 +1,10 @@
 {
+	"contexts": {
+		"load": [
+			"persistent",
+			"title"
+		]
+	},
 	"storedData": {
 		"randomTextPairs": [
 			[
