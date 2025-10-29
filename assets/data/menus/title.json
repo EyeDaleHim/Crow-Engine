@@ -529,9 +529,10 @@
 	"inputActions": [
 		{
 			"input": "accept",
+			"check": "just_pressed",
 			"action": {
 				"type": "dispatch_event",
-				"values": [
+				"args": [
 					"skipIntro"
 				]
 			}
