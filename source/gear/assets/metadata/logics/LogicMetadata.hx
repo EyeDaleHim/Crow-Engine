@@ -43,6 +43,12 @@ typedef ListenerMetadata =
 	 * 
 	 * Examples: ["beat", "update", "create"]
 	 */
+	var ?tags:Array<String>;
+
+	/**
+	 * The list of events to listen for.
+	 * If this is defined, it overrides the `event` field.
+	 */
 	var ?events:Array<String>;
 	/**
 	 * A condition that must be met for the actions to be triggered.

@@ -11,4 +11,6 @@ interface IEventExecutor
     public var music:Music;
 
     public function onEvent(eventName:String, ?args:Map<String, Dynamic>):Void;
+
+	public function removeListenersByTag(tag:String):Void;
 }

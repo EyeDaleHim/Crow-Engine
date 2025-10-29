@@ -26,7 +26,7 @@ class LogicEvaluator
 			final targetedEntities = (entities != null && action.targets != null) ? EntityFilter.filterEntities(entities, action.targets) : null;
 
 			// TODO: create a jump table
-			switch (action.type)
+			switch (action.type.trim())
 			{
 				case "play_animation":
 					final animName:String = getValue(values, 0);
@@ -232,7 +232,17 @@ class LogicEvaluator
 								});
 							}
 							else if (onComplete != null) onComplete();
-						default:
+					}
+				case "remove_listeners_by_tag":
+					if (executor == null)
+					{
+						trace('Executor required for this action: $action.type');
+						continue;
+					}
+					final tagToRemove:String = getValue(values, 0);
+					if (tagToRemove != null)
+					{
+						executor.removeListenersByTag(tagToRemove);
 					}
 				default:
 					// Other actions can be added here.

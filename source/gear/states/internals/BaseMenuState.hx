@@ -324,6 +324,21 @@ class BaseMenuState extends MainState implements IEventExecutor
 	}
 
 	/**
+	 * Removes all listeners that have a specific tag.
+	 * @param tag The tag to look for in the listeners' `tags` array.
+	 */
+	public function removeListenersByTag(tag:String):Void
+	{
+		if (menuMetadata?.logic?.listeners == null)
+			return;
+
+		menuMetadata.logic.listeners = menuMetadata.logic.listeners.filter((listener) ->
+		{
+			return listener.tags == null || listener.tags.indexOf(tag) == -1;
+		});
+	}
+
+	/**
 	 * A general-purpose beat event handler.
 	 * This should be connected to a `Music` object's `onBeat` signal.
 	 * It handles beat skipping and fires the "beat" event for logic listeners.
