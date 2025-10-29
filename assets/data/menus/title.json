@@ -43,7 +43,8 @@
 	],
 	"logic": {
 		"initialState": {
-			"dancing_left": false
+			"dancing_left": false,
+			"input_enabled": false
 		},
 		"listeners": [
 			// Logo bump animation on every beat
@@ -147,8 +148,39 @@
 							1
 						],
 						"postListenerEvents": [
-							{ "type": "music_play" },
-							{ "type": "music_fade_in", "values": [4, 0, 0.7] }
+							{
+								"type": "music_play"
+							},
+							{
+								"type": "music_fade_in",
+								"values": [
+									4,
+									0,
+									0.7
+								]
+							},
+							{
+								"type": "state_change",
+								"values": [
+									{
+										"changeType": "SET",
+										"stateKey": "input_enabled",
+										"value": true
+									}
+								]
+							},
+							{
+								"type": "play_animation",
+								"targets": [
+									{
+										"name": "title-gf"
+									}
+								],
+								"values": [
+									"danceLeft",
+									true
+								]
+							}
 						]
 					}
 				]
@@ -554,6 +586,14 @@
 		{
 			"input": "accept",
 			"check": "just_pressed",
+			"condition": {
+				"type": "CHECK",
+				"stateKey": "input_enabled",
+				"operatorCode": "EQ",
+				"targetValues": [
+					true
+				]
+			},
 			"action": {
 				"type": "dispatch_event",
 				"args": [
@@ -561,5 +601,7 @@
 				]
 			}
 		}
+		// The "accept" input to skip the intro is conditional on `input_enabled` being true.
+		// This prevents skipping before the initial music timer completes.
 	]
 }

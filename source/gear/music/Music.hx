@@ -182,7 +182,7 @@ class Music extends FlxBasic
 	{
 		super.update(elapsed);
 
-		if (soundObject.playing)
+		if (soundObject?.playing)
 		{
 			if (syncWithGame)
 			{
