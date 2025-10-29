@@ -2,6 +2,7 @@ package gear.logics;
 
 import gear.assets.metadata.logics.ActionMetadata;
 import gear.assets.metadata.logics.LogicMetadata;
+import gear.utils.StringInterpolator;
 import gear.entities.AnimatedText;
 import gear.utils.ColorData;
 
@@ -14,7 +15,16 @@ class LogicEvaluator
 			?executor:IEventExecutor):Void
 	{
 		for (action in actions)
-		{
+		{			
+			// Interpolate string values before execution
+			if (action.values != null)
+			{
+				for (i in 0...action.values.length)
+				{
+					if (Std.isOfType(action.values[i], String))
+						action.values[i] = StringInterpolator.interpolate(action.values[i], logicState);
+				}
+			}
 			final values = action.values ?? [];
 			final postEvents = action.postListenerEvents;
 

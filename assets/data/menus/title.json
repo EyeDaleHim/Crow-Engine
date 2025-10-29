@@ -1,46 +1,49 @@
 {
-	"randomTextPairs": [
-		[
-			"NOT MADE IN",
-			"HAXEFLIXEL"
+	"storedData": {
+		"randomTextPairs": [
+			[
+				"NOT MADE IN",
+				"HAXEFLIXEL"
+			],
+			[
+				"UNLICENSED",
+				"FOR CONSOLES"
+			],
+			[
+				"AS SEEN ON",
+				"NEWGROUNDS"
+			],
+			[
+				"MAY CAUSE",
+				"BRAIN DAMAGE"
+			],
+			[
+				"NOT FOR",
+				"RESALE"
+			],
+			[
+				"RIP",
+				"ADOBE FLASH"
+			],
+			[
+				"friday",
+				"night funkin"
+			],
+			[
+				"haxe",
+				"is cool"
+			],
+			[
+				"it's just a",
+				"burning memory"
+			],
+			[
+				"it's just a",
+				"nightmare"
+			]
 		],
-		[
-			"UNLICENSED",
-			"FOR CONSOLES"
-		],
-		[
-			"AS SEEN ON",
-			"NEWGROUNDS"
-		],
-		[
-			"MAY CAUSE",
-			"BRAIN DAMAGE"
-		],
-		[
-			"NOT FOR",
-			"RESALE"
-		],
-		[
-			"RIP",
-			"ADOBE FLASH"
-		],
-		[
-			"friday",
-			"night funkin"
-		],
-		[
-			"haxe",
-			"is cool"
-		],
-		[
-			"it's just a",
-			"burning memory"
-		],
-		[
-			"it's just a",
-			"nightmare"
-		]
-	],
+		"randomText": "random(randomTextPairs)"
+	},
 	"logic": {
 		"initialState": {
 			"dancing_left": false,

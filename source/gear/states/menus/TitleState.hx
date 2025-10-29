@@ -4,8 +4,6 @@ import gear.states.internals.BaseMenuState;
 
 class TitleState extends BaseMenuState
 {
-	private var randomPair:Array<String>;
-
 	public function new()
 	{
 		super();
@@ -20,13 +18,6 @@ class TitleState extends BaseMenuState
 		catch (e)
 		{
 			trace('Error parsing title intro file: $e');
-		}
-
-		if (Reflect.hasField(menuMetadata, "randomTextPairs"))
-		{
-			final randomTextPairs:Array<Array<String>> = Reflect.field(menuMetadata, "randomTextPairs");
-			if (randomTextPairs != null && randomTextPairs.length > 0)
-				logicState.set("randomText", FlxG.random.getObject(randomTextPairs));
 		}
 
 		buildMenu();

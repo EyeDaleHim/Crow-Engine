@@ -81,6 +81,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 		music.onBeat.add(onBeat);
 		music.onStep.add(onStep);
 
+		processStoredData();
+
 		// Initialize logic state from metadata
 		if (menuMetadata.logic != null && menuMetadata.logic.initialState != null)
 		{
@@ -102,6 +104,46 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 		// Trigger the "create" event for any initial setup logic.
 		onEvent("create");
+	}
+
+	private function processStoredData():Void
+	{
+		if (menuMetadata.storedData == null)
+			return;
+
+		final data:Dynamic = menuMetadata.storedData;
+		final fields = Reflect.fields(data);
+
+		for (field in fields)
+		{
+			final value = Reflect.field(data, field);
+			logicState.set(field, value);
+		}
+
+		// Second pass for expressions
+		for (field in fields)
+		{
+			var value = logicState.get(field);
+			if (Std.isOfType(value, String))
+			{
+				final sValue:String = value;
+				if (sValue.startsWith("random(") && sValue.endsWith(")"))
+				{
+					final varName = sValue.substring(7, sValue.length - 1);
+					if (logicState.exists(varName))
+					{
+						final list:Array<Dynamic> = logicState.get(varName);
+						if (list != null && list.length > 0)
+						{
+							logicState.set(field, list[FlxG.random.int(0, list.length - 1)]);
+						}
+					}
+				}
+			}
+		}
+
+		// Remove the original storedData to avoid confusion
+		menuMetadata.storedData = null;
 	}
 
 	/**

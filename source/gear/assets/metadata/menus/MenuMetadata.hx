@@ -24,6 +24,11 @@ typedef MenuMetadata =
 	var ?elements:Array<MenuItem>;
 
 	/**
+	 * A map of custom data to be stored and processed.
+	 */
+	var ?storedData:Dynamic;
+
+	/**
 	 * Defines actions to be taken on specific inputs.
 	 * This allows for data-driven control flow.
 	 */
