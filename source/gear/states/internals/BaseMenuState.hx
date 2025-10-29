@@ -23,6 +23,11 @@ class BaseMenuState extends MainState implements IEventExecutor
 	public var menuMusic:Music;
 
 	/**
+	 * The last beat that was processed. Used to prevent duplicate beat events.
+	 */
+	public var lastBeatHit:Int = -1;
+
+	/**
 	 * The root layout container for the entire menu.
 	 */
 	public var menuLayout:InteractableLayout;
@@ -191,6 +196,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 					triggered = Main.input.isJustPressed(inputAction.input) == false;
 				case Pressed:
 					triggered = Main.input.isPressed(inputAction.input);
+					trace('${inputAction.input}: ${triggered}');
 				case Released:
 					triggered = Main.input.isPressed(inputAction.input) == false;
 			}
@@ -293,6 +299,29 @@ class BaseMenuState extends MainState implements IEventExecutor
 		}
 	}
 
+	/**
+	 * A general-purpose beat event handler.
+	 * This should be connected to a `Music` object's `onBeat` signal.
+	 * It handles beat skipping and fires the "beat" event for logic listeners.
+	 * @param beat The current beat number from the music.
+	 */
+	public function onBeat(beat:Int):Void
+	{
+		if (beat <= lastBeatHit)
+		{
+			// Beat has reset (e.g., song looped), so reset our tracker.
+			lastBeatHit = -1;
+		}
+		else if (beat == lastBeatHit)
+		{
+			// Beat was already processed, do nothing.
+			return;
+		}
+
+		for (b in (lastBeatHit + 1)...(beat + 1))
+			onEvent("beat", ["beat" => b]);
+		lastBeatHit = beat;
+	}
 	/**
 	 * Transfers attributes to the next `MainState`.
 	 * Overrides the base implementation to also transfer `menuMusic`.

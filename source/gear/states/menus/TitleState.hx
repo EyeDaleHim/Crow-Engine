@@ -5,7 +5,6 @@ import gear.states.internals.BaseMenuState;
 class TitleState extends BaseMenuState
 {
 	private var randomPair:Array<String>;
-	private var lastBeatHit:Int = -1;
 
 	public function new()
 	{
@@ -31,7 +30,7 @@ class TitleState extends BaseMenuState
 		{
 			final randomTextPairs:Array<Array<String>> = Reflect.field(menuMetadata, "randomTextPairs");
 			if (randomTextPairs != null && randomTextPairs.length > 0)
-				randomPair = FlxG.random.getObject(randomTextPairs);
+				logicState.set("randomText", FlxG.random.getObject(randomTextPairs));
 		}
 
 		buildMenu();
@@ -50,22 +49,5 @@ class TitleState extends BaseMenuState
 	{
 		menuMusic.onBeat.add(onBeat);
 		FlxTimer.wait(1, () -> onEvent("skipIntro"));
-	}
-
-	private function onBeat(beat:Int):Void
-	{
-		if (beat <= lastBeatHit)
-			lastBeatHit = -1;
-		else if (beat == lastBeatHit)
-			return;
-
-		for (b in (lastBeatHit + 1)...(beat + 1))
-		{
-			if (randomPair != null)
-				logicState.set("randomText", randomPair);
-
-			onEvent("beat", ["beat" => b]);
-		}
-		lastBeatHit = beat;
 	}
 }
