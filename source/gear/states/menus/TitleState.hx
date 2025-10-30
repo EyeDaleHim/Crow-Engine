@@ -17,6 +17,8 @@ class TitleState extends BaseMenuState
 	{
 		super();
 
+		nextScenes = ["main_menu"];
+
 		try
 		{
 			menuMetadata = cast Main.assets.json('data/menus/title');

@@ -10,29 +10,32 @@ import gear.logics.PredicateValidator;
  */
 class PredicateEvaluator
 {
-    /**
-     * Requires predicates to be valid and type-safe before it is processed on-demand.
+	/**
+	 * Requires predicates to be valid and type-safe before it is processed on-demand.
 	 * 
 	 * Disabling this will incur some performance benefit.
-     */
-    public static var requireValidation:Bool = true;
+	 */
+	public static var validationLevel:PredicateValidatorLevel = REQUIRED;
 
 	/**
 	 * Evaluates a predicate against an entity's state and context.
-	 * @param predicate The metadata defining the condition to evaluate.
+	 * @param predicate The metadata defining the condition to evaluate. No predicate implies `true` (always passes).
 	 * @param state The entity's state map (`Map<String, Dynamic>`).
-	 * @param input If the predicate generates its own inputs like a random integer, it will be passed to the `check` function.
 	 * @return `true` if the condition is met, `false` otherwise.
 	 */
-	public static function evaluate(predicate:PredicateMetadata, state:Map<String, Dynamic>, ?input:Map<String, Dynamic>):Bool
+	public static function evaluate(?predicate:PredicateMetadata, ?state:Map<String, Dynamic>):Bool
 	{
 		if (predicate == null)
 			return true;
-		
-		if (requireValidation)
+
+		switch (validationLevel)
 		{
-			if (!PredicateValidator.validate(predicate))
-				return false; // If validation fails, the predicate cannot be evaluated.
+			case REQUIRED:
+				if (!PredicateValidator.validate(predicate))
+					return false;
+			case WARN:
+				PredicateValidator.validate(predicate);
+			case NONE:
 		}
 
 		return switch (predicate.type)
@@ -65,12 +68,56 @@ class PredicateEvaluator
 			case CHECK:
 				return check(predicate, state);
 
+			case RANGED_RANDOM:
+				if (predicate.targetValues == null || predicate.targetValues.length < 4)
+					return false;
+
+				final minGen:Int = predicate.targetValues[0] ?? FlxMath.MIN_VALUE_INT;
+				final maxGen:Int = predicate.targetValues[1] ?? FlxMath.MAX_VALUE_INT;
+				final minCheck:Int = predicate.targetValues[2];
+				final maxCheck:Int = predicate.targetValues[3];
+
+				final randomValue = FlxG.random.int(minGen, maxGen);
+				return randomValue >= minCheck && randomValue <= maxCheck;
+
+			case LIST_CONTAINS:
+				if (predicate.stateKey == null || predicate.targetValues == null || predicate.targetValues.length == 0)
+					return false;
+
+				final list:Array<Dynamic> = state.get(predicate.stateKey);
+				if (list == null || !Std.isOfType(list, Array) || list.length == 0)
+					return false;
+
+				final valueToFind = predicate.targetValues[0];
+				return list.indexOf(valueToFind) != -1;
+
+			case STATE_COMPARE:
+				if (predicate.stateKey == null || predicate.targetValues == null || predicate.targetValues.length == 0)
+					return false;
+
+				final value1 = state.get(predicate.stateKey);
+				final value2 = state.get(predicate.targetValues[0]);
+
+				if (value1 == null || value2 == null)
+					return false;
+
+				return switch (predicate.operatorCode)
+				{
+					case EQ: value1 == value2;
+					case NEQ: value1 != value2;
+					case GT: value1 > value2;
+					case LT: value1 < value2;
+					case GTE: value1 >= value2;
+					case LTE: value1 <= value2;
+					default: false;
+				}
+
 			default:
-                return true;
+				return false;
 		}
 	}
 
-	private static function check(predicate:PredicateMetadata, state:Map<String, Dynamic>, ?input:Map<String, Dynamic>):Bool
+	private static function check(predicate:PredicateMetadata, state:Map<String, Dynamic>):Bool
 	{
 		var value:Dynamic = null;
 		if (predicate.stateKey != null)
@@ -93,4 +140,22 @@ class PredicateEvaluator
 			default: false;
 		}
 	}
+}
+
+enum PredicateValidatorLevel
+{
+	/**
+	 * Validation is required and the predicate will not be evaluated if it is invalid.
+	 */
+	REQUIRED;
+
+	/**
+	 * Validation is optional, but a warning will be issued if the predicate is invalid.
+	 */
+	WARN;
+
+	/**
+	 * No validation is performed.
+	 */
+	NONE;
 }

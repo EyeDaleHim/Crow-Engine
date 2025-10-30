@@ -108,6 +108,65 @@ class PredicateValidator
                 }
                 return true;
 
+            case RANGED_RANDOM:
+                if (predicate.targetValues == null || predicate.targetValues.length < 4)
+                {
+                    trace('Predicate validation failed for type RANGED_RANDOM: "targetValues" must contain at least 4 values (minGen, maxGen, minCheck, maxCheck).');
+                    return false;
+                }
+                return true;
+
+            case LIST_CONTAINS:
+                if (predicate.stateKey == null || predicate.stateKey == "")
+                {
+                    trace('Predicate validation failed for type LIST_CONTAINS: "stateKey" is null or empty.');
+                    return false;
+                }
+                if (predicate.targetValues == null || predicate.targetValues.length != 1)
+                {
+                    trace('Predicate validation failed for type LIST_CONTAINS: "targetValues" must contain exactly 1 value to find in the list.');
+                    return false;
+                }
+                return true;
+
+            case STATE_COMPARE:
+                if (predicate.stateKey == null || predicate.stateKey == "")
+                {
+                    trace('Predicate validation failed for type STATE_COMPARE: "stateKey" is null or empty.');
+                    return false;
+                }
+
+                var operatorCode:PredicateOperatorCode = try cast(predicate.operatorCode, PredicateOperatorCode) catch (e:Dynamic) null;
+                if (operatorCode == null)
+                {
+                    trace('Predicate validation failed for type STATE_COMPARE: Invalid operator code "${predicate.operatorCode}".');
+                    return false;
+                }
+
+                switch(operatorCode)
+                {
+                    case EQ, NEQ, GT, LT, GTE, LTE:
+                        // These are valid for STATE_COMPARE
+                    default:
+                        trace('Predicate validation failed for type STATE_COMPARE: Operator "${operatorCode}" is not supported. Only comparison operators are allowed.');
+                        return false;
+                }
+
+                if (predicate.targetValues == null || predicate.targetValues.length != 1)
+                {
+                    trace('Predicate validation failed for type STATE_COMPARE: "targetValues" must contain exactly 1 value (the second state key for comparison).');
+                    return false;
+                }
+
+                final secondKey:String = predicate.targetValues[0];
+                if (secondKey == null || secondKey == "")
+                {
+                    trace('Predicate validation failed for type STATE_COMPARE: The second state key in "targetValues" cannot be null or empty.');
+                    return false;
+                }
+
+                return true;
+
             default:
                 // This case should ideally not be reached if predicateType is strictly validated.
                 // But as a fallback, if an unknown type somehow passes, it's invalid.

@@ -15,7 +15,7 @@ class LogicEvaluator
 			?executor:IEventExecutor):Void
 	{
 		for (action in actions)
-		{			
+		{
 			// Interpolate string values before execution
 			if (action.values != null)
 			{
@@ -253,6 +253,21 @@ class LogicEvaluator
 					if (tagToRemove != null)
 					{
 						executor.removeListenersByTag(tagToRemove);
+					}
+				case "switch_scene":
+					if (executor == null)
+					{
+						trace('Executor required for this action: $action.type');
+						continue;
+					}
+					final sceneName:String = getValue(values, 0);
+					if (sceneName?.length > 0)
+					{
+						executor.switchScene(sceneName);
+					}
+					else
+					{
+						trace('ERROR: Scene name not provided for switch_scene action.');
 					}
 				default:
 					// Other actions can be added here.
