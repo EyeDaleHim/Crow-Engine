@@ -33,6 +33,7 @@ class TransitionObject extends AbsolutePositionSprite
 		}
 
 		loadGraphic(FlxG.bitmap.get(transitionGraphicKey));
+		color = 0xFF000000;
 
 		kill();
 	}
