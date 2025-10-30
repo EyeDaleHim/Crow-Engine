@@ -21,9 +21,10 @@ class PredicateEvaluator
 	 * Evaluates a predicate against an entity's state and context.
 	 * @param predicate The metadata defining the condition to evaluate.
 	 * @param state The entity's state map (`Map<String, Dynamic>`).
+	 * @param input If the predicate generates its own inputs like a random integer, it will be passed to the `check` function.
 	 * @return `true` if the condition is met, `false` otherwise.
 	 */
-	public static function evaluate(predicate:PredicateMetadata, state:Map<String, Dynamic>):Bool
+	public static function evaluate(predicate:PredicateMetadata, state:Map<String, Dynamic>, ?input:Map<String, Dynamic>):Bool
 	{
 		if (predicate == null)
 			return true;
@@ -69,7 +70,7 @@ class PredicateEvaluator
 		}
 	}
 
-	private static function check(predicate:PredicateMetadata, state:Map<String, Dynamic>):Bool
+	private static function check(predicate:PredicateMetadata, state:Map<String, Dynamic>, ?input:Map<String, Dynamic>):Bool
 	{
 		var value:Dynamic = null;
 		if (predicate.stateKey != null)

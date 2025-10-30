@@ -2,7 +2,7 @@ package gear.logics;
 
 import gear.assets.metadata.logics.ActionMetadata;
 import gear.assets.metadata.logics.LogicMetadata;
-import gear.utils.StringInterpolator;
+import gear.logics.StringInterpolator;
 import gear.entities.AnimatedText;
 import gear.utils.ColorData;
 

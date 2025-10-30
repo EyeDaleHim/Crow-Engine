@@ -1,8 +1,4 @@
-package gear.utils;
-
-import haxe.ds.StringMap;
-import haxe.macro.Expr;
-import haxe.macro.Context;
+package gear.logics;
 
 /**
  * A utility class for interpolating strings with values from a `logicState` map.
