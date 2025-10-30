@@ -15,3 +15,9 @@ The idea of Crow Engine's data-driven design comes from the fact that developers
 - [EyeDaleHim](https://github.com/EyeDaleHim) Main developer and maintainer of Crow Engine.
 - [FNF Team](https://github.com/FunkinCrew) For making the funky rhythm game we all know and love.
 - [Rudyrue](https://github.com/Rudyrue/) Menu references as seen [here](https://github.com/Rudyrue/custom-psych).
+
+## Alumni
+- [SwickTheGreat](https://weldedflap.carrd.co/) - Major Contributor
+- [AmeliaTheSharmi](https://www.youtube.com/@AmeliaTheSharmi) - Logo Artist
+- [Rapper GF](https://twitter.com/Rapper_GF_Dev) - Circular Buffer Suggestion
+- **Cherry** - Circular Buffer improvements
