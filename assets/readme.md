@@ -1,5 +1,5 @@
 # Asset Tree
-Assets in Gear Engine have the following directory structure:
+Assets in Crow Engine have the following directory structure:
 
 assets
 

@@ -1,0 +1,45 @@
+package crow.states.menus;
+
+import crow.states.internals.BaseMenuState;
+import crow.states.internals.BaseMenuState;
+
+/**
+ * While normally, you don't need a separate class to run a state since JSON files
+ * are capable of abstracting away all the logic, however, classes like these are 
+ * kept for stylistic purposes and convenience for any source-code programmers 
+ * in the case of a Friday Night Funkin' mod.
+ * 
+ * In some cases, you want to code your own logic if you find JSON-based states
+ * too hard. Keeping classes like these provide an insurance policy.
+ */
+class TitleState extends BaseMenuState
+{
+	public function new()
+	{
+		super();
+
+		nextScenes = ["main_menu"];
+
+		try
+		{
+			menuMetadata = cast Main.assets.json('data/menus/title');
+		}
+		catch (e)
+		{
+			trace('Error parsing title intro file: $e');
+		}
+
+		buildMenu();
+	}
+
+	override public function createScene(sceneName:String):BaseMenuState
+	{
+		return switch (sceneName)
+		{
+			case "main_menu":
+				new MainMenuState();
+			default:
+				null;
+		}
+	}
+}

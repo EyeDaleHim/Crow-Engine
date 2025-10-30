@@ -1,2 +1,0 @@
-package gear.assets.stitching;
-

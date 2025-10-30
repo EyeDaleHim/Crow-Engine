@@ -12,13 +12,13 @@ class Project extends HXProject
 	// =========================================================================
 	//                            Application Settings
 	// =========================================================================
-	static final APP_TITLE:String = "Friday Night Funkin': Gear Engine";
-	static final APP_FILE:String = "GearEngine";
-	static final APP_MAIN:String = "gear.Main";
+	static final APP_TITLE:String = "Friday Night Funkin': Crow Engine";
+	static final APP_FILE:String = "CrowEngine";
+	static final APP_MAIN:String = "crow.Main";
 	static final APP_VERSION:String = "1.0.0";
 	static final APP_COMPANY:String = "EyeDaleHim";
-	static final APP_PRELOADER:String = "gear.Preloader";
-	static final APP_PACKAGE:String = "com.eyedalehim.fnfgearengine";
+	static final APP_PRELOADER:String = "crow.Preloader";
+	static final APP_PACKAGE:String = "com.eyedalehim.fnfcrowengine";
 
   	static final PREBUILD_HX:String = "build/Prebuild.hx";
   	static final POSTBUILD_HX:String = "build/Postbuild.hx";
@@ -35,7 +35,7 @@ class Project extends HXProject
 		super();
 
 		// Display basic info
-		info('Gear Engine ${APP_VERSION} - ${APP_COMPANY}');
+		info('Crow Engine ${APP_VERSION} - ${APP_COMPANY}');
 
 		// Configure core application properties
 		configureApp();
@@ -167,10 +167,10 @@ class Project extends HXProject
 
 	function configureMacros() 
     {
-		addHaxeFlag("--macro gear.macros.AssetsMacro.buildAssets()");
+		addHaxeFlag("--macro crow.macros.AssetsMacro.buildAssets()");
 		if (this.haxedefs.exists("ASSETS_PACKAGING"))
-			addHaxeFlag("--macro gear.macros.BundleMacro.build()");
-		addHaxeFlag("--macro addMetadata('@:build(gear.macros.FlxMacro.buildFlxBasic())', 'flixel.FlxBasic')");
+			addHaxeFlag("--macro crow.macros.BundleMacro.build()");
+		addHaxeFlag("--macro addMetadata('@:build(crow.macros.FlxMacro.buildFlxBasic())', 'flixel.FlxBasic')");
 	}
 
 	public function buildHaxeCLICommand(path:String):CLICommand {

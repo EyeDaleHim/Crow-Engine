@@ -30,25 +30,25 @@ import flixel.util.FlxSignal;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.util.FlxTimer;
 
-import gear.Main;
+import crow.Main;
 
-import gear.assets.AssetCache;
-import gear.assets.AssetHistory;
-import gear.assets.Assets;
-import gear.assets.Bundle;
+import crow.assets.AssetCache;
+import crow.assets.AssetHistory;
+import crow.assets.Assets;
+import crow.assets.Bundle;
 
-import gear.entities.Entity;
+import crow.entities.Entity;
 
-import gear.input.Input;
+import crow.input.Input;
 
-import gear.music.Music;
+import crow.music.Music;
 
-import gear.entities.AnimatedText;
+import crow.entities.AnimatedText;
 
-import gear.logics.PredicateEvaluator;
+import crow.logics.PredicateEvaluator;
 
-import gear.states.internals.InitState;
-import gear.states.internals.MainState;
+import crow.states.internals.InitState;
+import crow.states.internals.MainState;
 #end
 
 #if sys
@@ -59,8 +59,8 @@ import sys.io.File;
 import haxe.Json;
 import haxe.io.Path;
 
-import gear.utils.AxeData;
-import gear.utils.JsonComment;
+import crow.utils.AxeData;
+import crow.utils.JsonComment;
 
 using StringTools;
 using Lambda;
