@@ -95,18 +95,18 @@ class BaseMenuState extends MainState implements IEventExecutor
 		// Process asset contexts for loading and unloading
 		if (menuMetadata.contexts != null)
 		{
-			if (menuMetadata.contexts.load != null)
-			{
-				for (contextName in menuMetadata.contexts.load)
-				{
-					Main.assets.loadContext(contextName);
-				}
-			}
 			if (menuMetadata.contexts.unload != null)
 			{
 				for (contextName in menuMetadata.contexts.unload)
 				{
 					Main.assets.unloadContext(contextName);
+				}
+			}
+			if (menuMetadata.contexts.load != null)
+			{
+				for (contextName in menuMetadata.contexts.load)
+				{
+					Main.assets.loadContext(contextName);
 				}
 			}
 		}

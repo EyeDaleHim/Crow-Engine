@@ -131,6 +131,7 @@ typedef MenuContexts =
 	 */
 	var ?unload:Array<String>;
 };
+
 /**
  * Maps a game input to a specific action.
  */
@@ -181,7 +182,7 @@ typedef MenuAction =
 	var ?args:Array<Dynamic>;
 };
 
-enum abstract MenuInputCheck(String) from String to String 
+enum abstract MenuInputCheck(String) from String to String
 {
 	/** Triggers once when the input is first pressed. */
 	var JustPressed = "just_pressed";
