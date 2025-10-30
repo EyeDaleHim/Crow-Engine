@@ -52,6 +52,11 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 */
 	public var lastStepHit:Int = -1;
 
+	/**
+	 * The available scenes this state is allowed to switch to.
+	 */
+	public var nextScenes:Array<String>;
+
 	public var timerManager:TimerManager;
 	public var tweenManager:TweenManager;
 
@@ -64,6 +69,15 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 		timerManager = new TimerManager();
 		tweenManager = new TweenManager();
+
+		openCallback = () ->
+		{
+			if (menuMetadata?.skipTransitionIn == null || !menuMetadata?.skipTransitionIn)
+			{
+				transitionIn(onEvent.bind("transitionInFinished"));
+			}
+			onReturn();
+		};
 	}
 
 	/**
@@ -75,6 +89,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 		if (menuMetadata == null)
 		{
 			trace("Error: menuMetadata is null. Cannot build menu.");
+			transitionIn(onEvent.bind("transitionInFinished"));
 			return;
 		}
 
@@ -257,7 +272,6 @@ class BaseMenuState extends MainState implements IEventExecutor
 				continue;
 			}
 
-			// TODO: This input doesn't work, wtf???
 			final checkType:MenuInputCheck = inputAction.check ?? JustPressed;
 			var triggered:Bool = false;
 
@@ -307,6 +321,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 						handleMenuAction(selectedElement.onAccept);
 					}
 				}
+			case "return_to_previous_scene":
+				closeSubState();
 			default:
 				final listenerAction:ListenerActionMetadata = {type: action.type, values: action.args};
 				LogicEvaluator.execute([listenerAction], this.logicState, this.menuEntities, this);
@@ -391,6 +407,71 @@ class BaseMenuState extends MainState implements IEventExecutor
 			for (listener in listenersToRemove)
 				menuMetadata.logic.listeners.remove(listener);
 		}
+	}
+
+	/**
+	 * The scene to switch to. Use `super.switchScene()` to determine if the scene is valid.
+	 * @param sceneName The name of the scene to switch to.
+	 * @return Bool The result of the switch attempt.
+	 */
+	public function switchScene(sceneName:String):Bool
+	{
+		if (nextScenes == null)
+		{
+			trace('ERROR: nextScenes is not defined. Cannot switch scene to $sceneName');
+			return false;
+		}
+
+		if (!nextScenes.contains(sceneName))
+		{
+			trace('ERROR: Scene "$sceneName" is not in the list of allowed nextScenes.');
+			return false;
+		}
+
+		final nextState = createScene(sceneName);
+
+		if (nextState == null)
+		{
+			trace('ERROR: Could not create scene: $sceneName. The createScene() method may not be implemented for this state or scene name.');
+			return false;
+		}
+
+		return openNextScene(nextState);
+	}
+
+	/**
+	 * Creates and returns a new `BaseMenuState` instance based on the provided scene name.
+	 * This method is intended to be overridden by subclasses to define their specific scene transitions.
+	 *
+	 * @param sceneName The identifier for the scene to create.
+	 * @return A new `BaseMenuState` instance, or `null` if the scene name is not recognized.
+	 */
+	public function createScene(sceneName:String):BaseMenuState
+	{
+		// To be implemented by subclasses.
+		return null;
+	}
+
+	public function openNextScene(nextState:BaseMenuState):Bool
+	{
+		if (nextState == null)
+			return false;
+		transitionOut(() ->
+		{
+			transferAttributeHelper(nextState);
+			openSubState(nextState);
+		});
+
+		return true;
+	}
+
+	/**
+	 * Called when a sub-state is closed and returns to this state.
+	 * Dispatches a "return" event that can be caught by logic listeners.
+	 */
+	public function onReturn():Void
+	{
+		onEvent("return");
 	}
 
 	/**

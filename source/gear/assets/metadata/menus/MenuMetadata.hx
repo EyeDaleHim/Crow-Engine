@@ -43,6 +43,12 @@ typedef MenuMetadata =
 	 * Logic properties for the menu, including initial state and listeners.
 	 */
 	var ?logic:LogicMetadata;
+	
+	/**
+	 * If true, the state will skip the default transition.
+	 * If false or undefined, the transition object will be used.
+	 */
+	var ?skipTransitionIn:Bool;
 };
 
 /**

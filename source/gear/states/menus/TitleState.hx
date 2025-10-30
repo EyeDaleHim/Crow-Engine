@@ -1,6 +1,7 @@
 package gear.states.menus;
 
 import gear.states.internals.BaseMenuState;
+import gear.states.internals.BaseMenuState;
 
 /**
  * While normally, you don't need a separate class to run a state since JSON files
@@ -29,12 +30,16 @@ class TitleState extends BaseMenuState
 		}
 
 		buildMenu();
-
-		openCallback = onReturn;
 	}
 
-	public function onReturn():Void
+	override public function createScene(sceneName:String):BaseMenuState
 	{
-		onEvent("skipIntro");
+		return switch (sceneName)
+		{
+			case "main_menu":
+				new MainMenuState();
+			default:
+				null;
+		}
 	}
 }

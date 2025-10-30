@@ -270,7 +270,7 @@ class LogicEvaluator
 						trace('ERROR: Scene name not provided for switch_scene action.');
 					}
 				default:
-					// Other actions can be added here.
+					trace('WARNING: Unknown action type: ${action.type}');
 			}
 		}
 	}

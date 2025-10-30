@@ -53,7 +53,8 @@
 	"logic": {
 		"initialState": {
 			"dancing_left": false,
-			"input_enabled": false
+			"input_enabled": false,
+			"intro_finished": false
 		},
 		"listeners": [
 			// Logo bump animation on every beat
@@ -575,6 +576,7 @@
 				"actions": [
 					{
 						"type": "destroy_entity",
+						"weak": true,
 						"targets": [
 							{
 								"name": "title_intro"
@@ -588,11 +590,91 @@
 						]
 					},
 					{
+						"type": "state_change",
+						"values": [
+							{
+								"changeType": "SET",
+								"stateKey": "intro_finished",
+								"value": true
+							}
+						]
+					},
+					{
 						"type": "camera_effect",
 						"values": [
 							"flash",
 							"WHITE",
 							1
+						]
+					}
+				]
+			},
+			// Listener to advance to the main menu
+			{
+				"event": "advanceToMenu",
+				"weak": true,
+				"actions": [
+					{
+						"type": "camera_effect",
+						"values": [
+							"flash",
+							"WHITE",
+							1
+						]
+					},
+					{
+						"type": "play_sound",
+						"values": [
+							"sfx/navigate/confirm",
+							0.7
+						]
+					},
+					{
+						"type": "play_animation",
+						"targets": [
+							{
+								"name": "title/press_enter"
+							}
+						],
+						"values": [
+							"press",
+							true
+						]
+					},
+					{
+						"type": "create_timer",
+						"values": [
+							"menu_transition_timer",
+							1.5
+						],
+						"postListenerEvents": [
+							{
+								"type": "switch_scene",
+								"values": [
+									"main_menu"
+								]
+							}
+						]
+					}
+				]
+			},
+			// Listener for when a sub-menu returns to this state
+			{
+				"event": "return",
+				"actions": [
+					{
+						"type": "create_timer",
+						"values": [
+							"return_delay_timer",
+							1
+						],
+						"postListenerEvents": [
+							{
+								"type": "dispatch_event",
+								"values": [
+									"skipIntro"
+								]
+							}
 						]
 					}
 				]
@@ -641,11 +723,55 @@
 			"input": "accept",
 			"check": "just_pressed",
 			"condition": {
-				"type": "CHECK",
-				"stateKey": "input_enabled",
-				"operatorCode": "EQ",
-				"targetValues": [
-					true
+				"type": "AND",
+				"operands": [
+					{
+						"type": "CHECK",
+						"stateKey": "input_enabled",
+						"operatorCode": "EQ",
+						"targetValues": [
+							true
+						]
+					},
+					{
+						"type": "CHECK",
+						"stateKey": "intro_finished",
+						"operatorCode": "EQ",
+						"targetValues": [
+							true
+						]
+					}
+				]
+			},
+			"action": {
+				"type": "dispatch_event",
+				"args": [
+					"advanceToMenu"
+				]
+			}
+		},
+		{
+			"input": "accept",
+			"check": "just_pressed",
+			"condition": {
+				"type": "AND",
+				"operands": [
+					{
+						"type": "CHECK",
+						"stateKey": "input_enabled",
+						"operatorCode": "EQ",
+						"targetValues": [
+							true
+						]
+					},
+					{
+						"type": "CHECK",
+						"stateKey": "intro_finished",
+						"operatorCode": "EQ",
+						"targetValues": [
+							false
+						]
+					}
 				]
 			},
 			"action": {

@@ -1,6 +1,6 @@
 package gear.states.internals;
 
-import gear.objects.ui.TransitionObject;
+import gear.objects.transition.TransitionObject;
 import flixel.util.typeLimit.NextState;
 
 class MainState extends FlxSubState
@@ -18,13 +18,10 @@ class MainState extends FlxSubState
 	{
 		super();
 
-		if (transitionObject != null)
-		{
-			transitionObject.startIn();
-		}
-
 		bgColor = 0xFF000000;
 		destroySubStates = false;
+
+		persistentUpdate = persistentDraw = false;
 	}
 
 	override public function update(elapsed:Float)
