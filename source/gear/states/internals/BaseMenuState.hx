@@ -346,7 +346,17 @@ class BaseMenuState extends MainState implements IEventExecutor
 			if (args != null)
 			{
 				for (key in args.keys())
-					logicState.set(key, args.get(key));
+				{
+					if (logicState.exists(key))
+					{
+						trace('WARNING: You cannot overwrite an existing key in the logicState with a temporary event argument. Please rename the event argument.');
+						continue;
+					}
+					else
+					{
+						logicState.set(key, args.get(key));
+					}
+				}
 			}
 
 			// Evaluate the condition.
@@ -418,7 +428,11 @@ class BaseMenuState extends MainState implements IEventExecutor
 		}
 
 		for (b in (lastBeatHit + 1)...(beat + 1))
-			onEvent("beat", ["beat" => b]);
+		{
+			logicState.set("beat", b);
+			onEvent("beat");
+		}
+
 		lastBeatHit = beat;
 	}
 
@@ -442,7 +456,10 @@ class BaseMenuState extends MainState implements IEventExecutor
 		}
 
 		for (s in (lastStepHit + 1)...(step + 1))
-			onEvent("step", ["step" => s]);
+		{
+			logicState.set("step", s);
+			onEvent("step");
+		}
 		lastStepHit = step;
 	}
 
