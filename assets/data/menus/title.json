@@ -615,14 +615,6 @@
 				"weak": true,
 				"actions": [
 					{
-						"type": "camera_effect",
-						"values": [
-							"flash",
-							"WHITE",
-							1
-						]
-					},
-					{
 						"type": "play_sound",
 						"values": [
 							"sfx/navigate/confirm",
@@ -633,7 +625,7 @@
 						"type": "play_animation",
 						"targets": [
 							{
-								"name": "title/press_enter"
+								"name": "press_enter_button"
 							}
 						],
 						"values": [

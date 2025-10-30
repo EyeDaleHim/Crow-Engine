@@ -110,6 +110,7 @@ class Input
 
 	private function onKeyDown(e:KeyboardEvent):Void
 	{
+		final timestamp = System.getTimer();
 		var code = getKeyboardCode(e.keyCode);
 		if (code == null)
 			return; // Unknown or unmapped key
@@ -125,7 +126,7 @@ class Input
 		if (!impulse.active)
 		{ // Only process if it was not active (i.e., just pressed)
 			impulse.active = true;
-			impulse.timestamp = System.getTimer();
+			impulse.timestamp = timestamp;
 			_justPressedImpulses.push(impulse);
 			_activeImpulses.push(impulse);
 		}
@@ -152,6 +153,7 @@ class Input
 
 	private function onMouseDown(code:MouseButton):Void
 	{
+		final timestamp = System.getTimer();
 		if (code == null)
 			return;
 
@@ -169,7 +171,7 @@ class Input
 		if (!impulse.active)
 		{
 			impulse.active = true;
-			impulse.timestamp = System.getTimer();
+			impulse.timestamp = timestamp;
 			_justPressedImpulses.push(impulse);
 			_activeImpulses.push(impulse);
 		}
