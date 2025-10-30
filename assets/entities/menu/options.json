@@ -1,0 +1,30 @@
+{
+	"name": "menu_item_options",
+	"objects": [
+		{
+			"type": "sprite",
+			"data": {
+				"name": "item_sprite",
+				"method": {
+					"type": "atlas",
+					"path": "menus/main/options"
+				},
+				"animations": [
+					{
+						"name": "idle",
+						"prefix": "options idle",
+						"frameRate": 24,
+						"looped": true
+					},
+					{
+						"name": "selected",
+						"prefix": "options selected",
+						"frameRate": 24,
+						"looped": true
+					}
+				],
+				"startingAnimation": "idle"
+			}
+		}
+	]
+}

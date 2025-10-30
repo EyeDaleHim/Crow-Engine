@@ -1,0 +1,30 @@
+{
+	"name": "menu_item_freeplay",
+	"objects": [
+		{
+			"type": "sprite",
+			"data": {
+				"name": "item_sprite",
+				"method": {
+					"type": "atlas",
+					"path": "menus/main/freeplay"
+				},
+				"animations": [
+					{
+						"name": "idle",
+						"prefix": "freeplay idle",
+						"frameRate": 24,
+						"looped": true
+					},
+					{
+						"name": "selected",
+						"prefix": "freeplay selected",
+						"frameRate": 24,
+						"looped": true
+					}
+				],
+				"startingAnimation": "idle"
+			}
+		}
+	]
+}

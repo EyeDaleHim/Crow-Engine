@@ -349,23 +349,31 @@ class Assets
 
 	public function json(id:String):Dynamic
 	{
-		#if JSON_TO_MESSAGEPACK
-		final path = '$id.msgp';
-		final msgpBytes = FlxG.assets.getBytesUnsafe(path);
-		if (msgpBytes == null)
+		try
 		{
+			#if JSON_TO_MESSAGEPACK
+			final path = '$id.msgp';
+			final msgpBytes = FlxG.assets.getBytesUnsafe(path);
+			if (msgpBytes == null)
+			{
+				return null;
+			}
+			return crow.assets.format.MessagePack.parse(msgpBytes);
+			#else
+			final path = '$id.json';
+			final jsonString = FlxG.assets.getTextUnsafe(path);
+			if (jsonString == null)
+			{
+				return null;
+			}
+			return Json.parse(JsonComment.removeComments(jsonString));
+			#end
+		}
+		catch (e)
+		{
+			trace(e.message);
 			return null;
 		}
-		return crow.assets.format.MessagePack.parse(msgpBytes);
-		#else
-		final path = '$id.json';
-		final jsonString = FlxG.assets.getTextUnsafe(path);
-		if (jsonString == null)
-		{
-			return null;
-		}
-		return Json.parse(JsonComment.removeComments(jsonString));
-		#end
 
 		throw "Not implemented";
 	}

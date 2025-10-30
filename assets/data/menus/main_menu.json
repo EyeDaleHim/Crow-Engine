@@ -1,0 +1,141 @@
+{
+    "logic": {
+        "initialState": {
+            "selection": 0,
+            "action_pressed": false
+        },
+        "listeners": [
+            {
+                "event": "changeSelection",
+                "actions": [
+                    {
+                        "type": "play_animation",
+                        "targets": [
+                            {
+                                "name": "menu_item_story_mode"
+                            }
+                        ],
+                        "values": [
+                            "idle",
+                            true
+                        ]
+                    },
+                    {
+                        "type": "play_animation",
+                        "targets": [
+                            {
+                                "name": "menu_item_story_mode",
+                                "index": "${selection}"
+                            }
+                        ],
+                        "values": [
+                            "selected",
+                            true
+                        ]
+                    },
+                    {
+                        "type": "play_sound",
+                        "values": [
+                            "sfx/navigate/scroll"
+                        ]
+                    }
+                ]
+            },
+            {
+                "event": "accept",
+                "weak": true,
+                "actions": [
+                    {
+                        "type": "state_change",
+                        "values": [
+                            {
+                                "changeType": "SET",
+                                "stateKey": "action_pressed",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "type": "play_sound",
+                        "values": [
+                            "sfx/navigate/confirm"
+                        ]
+                    },
+                    {
+                        "type": "create_timer",
+                        "values": [
+                            "accept_delay",
+                            1
+                        ],
+                        "postListenerEvents": [
+                            {
+                                "type": "switch_scene",
+                                "values": [
+                                    "${elements[selection].onAccept.args[0]}"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "elements": [
+        {
+            "entity": "menu/background",
+            "screenCenter": {
+                "x": true,
+                "y": true
+            }
+        },
+        {
+            "name": "story_mode",
+            "entity": "menu/story_mode",
+            "onAccept": {
+                "type": "dispatch_event",
+                "args": [
+                    "accept"
+                ]
+            }
+        },
+        {
+            "name": "freeplay",
+            "entity": "menu/freeplay",
+            "onAccept": {
+                "type": "dispatch_event",
+                "args": [
+                    "accept"
+                ]
+            }
+        },
+        {
+            "name": "credits",
+            "entity": "menu/credits",
+            "onAccept": {
+                "type": "dispatch_event",
+                "args": [
+                    "accept"
+                ]
+            }
+        },
+        {
+            "name": "options",
+            "entity": "menu/options",
+            "onAccept": {
+                "type": "dispatch_event",
+                "args": [
+                    "accept"
+                ]
+            }
+        }
+    ],
+    "inputActions": [
+        {
+            "input": "back",
+            "check": "just_pressed",
+            "action": {
+                "type": "return_to_previous_scene"
+            }
+        }
+    ]
+}

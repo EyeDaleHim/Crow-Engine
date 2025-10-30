@@ -39,6 +39,7 @@ class Entity extends FlxSpriteContainer
 		if (metadata == null)
 		{
 			trace('Error: Entity metadata file not found or empty: $inputFile');
+			this.entityName = 'failed_to_load_entity_$ID';
 			return;
 		}
 

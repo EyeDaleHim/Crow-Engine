@@ -11,7 +11,16 @@ class MainMenuState extends BaseMenuState
 
 		nextScenes = ["story_mode", "freeplay", "settings"];
 
-        buildMenu();
+		try
+		{
+			menuMetadata = cast Main.assets.json('data/menus/main_menu');
+		}
+		catch (e)
+		{
+			trace('Error parsing title intro file: $e');
+		}
+
+		buildMenu();
 	}
 
 	override public function createScene(sceneName:String):BaseMenuState

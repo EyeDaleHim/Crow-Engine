@@ -322,7 +322,15 @@ class BaseMenuState extends MainState implements IEventExecutor
 					}
 				}
 			case "return_to_previous_scene":
-				closeSubState();
+				transitionOut(() ->
+				{
+					if (_parentState != null)
+					{
+						var state = cast(_parentState, BaseMenuState);
+						state.onReturn();
+						state.closeSubState();
+					}
+				});
 			default:
 				final listenerAction:ListenerActionMetadata = {type: action.type, values: action.args};
 				LogicEvaluator.execute([listenerAction], this.logicState, this.menuEntities, this);
@@ -471,6 +479,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 */
 	public function onReturn():Void
 	{
+		transitionIn(onEvent.bind("transitionInFinished"));
 		onEvent("return");
 	}
 
