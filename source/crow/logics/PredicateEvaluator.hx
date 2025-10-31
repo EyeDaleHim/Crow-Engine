@@ -20,10 +20,12 @@ class PredicateEvaluator
 	/**
 	 * Evaluates a predicate against an entity's state and context.
 	 * @param predicate The metadata defining the condition to evaluate. No predicate implies `true` (always passes).
-	 * @param state The entity's state map (`Map<String, Dynamic>`).
+	 * @param globalState The primary state map.
+	 * @param localState An optional secondary, temporary state map.
+	 * @param entityState An optional entity-specific state map.
 	 * @return `true` if the condition is met, `false` otherwise.
 	 */
-	public static function evaluate(?predicate:PredicateMetadata, ?state:Map<String, Dynamic>):Bool
+	public static function evaluate(?predicate:PredicateMetadata, ?globalState:LogicState, ?localState:LogicState, ?entityState:LogicState):Bool
 	{
 		if (predicate == null)
 			return true;
@@ -45,7 +47,7 @@ class PredicateEvaluator
 					return true;
 				for (operand in predicate.operands)
 				{
-					if (!evaluate(operand, state))
+					if (!evaluate(operand, globalState, localState, entityState))
 						return false;
 				}
 				return true;
@@ -55,7 +57,7 @@ class PredicateEvaluator
 					return false;
 				for (operand in predicate.operands)
 				{
-					if (evaluate(operand, state))
+					if (evaluate(operand, globalState, localState, entityState))
 						return true;
 				}
 				return false;
@@ -63,10 +65,10 @@ class PredicateEvaluator
 			case NOT:
 				if (predicate.operands == null || predicate.operands.length == 0)
 					return true;
-				return !evaluate(predicate.operands[0], state);
+				return !evaluate(predicate.operands[0], globalState, localState, entityState);
 
 			case CHECK:
-				return check(predicate, state);
+				return check(predicate, globalState, localState, entityState);
 
 			case RANGED_RANDOM:
 				if (predicate.targetValues == null || predicate.targetValues.length < 4)
@@ -84,6 +86,13 @@ class PredicateEvaluator
 				if (predicate.stateKey == null || predicate.targetValues == null || predicate.targetValues.length == 0)
 					return false;
 
+				final state = getStateFromScope(predicate.scope, globalState, localState, entityState);
+				if (state == null)
+				{
+					trace('Warning: Cannot perform LIST_CONTAINS. LogicState for scope "${predicate.scope ?? "global"}" is null.');
+					return false;
+				}
+
 				final list:Array<Dynamic> = state.get(predicate.stateKey);
 				if (list == null || !Std.isOfType(list, Array) || list.length == 0)
 					return false;
@@ -95,8 +104,15 @@ class PredicateEvaluator
 				if (predicate.stateKey == null || predicate.targetValues == null || predicate.targetValues.length == 0)
 					return false;
 
-				final value1 = state.get(predicate.stateKey);
-				final value2 = state.get(predicate.targetValues[0]);
+				final state1 = getStateFromScope(predicate.scope, globalState, localState, entityState);
+				// The second value for comparison can also have a scope, but for now we assume it's a key in the same scope.
+				final state2 = state1;
+
+				if (state1 == null)
+					return false;
+
+				final value1 = state1.get(predicate.stateKey);
+				final value2 = state2.get(predicate.targetValues[0]);
 
 				if (value1 == null || value2 == null)
 					return false;
@@ -117,11 +133,19 @@ class PredicateEvaluator
 		}
 	}
 
-	private static function check(predicate:PredicateMetadata, state:Map<String, Dynamic>):Bool
+	private static function check(predicate:PredicateMetadata, globalState:LogicState, localState:LogicState, entityState:LogicState):Bool
 	{
+		final state = getStateFromScope(predicate.scope, globalState, localState, entityState);
+		if (state == null)
+		{
+			trace('Warning: Cannot perform CHECK. LogicState for scope "${predicate.scope ?? "global"}" is null.');
+			return false;
+		}
+
 		var value:Dynamic = null;
 		if (predicate.stateKey != null)
 		{
+			// Check for value in local state first, then global state if scope is not specified.
 			value = state.get(predicate.stateKey);
 		}
 
@@ -138,6 +162,23 @@ class PredicateEvaluator
 			case LTE: value <= predicate.targetValues[0];
 			case MODULO: (Std.int(value) % predicate.targetValues[0]) == predicate.targetValues[1];
 			default: false;
+		}
+	}
+
+	private static function getStateFromScope(?scope:String, globalState:LogicState, localState:LogicState, entityState:LogicState):LogicState
+	{
+		final scopeStr = scope ?? "global";
+		return switch (scopeStr)
+		{
+			case "local":
+				localState;
+			case "entity":
+				entityState;
+			case "global":
+				globalState;
+			default:
+				trace('Warning: Unknown scope "${scopeStr}" in predicate. Defaulting to global.');
+				globalState;
 		}
 	}
 }

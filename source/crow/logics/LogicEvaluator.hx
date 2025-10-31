@@ -11,7 +11,7 @@ import crow.utils.ColorData;
  */
 class LogicEvaluator
 {
-	public static function execute(actions:Array<ListenerActionMetadata>, logicState:Map<String, Dynamic>, ?entities:Map<String, Entity>,
+	public static function execute(actions:Array<ListenerActionMetadata>, globalState:LogicState, ?localState:LogicState, ?entities:Map<String, Entity>,
 			?executor:IEventExecutor):Void
 	{
 		for (action in actions)
@@ -22,7 +22,7 @@ class LogicEvaluator
 				for (i in 0...action.values.length)
 				{
 					if (Std.isOfType(action.values[i], String))
-						action.values[i] = StringInterpolator.interpolate(action.values[i], logicState);
+						action.values[i] = StringInterpolator.interpolate(action.values[i], globalState, localState);
 				}
 			}
 			final values = action.values ?? [];
@@ -30,7 +30,7 @@ class LogicEvaluator
 
 			final onComplete = (postEvents != null && executor != null) ? () ->
 			{
-				execute(postEvents, logicState, entities, executor);
+				execute(postEvents, globalState, localState, entities, executor);
 			} : null;
 
 			final targetedEntities = (entities != null && action.targets != null) ? EntityFilter.filterEntities(entities, action.targets) : null;
@@ -57,7 +57,15 @@ class LogicEvaluator
 					final stateChange:ActionMetadata = getValue(values, 0);
 					if (stateChange == null)
 						continue;
-					ActionEvaluator.evaluate(stateChange, logicState);
+					if (stateChange.scope == "entity")
+					{
+						handleEntityAction(targetedEntities, (entity) ->
+						{
+							ActionEvaluator.evaluate(stateChange, globalState, localState, entity.logicState);
+						});
+					}
+					else
+						ActionEvaluator.evaluate(stateChange, globalState, localState);
 
 				case "set_text" | "add_text" | "clear_text":
 					handleEntityAction(targetedEntities, (entity) ->
@@ -118,7 +126,7 @@ class LogicEvaluator
 					final eventName:String = getValue(values, 0);
 					if (eventName == null)
 						continue;
-					final eventArgs:Map<String, Dynamic> = getValue(values, 1);
+					final eventArgs:LogicState = getValue(values, 1);
 					executor.onEvent(eventName, eventArgs);
 
 				case "create_tween":

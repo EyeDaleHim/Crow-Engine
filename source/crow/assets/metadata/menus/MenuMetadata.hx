@@ -69,9 +69,24 @@ typedef MenuItem =
 	var ?entity:String; // e.g., "menus/items/story_mode_button"
 
 	/**
-	 * An action to be triggered when this item is selected/accepted.
+	 * An action to be triggered when this item is accepted.
 	 */
 	var ?onAccept:MenuAction;
+
+	/**
+	 * An action to be triggered when this item is selected.
+	 */
+	var ?onSelect:MenuAction;
+
+	/**
+	 * An action to be triggered when this item is deselected.
+	 */
+	var ?onDeselect:MenuAction;
+
+	/**
+	 * An action to be triggered when the layout's index changes in general.
+	 */
+	var ?onIndex:MenuAction;
 
 	/**
 	 * The layout properties for this item's children, if it is a sub-menu.
@@ -119,6 +134,32 @@ typedef MenuLayout =
 	 * The behavior of the gap between items.
 	 */
 	var ?gapBehavior:GapBehavior;
+
+	/**
+	 * If true, the layout will automatically resize to fit its content.
+	 * Defaults to true.
+	 */
+	var ?autoSize:Bool;
+
+	/**
+	 * The selection mode for an interactable layout.
+	 */
+	var ?selectionMode:SelectionMode;
+
+	/**
+	 * An action to be triggered when an item in this layout is selected.
+	 */
+	var ?onSelect:MenuAction;
+
+	/**
+	 * An action to be triggered when an item in this layout is deselected.
+	 */
+	var ?onDeselect:MenuAction;
+
+	/**
+	 * An action to be triggered when the layout's selection index changes.
+	 */
+	var ?onIndex:MenuAction;
 };
 
 /**
@@ -150,9 +191,15 @@ typedef MenuInput =
 	var input:String; // e.g., "accept", "back", "up", "down"
 
 	/**
-	 * The action to perform when the input condition is met.
+	 * A list of actions to perform when the input condition is met.
 	 */
-	var action:MenuAction;
+	var ?actions:Array<MenuAction>;
+
+	/**
+	 * The action to perform when the input condition is met.
+	 * @deprecated Use `actions` instead to support multiple actions.
+	 */
+	var ?action:MenuAction;
 
 	/**
 	 * The tags for this input action to be identified as.

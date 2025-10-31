@@ -12,4 +12,7 @@ typedef ActionMetadata =
 
 	// The value to use/add/set (e.g., 1.0 for INCREMENT, "Walk" for SET)
 	var ?value:Dynamic;
+
+	// The scope of the state to modify. Can be "global" (default), "local", or "entity".
+	var ?scope:String;
 };

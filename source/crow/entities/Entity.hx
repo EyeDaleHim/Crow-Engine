@@ -1,5 +1,6 @@
 package crow.entities;
 
+import crow.logics.LogicState;
 import crow.assets.metadata.game.EntityMetadata;
 import flixel.util.FlxColor;
 import crow.utils.ColorData;
@@ -30,6 +31,11 @@ class Entity extends FlxSpriteContainer
 	 * Tags can be used for filtering and targeting entities in logic.
 	 */
 	public var tags:Array<String> = [];
+
+	/**
+	 * The internal state for the entity's logic.
+	 */
+	public var logicState:LogicState = new LogicState();
 
 	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String)
 	{

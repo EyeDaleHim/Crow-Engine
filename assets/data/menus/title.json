@@ -735,12 +735,14 @@
 					}
 				]
 			},
-			"action": {
-				"type": "dispatch_event",
-				"args": [
-					"advanceToMenu"
-				]
-			}
+			"actions": [
+				{
+					"type": "dispatch_event",
+					"args": [
+						"advanceToMenu"
+					]
+				}
+			]
 		},
 		{
 			"input": "accept",
@@ -766,12 +768,14 @@
 					}
 				]
 			},
-			"action": {
-				"type": "dispatch_event",
-				"args": [
-					"skipIntro"
-				]
-			}
+			"actions": [
+				{
+					"type": "dispatch_event",
+					"args": [
+						"skipIntro"
+					]
+				}
+			]
 		}
 	]
 }

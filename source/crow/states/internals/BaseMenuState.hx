@@ -6,6 +6,7 @@ import crow.entities.managers.TimerManager;
 import crow.entities.managers.TweenManager;
 import crow.objects.layout.InteractableLayout;
 import crow.logics.LogicEvaluator;
+import crow.logics.LogicState;
 import crow.logics.PredicateEvaluator;
 import crow.logics.IEventExecutor;
 
@@ -40,7 +41,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	/**
 	 * The internal state for the menu's logic, which can be modified by listeners.
 	 */
-	public var logicState:Map<String, Dynamic> = [];
+	public var logicState:LogicState = new LogicState();
 
 	/**
 	 * The last beat that was processed. Used to prevent duplicate beat events.
@@ -201,6 +202,34 @@ class BaseMenuState extends MainState implements IEventExecutor
 				parentLayout.alignItems = layoutProps.alignItems;
 			if (layoutProps.wrap != null)
 				parentLayout.wrap = layoutProps.wrap;
+			if (layoutProps.gapBehavior != null)
+				parentLayout.gapBehavior = layoutProps.gapBehavior;
+			if (layoutProps.autoSize != null)
+				parentLayout.autoSize = layoutProps.autoSize;
+			if (layoutProps.selectionMode != null)
+				parentLayout.selectionMode = layoutProps.selectionMode;
+			
+			if (layoutProps.onSelect != null)
+			{
+				parentLayout.onSelect.add((selected) -> handleMenuAction(layoutProps.onSelect));
+			}
+
+			if (layoutProps.onDeselect != null)
+			{
+				parentLayout.onDeselect.add((deselected) -> handleMenuAction(layoutProps.onDeselect));
+			}
+
+			if (layoutProps.onIndex != null)
+			{
+				parentLayout.onIndex.add((oldIndex, newIndex) ->
+				{
+					final localState = new LogicState();
+					localState.set("oldIndex", oldIndex);
+					localState.set("newIndex", newIndex);
+
+					handleMenuAction(layoutProps.onIndex, localState);
+				});
+			}
 		}
 
 		for (elementData in elements)
@@ -283,14 +312,21 @@ class BaseMenuState extends MainState implements IEventExecutor
 					triggered = Main.input.isJustPressed(inputAction.input) == false;
 				case Pressed:
 					triggered = Main.input.isPressed(inputAction.input);
-					trace('${inputAction.input}: ${triggered}');
 				case Released:
 					triggered = Main.input.isPressed(inputAction.input) == false;
 			}
 
 			if (triggered)
 			{
-				handleMenuAction(inputAction.action);
+				if (inputAction.actions != null)
+				{
+					for (action in inputAction.actions)
+						handleMenuAction(action);
+				}
+				else if (inputAction.action != null) // For backward compatibility
+				{
+					handleMenuAction(inputAction.action);
+				}
 			}
 		}
 	}
@@ -299,7 +335,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * Executes a menu action, such as navigating or accepting a selection.
 	 * @param action The `MenuAction` to perform.
 	 */
-	public function handleMenuAction(action:MenuAction):Void
+	public function handleMenuAction(action:MenuAction, ?localState:LogicState):Void
 	{
 		switch (action.type)
 		{
@@ -333,7 +369,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				});
 			default:
 				final listenerAction:ListenerActionMetadata = {type: action.type, values: action.args};
-				LogicEvaluator.execute([listenerAction], this.logicState, this.menuEntities, this);
+				LogicEvaluator.execute([listenerAction], this.logicState, localState, this.menuEntities, this);
 		}
 	}
 
@@ -343,12 +379,13 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * @param eventName The name of the event to trigger (e.g., "beat", "update").
 	 * @param args A map of additional data to be temporarily available in the state for predicate evaluation.
 	 */
-	public function onEvent(eventName:String, ?args:Map<String, Dynamic>):Void
+	public function onEvent(eventName:String, ?args:LogicState):Void
 	{
 		if (menuMetadata?.logic?.listeners == null)
 			return;
 
 		var listenersToRemove:Array<ListenerMetadata> = null;
+		var localState:LogicState = null;
 
 		for (listener in menuMetadata.logic.listeners)
 		{
@@ -365,6 +402,12 @@ class BaseMenuState extends MainState implements IEventExecutor
 			// Check if the current event is one of the events this listener is interested in.
 			if (!listenerEvents.contains(eventName))
 				continue;
+
+			// Create a local state for this listener execution if it doesn't exist yet.
+			if (localState == null)
+			{
+				localState = new LogicState();
+			}
 
 			// If args are provided, temporarily add them to the state for evaluation.
 			if (args != null)
@@ -384,7 +427,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 			}
 
 			// Evaluate the condition.
-			final conditionMet = PredicateEvaluator.evaluate(listener.condition, this.logicState);
+			final conditionMet = PredicateEvaluator.evaluate(listener.condition, this.logicState, localState);
 
 			// Clean up the temporary state variables.
 			if (args != null)
@@ -398,7 +441,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 			// All conditions passed, execute actions.
 			if (listener.actions != null)
-				LogicEvaluator.execute(listener.actions, this.logicState, this.menuEntities, this);
+				LogicEvaluator.execute(listener.actions, this.logicState, localState, this.menuEntities, this);
 
 			// If the listener is weak, mark it for removal.
 			if (listener.weak)

@@ -11,10 +11,11 @@ class StringInterpolator
 	/**
 	 * Interpolates a string with values from the provided `logicState`.
 	 * @param text The string to interpolate, containing placeholders like `${variable}` or `${array[0]}`.
-	 * @param logicState The map containing the data to use for interpolation.
+	 * @param globalState The primary map containing data for interpolation.
+	 * @param localState An optional secondary map to check for data first.
 	 * @return The interpolated string.
 	 */
-	public static function interpolate(text:String, logicState:Map<String, Dynamic>):String
+	public static function interpolate(text:String, globalState:LogicState, ?localState:LogicState):String
 	{
 		return INTERPOLATION_REGEX.map(text, (regex) ->
 		{
@@ -26,10 +27,19 @@ class StringInterpolator
 			final parts = expression.split("[");
 			final varName = parts[0];
 
-			if (!logicState.exists(varName))
-				return fullMatch; // Variable not found, return original placeholder
+			var value:Dynamic = null;
+			var stateUsed:LogicState = null;
 
-			var value = logicState.get(varName);
+			if (localState != null && localState.exists(varName))
+			{
+				value = localState.get(varName);
+			}
+			else if (globalState.exists(varName))
+			{
+				value = globalState.get(varName);
+			}
+			else
+				return fullMatch; // Variable not found in any scope
 
 			if (parts.length > 1)
 			{

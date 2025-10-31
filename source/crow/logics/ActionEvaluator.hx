@@ -10,10 +10,25 @@ class ActionEvaluator
 	/**
 	 * Evaluates a state change action and modifies the provided state map.
 	 * @param action The metadata defining the state change.
-	 * @param state The state map to modify.
+	 * @param globalState The primary state map to modify.
+	 * @param ?localState A secondary, temporary state map.
 	 */
-	public static function evaluate(action:ActionMetadata, state:Map<String, Dynamic>):Void
+	public static function evaluate(action:ActionMetadata, globalState:LogicState, ?localState:LogicState, ?entityState:LogicState):Void
 	{
+		final scope = action.scope ?? "global";
+		final state:LogicState = switch (scope)
+		{
+			case "local": localState;
+			case "entity": entityState;
+			default: globalState;
+		};
+
+		if (state == null)
+		{
+			trace('Warning: Cannot perform state_change. LogicState for scope "${scope}" is null.');
+			return;
+		}
+
 		switch (action.changeType)
 		{
 			case SET:

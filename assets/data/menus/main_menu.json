@@ -1,4 +1,7 @@
 {
+    "layout": {
+        "selectionMode": "WRAP"
+    },
     "logic": {
         "initialState": {
             "selection": 0,
@@ -43,7 +46,6 @@
             },
             {
                 "event": "accept",
-                "weak": true,
                 "actions": [
                     {
                         "type": "state_change",
@@ -133,29 +135,35 @@
         {
             "input": "back",
             "check": "just_pressed",
-            "action": {
-                "type": "return_to_previous_scene"
-            }
+            "actions": [
+                {
+                    "type": "return_to_previous_scene"
+                }
+            ]
         },
         {
             "input": "ui_up",
             "check": "just_pressed",
-            "action": {
-                "type": "navigate",
-                "args": [
-                    -1
-                ]
-            }
+            "actions": [
+                {
+                    "type": "navigate",
+                    "args": [
+                        -1
+                    ]
+                }
+            ]
         },
         {
             "input": "ui_down",
             "check": "just_pressed",
-            "action": {
-                "type": "navigate",
-                "args": [
-                    1
-                ]
-            }
+            "actions": [
+                {
+                    "type": "navigate",
+                    "args": [
+                        1
+                    ]
+                }
+            ]
         }
         
     ]
