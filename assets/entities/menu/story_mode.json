@@ -7,18 +7,18 @@
 				"name": "item_sprite",
 				"method": {
 					"type": "atlas",
-					"path": "menus/main/story_mode"
+					"path": "main_menu/storymode"
 				},
 				"animations": [
 					{
 						"name": "idle",
-						"prefix": "story_mode idle",
+						"prefix": "storymode idle",
 						"frameRate": 24,
 						"looped": true
 					},
 					{
 						"name": "selected",
-						"prefix": "story_mode selected",
+						"prefix": "storymode selected",
 						"frameRate": 24,
 						"looped": true
 					}

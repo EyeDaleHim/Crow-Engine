@@ -7,7 +7,7 @@
 				"name": "item_sprite",
 				"method": {
 					"type": "atlas",
-					"path": "menus/main/credits"
+					"path": "main_menu/credits"
 				},
 				"animations": [
 					{

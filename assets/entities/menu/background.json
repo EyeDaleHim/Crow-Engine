@@ -7,7 +7,7 @@
 				"name": "bg_sprite",
 				"method": {
 					"type": "simple",
-					"path": "main_menu/yellowBG"
+					"path": "generic/yellowBG"
 				},
 				"scale": {
 					"x": 1.175,

@@ -7,7 +7,7 @@
 				"name": "item_sprite",
 				"method": {
 					"type": "atlas",
-					"path": "menus/main/freeplay"
+					"path": "main_menu/freeplay"
 				},
 				"animations": [
 					{
