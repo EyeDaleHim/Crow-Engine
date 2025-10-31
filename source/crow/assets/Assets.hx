@@ -334,14 +334,27 @@ class Assets
 
 	public function frames(id:String):FlxAtlasFrames
 	{
+		#if XML_TO_MESSAGEPACK
+		final xmlPath:String = Path.join(['textures', '$id.msgp_x']);
+		#else
 		final xmlPath:String = Path.join(['textures', '$id.xml']);
+		#end
+
 		if (!FlxG.assets.exists(id, IMAGE) || !FlxG.assets.exists(xmlPath, TEXT))
 		{
 			return null;
 		}
 
 		final graphic = FlxG.assets.getBitmapDataUnsafe(id, true);
+		#if XML_TO_MESSAGEPACK
+		final msgpBytes = FlxG.assets.getBytesUnsafe(xmlPath, true);
+		if (msgpBytes == null)
+			return null;
+		final parsed = crow.assets.format.MessagePack.parse(msgpBytes);
+		final xml = crow.assets.format.MessagePack.toXml(parsed).toString();
+		#else
 		final xml = FlxG.assets.getTextUnsafe(xmlPath, true);
+		#end
 		final frames = FlxAtlasFrames.fromSparrow(graphic, xml);
 
 		return frames;
@@ -352,7 +365,7 @@ class Assets
 		try
 		{
 			#if JSON_TO_MESSAGEPACK
-			final path = '$id.msgp';
+			final path = '$id.msgp_j';
 			final msgpBytes = FlxG.assets.getBytesUnsafe(path);
 			if (msgpBytes == null)
 			{

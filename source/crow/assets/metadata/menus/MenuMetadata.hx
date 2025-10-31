@@ -7,7 +7,6 @@ import crow.assets.metadata.logics.LogicMetadata;
 
 /**
  * The base structure for menu layouts and input handling.
- * This can be extended by more specific menu metadata types.
  */
 typedef MenuMetadata =
 {
@@ -44,11 +43,28 @@ typedef MenuMetadata =
 	 */
 	var ?logic:LogicMetadata;
 	
+	var ?transitions:MenuTransitions;
+};
+
+/**
+ * Defines how transitions are handled for a menu state.
+ * If a field is `true`, the corresponding transition will be skipped.
+ * If `false` or `null`, the transition will play.
+ */
+typedef MenuTransitions =
+{
 	/**
-	 * If true, the state will skip the default transition.
-	 * If false or undefined, the transition object will be used.
+	 * If `true`, skips the transition when the state is first entered.
 	 */
-	var ?skipTransitionIn:Bool;
+	var ?skipIn:Bool;
+	/**
+	 * If `true`, skips the transition when returning to this state from a sub-state.
+	 */
+	var ?skipReturn:Bool;
+	/**
+	 * If `true`, skips the transition when leaving this state.
+	 */
+	var ?skipOut:Bool;
 };
 
 /**
@@ -194,12 +210,6 @@ typedef MenuInput =
 	 * A list of actions to perform when the input condition is met.
 	 */
 	var ?actions:Array<MenuAction>;
-
-	/**
-	 * The action to perform when the input condition is met.
-	 * @deprecated Use `actions` instead to support multiple actions.
-	 */
-	var ?action:MenuAction;
 
 	/**
 	 * The tags for this input action to be identified as.

@@ -122,6 +122,7 @@ class Project extends HXProject
 		// This is useful for reducing file size and improving parsing performance.
 		// This is only recommended for release builds, as it will make the assets unreadable.		
 		// setHaxedef("JSON_TO_MESSAGEPACK");
+		setHaxedef("XML_TO_MESSAGEPACK");
 
 		setHaxedef("hscriptPos");
 

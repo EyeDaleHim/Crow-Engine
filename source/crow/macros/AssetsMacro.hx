@@ -71,6 +71,8 @@ class AssetsMacro
 
 		for (item in list)
 		{
+			var processed:Bool = false;
+
 			#if JSON_TO_MESSAGEPACK
 			if (Path.extension(item) == 'json')
 			{
@@ -81,8 +83,9 @@ class AssetsMacro
 					final msgpBytes = MessagePack.serialize(parsedJson);
 
 					var exportItemPath:String = Path.join([exportPath, item]);
-					var msgpPath = Path.withExtension(exportItemPath, 'msgp');
+					var msgpPath = Path.withExtension(exportItemPath, 'msgp_j');
 					File.saveBytes(msgpPath, msgpBytes);
+					processed = true;
 				}
 				catch (e)
 				{
@@ -103,8 +106,40 @@ class AssetsMacro
 					File.copy(item, exportItemPath);
 				}
 			}
-			else
 			#end
+
+			#if XML_TO_MESSAGEPACK
+			if (Path.extension(item) == 'xml')
+			{
+				try
+				{
+					final xmlContent = File.getContent(item);
+					final parsedXml = MessagePack.fromXmlString(xmlContent);
+					final msgpBytes = MessagePack.serialize(parsedXml);
+
+					var exportItemPath:String = Path.join([exportPath, item]);
+					var msgpPath = Path.withExtension(exportItemPath, 'msgp_x');
+					File.saveBytes(msgpPath, msgpBytes);
+				}
+				catch (e)
+				{
+					Context.warning('Failed to convert ${item} to MessagePack: ${e}. Copying original file.', Context.currentPos());
+					for (stackItem in e.stack)
+					{
+						switch (stackItem)
+						{
+							case FilePos(s, file, line, col):
+								Context.warning('	at ${file}:${line}:${col}', Context.currentPos());
+							default:
+						}
+					}
+					var exportItemPath:String = Path.join([exportPath, item]);
+					File.copy(item, exportItemPath);
+				}
+			}
+			#end
+
+			if (!processed)
 			{
 				var exportItemPath:String = Path.join([exportPath, item]);
 				File.copy(item, exportItemPath);

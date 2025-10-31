@@ -73,11 +73,14 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 		openCallback = () ->
 		{
-			if (menuMetadata?.skipTransitionIn == null || !menuMetadata?.skipTransitionIn)
+			if (menuMetadata?.transitions?.skipIn != true)
 			{
 				transitionIn(onEvent.bind("transitionInFinished"));
 			}
-			onReturn();
+			else
+			{
+				onEvent("transitionInFinished");
+			}
 		};
 	}
 
@@ -323,10 +326,6 @@ class BaseMenuState extends MainState implements IEventExecutor
 					for (action in inputAction.actions)
 						handleMenuAction(action);
 				}
-				else if (inputAction.action != null) // For backward compatibility
-				{
-					handleMenuAction(inputAction.action);
-				}
 			}
 		}
 	}
@@ -358,7 +357,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 					}
 				}
 			case "return_to_previous_scene":
-				transitionOut(() ->
+				final onFinish = () ->
 				{
 					if (_parentState != null)
 					{
@@ -366,7 +365,16 @@ class BaseMenuState extends MainState implements IEventExecutor
 						state.onReturn();
 						state.closeSubState();
 					}
-				});
+				};
+
+				if (menuMetadata?.transitions?.skipOut == true)
+				{
+					onFinish();
+				}
+				else
+				{
+					transitionOut(onFinish);
+				}
 			default:
 				final listenerAction:ListenerActionMetadata = {type: action.type, values: action.args};
 				LogicEvaluator.execute([listenerAction], this.logicState, localState, this.menuEntities, this);
@@ -507,12 +515,21 @@ class BaseMenuState extends MainState implements IEventExecutor
 	{
 		if (nextState == null)
 			return false;
-		transitionOut(() ->
+		
+		final onFinish = () ->
 		{
 			transferAttributeHelper(nextState);
 			openSubState(nextState);
-		});
+		};
 
+		if (menuMetadata?.transitions?.skipOut == true)
+		{
+			onFinish();
+		}
+		else
+		{
+			transitionOut(onFinish);
+		}
 		return true;
 	}
 
@@ -522,7 +539,14 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 */
 	public function onReturn():Void
 	{
-		transitionIn(onEvent.bind("transitionInFinished"));
+		if (menuMetadata?.transitions?.skipReturn != true)
+		{
+			transitionIn(onEvent.bind("transitionInFinished"));
+		}
+		else
+		{
+			onEvent("transitionInFinished");
+		}
 		onEvent("return");
 	}
 

@@ -5,6 +5,7 @@ import haxe.io.BytesBuffer;
 import haxe.io.BytesInput;
 import haxe.Int64;
 import haxe.Json;
+import haxe.xml.Parser;
 
 /**
  * MessagePack serialization and deserialization.
@@ -48,6 +49,46 @@ class MessagePack
 	public static function stringify(obj:Dynamic, pretty:Bool = false):String
 	{
 		return Json.stringify(obj, null, pretty ? "  " : null);
+	}
+
+	/**
+	 * Converts a Haxe dynamic object into an XML-formatted string.
+	 * @param obj The Haxe object to convert to XML.
+	 * @return The XML string representation of the object.
+	 */
+	public static function toXmlString(obj:Dynamic):String
+	{
+		return toXml(obj).toString();
+	}
+
+	/**
+	 * Parses an XML string into a Haxe dynamic object.
+	 * @param xmlString The XML string to parse.
+	 * @return The deserialized Haxe object.
+	 */
+	public static function fromXmlString(xmlString:String):Dynamic
+	{
+		return fromXml(Parser.parse(xmlString));
+	}
+
+	/**
+	 * Converts a Haxe dynamic object into an `haxe.xml.Xml` object.
+	 * @param obj The Haxe object to convert.
+	 * @return The `Xml` object representation.
+	 */
+	public static function toXml(obj:Dynamic):Xml
+	{
+		return new XmlWriter().convertObjectToXml(obj);
+	}
+
+	/**
+	 * Parses an `haxe.xml.Xml` object into a Haxe dynamic object.
+	 * @param xml The `Xml` object to parse.
+	 * @return The deserialized Haxe object.
+	 */
+	public static function fromXml(xml:Xml):Dynamic
+	{
+		return new XmlReader(xml).read();
 	}
 }
 
@@ -529,5 +570,177 @@ private class MessagePackWriter
 		}
 		buffer.addByte(extType);
 		buffer.add(data);
+	}
+}
+
+// TODO: replace with proper binary xml formats
+private class XmlWriter
+{
+	var document:Xml;
+
+	public function new()
+	{
+		document = Xml.createDocument();
+	}
+
+	public function convertObjectToXml(obj:Dynamic):Xml
+	{
+		if (obj == null || !(obj is Array) || (obj : Array<Dynamic>).length == 0)
+		{
+			return Xml.createDocument(); // Return an empty document
+		}
+
+		var rootElement:Xml = null;
+		var rootElementIndex = -1;
+
+		// First, find and build the root element
+		for (i in 0...(obj : Array<Dynamic>).length)
+		{
+			final node = obj[i];
+			if (node[0] != "?") // It's an element
+			{
+				rootElement = convertElementToXml(node);
+				rootElementIndex = i;
+				break;
+			}
+		}
+
+		if (rootElement == null)
+			return Xml.createDocument(); // No root element found
+
+		// Now create the document and add the root element
+		final doc = Xml.createDocument();
+		doc.addChild(rootElement);
+
+		// Now, add processing instructions as siblings before the root element
+		for (i in 0...rootElementIndex)
+		{
+			final node = obj[i];
+			if (node[0] == "?") // It's a processing instruction
+			{
+				// node is ["?", "xml version=\"1.0\"..."]
+				final pi = Xml.createProcessingInstruction(node[1]);
+				doc.insertChild(pi, i);
+			}
+		}
+		return doc;
+	}
+
+	private function convertElementToXml(obj:Dynamic):Xml
+	{
+		if (obj == null || !(obj is Array))
+			return null; // Or throw an error if strictness is required
+
+		final nodeName:String = obj[0];
+		final attributes:Dynamic = obj[1];
+		final children:Array<Dynamic> = obj[2];
+
+		final element = Xml.createElement(nodeName);
+
+		// Set attributes
+		if (attributes != null)
+		{
+			for (key in Reflect.fields(attributes))
+			{
+				element.set(key, Reflect.field(attributes, key));
+			}
+		}
+
+		// Add children
+		if (children != null)
+		{
+			for (childObj in children)
+			{
+				if (childObj is String)
+				{
+					element.addChild(Xml.createPCData(childObj));
+				}
+				else if (Reflect.isObject(childObj))
+				{
+					final childElement = convertElementToXml(childObj);
+					if (childElement != null)
+						element.addChild(childElement);
+				}
+			}
+		}
+
+		return element;
+	}
+}
+
+private class XmlReader
+{
+	var document:Xml;
+
+	public function new(xml:Xml)
+	{
+		this.document = xml;
+	}
+
+	public function read():Dynamic
+	{
+		if (document.nodeType != Xml.Document)
+		{
+			// This is not a full document, just a single element.
+			// Handle it as before for robustness.
+			return convertXmlToObject(document);
+		}
+
+		var docNodes = [];
+		for (node in document.iterator())
+		{
+			if (node.nodeType == Xml.ProcessingInstruction)
+			{
+				docNodes.push(["?", node.nodeValue]);
+			}
+			else if (node.nodeType == Xml.Element)
+			{
+				docNodes.push(convertXmlToObject(node));
+			}
+		}
+		return docNodes;
+	}
+
+	private function convertXmlToObject(xml:Xml):Dynamic
+	{
+		if (xml == null || xml.nodeType != Xml.Element)
+			return null;
+
+		var children:Array<Dynamic> = [];
+		// Read attributes
+		final attributes:Dynamic = {};
+		var hasAttributes = false;
+		for (attrName in xml.attributes())
+		{
+			Reflect.setField(attributes, attrName, xml.get(attrName));
+			hasAttributes = true;
+		}
+
+		// Read children (elements and text nodes)
+		for (child in xml.iterator())
+		{
+			switch (child.nodeType)
+			{
+				case Xml.Element:
+					final childObj = convertXmlToObject(child);
+					if (childObj != null)
+						children.push(childObj);
+
+				case Xml.PCData | Xml.CData:
+					final value = child.nodeValue;
+					if (value.length > 0)
+						children.push(value);
+
+				default: // Ignore comments, processing instructions, etc.
+			}
+		}
+
+		final finalAttributes = hasAttributes ? attributes : null;
+		final finalChildren = children.length > 0 ? children : null;
+
+		// [nodeName, attributes, children]
+		final obj:Array<Dynamic> = [xml.nodeName, finalAttributes, finalChildren];
+
+		return obj;
 	}
 }
