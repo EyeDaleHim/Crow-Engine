@@ -9,7 +9,7 @@ enum abstract ActionScope(String) to String
     @:from
 	public static function fromString(value:String):ActionScope
 	{
-		return switch (value.trim().toLowerCase())
+		return switch ((value ?? "").trim().toLowerCase())
 		{
 			case "global": GLOBAL;
 			case "local": LOCAL;
