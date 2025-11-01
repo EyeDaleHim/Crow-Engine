@@ -8,6 +8,7 @@ import flixel.input.keyboard.FlxKey; // For mapping key codes
 import crow.assets.metadata.internals.InputMetadata;
 import crow.input.ComboReleaseCondition;
 import crow.input.InputDevice;
+import crow.ds.Set;
 import crow.input.MouseButton;
 
 class Input
@@ -16,9 +17,9 @@ class Input
 
 	private var _actionBinds:Map<String, ActionBind>;
 	private var _inputImpulses:Map<Int, InputImpulse>; // Key: (device << 24) | code
-	private var _activeImpulses:Array<InputImpulse>; // List of impulses currently held down
-	private var _justPressedImpulses:Array<InputImpulse>; // Impulses that became active THIS frame
-	private var _justReleasedImpulses:Array<InputImpulse>; // Impulses that became inactive THIS frame
+	private var _activeImpulses:Set<InputImpulse>; // Set of impulses currently held down
+	private var _justPressedImpulses:Set<InputImpulse>; // Impulses that became active THIS frame
+	private var _justReleasedImpulses:Set<InputImpulse>; // Impulses that became inactive THIS frame
 
 	/**
 	 * Reads an internal input file.
@@ -34,9 +35,9 @@ class Input
 
 		_actionBinds = new Map<String, ActionBind>();
 		_inputImpulses = new Map<Int, InputImpulse>();
-		_activeImpulses = [];
-		_justPressedImpulses = [];
-		_justReleasedImpulses = [];
+		_activeImpulses = new Set();
+		_justPressedImpulses = new Set();
+		_justReleasedImpulses = new Set();
 
 		if (stage != null)
 		{
@@ -102,8 +103,8 @@ class Input
 	public function postUpdate():Void
 	{
 		// Clear just pressed/released states from this frame, preparing for the next.
-		_justPressedImpulses.splice(0, _justPressedImpulses.length);
-		_justReleasedImpulses.splice(0, _justReleasedImpulses.length);
+		_justPressedImpulses.clear();
+		_justReleasedImpulses.clear();
 	}
 
 	// --- Event Handlers ---
@@ -127,8 +128,8 @@ class Input
 		{ // Only process if it was not active (i.e., just pressed)
 			impulse.active = true;
 			impulse.timestamp = timestamp;
-			_justPressedImpulses.push(impulse);
-			_activeImpulses.push(impulse);
+			_justPressedImpulses.add(impulse);
+			_activeImpulses.add(impulse);
 		}
 	}
 
@@ -146,7 +147,7 @@ class Input
 		if (impulse.active)
 		{ // Only process if it was active (i.e., just released)
 			impulse.reset();
-			_justReleasedImpulses.push(impulse);
+			_justReleasedImpulses.add(impulse);
 			_activeImpulses.remove(impulse);
 		}
 	}
@@ -172,8 +173,8 @@ class Input
 		{
 			impulse.active = true;
 			impulse.timestamp = timestamp;
-			_justPressedImpulses.push(impulse);
-			_activeImpulses.push(impulse);
+			_justPressedImpulses.add(impulse);
+			_activeImpulses.add(impulse);
 		}
 	}
 
@@ -193,7 +194,7 @@ class Input
 		if (impulse.active)
 		{
 			impulse.reset();
-			_justReleasedImpulses.push(impulse);
+			_justReleasedImpulses.add(impulse);
 			_activeImpulses.remove(impulse);
 		}
 	}
@@ -318,7 +319,7 @@ class Input
 		{
 			// If the number of currently active impulses does not exactly match the number of inputs
 			// required by this exclusive trigger, then it cannot be active.
-			if (_activeImpulses.length != trigger.inputs.length)
+			if (_activeImpulses.size != trigger.inputs.length)
 			{
 				return false;
 			}
