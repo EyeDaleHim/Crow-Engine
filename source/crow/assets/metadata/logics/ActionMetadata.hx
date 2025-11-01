@@ -1,6 +1,7 @@
 package crow.assets.metadata.logics;
 
 import crow.logics.ActionChangeType;
+import crow.logics.ActionScope;
 
 typedef ActionMetadata =
 {
@@ -14,5 +15,5 @@ typedef ActionMetadata =
 	var ?value:Dynamic;
 
 	// The scope of the state to modify. Can be "global" (default), "local", or "entity".
-	var ?scope:String;
+	var ?scope:ActionScope;
 };

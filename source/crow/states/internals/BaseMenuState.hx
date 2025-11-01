@@ -129,13 +129,22 @@ class BaseMenuState extends MainState implements IEventExecutor
 				}
 			}
 		}
-		menuLayout = new InteractableLayout();
-		add(menuLayout);
 
-		if (menuMetadata.elements != null)
+		var rootLayoutAdded:Bool = false;
+		for (element in menuMetadata.elements)
 		{
-			buildElements(menuMetadata.elements, menuLayout, menuMetadata.layout);
+			if (element.name == "_root_layout")
+			{
+				rootLayoutAdded = true;
+				break;
+			}
 		}
+
+		menuLayout = new InteractableLayout();
+		if (!rootLayoutAdded)
+			add(menuLayout);
+
+		buildElements(menuMetadata.elements, menuLayout, menuMetadata.layout, rootLayoutAdded);
 
 		menuLayout.updateLayout();
 
@@ -189,7 +198,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * @param parentLayout The layout to add the created objects to.
 	 * @param layoutProps The layout properties to apply to the `parentLayout`.
 	 */
-	private function buildElements(elements:Array<MenuItem>, parentLayout:InteractableLayout, ?layoutProps:MenuLayout):Void
+	private function buildElements(elements:Array<MenuItem>, parentLayout:InteractableLayout, ?layoutProps:MenuLayout, rootLayoutInElements:Bool = false):Void
 	{
 		if (layoutProps != null)
 		{
@@ -235,10 +244,20 @@ class BaseMenuState extends MainState implements IEventExecutor
 			}
 		}
 
+		if (elements == null || elements.length == 0)
+			return;
+
 		for (elementData in elements)
 		{
 			var menuObject:FlxObject = null;
 			var isDecoration:Bool = elementData.onAccept == null && elementData.items == null;
+
+			if (elementData.name == "_root_layout")
+			{
+				if (rootLayoutInElements)
+					add(parentLayout);
+				continue;
+			}
 
 			if (elementData.items != null)
 			{

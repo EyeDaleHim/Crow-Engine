@@ -84,11 +84,15 @@
     },
     "elements": [
         {
+            "name": "background",
             "entity": "menu/background",
             "screenCenter": {
                 "x": true,
                 "y": true
             }
+        },
+        {
+            "name": "_root_layout"
         },
         {
             "name": "story_mode",

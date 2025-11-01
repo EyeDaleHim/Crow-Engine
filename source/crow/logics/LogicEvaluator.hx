@@ -57,7 +57,7 @@ class LogicEvaluator
 					final stateChange:ActionMetadata = getValue(values, 0);
 					if (stateChange == null)
 						continue;
-					if (stateChange.scope == "entity")
+					if (stateChange.scope == ENTITY)
 					{
 						handleEntityAction(targetedEntities, (entity) ->
 						{
