@@ -130,6 +130,32 @@ class Set<T>
 		return list;
 	}
 
+    /**
+     * Converts the set to a string.
+     * @return String
+     */
+    public function toString():String
+	{
+		return toArray().toString();
+	}
+
+    /**
+	 * Creates a new Set from an array of values.
+     * If there are duplicate values from the array, the firstmost unique value
+     * will only be added.
+	 * @param array The array of values to add to the set.
+	 * @return A new Set containing all unique values from the array.
+	 */
+    public static function fromArray<T>(array:Array<T>):Set<T>
+	{
+		var newSet = new Set<T>();
+		for (value in array)
+		{
+			newSet.add(value);
+		}
+		return newSet;
+	}
+
 	private function get_size():Int
 	{
 		return _size;
