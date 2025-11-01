@@ -165,16 +165,16 @@ class PredicateEvaluator
 		}
 	}
 
-	private static function getStateFromScope(?scope:String, globalState:LogicState, localState:LogicState, entityState:LogicState):LogicState
+	private static function getStateFromScope(?scope:ActionScope, globalState:LogicState, localState:LogicState, entityState:LogicState):LogicState
 	{
-		final scopeStr = scope ?? "global";
+		final scopeStr = scope ?? GLOBAL;
 		return switch (scopeStr)
 		{
-			case "local":
+			case LOCAL:
 				localState;
-			case "entity":
+			case ENTITY:
 				entityState;
-			case "global":
+			case GLOBAL:
 				globalState;
 			default:
 				trace('Warning: Unknown scope "${scopeStr}" in predicate. Defaulting to global.');

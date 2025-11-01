@@ -12,12 +12,14 @@ class Set<T>
 	public var size(get, never):Int;
 
 	/**
-	 * Creates a new, empty Set.
+	 * Creates a new empty Set.
+	 * @param customComparator An optional function to compare elements. If null, `Reflect.compare` is used, which is
+     * typically enough for primitive types.
 	 */
-	public function new()
+	public function new(?customComparator:T->T->Int)
 	{
 		root = null;
-		this.comparator = Reflect.compare;
+		this.comparator = customComparator ?? Reflect.compare;
 	}
 
 	/**
@@ -350,9 +352,9 @@ class Set<T>
 	private function fixDelete(node:TreeNode<T>)
 	{
 		var current = node;
-		while (current != root && (current == null || current.color == BLACK))
+		while (current != root && (current == null || current.color == BLACK) && current != null)
 		{
-			if (current == current.parent.left)
+			if (current.parent != null && current == current.parent.left)
 			{
 				var sibling = current.parent.right;
 				if (sibling.color == RED)

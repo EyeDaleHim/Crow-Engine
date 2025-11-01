@@ -15,11 +15,11 @@ class ActionEvaluator
 	 */
 	public static function evaluate(action:ActionMetadata, globalState:LogicState, ?localState:LogicState, ?entityState:LogicState):Void
 	{
-		final scope = action.scope ?? "global";
+		final scope = action.scope ?? GLOBAL;
 		final state:LogicState = switch (scope)
 		{
-			case "local": localState;
-			case "entity": entityState;
+			case LOCAL: localState;
+			case ENTITY: entityState;
 			default: globalState;
 		};
 

@@ -74,6 +74,16 @@ typedef MenuItem =
 {
 	/**
 	 * The name or identifier for this menu item.
+	 * 
+	 * There are special names like "_root_layout", it is considered a "special item",
+	 * where instead of creating/using an entity, the special item will simply
+	 * be re-ordered in the state's `members` array using this item's index as reference.
+	 * 
+	 * By default, "_root_layout" is always added before any `elements`, if any item
+	 * does not present "_root_layout".
+	 * 
+	 * If `name` is identified as a "special item", all other fields, except for `position` and `screenCenter`,
+	 * are ignored.
 	 */
 	var name:String; // e.g., "story_mode", "freeplay"
 
