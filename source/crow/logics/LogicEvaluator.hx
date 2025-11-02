@@ -52,6 +52,7 @@ class LogicEvaluator
 							spr.animation.play(animName, force);
 							if (localState != null)
 							{
+								// TODO: This might still be inaccurate in some cases, find solutions later!
 								if (localState.get("compensate"))
 								{
 									spr.animation.update(localState.get("catchupMs") / 1000);
