@@ -404,15 +404,14 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * Triggers actions for any listeners associated with the given event.
 	 * This is the core of the data-driven logic system for menus.
 	 * @param eventName The name of the event to trigger (e.g., "beat", "update").
-	 * @param args A map of additional data to be temporarily available in the state for predicate evaluation.
+	 * @param localState The local scope for this event.
 	 */
-	public function onEvent(eventName:String, ?args:LogicState):Void
+	public function onEvent(eventName:String, ?localState:LogicState):Void
 	{
 		if (menuMetadata?.logic?.listeners == null)
 			return;
 
 		var listenersToRemove:Array<ListenerMetadata> = null;
-		var localState:LogicState = null;
 
 		for (listener in menuMetadata.logic.listeners)
 		{
@@ -430,38 +429,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 			if (!listenerEvents.contains(eventName))
 				continue;
 
-			// Create a local state for this listener execution if it doesn't exist yet.
-			if (localState == null)
-			{
-				localState = new LogicState();
-			}
-
-			// If args are provided, temporarily add them to the state for evaluation.
-			if (args != null)
-			{
-				for (key in args.keys())
-				{
-					if (logicState.exists(key))
-					{
-						trace('WARNING: You cannot overwrite an existing key in the logicState with a temporary event argument. Please rename the event argument.');
-						continue;
-					}
-					else
-					{
-						logicState.set(key, args.get(key));
-					}
-				}
-			}
-
 			// Evaluate the condition.
 			final conditionMet = PredicateEvaluator.evaluate(listener.condition, this.logicState, localState);
-
-			// Clean up the temporary state variables.
-			if (args != null)
-			{
-				for (key in args.keys())
-					logicState.remove(key);
-			}
 
 			if (!conditionMet)
 				continue;
@@ -603,10 +572,20 @@ class BaseMenuState extends MainState implements IEventExecutor
 			return;
 		}
 
+		logicState.set("beat", beat);
+
 		for (b in (lastBeatHit + 1)...(beat + 1))
 		{
-			logicState.set("beat", b);
-			onEvent("beat");
+			// Calculate the time this beat should have occurred
+			final beatTime = music.beatToMs(b);
+			// Calculate the difference between when it should have happened and the current music time
+			final elapsed = music.position - beatTime;
+
+			var localState = new LogicState();
+			localState.set("beat", b);
+			localState.set("catchupMs", elapsed);
+			localState.set("compensate", b == beat && Math.abs(lastBeatHit - beat) > 1);
+			onEvent("beat", localState);
 		}
 
 		lastBeatHit = beat;
@@ -631,10 +610,18 @@ class BaseMenuState extends MainState implements IEventExecutor
 			return;
 		}
 
+		logicState.set("step", step);
+
 		for (s in (lastStepHit + 1)...(step + 1))
 		{
-			logicState.set("step", s);
-			onEvent("step");
+			final stepTime = music.stepToMs(s);
+			final elapsed = music.position - stepTime;
+
+			var localState = new LogicState();
+			localState.set("step", s);
+			localState.set("catchupMs", elapsed);
+			localState.set("compensate",  s == step && Math.abs(lastStepHit - step) > 1);
+			onEvent("step", localState);
 		}
 		lastStepHit = step;
 	}

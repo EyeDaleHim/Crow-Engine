@@ -38,6 +38,16 @@ class Music extends FlxBasic
 	public var stepDec(get, never):Float;
 
 	/**
+	 * The duration of a beat in milliseconds.
+	 */
+	public var beatCrochet(get, never):Float;
+
+	/**
+	 * The duration of a step in milliseconds.
+	 */
+	public var stepCrochet(get, never):Float;
+
+	/**
 	 * The sound object that is being played.
 	 */
 	public var soundObject:FlxSound;
@@ -290,6 +300,51 @@ class Music extends FlxBasic
 	function get_beatDec():Float
 	{
 		return stepDec / STEPS_PER_BEAT;
+	}
+
+	function get_beatCrochet():Float
+	{
+		return 60000 / tempo;
+	}
+
+	function get_stepCrochet():Float
+	{
+		return (60000 / tempo) / STEPS_PER_BEAT;
+	}
+
+	/**
+	 * Converts a decimal step value to a time in milliseconds, this accounts for tempo changes.
+	 * @param step The step value to convert.
+	 * @return The time in milliseconds.
+	 */
+	public function stepToMs(step:Float):Float
+	{
+		return beatToMs(step / STEPS_PER_BEAT);
+	}
+
+	/**
+	 * Converts a decimal beat value to a time in milliseconds, this accounts for tempo changes.
+	 * @param beat The beat value to convert.
+	 * @return The time in milliseconds.
+	 */
+	public function beatToMs(beat:Float):Float
+	{
+		if (_tempoMap == null || _tempoMap.length == 0)
+		{
+			final msPerBeat = 60000 / tempo;
+			return beat * msPerBeat;
+		}
+
+		var segment = _tempoMap[0];
+		for (i in 1..._tempoMap.length)
+		{
+			if (beat < _tempoMap[i].beat)
+				break;
+			segment = _tempoMap[i];
+		}
+
+		final beatsSinceSegment = beat - segment.beat;
+		return segment.time + beatsSinceSegment * (60000 / segment.tempo);
 	}
 
 	private function _precalculateTempoMap()

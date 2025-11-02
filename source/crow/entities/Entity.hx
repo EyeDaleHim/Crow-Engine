@@ -103,11 +103,11 @@ class Entity extends FlxSpriteContainer
 							{
 								if (anim.indices != null)
 								{
-									sprite.animation.addByIndices(anim.name, anim.prefix, anim.indices, "", anim.frameRate, anim.loop);
+									sprite.animation.addByIndices(anim.name, anim.prefix, anim.indices, "", anim.frameRate, anim.loop ?? false);
 								}
 								else
 								{
-									sprite.animation.addByPrefix(anim.name, anim.prefix, anim.frameRate, anim.loop);
+									sprite.animation.addByPrefix(anim.name, anim.prefix, anim.frameRate, anim.loop ?? false);
 								}
 							}
 

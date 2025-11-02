@@ -50,6 +50,13 @@ class LogicEvaluator
 						entity.forEachOfType(FlxSprite, (spr) ->
 						{
 							spr.animation.play(animName, force);
+							if (localState != null)
+							{
+								if (localState.get("compensate"))
+								{
+									spr.animation.update(localState.get("catchupMs") / 1000);
+								}
+							}
 						});
 					});
 
