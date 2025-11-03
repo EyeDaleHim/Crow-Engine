@@ -44,6 +44,7 @@ class LogicEvaluator
 						continue;
 
 					final force:Bool = getValue(values, 1, false);
+					final updateHitbox:Bool = getValue(values, 2, true);
 					handleEntityAction(targetedEntities, (entity) ->
 					{
 						// TODO: Filters for sprites within entities?
@@ -58,6 +59,8 @@ class LogicEvaluator
 									spr.animation.update(localState.get("catchupMs") / 1000);
 								}
 							}
+							if (updateHitbox)
+								spr.updateHitbox();
 						});
 					});
 

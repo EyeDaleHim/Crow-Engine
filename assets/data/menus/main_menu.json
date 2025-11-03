@@ -6,85 +6,13 @@
     },
     "logic": {
         "initialState": {
-            "selection": 0,
             "action_pressed": false
         },
         "listeners": [
-            {
-                "event": "changeSelection",
-                "actions": [
-                    {
-                        "type": "play_animation",
-                        "targets": [
-                            {
-                                "name": "menu_item_story_mode"
-                            }
-                        ],
-                        "values": [
-                            "idle",
-                            true
-                        ]
-                    },
-                    {
-                        "type": "play_animation",
-                        "targets": [
-                            {
-                                "name": "menu_item_story_mode",
-                                "index": "${selection}"
-                            }
-                        ],
-                        "values": [
-                            "selected",
-                            true
-                        ]
-                    },
-                    {
-                        "type": "play_sound",
-                        "values": [
-                            "sfx/navigate/scroll"
-                        ]
-                    }
-                ]
-            },
-            {
-                "event": "accept",
-                "actions": [
-                    {
-                        "type": "state_change",
-                        "values": [
-                            {
-                                "changeType": "SET",
-                                "stateKey": "action_pressed",
-                                "value": true
-                            }
-                        ]
-                    },
-                    {
-                        "type": "play_sound",
-                        "values": [
-                            "sfx/navigate/confirm"
-                        ]
-                    },
-                    {
-                        "type": "create_timer",
-                        "values": [
-                            "accept_delay",
-                            1
-                        ],
-                        "postListenerEvents": [
-                            {
-                                "type": "switch_scene",
-                                "values": [
-                                    "${elements[selection].onAccept.args[0]}"
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
+
         ]
     },
-    "elements": [
+    "elements": [ 
         {
             "name": "background",
             "entity": "menu/background",
