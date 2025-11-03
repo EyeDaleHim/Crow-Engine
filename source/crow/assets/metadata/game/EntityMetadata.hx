@@ -1,5 +1,6 @@
 package crow.assets.metadata.game;
 
+import flixel.util.FlxAxes;
 import crow.utils.AxeData;
 import crow.utils.ColorData;
 import crow.assets.metadata.display.AnimationMetadata;
@@ -17,11 +18,48 @@ typedef EntityMetadata =
 	var ?visible:Bool;
 
 	/**
+	 * Defines an internal object to be used as a reference for layouts.
+	 * If specified, layouts will use this object's properties (position, size) for calculations
+	 * instead of the entity's own bounding box.
+	 * 
+	 * For example, the entity constantly changes sizes, which can make the layout's configuration
+	 * inconsistent, you would use this field to resolve such cases.
+	 */
+	var ?layoutTarget:LayoutTargetData;
+
+	/**
 	 * The list of objects for this entity to render.
 	 * 
 	 * Rendering order depends on the order of elements in this array.
 	 */
 	var objects:Array<EntityObject>;
+};
+
+/**
+ * Metadata for an entity's internal layout target.
+ */
+typedef LayoutTargetData =
+{
+	/**
+	 * The width of the layout target.
+	 */
+	var ?width:Float;
+
+	/**
+	 * The height of the layout target.
+	 */
+	var ?height:Float;
+
+	/**
+	 * The position of the layout target relative to the entity's origin.
+	 */
+	var ?position:AxeData<Null<Float>>;
+	
+	/**
+	 * Assuming `position` doesn't satisfy your needs, this field will force
+	 * the entity to be positioned relative to the center of the layout target.
+	 */
+	var ?relativeToCenter:AxeData<Null<Bool>>;
 };
 
 /**
@@ -37,8 +75,19 @@ typedef EntityObject =
 
 	/**
 	 * The data for the object, which varies based on the `type`.
+	 * 
+	 * This only contains fields unique to that data.
 	 */
 	var data:Dynamic;
+	
+	/**
+	 * If the object has antialiasing, this option determines whether the
+	 * object is rendered with antialiasing or not.
+	 * 
+	 * If undefined, the value of antialiasing is determined by the player's
+	 * antialiasing setting.
+	 */
+	var ?antialiasing:Bool;
 }
 
 /**

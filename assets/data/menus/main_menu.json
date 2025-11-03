@@ -1,6 +1,8 @@
 {
     "layout": {
-        "selectionMode": "WRAP"
+        "selectionMode": "WRAP",
+        "gap": 16.0,
+        "alignItems": "CENTER"
     },
     "logic": {
         "initialState": {
@@ -92,7 +94,11 @@
             }
         },
         {
-            "name": "_root_layout"
+            "name": "_root_layout",
+            "screenCenter": {
+                "x": true,
+                "y": true
+            }
         },
         {
             "name": "story_mode",
@@ -102,6 +108,16 @@
                 "args": [
                     "accept"
                 ]
+            },
+            "overrideData": {
+                "layoutTarget": {
+                    "width": 300,
+                    "height": 130,
+                    "relativeToCenter": {
+                        "x": true,
+                        "y": true
+                    }
+                }
             }
         },
         {
@@ -112,6 +128,16 @@
                 "args": [
                     "accept"
                 ]
+            },
+            "overrideData": {
+                "layoutTarget": {
+                    "width": 300,
+                    "height": 130,
+                    "relativeToCenter": {
+                        "x": true,
+                        "y": true
+                    }
+                }
             }
         },
         {
@@ -122,6 +148,24 @@
                 "args": [
                     "accept"
                 ]
+            },
+            "layoutTarget": {
+                "width": 300,
+                "height": 130,
+                "relativeToCenter": {
+                    "x": true,
+                    "y": true
+                }
+            },
+            "overrideData": {
+                "layoutTarget": {
+                    "width": 300,
+                    "height": 130,
+                    "relativeToCenter": {
+                        "x": true,
+                        "y": true
+                    }
+                }
             }
         },
         {
@@ -132,6 +176,16 @@
                 "args": [
                     "accept"
                 ]
+            },
+            "overrideData": {
+                "layoutTarget": {
+                    "width": 300,
+                    "height": 130,
+                    "relativeToCenter": {
+                        "x": true,
+                        "y": true
+                    }
+                }
             }
         }
     ],
@@ -169,6 +223,5 @@
                 }
             ]
         }
-        
     ]
 }

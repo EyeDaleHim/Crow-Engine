@@ -17,6 +17,23 @@ class Entity extends FlxSpriteContainer
 	public var entityName:String;
 
 	/**
+	 * The metadata for this entity.
+	 */
+	public var metadata:EntityMetadata;
+
+	/**
+	 * The internal object for layouts to use as reference, if applicable.
+	 * 
+	 * Layouts will use this for positioning, size, and alignment, instead of 
+	 * the entity's own properties. The entity itself will be locked to this object, 
+	 * depending on the metadata.
+	 * 
+	 * This is useful if the entity has a lot of changing parts which doesn't play
+	 * well with layouts that are usually static.
+	 */
+	public var layoutTarget:FlxObject;
+
+	/**
 	 * A map of sprites belonging to this entity, accessible by name.
 	 */
 	public var spritesMap:Map<String, FlxSprite> = [];
@@ -37,7 +54,7 @@ class Entity extends FlxSpriteContainer
 	 */
 	public var logicState:LogicState = new LogicState();
 
-	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String)
+	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String, ?overrideMetadata:EntityMetadata)
 	{
 		super(x, y);
 
@@ -47,6 +64,18 @@ class Entity extends FlxSpriteContainer
 			trace('Error: Entity metadata file not found or empty: $inputFile');
 			this.entityName = 'failed_to_load_entity_$ID';
 			return;
+		}
+
+		this.metadata = metadata;
+		if (overrideMetadata != null)
+		{
+			final fields = Reflect.fields(overrideMetadata);
+			for (field in fields)
+			{
+				final value = Reflect.field(overrideMetadata, field);
+				if (value != null)
+					Reflect.setField(this.metadata, field, value);
+			}
 		}
 
 		this.entityName = metadata.name;
@@ -70,10 +99,71 @@ class Entity extends FlxSpriteContainer
 					createNestedEntity(object.data);
 			}
 		}
+
+		if (metadata.layoutTarget != null)
+		{
+			this.layoutTarget = new FlxObject();
+			this.layoutTarget.debugBoundingBoxColor = FlxColor.PURPLE;
+			if (metadata.layoutTarget.position != null)
+			{
+				if (metadata.layoutTarget.position.x != null)
+					this.layoutTarget.x = this.x + metadata.layoutTarget.position.x;
+				if (metadata.layoutTarget.position.y != null)
+					this.layoutTarget.y = this.y + metadata.layoutTarget.position.y;
+			}
+			if (metadata.layoutTarget.width != null)
+				this.layoutTarget.width = metadata.layoutTarget.width;
+			if (metadata.layoutTarget.height != null)
+				this.layoutTarget.height = metadata.layoutTarget.height;
+		}
+	}
+
+	override function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		if (layoutTarget != null)
+		{
+			if (metadata.layoutTarget.relativeToCenter != null)
+			{
+				if (metadata.layoutTarget.relativeToCenter.x == true)
+					this.x = layoutTarget.x + (layoutTarget.width / 2) - (this.width / 2);
+				else if (metadata.layoutTarget.position.x != null)
+					this.x = layoutTarget.x;
+
+				if (metadata.layoutTarget.relativeToCenter.y == true)
+					this.y = layoutTarget.y + (layoutTarget.height / 2) - (this.height / 2);
+				else if (metadata.layoutTarget.position.y != null)
+					this.y = layoutTarget.y;
+			}
+			else if (metadata.layoutTarget.position != null)
+			{
+				if (metadata.layoutTarget.position.x != null)
+					this.x = metadata.layoutTarget.position.x + metadata.layoutTarget.position.x;
+				if (metadata.layoutTarget.position.y != null)
+					this.y = metadata.layoutTarget.position.y + metadata.layoutTarget.position.y;
+			}
+		}
+	}
+
+	override function draw()
+	{
+		super.draw();
+
+		if (layoutTarget != null && exists && alive && visible)
+		{
+			layoutTarget.draw();
+		}
 	}
 
 	override function destroy()
 	{
+		if (layoutTarget != null)
+		{
+			layoutTarget.destroy();
+			layoutTarget = null;
+		}
+
 		super.destroy();
 		spritesMap = null;
 	}
@@ -114,6 +204,7 @@ class Entity extends FlxSpriteContainer
 							if (spriteMeta.startingAnimation != null)
 							{
 								sprite.animation.play(spriteMeta.startingAnimation);
+								sprite.updateHitbox();
 							}
 						}
 					}

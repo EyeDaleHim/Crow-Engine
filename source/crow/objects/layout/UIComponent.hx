@@ -5,7 +5,7 @@ import crow.objects.layout.PsuedoRuling;
 class UIComponent extends FlxSprite implements IFlxSprite
 {
 	// converts any object to a UIComponent
-	public static function addAsComponent(object:FlxObject):UIComponent
+	public static function addAsComponent(object:Entity):UIComponent
 	{
 		var component = new UIComponent(object.x, object.y);
 		object.x = 0;
@@ -67,14 +67,16 @@ class UIComponent extends FlxSprite implements IFlxSprite
 		group = null;
 	}
 
-	public function add(Object:FlxObject):FlxObject
+	public function add<T:FlxObject>(Object:T):T
 	{
-		return group.add(Object);
+		group.add(Object);
+		return Object;
 	}
 
-	public function remove(Object:FlxObject):FlxObject
+	public function remove<T:FlxObject>(Object:T):T
 	{
-		return group.remove(Object);
+		group.remove(Object);
+		return Object;
 	}
 
 	private function get_members():Array<FlxObject>

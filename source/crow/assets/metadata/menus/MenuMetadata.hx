@@ -1,9 +1,10 @@
 package crow.assets.metadata.menus;
 
+import crow.assets.metadata.game.EntityMetadata;
+import crow.assets.metadata.logics.LogicMetadata;
 import crow.assets.metadata.logics.PredicateMetadata;
 import crow.utils.AxeData;
 import crow.objects.layout.LayoutProperties;
-import crow.assets.metadata.logics.LogicMetadata;
 
 /**
  * The base structure for menu layouts and input handling.
@@ -43,6 +44,9 @@ typedef MenuMetadata =
 	 */
 	var ?logic:LogicMetadata;
 	
+	/**
+	 * Defines how transitions are handled for a menu state.
+	 */
 	var ?transitions:MenuTransitions;
 };
 
@@ -93,6 +97,12 @@ typedef MenuItem =
 	 * This allows for animated or complex menu items.
 	 */
 	var ?entity:String; // e.g., "menus/items/story_mode_button"
+
+	/**
+	 * Allows overriding specific properties of the entity metadata defined in the `entity` field.
+	 * This is useful for making minor adjustments to an entity without creating a new metadata file.
+	 */
+	var ?overrideData:EntityMetadata;
 
 	/**
 	 * An action to be triggered when this item is accepted.
@@ -149,11 +159,29 @@ typedef MenuItem =
  */
 typedef MenuLayout =
 {
+	/**
+	 * The direction in which items are laid out (e.g., `VERTICAL` or `HORIZONTAL`).
+	 */
 	var ?direction:LayoutDirection;
+	/**
+	 * The amount of space between each item in the layout.
+	 */
 	var ?gap:Float;
+	/**
+	 * The padding around the entire layout.
+	 */
 	var ?padding:Float;
+	/**
+	 * How items are distributed along the main axis.
+	 */
 	var ?justifyContent:JustifyContent;
+	/**
+	 * How items are aligned along the cross axis.
+	- */
 	var ?alignItems:AlignItems;
+	/**
+	 * Whether items should wrap to the next line if they exceed the layout's size.
+	 */
 	var ?wrap:FlexWrap;
 
 	/**

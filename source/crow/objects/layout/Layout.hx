@@ -85,7 +85,8 @@ class Layout extends UIComponent
 				{
 					for (member in visibleMembers)
 					{
-						var memberSize = (direction == HORIZONTAL) ? member.width : member.height;
+						final layoutObject = getLayoutObject(member);
+						var memberSize = (direction == HORIZONTAL) ? layoutObject.width : layoutObject.height;
 						var memberGap = gap;
 						if (Std.isOfType(member, UIComponent))
 						{
@@ -138,16 +139,18 @@ class Layout extends UIComponent
 
 			for (member in line)
 			{
+				final layoutObject = getLayoutObject(member);
+
 				switch (direction)
 				{
 					case VERTICAL:
-						totalChildrenSize += member.height;
-						if (member.width > maxCrossAxisSize)
-							maxCrossAxisSize = member.width;
+						totalChildrenSize += layoutObject.height;
+						if (layoutObject.width > maxCrossAxisSize)
+							maxCrossAxisSize = layoutObject.width;
 					case HORIZONTAL:
-						totalChildrenSize += member.width;
-						if (member.height > maxCrossAxisSize)
-							maxCrossAxisSize = member.height;
+						totalChildrenSize += layoutObject.width;
+						if (layoutObject.height > maxCrossAxisSize)
+							maxCrossAxisSize = layoutObject.height;
 				}
 			}
 
@@ -196,6 +199,8 @@ class Layout extends UIComponent
 
 			for (member in line)
 			{
+				final layoutObject = getLayoutObject(member);
+
 				var memberGap = gap;
 				if (Std.isOfType(member, UIComponent))
 				{
@@ -221,38 +226,38 @@ class Layout extends UIComponent
 				switch (direction)
 				{
 					case VERTICAL:
-						member.y = this.y + currentPos;
-						currentPos += member.height + memberGap + justificationSpacing;
+						layoutObject.y = this.y + currentPos;
+						currentPos += layoutObject.height + memberGap + justificationSpacing;
 
 						switch (itemAlign)
 						{
 							case START:
-								member.x = this.x + crossAxisOffset;
+								layoutObject.x = this.x + crossAxisOffset;
 							case END:
-								member.x = this.x + crossAxisOffset + maxCrossAxisSize - member.width;
+								layoutObject.x = this.x + crossAxisOffset + maxCrossAxisSize - layoutObject.width;
 							case CENTER:
-								member.x = this.x + crossAxisOffset + (maxCrossAxisSize - member.width) / 2;
+								layoutObject.x = this.x + crossAxisOffset + (maxCrossAxisSize - layoutObject.width) / 2;
 						}
 
 					case HORIZONTAL:
-						member.x = this.x + currentPos;
-						currentPos += member.width + memberGap + justificationSpacing;
+						layoutObject.x = this.x + currentPos;
+						currentPos += layoutObject.width + memberGap + justificationSpacing;
 
 						switch (itemAlign)
 						{
 							case START:
-								member.y = this.y + crossAxisOffset;
+								layoutObject.y = this.y + crossAxisOffset;
 							case END:
-								member.y = this.y + crossAxisOffset + maxCrossAxisSize - member.height;
+								layoutObject.y = this.y + crossAxisOffset + maxCrossAxisSize - layoutObject.height;
 							case CENTER:
-								member.y = this.y + crossAxisOffset + (maxCrossAxisSize - member.height) / 2;
+								layoutObject.y = this.y + crossAxisOffset + (maxCrossAxisSize - layoutObject.height) / 2;
 						}
 				}
 
-				minX = Math.min(minX, member.x);
-				minY = Math.min(minY, member.y);
-				maxX = Math.max(maxX, member.x + member.width);
-				maxY = Math.max(maxY, member.y + member.height);
+				minX = Math.min(minX, layoutObject.x);
+				minY = Math.min(minY, layoutObject.y);
+				maxX = Math.max(maxX, layoutObject.x + layoutObject.width);
+				maxY = Math.max(maxY, layoutObject.y + layoutObject.height);
 			}
 			crossAxisOffset += maxCrossAxisSize + gap;
 		}
@@ -265,6 +270,16 @@ class Layout extends UIComponent
 			this.width = (hasVisibleMember ? (maxX - this.x) + padding : (padding * 2));
 			this.height = (hasVisibleMember ? (maxY - this.y) + padding : (padding * 2));
 		}
+	}
+
+	private function getLayoutObject(member:FlxObject):FlxObject
+	{
+		if (Std.isOfType(member, Entity))
+		{
+			var entity = cast(member, Entity);
+			return entity.layoutTarget ?? entity;
+		}
+		return member;
 	}
 
 	public function getLayoutData(object:FlxObject):LayoutData
@@ -337,14 +352,14 @@ class Layout extends UIComponent
 		}
 	}
 
-	override public function add(Object:FlxObject):FlxObject
+	override public function add<T:FlxObject>(Object:T):T
 	{
 		group.add(Object);
 		invalidate();
 		return Object;
 	}
 
-	override public function remove(Object:FlxObject):FlxObject
+	override public function remove<T:FlxObject>(Object:T):T
 	{
 		group.remove(Object);
 		layoutData.remove(Object);

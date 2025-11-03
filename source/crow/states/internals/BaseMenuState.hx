@@ -220,7 +220,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				parentLayout.autoSize = layoutProps.autoSize;
 			if (layoutProps.selectionMode != null)
 				parentLayout.selectionMode = layoutProps.selectionMode;
-			
+
 			if (layoutProps.onSelect != null)
 			{
 				parentLayout.onSelect.add((selected) -> handleMenuAction(layoutProps.onSelect));
@@ -247,6 +247,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 		if (elements == null || elements.length == 0)
 			return;
 
+		var rootLayoutAndData:{layout:InteractableLayout, data:Dynamic} = null;
 		for (elementData in elements)
 		{
 			var menuObject:FlxObject = null;
@@ -255,7 +256,18 @@ class BaseMenuState extends MainState implements IEventExecutor
 			if (elementData.name == "_root_layout")
 			{
 				if (rootLayoutInElements)
+				{
+					rootLayoutAndData = {layout: parentLayout, data: elementData};
+					if (elementData.position != null)
+					{
+						if (elementData.position != null)
+						{
+							parentLayout.x = elementData.position.x;
+							parentLayout.y = elementData.position.y;
+						}
+					}
 					add(parentLayout);
+				}
 				continue;
 			}
 
@@ -269,7 +281,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 			else if (elementData.entity != null)
 			{
 				// This item is a single, data-driven entity.
-				final entity = new Entity(0, 0, elementData.entity);
+				final entity = new Entity(0, 0, elementData.entity, elementData.overrideData);
 				menuObject = entity;
 				menuEntities.set(entity.entityName, entity);
 			}
@@ -301,6 +313,18 @@ class BaseMenuState extends MainState implements IEventExecutor
 						parentLayout.getLayoutData(menuObject).alignSelf = elementData.alignSelf;
 					}
 				}
+			}
+		}
+
+		if (rootLayoutAndData != null)
+		{
+			if (rootLayoutAndData.data.screenCenter != null)
+			{
+				rootLayoutAndData.layout.updateLayout();
+				if (rootLayoutAndData.data.screenCenter.x)
+					rootLayoutAndData.layout.screenCenter(X);
+				if (rootLayoutAndData.data.screenCenter.y)
+					rootLayoutAndData.layout.screenCenter(Y);
 			}
 		}
 	}
@@ -503,7 +527,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	{
 		if (nextState == null)
 			return false;
-		
+
 		final onFinish = () ->
 		{
 			transferAttributeHelper(nextState);
@@ -620,7 +644,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 			var localState = new LogicState();
 			localState.set("step", s);
 			localState.set("catchupMs", elapsed);
-			localState.set("compensate",  s == step && Math.abs(lastStepHit - step) > 1);
+			localState.set("compensate", s == step && Math.abs(lastStepHit - step) > 1);
 			onEvent("step", localState);
 		}
 		lastStepHit = step;
