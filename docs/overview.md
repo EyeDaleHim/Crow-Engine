@@ -9,6 +9,9 @@ Crow Engine's logic system provides a flexible, data-driven way to manage game s
 
 This design allows game logic to be defined in external data files (like JSON), making it easy to modify without recompiling code.
 
+Keep in mind while this is very powerful, these data files can often get verbose, in some cases, modifying the source code
+can become necessary in niche cases.
+
 ---
 
 ### Core Data Structures
@@ -89,7 +92,7 @@ enum abstract PredicateType(String)
 
 An enumeration of comparison operators used within a `CHECK` or `STATE_COMPARE` predicate.
 
-The order of values like comparators like `GT` and `LTE` is typically the first value before the other, therefore:
+The order of values like comparators like `GT` and `LTE` typically compare the first value against the other, therefore:
 
 The predicate will return `true` if `value[0]` >= `value[1]`. This distinction is important.
 

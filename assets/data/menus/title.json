@@ -609,6 +609,17 @@
 							"WHITE",
 							1
 						]
+					},
+					{
+						"type": "set_visible",
+						"targets": [
+							{
+								"name": "association_sprite"
+							}
+						],
+						"values": [
+							false
+						]
 					}
 				]
 			},
