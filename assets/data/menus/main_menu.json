@@ -33,9 +33,9 @@
             "entity": "menu/story_mode",
             "onAccept": {
                 "type": "dispatch_event",
-                "args": [
-                    "accept"
-                ]
+                "values": {
+                    "eventName": "accept"
+                }
             },
             "overrideData": {
                 "layoutTarget": {
@@ -53,9 +53,9 @@
             "entity": "menu/freeplay",
             "onAccept": {
                 "type": "dispatch_event",
-                "args": [
-                    "accept"
-                ]
+                "values": {
+                    "eventName": "accept"
+                }
             },
             "overrideData": {
                 "layoutTarget": {
@@ -73,9 +73,9 @@
             "entity": "menu/credits",
             "onAccept": {
                 "type": "dispatch_event",
-                "args": [
-                    "accept"
-                ]
+                "values": {
+                    "eventName": "accept"
+                }
             },
             "layoutTarget": {
                 "width": 300,
@@ -101,9 +101,9 @@
             "entity": "menu/options",
             "onAccept": {
                 "type": "dispatch_event",
-                "args": [
-                    "accept"
-                ]
+                "values": {
+                    "eventName": "accept"
+                }
             },
             "overrideData": {
                 "layoutTarget": {
@@ -133,9 +133,9 @@
             "actions": [
                 {
                     "type": "navigate",
-                    "args": [
-                        -1
-                    ]
+                    "values": {
+                        "direction": -1
+                    }
                 }
             ]
         },
@@ -145,9 +145,9 @@
             "actions": [
                 {
                     "type": "navigate",
-                    "args": [
-                        1
-                    ]
+                    "values": {
+                        "direction": 1
+                    }
                 }
             ]
         }

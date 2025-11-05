@@ -71,10 +71,10 @@
 								"name": "title-logo"
 							}
 						],
-						"values": [
-							"bump",
-							true
-						]
+						"values": {
+							"anim": "bump",
+							"force": true
+						}
 					}
 				]
 			},
@@ -84,12 +84,12 @@
 				"actions": [
 					{
 						"type": "state_change",
-						"values": [
-							{
+						"values": {
+							"state": {
 								"changeType": "TOGGLE",
 								"stateKey": "dancing_left"
 							}
-						]
+						}
 					}
 				]
 			},
@@ -111,10 +111,10 @@
 								"name": "title-gf"
 							}
 						],
-						"values": [
-							"danceLeft",
-							true
-						]
+						"values": {
+							"anim": "danceLeft",
+							"force": true
+						}
 					}
 				]
 			},
@@ -136,10 +136,10 @@
 								"name": "title-gf"
 							}
 						],
-						"values": [
-							"danceRight",
-							true
-						]
+						"values": {
+							"anim": "danceRight",
+							"force": true
+						}
 					}
 				]
 			},
@@ -150,37 +150,37 @@
 				"actions": [
 					{
 						"type": "music_load",
-						"values": [
-							"music/menu/main"
-						]
+						"values": {
+							"sound": "music/menu/main"
+						}
 					},
 					{
 						"type": "create_timer",
-						"values": [
-							"start_music_timer",
-							1
-						],
+						"values": {
+							"name": "start_music_timer",
+							"time": 1
+						},
 						"postListenerEvents": [
 							{
 								"type": "music_play"
 							},
 							{
 								"type": "music_fade_in",
-								"values": [
-									4,
-									0,
-									0.7
-								]
+								"values": {
+									"duration": 4,
+									"from": 0,
+									"to": 0.7
+								}
 							},
 							{
 								"type": "state_change",
-								"values": [
-									{
+								"values": {
+									"state": {
 										"changeType": "SET",
 										"stateKey": "input_enabled",
 										"value": true
 									}
-								]
+								}
 							},
 							{
 								"type": "play_animation",
@@ -189,10 +189,10 @@
 										"name": "title-gf"
 									}
 								],
-								"values": [
-									"danceLeft",
-									true
-								]
+								"values": {
+									"anim": "danceLeft",
+									"force": true
+								}
 							}
 						]
 					}
@@ -221,9 +221,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"Funkin' Crew"
-						]
+						"values": {
+							"text": "Funkin' Crew"
+						}
 					}
 				]
 			},
@@ -249,9 +249,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"presents"
-						]
+						"values": {
+							"text": "presents"
+						}
 					}
 				]
 			},
@@ -302,10 +302,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"In association",
-							"with"
-						]
+						"values": {
+							"text": "In association\nwith"
+						}
 					}
 				]
 			},
@@ -331,9 +330,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"newgrounds"
-						]
+						"values": {
+							"text": "newgrounds"
+						}
 					},
 					{
 						"type": "set_visible",
@@ -342,9 +341,9 @@
 								"name": "association_sprite"
 							}
 						],
-						"values": [
-							true
-						]
+						"values": {
+							"visible": true
+						}
 					}
 				]
 			},
@@ -378,9 +377,9 @@
 								"name": "association_sprite"
 							}
 						],
-						"values": [
-							false
-						]
+						"values": {
+							"visible": false
+						}
 					}
 				]
 			},
@@ -406,9 +405,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"${randomText[0]}"
-						]
+						"values": {
+							"text": "${randomText[0]}"
+						}
 					}
 				]
 			},
@@ -434,9 +433,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"${randomText[1]}"
-						]
+						"values": {
+							"text": "${randomText[1]}"
+						}
 					}
 				]
 			},
@@ -487,9 +486,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"Friday"
-						]
+						"values": {
+							"text": "Friday"
+						}
 					}
 				]
 			},
@@ -515,9 +514,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"Night"
-						]
+						"values": {
+							"text": "Night"
+						}
 					}
 				]
 			},
@@ -543,9 +542,9 @@
 								"name": "title_intro"
 							}
 						],
-						"values": [
-							"Funkin'"
-						]
+						"values": {
+							"text": "Funkin'"
+						}
 					}
 				]
 			},
@@ -566,9 +565,9 @@
 				"actions": [
 					{
 						"type": "dispatch_event",
-						"values": [
-							"skipIntro"
-						]
+						"values": {
+							"name": "skipIntro"
+						}
 					}
 				]
 			},
@@ -588,27 +587,27 @@
 					},
 					{
 						"type": "remove_listeners_by_tag",
-						"values": [
-							"intro_sequence"
-						]
+						"values": {
+							"tagToRemove": "intro_sequence"
+						}
 					},
 					{
 						"type": "state_change",
-						"values": [
-							{
+						"values": {
+							"state": {
 								"changeType": "SET",
 								"stateKey": "intro_finished",
 								"value": true
 							}
-						]
+						}
 					},
 					{
 						"type": "camera_effect",
-						"values": [
-							"flash",
-							"WHITE",
-							1
-						]
+						"values": {
+							"effectType": "flash",
+							"effect": "flash",
+							"duration": 1
+						}
 					},
 					{
 						"type": "set_visible",
@@ -617,9 +616,9 @@
 								"name": "association_sprite"
 							}
 						],
-						"values": [
-							false
-						]
+						"values": {
+							"visible": false
+						}
 					}
 				]
 			},
@@ -630,10 +629,10 @@
 				"actions": [
 					{
 						"type": "play_sound",
-						"values": [
-							"sfx/navigate/confirm",
-							0.7
-						]
+						"values": {
+							"sound": "sfx/navigate/confirm",
+							"volume": 0.7
+						}
 					},
 					{
 						"type": "play_animation",
@@ -642,23 +641,23 @@
 								"name": "press_enter_button"
 							}
 						],
-						"values": [
-							"press",
-							true
-						]
+						"values": {
+							"anim": "press",
+							"force": true
+						}
 					},
 					{
 						"type": "create_timer",
-						"values": [
-							"menu_transition_timer",
-							1.5
-						],
+						"values": {
+							"name": "menu_transition_timer",
+							"time": 1.5
+						},
 						"postListenerEvents": [
 							{
 								"type": "switch_scene",
-								"values": [
-									"main_menu"
-								]
+								"values": {
+									"scene": "main_menu"
+								}
 							}
 						]
 					}
@@ -670,16 +669,16 @@
 				"actions": [
 					{
 						"type": "create_timer",
-						"values": [
-							"return_delay_timer",
-							1
-						],
+						"values": {
+							"name": "return_delay_timer",
+							"time": 1
+						},
 						"postListenerEvents": [
 							{
 								"type": "dispatch_event",
-								"values": [
-									"skipIntro"
-								]
+								"values": {
+									"name": "skipIntro"
+								}
 							}
 						]
 					}
@@ -752,9 +751,9 @@
 			"actions": [
 				{
 					"type": "dispatch_event",
-					"args": [
-						"advanceToMenu"
-					]
+					"values": {
+						"name": "advanceToMenu"
+					}
 				}
 			]
 		},
@@ -785,9 +784,9 @@
 			"actions": [
 				{
 					"type": "dispatch_event",
-					"args": [
-						"skipIntro"
-					]
+					"values": {
+						"name": "skipIntro"
+					}
 				}
 			]
 		}

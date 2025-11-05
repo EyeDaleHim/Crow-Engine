@@ -25,11 +25,16 @@ This is the backbone of the state management system. It is a map where keys are 
 typedef LogicState = haxe.ds.StringMap<Dynamic>;
 ```
 
-There are typically three scopes of state:
+There are typically four scopes of state:
 
-*   **Global State**: Shared across the entire game.
+*   **Global State**: All values are persistent until the game ends.
+*   **Executor State**: The values for that stated are tied to the executor.
 *   **Local State**: Temporary state, often for a specific event or interaction.
 *   **Entity State**: State specific to a single game entity.
+
+The order of states is as follows:
+*   LOCAL > GLOBAL > ENTITY
+*   For STATIC, you will have to explicitly define in your files to use it.
 
 ---
 

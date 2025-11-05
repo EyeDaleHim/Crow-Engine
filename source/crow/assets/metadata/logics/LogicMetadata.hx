@@ -129,5 +129,5 @@ typedef ListenerActionMetadata =
 	 */
 	var ?postListenerEvents:Array<ListenerActionMetadata>;
 
-	var ?values:Array<Dynamic>; // Arguments, e.g., animation name, state change data
+	var ?values:Dynamic; // Arguments, e.g., animation name, state change data
 };
