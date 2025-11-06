@@ -588,7 +588,7 @@
 					{
 						"type": "remove_listeners_by_tag",
 						"values": {
-							"tagToRemove": "intro_sequence"
+							"tag": "intro_sequence"
 						}
 					},
 					{

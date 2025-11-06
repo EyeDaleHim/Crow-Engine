@@ -278,9 +278,9 @@ typedef MenuAction =
 	var type:String;
 
 	/**
-	 * An array of arguments for the action.
+	 * Arguments for the action.
 	 */
-	var ?args:Array<Dynamic>;
+	var ?values:Dynamic;
 };
 
 enum abstract MenuInputCheck(String) from String to String

@@ -25,10 +25,8 @@ class LogicEvaluator
 				if (!Reflect.isObject(action.values))
 					throw 'action.values must be an object, not an array or primitive.';
 
-				trace(action.values);
 				for (field in Reflect.fields(action.values))
 				{
-					trace(field);
 					if (Std.isOfType(Reflect.field(action.values, field), String))
 					{
 						Reflect.setField(values, field, StringInterpolator.interpolate(Reflect.field(action.values, field), executorState, localState));

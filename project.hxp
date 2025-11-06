@@ -85,7 +85,7 @@ class Project extends HXProject
         {
 			window.orientation = Orientation.LANDSCAPE;
 			window.fullscreen = false;
-			window.resizable = false;
+			window.resizable = true;
 		}
 	}
 
