@@ -1,14 +1,16 @@
 package crow.objects.dependencies;
 
+import crow.objects.dependencies.AbsolutePositionSprite;
 import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
 import flixel.graphics.frames.FlxFrame.FlxFrameType;
+import flixel.text.FlxText;
 
 /**
- * A `FlxSprite` that ignores camera scrolling, always rendering at its absolute screen position.
- * 
+ * A `FlxText` that ignores camera scrolling, always rendering at its absolute screen position.
+ *
  * Some functionalities here are not made for modding or modifiable by game data components.
  */
-class AbsolutePositionSprite extends FlxSprite implements IAbsolutePositionBasic
+class AbsolutePositionText extends FlxText implements IAbsolutePositionBasic
 {
 	private var _internalOffset:FlxPoint;
 
@@ -20,6 +22,7 @@ class AbsolutePositionSprite extends FlxSprite implements IAbsolutePositionBasic
 
 	override public function draw()
 	{
+		regenGraphic();
 		if (alpha == 0 || _frame.type == FlxFrameType.EMPTY)
 			return;
 
@@ -40,13 +43,13 @@ class AbsolutePositionSprite extends FlxSprite implements IAbsolutePositionBasic
 		_point.add(origin.x, origin.y);
 		matrix.translate(_point.x, _point.y);
 
-		if (isPixelPerfectRender(getDefaultCamera()))
+		if (isPixelPerfectRender(camera))
 		{
 			matrix.tx = Math.floor(matrix.tx);
 			matrix.ty = Math.floor(matrix.ty);
 		}
 
-		getDefaultCamera().drawPixels(_frame, framePixels, matrix, colorTransform, blend, antialiasing, shader);
+		camera.drawPixels(_frame, framePixels, matrix, colorTransform, blend, antialiasing, shader);
 
 		#if FLX_DEBUG
 		FlxBasic.visibleCount++;
@@ -55,9 +58,4 @@ class AbsolutePositionSprite extends FlxSprite implements IAbsolutePositionBasic
 			drawDebug();
 		#end
 	}
-}
-
-interface IAbsolutePositionBasic
-{
-	private var _internalOffset:FlxPoint;
 }

@@ -18,6 +18,7 @@ import flixel.group.FlxContainer;
 import flixel.group.FlxSpriteContainer;
 
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 
 import flixel.sound.FlxSound;
 
@@ -47,7 +48,6 @@ import crow.entities.AnimatedText;
 
 import crow.logics.PredicateEvaluator;
 
-import crow.states.internals.InitState;
 import crow.states.internals.MainState;
 #end
 

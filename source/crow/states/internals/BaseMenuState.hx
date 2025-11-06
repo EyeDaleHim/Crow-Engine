@@ -382,9 +382,9 @@ class BaseMenuState extends MainState implements IEventExecutor
 		switch (action.type)
 		{
 			case "navigate":
-				if (action.args != null && action.args.length > 0)
+				if (action.values != null)
 				{
-					final amount:Int = action.args[0];
+					final amount:Int = action.values.direction ?? 0;
 					menuLayout.changeSelection(amount);
 				}
 
@@ -419,7 +419,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 					transitionOut(onFinish);
 				}
 			default:
-				final listenerAction:ListenerActionMetadata = {type: action.type, values: action.args};
+				final listenerAction:ListenerActionMetadata = {type: action.type, values: action.values};
 				LogicEvaluator.execute([listenerAction], this.logicState, localState, this.menuEntities, this);
 		}
 	}

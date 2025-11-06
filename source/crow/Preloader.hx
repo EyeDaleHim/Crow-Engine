@@ -16,6 +16,6 @@ class Preloader extends FlxBasePreloader
 		Main.bundle = Bundle.load('assets.bundle');
 		#end
 
-		Main.game = new FlxGame(0, 0, () -> new crow.states.menus.TitleState());
+		Main.game = new FlxGame(0, 0, () -> new crow.states.internals.RootState());
 	}
 }
