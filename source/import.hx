@@ -19,8 +19,11 @@ import flixel.group.FlxSpriteContainer;
 
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
 
 import flixel.sound.FlxSound;
+
+import flixel.text.FlxText;
 
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;

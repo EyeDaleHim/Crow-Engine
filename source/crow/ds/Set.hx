@@ -138,7 +138,14 @@ class Set<T>
      */
     public function toString():String
 	{
-		return toArray().toString();
+		if (_size == 0)
+			return "[]";
+
+		var sb = new StringBuf();
+		sb.add("[");
+		inOrderTraversalToString(root, sb, {isFirst: true});
+		sb.add("]");
+		return sb.toString();
 	}
 
     /**
@@ -194,6 +201,23 @@ class Set<T>
 			inOrderTraversal(node.left, list);
 			list.push(node.key);
 			inOrderTraversal(node.right, list);
+		}
+	}
+
+	private function inOrderTraversalToString(node:TreeNode<T>, sb:StringBuf, state:{isFirst:Bool})
+	{
+		if (node != null)
+		{
+			inOrderTraversalToString(node.left, sb, state);
+
+			if (!state.isFirst)
+			{
+				sb.add(",");
+			}
+			sb.add(Std.string(node.key));
+			state.isFirst = false;
+
+			inOrderTraversalToString(node.right, sb, state);
 		}
 	}
 

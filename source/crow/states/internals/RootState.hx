@@ -46,18 +46,58 @@ class RootState extends FlxState
 		transitionObject.camera = rootCamera;
 		add(transitionObject);
 
-		soundTrayObject = new SoundTrayObject();
+		soundTrayObject = new SoundTrayObject("sfx/soundtray/up", "sfx/soundtray/down", "sfx/soundtray/max");
 		soundTrayObject.camera = rootCamera;
 		add(soundTrayObject);
 
 		persistentUpdate = true;
 
-		updateRootCamera(FlxG.width, FlxG.height);
+		updateRootCamera();
 
 		openSubState(initialState);
 	}
 
-	public function updateRootCamera(?width:Int, ?height:Int):Void
+	override public function update(elapsed:Float)
+	{
+		var updateSoundTray:Bool = false;
+		var soundToPlay:FlxSound = null;
+		if (Main.input.isTapped("volume_mute"))
+		{
+			FlxG.sound.muted = !FlxG.sound.muted;
+			updateSoundTray = true;
+		}
+		else if (Main.input.isTapped("volume_up"))
+		{
+			FlxG.sound.volume = Math.min(1.0, FlxG.sound.volume + 0.1);
+			soundToPlay = soundTrayObject.soundIncrease;
+			updateSoundTray = true;
+		}
+		else if (Main.input.isTapped("volume_down"))
+		{
+			FlxG.sound.volume = Math.max(0.0, FlxG.sound.volume - 0.1);
+			soundToPlay = soundTrayObject.soundDecrease;
+			updateSoundTray = true;
+		}
+
+		if (updateSoundTray)
+		{
+			if (FlxG.sound.volume >= 1.0)
+			{
+				soundToPlay = soundTrayObject.soundMax;
+			}
+
+			if (soundToPlay != null)
+			{
+				soundToPlay.play(true);
+			}
+
+			soundTrayObject.show(true);
+		}
+
+		super.update(elapsed);
+	}
+
+	public function updateRootCamera():Void
 	{
 		if (FlxG.cameras.list.contains(rootCamera))
 		{

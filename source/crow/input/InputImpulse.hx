@@ -87,4 +87,9 @@ class InputImpulse
 		duration = 0;
 		timestamp = -1;
 	}
+
+	public function toString():String
+	{
+		return 'InputImpulse[device=${device}, code=${code}, active=${active}, duration=${duration}, timestamp=${timestamp}]';
+	}
 }

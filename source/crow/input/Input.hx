@@ -265,6 +265,41 @@ class Input
 	}
 
 	/**
+	 * Checks if an action was just released, and was held for a duration within the specified range.
+	 * @param actionId The unique identifier of the action.
+	 * @param minDuration The minimum duration (inclusive) the action must have been held, in seconds.
+	 * @param maxDuration The maximum duration (inclusive) the action must have been held, in seconds.
+	 * @return True if the action was just released within the duration constraints, false otherwise.
+	 */
+	public function isJustReleasedWithDuration(actionId:String, minDuration:Float, maxDuration:Float):Bool
+	{
+		var action = _actionBinds.get(actionId);
+		if (action == null)
+			return false;
+
+		for (trigger in action.triggers)
+		{
+			if (isTriggerActiveWithDuration(trigger, minDuration, maxDuration))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if an action was just "tapped" (released after being held for a short time).
+	 * This is a convenience function for `isJustReleasedWithDuration(actionId, 0, maxDuration)`.
+	 * @param actionId The unique identifier of the action.
+	 * @param maxDuration The maximum duration the action could be held to be considered a tap. Defaults to 0.25 seconds.
+	 * @return True if the action was tapped, false otherwise.
+	 */
+	public function isTapped(actionId:String, maxDuration:Float = 0.25):Bool
+	{
+		return isJustReleasedWithDuration(actionId, 0, maxDuration);
+	}
+
+	/**
 	 * Gets the duration (in seconds) that an action has been continuously active.
 	 * For combo triggers, this returns the minimum duration of all inputs in the trigger.
 	 * If multiple triggers are active, it returns the maximum of their minimum durations.
@@ -462,6 +497,126 @@ class Input
 		}
 
 		return allInputsMatch;
+	}
+
+	private function isTriggerActiveWithDuration(trigger:InputTrigger, minDuration:Float, maxDuration:Float):Bool
+	{
+		if (FlxG.vcr.paused)
+			return false;
+
+		// This function is specifically for "just released" checks with duration.
+		// We need to find at least one input in the trigger that was just released.
+		var aKeyWasJustReleased = false;
+		for (inputSource in trigger.inputs)
+		{
+			final impulse = _getImpulseFromSource(inputSource);
+			if (impulse != null && _justReleasedImpulses.contains(impulse))
+			{
+				aKeyWasJustReleased = true;
+				break;
+			}
+		}
+
+		if (!aKeyWasJustReleased)
+			return false;
+
+		// 1. Handle exclusive logic
+		if (trigger.exclusive != null && trigger.exclusive)
+		{
+			// For an exclusive trigger to be "just released", the number of inputs that are
+			// either just-released or still-active must equal the number of inputs in the trigger.
+			// And no other keys should be active.
+			var relevantImpulseCount = 0;
+			for (inputSource in trigger.inputs)
+			{
+				final impulse = _getImpulseFromSource(inputSource);
+				if (impulse != null && (impulse.active || _justReleasedImpulses.contains(impulse)))
+				{
+					relevantImpulseCount++;
+				}
+			}
+
+			if (relevantImpulseCount != trigger.inputs.length || (_activeImpulses.size + _justReleasedImpulses.size) != trigger.inputs.length)
+			{
+				return false;
+			}
+		}
+
+		// 2. Handle orderSensitive logic
+		if (trigger.orderSensitive != null && trigger.orderSensitive && trigger.inputs.length > 1)
+		{
+			final releaseCondition:ComboReleaseCondition = (trigger.comboRelease == Last) ? Last : Any;
+
+			if (releaseCondition == Last)
+			{
+				// "LAST": Only the last key in the sequence being released triggers the event,
+				// while all other keys are still held.
+				var lastInput = trigger.inputs[trigger.inputs.length - 1];
+				var lastImpulse = _getImpulseFromSource(lastInput);
+
+				if (lastImpulse == null || !_justReleasedImpulses.contains(lastImpulse))
+					return false; // The last key was not just released.
+
+				// Check that all other keys are still active (held).
+				for (i in 0...trigger.inputs.length - 1)
+				{
+					var impulse = _getImpulseFromSource(trigger.inputs[i]);
+					if (impulse == null || !impulse.active)
+						return false; // An earlier key in the sequence is not being held.
+				}
+
+				// Now, check the duration of the released key.
+				return lastImpulse.duration >= minDuration && lastImpulse.duration <= maxDuration;
+			}
+			else // "ANY"
+			{
+				// "ANY": The combo is "just released" if it was fully active last frame,
+				// and at least one key was released this frame.
+				var justReleasedCount = 0;
+				var activeCount = 0;
+				var minHeldDuration:Float = Math.POSITIVE_INFINITY;
+
+				for (inputSource in trigger.inputs)
+				{
+					var impulse = _getImpulseFromSource(inputSource);
+					if (impulse != null)
+					{
+						if (_justReleasedImpulses.contains(impulse))
+						{
+							justReleasedCount++;
+							minHeldDuration = Math.min(minHeldDuration, impulse.duration);
+						}
+						else if (impulse.active)
+						{
+							activeCount++;
+							minHeldDuration = Math.min(minHeldDuration, impulse.duration);
+						}
+					}
+				}
+
+				if (justReleasedCount > 0 && (justReleasedCount + activeCount) == trigger.inputs.length)
+				{
+					// The duration of the combo is the minimum duration of all its (previously) active parts.
+					return minHeldDuration >= minDuration && minHeldDuration <= maxDuration;
+				}
+				return false;
+			}
+		}
+		else // Not order sensitive
+		{
+			// For non-combo or non-order-sensitive triggers, check if any just-released input meets the duration criteria.
+			for (inputSource in trigger.inputs)
+			{
+				final impulse = _getImpulseFromSource(inputSource);
+				trace(_justReleasedImpulses);
+				if (impulse != null && _justReleasedImpulses.contains(impulse) && impulse.duration >= minDuration && impulse.duration <= maxDuration)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private function _getImpulseFromSource(source:InputSource):InputImpulse

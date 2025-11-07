@@ -19,6 +19,8 @@ class AbsolutePositionSpriteList extends FlxTypedContainer<AbsolutePositionSprit
 	public var width(get, null):Float = 0.0;
 	public var height(get, null):Float = 0.0;
 
+	public var alpha(default, set):Float = 1.0;
+
 	/**
 	 * Set the position of the list.
 	 * @param x 
@@ -140,5 +142,16 @@ class AbsolutePositionSpriteList extends FlxTypedContainer<AbsolutePositionSprit
 		}
 
 		return maxY - minY;
+	}
+
+	private function set_alpha(value:Float):Float
+	{
+		forEach((member) ->
+		{
+			@:privateAccess
+			member._internalAlphaMult = value;
+		});
+
+		return alpha = value;
 	}
 }
