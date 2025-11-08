@@ -1,7 +1,7 @@
 package crow.assets.metadata.logics;
 
-import crow.logics.ActionChangeType;
-import crow.logics.ActionScope;
+import crow.logics.tools.ActionChangeType;
+import crow.logics.tools.ActionScope;
 
 typedef ActionMetadata =
 {

@@ -1,6 +1,6 @@
 package crow.entities;
 
-import crow.logics.LogicState;
+import crow.logics.dependencies.LogicState;
 import crow.assets.metadata.game.EntityMetadata;
 import flixel.util.FlxColor;
 import crow.utils.ColorData;

@@ -1,9 +1,11 @@
-package crow.logics;
+package crow.logics.evaluators;
 
 import crow.assets.metadata.logics.PredicateMetadata;
-import crow.logics.PredicateOperatorCode;
-import crow.logics.PredicateType;
-import crow.logics.PredicateValidator;
+import crow.logics.dependencies.LogicState;
+import crow.logics.tools.ActionScope;
+import crow.logics.tools.PredicateOperatorCode;
+import crow.logics.tools.PredicateType;
+import crow.logics.validators.PredicateValidator;
 
 /**
  * A utility class for evaluating predicate conditions defined by `PredicateMetadata`.

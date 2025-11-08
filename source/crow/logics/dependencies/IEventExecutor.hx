@@ -1,4 +1,4 @@
-package crow.logics;
+package crow.logics.dependencies;
 
 import crow.entities.managers.TimerManager;
 import crow.entities.managers.TweenManager;

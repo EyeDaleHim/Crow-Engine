@@ -1,4 +1,4 @@
-package crow.logics;
+package crow.logics.tools;
 
 import crow.assets.metadata.game.EntityMetadata;
 import crow.assets.metadata.logics.LogicMetadata;

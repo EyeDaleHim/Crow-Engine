@@ -1,4 +1,4 @@
-package crow.logics;
+package crow.logics.tools;
 
 /**
  * Defines the types of logical operations for predicates.

@@ -5,10 +5,10 @@ import crow.assets.metadata.menus.MenuMetadata;
 import crow.entities.managers.TimerManager;
 import crow.entities.managers.TweenManager;
 import crow.objects.layout.InteractableLayout;
-import crow.logics.LogicEvaluator;
-import crow.logics.LogicState;
-import crow.logics.PredicateEvaluator;
-import crow.logics.IEventExecutor;
+import crow.logics.dependencies.IEventExecutor;
+import crow.logics.dependencies.LogicState;
+import crow.logics.evaluators.LogicEvaluator;
+import crow.logics.evaluators.PredicateEvaluator;
 
 /**
  * A base state for creating data-driven, interactive menus.

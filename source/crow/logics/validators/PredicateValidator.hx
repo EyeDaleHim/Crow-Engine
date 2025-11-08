@@ -1,6 +1,8 @@
-package crow.logics;
+package crow.logics.validators;
 
 import crow.assets.metadata.logics.PredicateMetadata;
+import crow.logics.tools.PredicateOperatorCode;
+import crow.logics.tools.PredicateType;
 
 /**
  * A utility class for validating the structure and basic correctness of `PredicateMetadata` objects.

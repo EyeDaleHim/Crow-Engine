@@ -1,6 +1,9 @@
-package crow.logics;
+package crow.logics.evaluators;
 
 import crow.assets.metadata.logics.ActionMetadata;
+import crow.logics.dependencies.LogicState;
+import crow.logics.tools.ActionChangeType;
+import crow.logics.tools.ActionScope;
 
 /**
  * A utility class for evaluating state-changing actions defined by `ActionMetadata`.

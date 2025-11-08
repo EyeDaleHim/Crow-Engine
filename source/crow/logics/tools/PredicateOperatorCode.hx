@@ -1,4 +1,4 @@
-package crow.logics;
+package crow.logics.tools;
 
 enum abstract PredicateOperatorCode(String) to String
 {

@@ -49,7 +49,7 @@ import crow.music.Music;
 
 import crow.entities.AnimatedText;
 
-import crow.logics.PredicateEvaluator;
+import crow.logics.evaluators.PredicateEvaluator;
 
 import crow.states.internals.MainState;
 #end

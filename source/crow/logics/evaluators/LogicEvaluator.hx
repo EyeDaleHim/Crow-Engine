@@ -1,8 +1,13 @@
-package crow.logics;
+package crow.logics.evaluators;
 
 import crow.assets.metadata.logics.ActionMetadata;
 import crow.assets.metadata.logics.LogicMetadata;
-import crow.logics.StringInterpolator;
+import crow.logics.dependencies.IEventExecutor;
+import crow.logics.dependencies.LogicState;
+import crow.logics.tools.ActionChangeType;
+import crow.logics.tools.ActionScope;
+import crow.logics.tools.EntityFilter;
+import crow.logics.tools.StringInterpolator;
 import crow.entities.AnimatedText;
 import crow.utils.ColorData;
 

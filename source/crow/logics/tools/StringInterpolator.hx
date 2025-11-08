@@ -1,5 +1,6 @@
-package crow.logics;
+package crow.logics.tools;
 
+import crow.logics.dependencies.LogicState;
 /**
  * A utility class for interpolating strings with values from a `logicState` map.
  * It supports simple variable replacement (e.g., `${variable}`) and array access (e.g., `${array[0]}`).

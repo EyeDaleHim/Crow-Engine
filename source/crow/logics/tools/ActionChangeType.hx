@@ -1,4 +1,4 @@
-package crow.logics;
+package crow.logics.tools;
 
 enum abstract ActionChangeType(String) from String to String
 {
