@@ -5,6 +5,7 @@ import crow.logics.dependencies.LogicState;
 import crow.logics.tools.ActionScope;
 import crow.logics.tools.PredicateOperatorCode;
 import crow.logics.tools.PredicateType;
+import crow.logics.tools.ValidatorLevel;
 import crow.logics.validators.PredicateValidator;
 
 /**
@@ -17,7 +18,7 @@ class PredicateEvaluator
 	 * 
 	 * Disabling this will incur some performance benefit.
 	 */
-	public static var validationLevel:PredicateValidatorLevel = REQUIRED;
+	public static var validationLevel:ValidatorLevel = REQUIRED;
 
 	/**
 	 * Evaluates a predicate against an entity's state and context.
@@ -45,8 +46,6 @@ class PredicateEvaluator
 		return switch (predicate.type)
 		{
 			case AND:
-				if (predicate.operands == null)
-					return true;
 				for (operand in predicate.operands)
 				{
 					if (!evaluate(operand, globalState, localState, entityState))
@@ -55,8 +54,6 @@ class PredicateEvaluator
 				return true;
 
 			case OR:
-				if (predicate.operands == null)
-					return false;
 				for (operand in predicate.operands)
 				{
 					if (evaluate(operand, globalState, localState, entityState))
@@ -65,17 +62,12 @@ class PredicateEvaluator
 				return false;
 
 			case NOT:
-				if (predicate.operands == null || predicate.operands.length == 0)
-					return true;
 				return !evaluate(predicate.operands[0], globalState, localState, entityState);
 
 			case CHECK:
 				return check(predicate, globalState, localState, entityState);
 
 			case RANGED_RANDOM:
-				if (predicate.targetValues == null || predicate.targetValues.length < 4)
-					return false;
-
 				final minGen:Int = predicate.targetValues[0] ?? FlxMath.MIN_VALUE_INT;
 				final maxGen:Int = predicate.targetValues[1] ?? FlxMath.MAX_VALUE_INT;
 				final minCheck:Int = predicate.targetValues[2];
@@ -85,33 +77,19 @@ class PredicateEvaluator
 				return randomValue >= minCheck && randomValue <= maxCheck;
 
 			case LIST_CONTAINS:
-				if (predicate.stateKey == null || predicate.targetValues == null || predicate.targetValues.length == 0)
-					return false;
-
 				final state = getStateFromScope(predicate.scope, globalState, localState, entityState);
-				if (state == null)
-				{
-					trace('Warning: Cannot perform LIST_CONTAINS. LogicState for scope "${predicate.scope ?? "global"}" is null.');
-					return false;
-				}
 
 				final list:Array<Dynamic> = state.get(predicate.stateKey);
-				if (list == null || !Std.isOfType(list, Array) || list.length == 0)
+				if (list == null || list.length == 0)
 					return false;
 
 				final valueToFind = predicate.targetValues[0];
 				return list.indexOf(valueToFind) != -1;
 
 			case STATE_COMPARE:
-				if (predicate.stateKey == null || predicate.targetValues == null || predicate.targetValues.length == 0)
-					return false;
-
 				final state1 = getStateFromScope(predicate.scope, globalState, localState, entityState);
 				// The second value for comparison can also have a scope, but for now we assume it's a key in the same scope.
 				final state2 = state1;
-
-				if (state1 == null)
-					return false;
 
 				final value1 = state1.get(predicate.stateKey);
 				final value2 = state2.get(predicate.targetValues[0]);
@@ -138,20 +116,10 @@ class PredicateEvaluator
 	private static function check(predicate:PredicateMetadata, globalState:LogicState, localState:LogicState, entityState:LogicState):Bool
 	{
 		final state = getStateFromScope(predicate.scope, globalState, localState, entityState);
-		if (state == null)
-		{
-			trace('Warning: Cannot perform CHECK. LogicState for scope "${predicate.scope ?? "global"}" is null.');
-			return false;
-		}
+		final value:Dynamic = state.get(predicate.stateKey);
 
-		var value:Dynamic = null;
-		if (predicate.stateKey != null)
-		{
-			// Check for value in local state first, then global state if scope is not specified.
-			value = state.get(predicate.stateKey);
-		}
-
-		if (value == null || predicate.targetValues == null)
+		// `value` can be null if the state doesn't exist, which is a valid check (e.g., `key == null`).
+		if (predicate.targetValues == null)
 			return false;
 
 		return switch (predicate.operatorCode)
@@ -183,22 +151,4 @@ class PredicateEvaluator
 				globalState;
 		}
 	}
-}
-
-enum PredicateValidatorLevel
-{
-	/**
-	 * Validation is required and the predicate will not be evaluated if it is invalid.
-	 */
-	REQUIRED;
-
-	/**
-	 * Validation is optional, but a warning will be issued if the predicate is invalid.
-	 */
-	WARN;
-
-	/**
-	 * No validation is performed.
-	 */
-	NONE;
 }
