@@ -29,6 +29,7 @@ class RootState extends FlxState
 		super();
 
 		rootCamera = new FlxCamera();
+		rootCamera.bgColor = FlxColor.TRANSPARENT;
 
 		var initialState:MainState;
 

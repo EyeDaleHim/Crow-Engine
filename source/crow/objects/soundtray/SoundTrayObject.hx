@@ -86,7 +86,8 @@ class SoundTrayObject extends AbsolutePositionSpriteList
 
 		background = new AbsolutePositionSprite();
 		background.makeGraphic(150, 50, FlxColor.WHITE);
-		background.alpha = 0.1;
+		background.color = FlxColor.BLACK;
+		background.alpha = 0.6;
 		add(background);
 
 		backBar = new AbsolutePositionSprite(10, 4);
@@ -130,7 +131,10 @@ class SoundTrayObject extends AbsolutePositionSpriteList
 
 			header.x = frontBar.x + (frontBar.width * ratio) - header.width;
 
-			text.text = '${Math.floor(ratio * 100)}%';
+			if (FlxG.sound.muted)
+				text.text = '-MUTED-';
+			else
+				text.text = '${Math.floor(ratio * 100)}%';
 		}
 
 		final consecutive:Bool = _showTimer != null;

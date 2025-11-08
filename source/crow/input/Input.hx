@@ -99,9 +99,16 @@ class Input
 
 	/**
 	 * Call this method after the main game update to clear frame-specific input states.
+	 * 
+	 * Typically this indicates the game is done processing inputs for that frame.
 	 */
 	public function postUpdate():Void
 	{
+		// Reset impulses that were released this frame.
+		for (impulse in _justReleasedImpulses)
+		{
+			impulse.reset();
+		}
 		// Clear just pressed/released states from this frame, preparing for the next.
 		_justPressedImpulses.clear();
 		_justReleasedImpulses.clear();
@@ -146,7 +153,7 @@ class Input
 
 		if (impulse.active)
 		{ // Only process if it was active (i.e., just released)
-			impulse.reset();
+			impulse.active = false;
 			_justReleasedImpulses.add(impulse);
 			_activeImpulses.remove(impulse);
 		}
@@ -193,7 +200,7 @@ class Input
 
 		if (impulse.active)
 		{
-			impulse.reset();
+			impulse.active = false;
 			_justReleasedImpulses.add(impulse);
 			_activeImpulses.remove(impulse);
 		}
@@ -608,7 +615,6 @@ class Input
 			for (inputSource in trigger.inputs)
 			{
 				final impulse = _getImpulseFromSource(inputSource);
-				trace(_justReleasedImpulses);
 				if (impulse != null && _justReleasedImpulses.contains(impulse) && impulse.duration >= minDuration && impulse.duration <= maxDuration)
 				{
 					return true;
