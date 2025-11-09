@@ -1,6 +1,11 @@
 {
   "dependencies": [
     {
+      "name": "format",
+      "type": "haxelib",
+      "version": null
+    },
+    {
       "name": "flixel",
       "type": "haxelib",
       "version": null
@@ -39,8 +44,10 @@
     },
     {
       "name": "lime",
-      "type": "haxelib",
-      "version": null
+      "type": "git",
+      "dir": null,
+      "ref": "latest",
+      "url": "https://github.com/EyeDaleHim/lime"
     },
     {
       "name": "openfl",

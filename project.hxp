@@ -106,7 +106,6 @@ class Project extends HXProject
 		addHaxelib("flixel");
 		addHaxelib("flixel-addons");
 		addHaxelib("hscript");
-		addHaxelib("hscript-improved");
 
 		if (isDebug() && isCpp())
 			addHaxelib("hxcpp-debug-server");
