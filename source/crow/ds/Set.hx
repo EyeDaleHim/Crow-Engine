@@ -1,5 +1,8 @@
 package crow.ds;
 
+/**
+ * A Red-Black Tree based Set implementation.
+ */
 class Set<T>
 {
 	private var root:TreeNode<T>;
