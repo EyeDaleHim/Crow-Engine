@@ -210,6 +210,13 @@
                         "direction": -1,
                         "layout": "main"
                     }
+                },
+                {
+                    "type": "play_sound",
+                    "values": {
+                        "sound": "sfx/navigate/scroll",
+                        "volume": 0.6
+                    }
                 }
             ]
         },
@@ -222,6 +229,13 @@
                     "values": {
                         "direction": 1,
                         "layout": "main"
+                    }
+                },
+                {
+                    "type": "play_sound",
+                    "values": {
+                        "sound": "sfx/navigate/scroll",
+                        "volume": 0.6
                     }
                 }
             ]
