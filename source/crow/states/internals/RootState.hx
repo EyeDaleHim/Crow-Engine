@@ -60,6 +60,13 @@ class RootState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
+		updateSoundTray();
+
+		super.update(elapsed);
+	}
+
+	public function updateSoundTray():Void
+	{
 		var updateSoundTray:Bool = false;
 		var soundToPlay:FlxSound = null;
 		if (Main.input.isTapped("volume_mute"))
@@ -94,8 +101,6 @@ class RootState extends FlxState
 
 			soundTrayObject.show(true);
 		}
-
-		super.update(elapsed);
 	}
 
 	public function updateRootCamera():Void

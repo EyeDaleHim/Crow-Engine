@@ -106,23 +106,31 @@ typedef MenuItem =
 
 	/**
 	 * An action to be triggered when this item is accepted.
+	 * 
+	 * The entity used for this event listener is itself.
 	 */
-	var ?onAccept:MenuAction;
+	var ?onAccept:ListenerActionMetadata;
 
 	/**
 	 * An action to be triggered when this item is selected.
+	 * 
+	 * The entity used for this event listener is itself.
 	 */
-	var ?onSelect:MenuAction;
+	var ?onSelect:ListenerActionMetadata;
 
 	/**
 	 * An action to be triggered when this item is deselected.
+	 * 
+	 * The entity used for this event listener is itself.
 	 */
-	var ?onDeselect:MenuAction;
+	var ?onDeselect:ListenerActionMetadata;
 
 	/**
 	 * An action to be triggered when the layout's index changes in general.
+	 * 
+	 * The entity used for this event listener is itself.
 	 */
-	var ?onIndex:MenuAction;
+	var ?onIndex:ListenerActionMetadata;
 
 	/**
 	 * The layout properties for this item's children, if it is a sub-menu.
@@ -203,17 +211,17 @@ typedef MenuLayout =
 	/**
 	 * An action to be triggered when an item in this layout is selected.
 	 */
-	var ?onSelect:MenuAction;
+	var ?onSelect:ListenerActionMetadata;
 
 	/**
 	 * An action to be triggered when an item in this layout is deselected.
 	 */
-	var ?onDeselect:MenuAction;
+	var ?onDeselect:ListenerActionMetadata;
 
 	/**
 	 * An action to be triggered when the layout's selection index changes.
 	 */
-	var ?onIndex:MenuAction;
+	var ?onIndex:ListenerActionMetadata;
 };
 
 /**
@@ -247,7 +255,7 @@ typedef MenuInput =
 	/**
 	 * A list of actions to perform when the input condition is met.
 	 */
-	var ?actions:Array<MenuAction>;
+	var ?actions:Array<ListenerActionMetadata>;
 
 	/**
 	 * The tags for this input action to be identified as.
@@ -264,23 +272,6 @@ typedef MenuInput =
 	 * The condition is evaluated against the menu's `logicState`.
 	 */
 	var ?condition:PredicateMetadata;
-};
-
-/**
- * Defines an action to be performed within a menu.
- */
-typedef MenuAction =
-{
-	/**
-	 * The type of action to perform.
-	 * Examples: "navigate", "accept_selection", "open_state", "close_menu", "dispatch_event"
-	 */
-	var type:String;
-
-	/**
-	 * Arguments for the action.
-	 */
-	var ?values:Dynamic;
 };
 
 enum abstract MenuInputCheck(String) from String to String

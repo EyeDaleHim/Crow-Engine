@@ -7,12 +7,9 @@
     "logic": {
         "initialState": {
             "action_pressed": false
-        },
-        "listeners": [
-
-        ]
+        }
     },
-    "elements": [ 
+    "elements": [
         {
             "name": "background",
             "entity": "menu/background",
@@ -37,6 +34,20 @@
                     "eventName": "accept"
                 }
             },
+            "onSelect": {
+                "type": "play_animation",
+                "values": {
+                    "anim": "selected",
+                    "force": true
+                }
+            },
+            "onDeselect": {
+                "type": "play_animation",
+                "values": {
+                    "anim": "idle",
+                    "force": true
+                }
+            },
             "overrideData": {
                 "layoutTarget": {
                     "width": 300,
@@ -57,6 +68,20 @@
                     "eventName": "accept"
                 }
             },
+            "onSelect": {
+                "type": "play_animation",
+                "values": {
+                    "anim": "selected",
+                    "force": true
+                }
+            },
+            "onDeselect": {
+                "type": "play_animation",
+                "values": {
+                    "anim": "idle",
+                    "force": true
+                }
+            },
             "overrideData": {
                 "layoutTarget": {
                     "width": 300,
@@ -75,6 +100,20 @@
                 "type": "dispatch_event",
                 "values": {
                     "eventName": "accept"
+                }
+            },
+            "onSelect": {
+                "type": "play_animation",
+                "values": {
+                    "anim": "selected",
+                    "force": true
+                }
+            },
+            "onDeselect": {
+                "type": "play_animation",
+                "values": {
+                    "anim": "idle",
+                    "force": true
                 }
             },
             "layoutTarget": {
@@ -103,6 +142,20 @@
                 "type": "dispatch_event",
                 "values": {
                     "eventName": "accept"
+                }
+            },
+            "onSelect": {
+                "type": "play_animation",
+                "values": {
+                    "anim": "selected",
+                    "force": true
+                }
+            },
+            "onDeselect": {
+                "type": "play_animation",
+                "values": {
+                    "anim": "idle",
+                    "force": true
                 }
             },
             "overrideData": {

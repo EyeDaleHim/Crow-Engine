@@ -27,4 +27,8 @@ typedef AnimationMetadata = {
 	 */
 	var ?indices:Array<Int>;
 	
+	/**
+	 * The offset of the animation.
+	 */
+	var ?offsets:AxeData<Int>;
 }
