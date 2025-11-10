@@ -103,12 +103,8 @@ class LogicEvaluator
 				executable.execute(context);
 				continue;
 			}
-
-			switch (actionType)
-			{
-				default:
-					trace('WARNING: Unknown action type: ${action.type}');
-			}
+			
+			trace('WARNING: Unknown action type: ${action.type}');
 		}
 	}
 }
