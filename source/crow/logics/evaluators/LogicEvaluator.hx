@@ -111,19 +111,4 @@ class LogicEvaluator
 			}
 		}
 	}
-
-	private static function handleEntityAction(entities:Array<Entity>, entityFunc:Entity->Void):Void
-	{
-		if (entities == null)
-			return;
-		for (entity in entities)
-		{
-			entityFunc(entity);
-		}
-	}
-
-	private static inline function getValue<T>(values:Dynamic, name:String, ?defaultValue:T):T
-	{
-		return Reflect.hasField(values, name) ? Reflect.field(values, name) : defaultValue;
-	}
 }
