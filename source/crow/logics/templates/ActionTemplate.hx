@@ -1,6 +1,7 @@
 package crow.logics.templates;
 
 import crow.assets.metadata.logics.ActionMetadata;
+import crow.logics.dependencies.LogicState;
 import crow.logics.evaluators.ActionEvaluator;
 import crow.logics.templates.Template;
 

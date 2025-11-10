@@ -16,6 +16,8 @@ class Preloader extends FlxBasePreloader
 		Main.bundle = Bundle.load('assets.bundle');
 		#end
 
+		crow.logics.evaluators.LogicEvaluator.init();
+
 		Main.game = new FlxGame(0, 0, () -> new crow.states.internals.RootState(() -> new crow.states.menus.TitleState()));
 		FlxG.sound.volumeUpKeys = null;
 		FlxG.sound.volumeDownKeys = null;

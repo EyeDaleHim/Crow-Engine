@@ -31,7 +31,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	/**
 	 * A map of all entities loaded for this menu.
 	 */
-	public var menuEntities:Map<String, Entity> = [];
+	public var entities:Map<String, Entity> = [];
 
 	/**
 	 * The metadata that defines the structure and behavior of this menu.
@@ -221,25 +221,40 @@ class BaseMenuState extends MainState implements IEventExecutor
 			if (layoutProps.selectionMode != null)
 				parentLayout.selectionMode = layoutProps.selectionMode;
 
-			if (layoutProps.onSelect != null)
-			{
-				parentLayout.onSelect.add((selected) -> handleMenuAction(layoutProps.onSelect));
-			}
-
 			if (layoutProps.onDeselect != null)
 			{
-				parentLayout.onDeselect.add((deselected) -> handleMenuAction(layoutProps.onDeselect));
+				parentLayout.onDeselect.add((deselected) ->
+				{
+					final selectedIndex = parentLayout.selectedIndex;
+					final selectedItem = menuMetadata.elements[selectedIndex];
+					final selectedEntity = entities.get(selectedItem.name);
+					handleMenuAction(layoutProps.onDeselect, selectedItem, selectedEntity);
+				});
+			}
+
+			if (layoutProps.onSelect != null)
+			{
+				parentLayout.onSelect.add((selected) ->
+				{
+					final selectedIndex = parentLayout.selectedIndex;
+					final selectedItem = menuMetadata.elements[selectedIndex];
+					final selectedEntity = entities.get(selectedItem.name);
+					handleMenuAction(layoutProps.onSelect, selectedItem, selectedEntity);
+				});
 			}
 
 			if (layoutProps.onIndex != null)
 			{
 				parentLayout.onIndex.add((oldIndex, newIndex) ->
 				{
+					final selectedItem = menuMetadata.elements[newIndex];
+					final selectedEntity = entities.get(selectedItem.name);
+
 					final localState = new LogicState();
 					localState.set("oldIndex", oldIndex);
 					localState.set("newIndex", newIndex);
 
-					handleMenuAction(layoutProps.onIndex, localState);
+					handleMenuAction(layoutProps.onIndex, selectedItem, selectedEntity, localState);
 				});
 			}
 		}
@@ -283,7 +298,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				// This item is a single, data-driven entity.
 				final entity = new Entity(0, 0, elementData.entity, elementData.overrideData);
 				menuObject = entity;
-				menuEntities.set(entity.entityName, entity);
+				entities.set(entity.entityName, entity);
 			}
 
 			if (menuObject != null)
@@ -367,7 +382,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				if (inputAction.actions != null)
 				{
 					for (action in inputAction.actions)
-						handleMenuAction(action);
+						handleMenuAction(action, null, null, null);
 				}
 			}
 		}
@@ -375,17 +390,55 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 	/**
 	 * Executes a menu action, such as navigating or accepting a selection.
-	 * @param action The `MenuAction` to perform.
+	 * @param action The `ListenerActionMetadata` to perform.
+	 * @param menuItem The `MenuItem` associated with this action.
+	 * @param entity The `Entity` that triggered the action (if any). 	 
+	 * @param localState Optional local state for the action.
 	 */
-	public function handleMenuAction(action:MenuAction, ?localState:LogicState):Void
+	public function handleMenuAction(action:ListenerActionMetadata, ?menuItem:MenuItem, ?entity:Entity, ?localState:LogicState):Void
 	{
+		localState ??= new LogicState();
+
 		switch (action.type)
 		{
 			case "navigate":
 				if (action.values != null)
 				{
+					final formerIndex = menuLayout.selectedIndex;
+					final formerItem = menuMetadata.elements[formerIndex];
+					final formerEntity = entities.get(formerItem.name);
+
 					final amount:Int = action.values.direction ?? 0;
 					menuLayout.changeSelection(amount);
+
+					if (formerItem?.onDeselect != null)
+					{
+						localState.set("index", formerIndex);
+						handleMenuAction(formerItem.onDeselect, formerItem, formerEntity, localState);
+					}
+
+					final selectedIndex = menuLayout.selectedIndex;
+					final selectedItem = menuMetadata.elements[selectedIndex];
+					final selectedEntity = entities.get(selectedItem.name);
+
+					if (selectedItem.onSelect != null)
+					{
+						localState.set("index", selectedIndex);
+						handleMenuAction(selectedItem.onSelect, selectedItem, selectedEntity, localState);
+					}
+
+					if (localState != null)
+					{
+						localState.clear();
+					}
+
+					if (selectedItem.onIndex != null)
+					{
+						localState.set("oldIndex", formerIndex);
+						localState.set("newIndex", selectedIndex);
+
+						handleMenuAction(selectedItem.onIndex, selectedItem, selectedEntity, localState);
+					}
 				}
 
 			case "accept_selection":
@@ -393,10 +446,11 @@ class BaseMenuState extends MainState implements IEventExecutor
 				final selectedIndex = menuLayout.selectedIndex;
 				if (menuMetadata.elements != null && selectedIndex >= 0 && selectedIndex < menuMetadata.elements.length)
 				{
-					final selectedElement = menuMetadata.elements[selectedIndex];
-					if (selectedElement.onAccept != null)
+					final selectedItem = menuMetadata.elements[selectedIndex];
+					if (selectedItem.onAccept != null)
 					{
-						handleMenuAction(selectedElement.onAccept);
+						final selectedEntity = entities.get(selectedItem.name);
+						handleMenuAction(selectedItem.onAccept, selectedItem, selectedEntity, logicState);
 					}
 				}
 			case "return_to_previous_scene":
@@ -420,7 +474,11 @@ class BaseMenuState extends MainState implements IEventExecutor
 				}
 			default:
 				final listenerAction:ListenerActionMetadata = {type: action.type, values: action.values};
-				LogicEvaluator.execute([listenerAction], this.logicState, localState, this.menuEntities, this);
+				var map:Map<String, Entity> = [];
+				if (entity != null)
+					map.set(entity.entityName, entity);
+
+				LogicEvaluator.execute([listenerAction], this.logicState, localState, map, this);
 		}
 	}
 
@@ -461,7 +519,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 			// All conditions passed, execute actions.
 			if (listener.actions != null)
-				LogicEvaluator.execute(listener.actions, this.logicState, localState, this.menuEntities, this);
+				LogicEvaluator.execute(listener.actions, this.logicState, localState, this.entities, this);
 
 			// If the listener is weak, mark it for removal.
 			if (listener.weak)

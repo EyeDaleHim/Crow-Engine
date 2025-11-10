@@ -6,6 +6,7 @@ import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
 import crow.logics.templates.Template;
 import crow.logics.templates.Template.ActionContext;
+import crow.logics.templates.*;
 import crow.logics.tools.ActionChangeType;
 import crow.logics.tools.ActionScope;
 import crow.logics.tools.EntityFilter;
@@ -21,6 +22,38 @@ class LogicEvaluator
 	public static final globalState:LogicState = new LogicState();
 
 	public static final jumpTables:Map<String, ExecutableAction> = [];
+
+	public static function init():Void
+	{
+		var list:Array<Class<Template>> = [];
+
+		list.push(ActionTemplate);
+		list.push(AnimationTemplate);
+		list.push(CameraTemplate);
+		list.push(EntityTemplate);
+		list.push(GlobalTemplate);
+		list.push(MusicTemplate);
+		list.push(SoundTemplate);
+		list.push(SpriteTemplate);
+		list.push(TextTemplate);
+		list.push(TimerTemplate);
+		list.push(TweenTemplate);
+
+		for (item in list)
+		{
+			var template = Type.createEmptyInstance(item);
+			var actions = template.actions();
+
+			for (name => action in actions)
+			{
+				if (jumpTables.exists(name))
+				{
+					throw 'Action with name "$name" already exists. Please use a unique name.';
+				}
+				jumpTables.set(name, action);
+			}
+		}
+	}
 
 	public static function execute(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState, ?entities:Map<String, Entity>,
 			?executor:IEventExecutor):Void
@@ -51,7 +84,7 @@ class LogicEvaluator
 			final onComplete = (postEvents != null && executor != null) ? () ->
 			{
 				execute(postEvents, executorState, localState, entities, executor);
-			} : null;
+			} : () -> {};
 
 			final targetedEntities = (entities != null && action.targets != null) ? EntityFilter.filterEntities(entities, action.targets) : null;
 

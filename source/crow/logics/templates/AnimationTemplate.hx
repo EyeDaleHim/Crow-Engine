@@ -11,8 +11,8 @@ class AnimationTemplate extends Template
 			{
 				final animName:String = context.values.anim;
 
-				final force:Bool = context.values.force != null ? context.values.force : false;
-				final updateHitbox:Bool = context.values.updateHitbox != null ? context.values.updateHitbox : true;
+				final force:Bool = context.values.force ?? false;
+				final updateHitbox:Bool = context.values.updateHitbox ?? true;
 				ExecutableAction.handleEntityAction(context.targetedEntities, (entity) ->
 				{
 					// TODO: Filters for sprites within entities?

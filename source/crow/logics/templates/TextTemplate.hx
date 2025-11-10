@@ -2,7 +2,7 @@ package crow.logics.templates;
 
 import crow.logics.templates.Template;
 
-class ActionTemplate extends Template
+class TextTemplate extends Template
 {
 	public function actions():Map<String, ExecutableAction>
 	{

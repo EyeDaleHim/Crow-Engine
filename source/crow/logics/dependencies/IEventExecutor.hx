@@ -14,6 +14,8 @@ interface IEventExecutor
 
     public var music:Music;
 
+    public var entities:Map<String, Entity>;
+
     public function switchScene(sceneName:String):Bool;
 
     public function onEvent(eventName:String, ?args:LogicState):Void;
