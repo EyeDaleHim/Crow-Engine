@@ -13,6 +13,7 @@ class AnimationTemplate extends Template
 
 				final force:Bool = context.values.force ?? false;
 				final updateHitbox:Bool = context.values.updateHitbox ?? true;
+				final updateLayoutPosition:Bool = context.values.updateLayoutPosition ?? true;
 				ExecutableAction.handleEntityAction(context.targetedEntities, (entity) ->
 				{
 					// TODO: Filters for sprites within entities?
@@ -29,12 +30,15 @@ class AnimationTemplate extends Template
 						}
 						if (updateHitbox)
 							spr.updateHitbox();
+						if (updateLayoutPosition)
+							entity.updateLayoutTargetPosition();
 					});
 				});
 			}, [
 					{name: "anim", type: "String", optional: false},
 					{name: "force", type: "Bool", optional: true},
-					{name: "updateHitbox", type: "Bool", optional: true}
+					{name: "updateHitbox", type: "Bool", optional: true},
+					{name: "updateLayoutPosition", type: "Bool", optional: true}
 			])
 		];
 	}

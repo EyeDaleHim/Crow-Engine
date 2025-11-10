@@ -24,9 +24,14 @@ class BaseMenuState extends MainState implements IEventExecutor
 	public var music:Music;
 
 	/**
-	 * The root layout container for the entire menu.
+	 * A map of all layouts in the menu, keyed by their name.
 	 */
-	public var menuLayout:InteractableLayout;
+	public var menuLayouts:Map<String, InteractableLayout> = [];
+
+	/**
+	 * A map that links a FlxObject in a layout to its original MenuItem metadata.
+	 */
+	public var elementMetadataMap:Map<FlxObject, MenuItem> = [];
 
 	/**
 	 * A map of all entities loaded for this menu.
@@ -140,13 +145,26 @@ class BaseMenuState extends MainState implements IEventExecutor
 			}
 		}
 
-		menuLayout = new InteractableLayout();
+		final rootLayout = new InteractableLayout();
 		if (!rootLayoutAdded)
-			add(menuLayout);
+			add(rootLayout);
 
-		buildElements(menuMetadata.elements, menuLayout, menuMetadata.layout, rootLayoutAdded);
+		var rootLayoutProps:MenuLayout = null;
+		if (menuMetadata.layouts != null)
+		{
+			for (layout in menuMetadata.layouts)
+			{
+				// Might need to adjust later.
+				if (layout.name == null || layout.name == "main")
+				{
+					rootLayoutProps = layout;
+					break;
+				}
+			}
+		}
+		buildElements(menuMetadata.elements, rootLayout, rootLayoutProps, rootLayoutAdded);
 
-		menuLayout.updateLayout();
+		rootLayout.updateLayout();
 
 		// Trigger the "create" event for any initial setup logic.
 		onEvent("create");
@@ -200,6 +218,11 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 */
 	private function buildElements(elements:Array<MenuItem>, parentLayout:InteractableLayout, ?layoutProps:MenuLayout, rootLayoutInElements:Bool = false):Void
 	{
+		if (layoutProps?.name != null)
+		{
+			menuLayouts.set(layoutProps.name, parentLayout);
+		}
+
 		if (layoutProps != null)
 		{
 			if (layoutProps.direction != null)
@@ -298,7 +321,17 @@ class BaseMenuState extends MainState implements IEventExecutor
 				// This item is a single, data-driven entity.
 				final entity = new Entity(0, 0, elementData.entity, elementData.overrideData);
 				menuObject = entity;
-				entities.set(entity.entityName, entity);
+
+				if (elementData.name == null)
+				{
+					elementData.name = entity.entityName;
+				}
+				entities.set(elementData.name, entity);
+			}
+			else if (elementData.name == null)
+			{
+				// TODO: Generate a random UUID for items without a name or entity.
+				elementData.name = '${Math.random() * 5000000}';
 			}
 
 			if (menuObject != null)
@@ -323,6 +356,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				else
 				{
 					parentLayout.add(menuObject);
+					elementMetadataMap.set(menuObject, elementData);
 					if (elementData.alignSelf != null)
 					{
 						parentLayout.getLayoutData(menuObject).alignSelf = elementData.alignSelf;
@@ -350,7 +384,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 		onEvent("update");
 
-		if (menuLayout == null || menuMetadata.inputActions == null)
+		if (menuMetadata.inputActions == null)
 			return;
 
 		// Process data-driven input actions.
@@ -403,27 +437,46 @@ class BaseMenuState extends MainState implements IEventExecutor
 		{
 			case "navigate":
 				if (action.values != null)
-				{
-					final formerIndex = menuLayout.selectedIndex;
-					final formerItem = menuMetadata.elements[formerIndex];
+				{					
+					final layoutName:String = action.values.layout;
+					if (layoutName == null)
+					{
+						trace('ERROR: "navigate" action requires a "layout" name in values.');
+						return;
+					}
+
+					final targetLayout = menuLayouts.get(layoutName);
+					if (targetLayout == null)
+					{
+						trace('ERROR: Could not find layout with name: $layoutName');
+						return;
+					}
+
+					final formerObject = targetLayout.selectedObject;
+					final formerItem = elementMetadataMap.get(formerObject);
+					if (formerItem == null)
+						return; // Should not happen if the layout has selectable items
+
 					final formerEntity = entities.get(formerItem.name);
 
 					final amount:Int = action.values.direction ?? 0;
-					menuLayout.changeSelection(amount);
+					targetLayout.changeSelection(amount);
 
 					if (formerItem?.onDeselect != null)
 					{
-						localState.set("index", formerIndex);
+						localState.set("index", targetLayout.members.indexOf(formerObject));
 						handleMenuAction(formerItem.onDeselect, formerItem, formerEntity, localState);
 					}
-
-					final selectedIndex = menuLayout.selectedIndex;
-					final selectedItem = menuMetadata.elements[selectedIndex];
+					
+					final selectedObject = targetLayout.selectedObject;
+					final selectedItem = elementMetadataMap.get(selectedObject);
+					if (selectedItem == null)
+						return; // Should not happen
 					final selectedEntity = entities.get(selectedItem.name);
 
 					if (selectedItem.onSelect != null)
 					{
-						localState.set("index", selectedIndex);
+						localState.set("index", targetLayout.selectedIndex);
 						handleMenuAction(selectedItem.onSelect, selectedItem, selectedEntity, localState);
 					}
 
@@ -434,8 +487,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 					if (selectedItem.onIndex != null)
 					{
-						localState.set("oldIndex", formerIndex);
-						localState.set("newIndex", selectedIndex);
+						localState.set("oldIndex", targetLayout.members.indexOf(formerObject));
+						localState.set("newIndex", targetLayout.selectedIndex);
 
 						handleMenuAction(selectedItem.onIndex, selectedItem, selectedEntity, localState);
 					}
@@ -443,10 +496,25 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 			case "accept_selection":
 				// Find the selected item and trigger its `onAccept` action.
-				final selectedIndex = menuLayout.selectedIndex;
-				if (menuMetadata.elements != null && selectedIndex >= 0 && selectedIndex < menuMetadata.elements.length)
+				final layoutName:String = action.values?.layout;
+				if (layoutName == null)
 				{
-					final selectedItem = menuMetadata.elements[selectedIndex];
+					trace('ERROR: "accept_selection" action requires a "layout" name in values.');
+					return;
+				}
+				final targetLayout = menuLayouts.get(layoutName);
+				if (targetLayout == null)
+				{
+					trace('ERROR: Could not find layout with name: $layoutName');
+					return;
+				}
+
+				final selectedObject = targetLayout.selectedObject;
+				if (selectedObject != null)
+				{
+					final selectedItem = elementMetadataMap.get(selectedObject);
+					if (selectedItem == null) return;
+
 					if (selectedItem.onAccept != null)
 					{
 						final selectedEntity = entities.get(selectedItem.name);

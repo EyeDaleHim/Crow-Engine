@@ -12,9 +12,9 @@ import crow.objects.layout.LayoutProperties;
 typedef MenuMetadata =
 {
 	/**
-	 * The layout properties for the top-level menu.
+	 * A list of layout properties for the menu.
 	 */
-	var ?layout:MenuLayout;
+	var ?layouts:Array<MenuLayout>;
 
 	/**
 	 * A list of elements to be displayed in the menu, including both interactive items and decorations.
@@ -88,8 +88,13 @@ typedef MenuItem =
 	 * 
 	 * If `name` is identified as a "special item", all other fields, except for `position` and `screenCenter`,
 	 * are ignored.
+	 * 
+	 * If `name` is not defined but `entity` is defined and this item will be unified as an entity,
+	 * then the `name` will be automatically assigned to the entity's `entityName`.
+	 * 
+	 * In all undefined cases, `name` will be a randomly generated UUID.
 	 */
-	var name:String; // e.g., "story_mode", "freeplay"
+	var ?name:String; // e.g., "story_mode", "freeplay"
 
 	/**
 	 * The path to an entity file that represents this menu item visually.
@@ -167,6 +172,11 @@ typedef MenuItem =
  */
 typedef MenuLayout =
 {
+	/**
+	 * The name of the layout, used to identify it for actions like navigation.
+	 */
+	var ?name:String;
+
 	/**
 	 * The direction in which items are laid out (e.g., `VERTICAL` or `HORIZONTAL`).
 	 */

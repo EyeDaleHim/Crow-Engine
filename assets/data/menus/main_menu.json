@@ -1,9 +1,12 @@
 {
-    "layout": {
-        "selectionMode": "WRAP",
-        "gap": 16.0,
-        "alignItems": "CENTER"
-    },
+    "layouts": [
+        {
+            "name": "main",
+            "selectionMode": "WRAP",
+            "gap": 16.0,
+            "alignItems": "CENTER"
+        }
+    ],
     "logic": {
         "initialState": {
             "action_pressed": false
@@ -26,7 +29,6 @@
             }
         },
         {
-            "name": "story_mode",
             "entity": "menu/story_mode",
             "onAccept": {
                 "type": "dispatch_event",
@@ -60,7 +62,6 @@
             }
         },
         {
-            "name": "freeplay",
             "entity": "menu/freeplay",
             "onAccept": {
                 "type": "dispatch_event",
@@ -94,7 +95,6 @@
             }
         },
         {
-            "name": "credits",
             "entity": "menu/credits",
             "onAccept": {
                 "type": "dispatch_event",
@@ -136,7 +136,6 @@
             }
         },
         {
-            "name": "options",
             "entity": "menu/options",
             "onAccept": {
                 "type": "dispatch_event",
@@ -181,13 +180,35 @@
             ]
         },
         {
+            "input": "accept",
+            "check": "just_pressed",
+            "actions": [
+                {
+                    "type": "accept_selection",
+                    "values": {
+                        "layout": "main"
+                    }
+                }
+            ]
+        },
+        {
+            "input": "back",
+            "check": "just_pressed",
+            "actions": [
+                {
+                    "type": "return_to_previous_scene"
+                }
+            ]
+        },
+        {
             "input": "ui_up",
             "check": "just_pressed",
             "actions": [
                 {
                     "type": "navigate",
                     "values": {
-                        "direction": -1
+                        "direction": -1,
+                        "layout": "main"
                     }
                 }
             ]
@@ -199,7 +220,8 @@
                 {
                     "type": "navigate",
                     "values": {
-                        "direction": 1
+                        "direction": 1,
+                        "layout": "main"
                     }
                 }
             ]

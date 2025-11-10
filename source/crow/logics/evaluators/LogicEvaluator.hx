@@ -86,7 +86,17 @@ class LogicEvaluator
 				execute(postEvents, executorState, localState, entities, executor);
 			} : () -> {};
 
-			final targetedEntities = (entities != null && action.targets != null) ? EntityFilter.filterEntities(entities, action.targets) : null;
+			final targetedEntities:Array<Entity> = if (entities != null)
+			{
+				if (action.targets != null)
+					EntityFilter.filterEntities(entities, action.targets);
+				else
+					[for (entity in entities) entity]; // If targets are omitted, apply to all entities.
+			}
+			else
+			{
+				null;
+			};
 
 			final actionType = action.type.trim();
 			if (jumpTables.exists(actionType))

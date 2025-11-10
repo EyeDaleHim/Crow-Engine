@@ -12,6 +12,7 @@ class InteractableLayout extends Layout
 	public static var defaultOnIndex:Int->Int->Void = null;
 
 	public var selectedIndex(default, set):Int = 0;
+	public var selectedObject(get, never):FlxObject;
 
 	public var selectionMode:SelectionMode = BOUND;
 
@@ -146,5 +147,14 @@ class InteractableLayout extends Layout
 			onIndex.dispatch(oldIndex, selectedIndex);
 
 		return selectedIndex;
+	}
+
+	private function get_selectedObject():FlxObject
+	{
+		if (selectedIndex >= 0 && selectedIndex < members.length)
+		{
+			return members[selectedIndex];
+		}
+		return null;
 	}
 }

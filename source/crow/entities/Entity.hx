@@ -118,32 +118,33 @@ class Entity extends FlxSpriteContainer
 		}
 	}
 
+	public function updateLayoutTargetPosition():Void
+	{
+		if (layoutTarget == null)
+			return;
+
+		final layoutMeta = metadata.layoutTarget;
+		if (layoutMeta == null)
+			return;
+
+		final offsetX = layoutMeta.position?.x ?? 0.0;
+		final offsetY = layoutMeta.position?.y ?? 0.0;
+
+		this.x = layoutTarget.x + offsetX;
+		this.y = layoutTarget.y + offsetY;
+
+		if (layoutMeta.relativeToCenter?.x == true)
+			this.x = layoutTarget.x + (layoutTarget.width / 2) - (this.width / 2);
+		if (layoutMeta.relativeToCenter?.y == true)
+			this.y = layoutTarget.y + (layoutTarget.height / 2) - (this.height / 2);
+	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-		if (layoutTarget != null)
-		{
-			if (metadata.layoutTarget.relativeToCenter != null)
-			{
-				if (metadata.layoutTarget.relativeToCenter.x == true)
-					this.x = layoutTarget.x + (layoutTarget.width / 2) - (this.width / 2);
-				else if (metadata.layoutTarget.position.x != null)
-					this.x = layoutTarget.x;
-
-				if (metadata.layoutTarget.relativeToCenter.y == true)
-					this.y = layoutTarget.y + (layoutTarget.height / 2) - (this.height / 2);
-				else if (metadata.layoutTarget.position.y != null)
-					this.y = layoutTarget.y;
-			}
-			else if (metadata.layoutTarget.position != null)
-			{
-				if (metadata.layoutTarget.position.x != null)
-					this.x = metadata.layoutTarget.position.x + metadata.layoutTarget.position.x;
-				if (metadata.layoutTarget.position.y != null)
-					this.y = metadata.layoutTarget.position.y + metadata.layoutTarget.position.y;
-			}
-		}
+		// TODO: Don't call every frame
+		updateLayoutTargetPosition();
 	}
 
 	override function draw()
