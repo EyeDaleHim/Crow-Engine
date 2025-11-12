@@ -76,8 +76,8 @@ Applies an effect to the camera.
 Dispatches an event to the `IEventExecutor`.
 
 -   **values**:
-    1.  `eventName` (String): The name of the event to dispatch.
-    2.  `eventArgs` (LogicState, optional): The arguments to pass with the event.
+    1.  `name` (String): The name of the event to dispatch.
+    2.  `actions` (LogicState, optional): The arguments to pass with the event.
 
 ## `create_tween`
 

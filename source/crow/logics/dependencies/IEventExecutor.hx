@@ -18,7 +18,7 @@ interface IEventExecutor
 
     public function switchScene(sceneName:String):Bool;
 
-    public function onEvent(eventName:String, ?args:LogicState):Void;
+    public function onEvent(eventName:String, ?localState:LogicState):Void;
 
 	public function removeListenersByTag(tag:String):Void;
 }

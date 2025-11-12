@@ -24,25 +24,29 @@ class LogicValidator
 
 		if (reqs.wantsExecutor == true && context.executor == null)
 		{
-			trace('Logic validation failed: Action requires an executor, but none was provided.');
+			@:privateAccess
+			trace('Logic validation failed: ${executable._name} action requires an executor, but none was provided.');
 			return false;
 		}
 
 		if (reqs.wantsTargetedEntities == true && context.targetedEntities == null)
 		{
-			trace('Logic validation failed: Action requires targeted entities, but none were provided.');
+			@:privateAccess
+			trace('Logic validation failed: ${executable._name} action requires targeted entities, but none were provided.');
 			return false;
 		}
 
 		if (reqs.wantsLocalState == true && context.localState == null)
 		{
-			trace('Logic validation failed: Action requires local state, but none was provided.');
+			@:privateAccess
+			trace('Logic validation failed: ${executable._name} action requires local state, but none was provided.');
 			return false;
 		}
 
 		if (reqs.wantsOnComplete == true && context.onComplete == null)
 		{
-			trace('Logic validation failed: Action requires an onComplete callback, but none was provided.');
+			@:privateAccess
+			trace('Logic validation failed: ${executable._name} action requires an onComplete callback, but none was provided.');
 			return false;
 		}
 
@@ -89,7 +93,7 @@ class LogicValidator
 			case "Bool":
 				return Std.isOfType(value, Bool);
 			default:
-                // TODO: Handle structures.
+				// TODO: Handle structures.
 				return true;
 		}
 	}

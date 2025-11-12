@@ -2,8 +2,9 @@ package crow.logics.templates;
 
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
+import crow.logics.evaluators.LogicEvaluator;
+import crow.logics.validators.LogicValidator;
 import crow.entities.Entity;
-import flixel.util.typeLimit.OneOfTwo;
 
 /**
  * The base class for all executable action templates.
@@ -20,6 +21,8 @@ abstract class Template
 
 typedef ActionFunction = ActionContext->Void;
 
+@:allow(LogicEvaluator)
+@:allow(LogicValidator)
 class ExecutableAction
 {
 	/**
@@ -39,6 +42,11 @@ class ExecutableAction
 	 * The requirements for the action's execution context.
 	 */
 	public var requirements:Requirements;
+
+	/**
+	 * The key for this action. Used internally.
+	 */
+	private var _name:String;
 
 	public static function createAction(?func:ActionFunction, list:Array<Field>, ?reqs:Requirements):ExecutableAction
 	{

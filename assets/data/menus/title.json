@@ -566,7 +566,8 @@
 					{
 						"type": "dispatch_event",
 						"values": {
-							"name": "skipIntro"
+							"name": "skipIntro",
+							"actions": {}
 						}
 					}
 				]
@@ -677,7 +678,8 @@
 							{
 								"type": "dispatch_event",
 								"values": {
-									"name": "skipIntro"
+									"name": "skipIntro",
+									"actions": {}
 								}
 							}
 						]
@@ -752,7 +754,8 @@
 				{
 					"type": "dispatch_event",
 					"values": {
-						"name": "advanceToMenu"
+						"name": "advanceToMenu",
+						"actions": {}
 					}
 				}
 			]
@@ -785,7 +788,8 @@
 				{
 					"type": "dispatch_event",
 					"values": {
-						"name": "skipIntro"
+						"name": "skipIntro",
+						"actions": {}
 					}
 				}
 			]

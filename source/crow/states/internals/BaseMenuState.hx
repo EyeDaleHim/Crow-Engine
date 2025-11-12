@@ -167,7 +167,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 		rootLayout.updateLayout();
 
 		// Trigger the "create" event for any initial setup logic.
-		onEvent("create");
+		onEvent("create", new LogicState());
 	}
 
 	private function processStoredData():Void
@@ -416,7 +416,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				if (inputAction.actions != null)
 				{
 					for (action in inputAction.actions)
-						handleMenuAction(action, null, null, null);
+						handleMenuAction(action, null, null, new LogicState());
 				}
 			}
 		}

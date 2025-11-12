@@ -24,17 +24,28 @@ class ActionTemplate extends Template
 					ActionEvaluator.evaluate(stateChange, ctx.executorState, ctx.localState);
 				ctx.onComplete();
 			},
-				[{name: "state", type: "ActionMetadata", optional: false}], {wantsTargetedEntities: true}),
+				[], {wantsTargetedEntities: true}),
 
 			"dispatch_event" => ExecutableAction.createAction((ctx) ->
 			{
 				final eventName:String = ctx.values.name;
-				final eventArgs:LogicState = ctx.values.args;
+				var eventArgs:LogicState = null;
+				if (ctx.values.actions != null && Reflect.isObject(ctx.values.actions))
+				{
+					eventArgs = new LogicState();
+					for (field in Reflect.fields(ctx.values.actions))
+					{
+						eventArgs.set(field, Reflect.field(ctx.values.actions, field));
+					}
+				}
+				eventArgs ??= new LogicState();
+
 				ctx.executor.onEvent(eventName, eventArgs);
 				ctx.onComplete();
 			}, [
 					{name: "name", type: "String", optional: false},
-					{name: "args", type: "LogicState", optional: true}
+					// The arguments to pass with the event.
+					{name: "actions", type: "Dynamic", optional: true}
 			], {wantsExecutor: true}),
 			"remove_listeners_by_tag" => ExecutableAction.createAction((ctx) ->
 			{

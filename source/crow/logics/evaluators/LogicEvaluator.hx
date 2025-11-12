@@ -59,6 +59,8 @@ class LogicEvaluator
 				{
 					throw 'Action with name "$name" already exists. Please use a unique name.';
 				}
+				@:privateAccess
+				action._name = name; // Feels stupid to assign this way?
 				jumpTables.set(name, action);
 			}
 		}
