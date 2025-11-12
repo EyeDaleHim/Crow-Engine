@@ -18,7 +18,7 @@ class EntityTemplate extends Template
 					}
 				});
 				ctx.onComplete();
-			}, [])
+			}, [], {wantsTargetedEntities: true, wantsExecutor: true})
 		];
 	}
 }

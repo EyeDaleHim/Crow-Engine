@@ -15,7 +15,7 @@ class TextTemplate extends Template
 					entity.forEachOfType(AnimatedText, (textObject) -> textObject.text = text);
 				});
 				ctx.onComplete();
-			}, [{name: "text", type: "String", optional: true}]),
+			}, [{name: "text", type: "String", optional: true}], {wantsTargetedEntities: true}),
 			"add_text" => ExecutableAction.createAction((ctx) ->
 			{
 				final newText:String = ctx.values.text != null ? ctx.values.text : "";
@@ -27,7 +27,7 @@ class TextTemplate extends Template
 					});
 				});
 				ctx.onComplete();
-			}, [{name: "text", type: "String", optional: true}]),
+			}, [{name: "text", type: "String", optional: true}], {wantsTargetedEntities: true}),
 			"clear_text" => ExecutableAction.createAction((ctx) ->
 			{
 				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) ->

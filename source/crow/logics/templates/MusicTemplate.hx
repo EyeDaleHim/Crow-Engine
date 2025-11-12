@@ -6,56 +6,31 @@ class MusicTemplate extends Template
 {
 	public function actions():Map<String, ExecutableAction>
 	{
-		inline function checkExecutor(ctx:ActionContext, name:String):Bool
-		{
-			if (ctx.executor == null || ctx.executor.music == null)
-			{
-				trace('Executor with a music object is required for $name action.');
-				return false;
-			}
-			return true;
-		}
-
 		return [
 			"music_load" => ExecutableAction.createAction((ctx) ->
 			{
-				if (!checkExecutor(ctx, "music_load"))
-					return;
-
 				final soundId:String = ctx.values.sound;
 				if (soundId != null)
 					ctx.executor.music.load(soundId);
 				ctx.onComplete();
-			}, [{name: "sound", type: "String", optional: false}]),
+			}, [{name: "sound", type: "String", optional: false}], {wantsExecutor: true}),
 			"music_play" => ExecutableAction.createAction((ctx) ->
 			{
-				if (!checkExecutor(ctx, "music_play"))
-					return;
-
 				ctx.executor.music.play();
 				ctx.onComplete();
-			}, []),
+			}, [], {wantsExecutor: true}),
 			"music_pause" => ExecutableAction.createAction((ctx) ->
 			{
-				if (!checkExecutor(ctx, "music_pause"))
-					return;
-
 				ctx.executor.music.pause();
 				ctx.onComplete();
-			}, []),
+			}, [], {wantsExecutor: true}),
 			"music_stop" => ExecutableAction.createAction((ctx) ->
 			{
-				if (!checkExecutor(ctx, "music_stop"))
-					return;
-
 				ctx.executor.music.stop();
 				ctx.onComplete();
-			}, []),
+			}, [], {wantsExecutor: true}),
 			"music_fade_in" => ExecutableAction.createAction((ctx) ->
 			{
-				if (!checkExecutor(ctx, "music_fade_in"))
-					return;
-
 				final duration:Float = ctx.values.duration != null ? ctx.values.duration : 1.0;
 				final from:Null<Float> = ctx.values.from;
 				final to:Null<Float> = ctx.values.to;
@@ -73,12 +48,9 @@ class MusicTemplate extends Template
 					{name: "duration", type: "Float", optional: true},
 					{name: "from", type: "Float", optional: true},
 					{name: "to", type: "Float", optional: true}
-			]),
+			], {wantsExecutor: true}),
 			"music_fade_out" => ExecutableAction.createAction((ctx) ->
 			{
-				if (!checkExecutor(ctx, "music_fade_out"))
-					return;
-
 				final duration:Float = ctx.values.duration != null ? ctx.values.duration : 1.0;
 				final to:Null<Float> = ctx.values.to;
 				if (ctx.executor.music.soundObject != null)
@@ -94,7 +66,7 @@ class MusicTemplate extends Template
 			}, [
 					{name: "duration", type: "Float", optional: true},
 					{name: "to", type: "Float", optional: true}
-			])
+			], {wantsExecutor: true})
 		];
 	}
 }

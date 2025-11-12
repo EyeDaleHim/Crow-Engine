@@ -35,11 +35,17 @@ class ExecutableAction
 	 */
 	public var fieldList:Array<Field>;
 
-	public static function createAction(?func:ActionFunction, list:Array<Field>):ExecutableAction
+	/**
+	 * The requirements for the action's execution context.
+	 */
+	public var requirements:Requirements;
+
+	public static function createAction(?func:ActionFunction, list:Array<Field>, ?reqs:Requirements):ExecutableAction
 	{
 		final action = Type.createEmptyInstance(ExecutableAction);
 		action.execute = func;
 		action.fieldList = list;
+		action.requirements = reqs ?? {};
 		return action;
 	}
 
@@ -106,4 +112,27 @@ typedef Field =
 	 * If the field is optional.
 	 */
 	var ?optional:Bool;
+}
+
+typedef Requirements = 
+{
+	/**
+	 * If the action wants the executor.
+	 */
+	var ?wantsExecutor:Bool;
+
+	/**
+	 * If the action wants targeted entities.
+	 */
+	var ?wantsTargetedEntities:Bool;
+
+	/**
+	 * If the action wants local state.
+	 */
+	var ?wantsLocalState:Bool;
+
+	/**
+	 * If the action wants to be able to signal completion.
+	 */
+	var ?wantsOnComplete:Bool;
 }

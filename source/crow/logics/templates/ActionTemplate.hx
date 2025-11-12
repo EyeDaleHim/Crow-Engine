@@ -24,29 +24,18 @@ class ActionTemplate extends Template
 					ActionEvaluator.evaluate(stateChange, ctx.executorState, ctx.localState);
 				ctx.onComplete();
 			},
-				[{name: "state", type: "ActionMetadata", optional: false}]),
+				[{name: "state", type: "ActionMetadata", optional: false}], {wantsTargetedEntities: true}),
 
 			"dispatch_event" => ExecutableAction.createAction((ctx) ->
 			{
-				if (ctx.executor == null)
-				{
-					trace('Executor required for this action: dispatch_event');
-					return;
-				}
-
 				final eventName:String = ctx.values.name;
-				if (eventName == null)
-				{
-					trace('Event name not provided for dispatch_event action.');
-					return;
-				}
 				final eventArgs:LogicState = ctx.values.args;
 				ctx.executor.onEvent(eventName, eventArgs);
 				ctx.onComplete();
 			}, [
 					{name: "name", type: "String", optional: false},
 					{name: "args", type: "LogicState", optional: true}
-			]),
+			], {wantsExecutor: true}),
 			"remove_listeners_by_tag" => ExecutableAction.createAction((ctx) ->
 			{
 				if (ctx.executor == null)
@@ -60,7 +49,7 @@ class ActionTemplate extends Template
 					ctx.executor.removeListenersByTag(tagToRemove);
 				}
 				ctx.onComplete();
-			}, [{name: "tag", type: "String", optional: false}]),
+			}, [{name: "tag", type: "String", optional: false}], {wantsExecutor: true}),
 			"switch_scene" => ExecutableAction.createAction((ctx) ->
 			{
 				if (ctx.executor == null)
@@ -78,7 +67,7 @@ class ActionTemplate extends Template
 					trace('ERROR: Scene name not provided for switch_scene action.');
 				}
 				ctx.onComplete();
-			}, [{name: "scene", type: "String", optional: false}])
+			}, [{name: "scene", type: "String", optional: false}], {wantsExecutor: true})
 		];
 	}
 }

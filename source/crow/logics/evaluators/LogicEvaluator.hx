@@ -11,6 +11,8 @@ import crow.logics.tools.ActionChangeType;
 import crow.logics.tools.ActionScope;
 import crow.logics.tools.EntityFilter;
 import crow.logics.tools.StringInterpolator;
+import crow.logics.tools.ValidatorLevel;
+import crow.logics.validators.LogicValidator;
 import crow.entities.AnimatedText;
 import crow.utils.ColorData;
 
@@ -20,6 +22,13 @@ import crow.utils.ColorData;
 class LogicEvaluator
 {
 	public static final globalState:LogicState = new LogicState();
+
+	/**
+	 * Requires executable actions to have their context validated before execution.
+	 *
+	 * Disabling this may provide a minor performance benefit at the cost of safety.
+	 */
+	public static var validationLevel:ValidatorLevel = REQUIRED;
 
 	public static final jumpTables:Map<String, ExecutableAction> = [];
 
@@ -110,6 +119,18 @@ class LogicEvaluator
 					executor: executor,
 					onComplete: onComplete
 				};
+
+				switch (validationLevel)
+				{
+					case REQUIRED:
+						if (!LogicValidator.validate(executable, context))
+						{
+							continue; // Skip execution if validation fails
+						}
+					case WARN:
+						LogicValidator.validate(executable, context); // Trace warnings but don't stop execution
+					case NONE: // Do nothing
+				}
 				executable.execute(context);
 				continue;
 			}

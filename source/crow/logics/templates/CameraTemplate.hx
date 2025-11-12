@@ -13,7 +13,10 @@ class CameraTemplate extends Template
 				final color:FlxColor = ColorData.fromDynamic(ctx.values.color) ?? FlxColor.WHITE;
 				final duration:Float = ctx.values.duration != null ? ctx.values.duration : 1.0;
 				FlxG.camera.flash(color, duration, ctx.onComplete);
-			}, [{name: "color", type: "Dynamic", optional: true}, {name: "duration", type: "Float", optional: true}]),
+			}, [
+					{name: "color", type: "Dynamic", optional: true},
+					{name: "duration", type: "Float", optional: true}
+			], {wantsOnComplete: true}),
 			"camera_fade" => ExecutableAction.createAction((ctx) ->
 			{
 				final color:FlxColor = ColorData.fromDynamic(ctx.values.color) ?? FlxColor.BLACK;
@@ -21,10 +24,10 @@ class CameraTemplate extends Template
 				final reverse:Bool = ctx.values.reverse != null ? ctx.values.reverse : false;
 				FlxG.camera.fade(color, duration, reverse, ctx.onComplete);
 			}, [
-				{name: "color", type: "Dynamic", optional: true},
-				{name: "duration", type: "Float", optional: true},
-				{name: "reverse", type: "Bool", optional: true}
-			]),
+					{name: "color", type: "Dynamic", optional: true},
+					{name: "duration", type: "Float", optional: true},
+					{name: "reverse", type: "Bool", optional: true}
+			], {wantsOnComplete: true}),
 			"camera_shake" => ExecutableAction.createAction((ctx) ->
 			{
 				final intensity:Float = ctx.values.intensity != null ? ctx.values.intensity : 0.05;
@@ -32,12 +35,12 @@ class CameraTemplate extends Template
 				final force:Bool = ctx.values.force != null ? ctx.values.force : true;
 				FlxG.camera.shake(intensity, duration, ctx.onComplete, force);
 			}, [
-				{name: "intensity", type: "Float", optional: true},
-				{name: "duration", type: "Float", optional: true},
-				{name: "force", type: "Bool", optional: true}
-			]),
-            // legacy "camera_effect" for backwards compatibility
-            
+					{name: "intensity", type: "Float", optional: true},
+					{name: "duration", type: "Float", optional: true},
+					{name: "force", type: "Bool", optional: true}
+			], {wantsOnComplete: true}),
+			// legacy "camera_effect" for backwards compatibility
+
 			"camera_effect" => ExecutableAction.createAction((ctx) ->
 			{
 				final effectType:String = ctx.values.effect;
@@ -59,14 +62,14 @@ class CameraTemplate extends Template
 						FlxG.camera.shake(intensity, duration, ctx.onComplete, force);
 				}
 			}, [
-				{name: "effect", type: "String", optional: false},
-				{name: "color", type: "Dynamic", optional: true},
-				{name: "duration", type: "Float", optional: true},
-				{name: "reverse", type: "Bool", optional: true},
-				{name: "intensity", type: "Float", optional: true},
-				{name: "force", type: "Bool", optional: true}
+					{name: "effect", type: "String", optional: false},
+					{name: "color", type: "Dynamic", optional: true},
+					{name: "duration", type: "Float", optional: true},
+					{name: "reverse", type: "Bool", optional: true},
+					{name: "intensity", type: "Float", optional: true},
+					{name: "force", type: "Bool", optional: true}
 			])
-			
+
 		];
 	}
 }
