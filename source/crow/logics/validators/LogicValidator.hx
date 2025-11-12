@@ -88,12 +88,9 @@ class LogicValidator
 				return Std.isOfType(value, Float) || Std.isOfType(value, Int);
 			case "Bool":
 				return Std.isOfType(value, Bool);
-			case "Dynamic":
-				return true;
 			default:
-				// Structured types are not supported for validation.
-				trace('Logic validation failed: Unsupported type "${typeName}" for validation.');
-				return false;
+                // TODO: Handle structures.
+				return true;
 		}
 	}
 }
