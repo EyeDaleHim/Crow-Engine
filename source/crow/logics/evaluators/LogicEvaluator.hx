@@ -42,6 +42,7 @@ class LogicEvaluator
 		list.push(EntityTemplate);
 		list.push(GlobalTemplate);
 		list.push(MusicTemplate);
+		list.push(MenuTemplate);
 		list.push(SoundTemplate);
 		list.push(SpriteTemplate);
 		list.push(TextTemplate);

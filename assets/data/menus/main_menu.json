@@ -10,7 +10,22 @@
     "logic": {
         "initialState": {
             "action_pressed": false
-        }
+        },
+        "listeners": [
+            {
+                "event": "create",
+                "weak": true,
+                "actions": [
+                    {
+                        "type": "navigate",
+                        "values": {
+                            "direction": 0,
+                            "layout": "main"
+                        }
+                    }
+                ]
+            }
+        ]
     },
     "elements": [
         {
