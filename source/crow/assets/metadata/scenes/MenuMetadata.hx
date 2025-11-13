@@ -1,8 +1,9 @@
-package crow.assets.metadata.menus;
+package crow.assets.metadata.scenes;
 
 import crow.assets.metadata.game.EntityMetadata;
 import crow.assets.metadata.logics.LogicMetadata;
 import crow.assets.metadata.logics.PredicateMetadata;
+import crow.assets.metadata.scenes.SceneMetadata;
 import crow.utils.AxeData;
 import crow.objects.layout.LayoutProperties;
 
@@ -11,6 +12,7 @@ import crow.objects.layout.LayoutProperties;
  */
 typedef MenuMetadata =
 {
+	> SceneMetadata,
 	/**
 	 * A list of layout properties for the menu.
 	 */
@@ -35,40 +37,9 @@ typedef MenuMetadata =
 	var ?inputActions:Array<MenuInput>;
 
 	/**
-	 * Defines asset contexts to be loaded or unloaded with the menu.
-	 */
-	var ?contexts:MenuContexts;
-
-	/**
 	 * Logic properties for the menu, including initial state and listeners.
 	 */
 	var ?logic:LogicMetadata;
-	
-	/**
-	 * Defines how transitions are handled for a menu state.
-	 */
-	var ?transitions:MenuTransitions;
-};
-
-/**
- * Defines how transitions are handled for a menu state.
- * If a field is `true`, the corresponding transition will be skipped.
- * If `false` or `null`, the transition will play.
- */
-typedef MenuTransitions =
-{
-	/**
-	 * If `true`, skips the transition when the state is first entered.
-	 */
-	var ?skipIn:Bool;
-	/**
-	 * If `true`, skips the transition when returning to this state from a sub-state.
-	 */
-	var ?skipReturn:Bool;
-	/**
-	 * If `true`, skips the transition when leaving this state.
-	 */
-	var ?skipOut:Bool;
 };
 
 /**
@@ -232,23 +203,6 @@ typedef MenuLayout =
 	 * An action to be triggered when the layout's selection index changes.
 	 */
 	var ?onIndex:ListenerActionMetadata;
-};
-
-/**
- * Defines asset contexts to be loaded or unloaded with the menu.
- * These are processed by the state that loads the menu metadata.
- */
-typedef MenuContexts =
-{
-	/**
-	 * A list of asset context names to load when the menu is created.
-	 */
-	var ?load:Array<String>;
-
-	/**
-	 * A list of asset context names to unload when the menu is destroyed.
-	 */
-	var ?unload:Array<String>;
 };
 
 /**
