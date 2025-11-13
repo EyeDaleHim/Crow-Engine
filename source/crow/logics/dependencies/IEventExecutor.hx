@@ -1,7 +1,7 @@
 package crow.logics.dependencies;
 
-import crow.ecs.entities.managers.TimerManager;
-import crow.ecs.entities.managers.TweenManager;
+import crow.ecs.managers.TimerManager;
+import crow.ecs.managers.TweenManager;
 
 interface IEventExecutor
 {

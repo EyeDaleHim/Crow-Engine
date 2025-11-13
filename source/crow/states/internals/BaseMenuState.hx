@@ -1,9 +1,9 @@
 package crow.states.internals;
 
 import crow.assets.metadata.logics.LogicMetadata;
-import crow.assets.metadata.menus.MenuMetadata;
-import crow.ecs.entities.managers.TimerManager;
-import crow.ecs.entities.managers.TweenManager;
+import crow.assets.metadata.scenes.MenuMetadata;
+import crow.ecs.managers.TimerManager;
+import crow.ecs.managers.TweenManager;
 import crow.objects.layout.InteractableLayout;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
