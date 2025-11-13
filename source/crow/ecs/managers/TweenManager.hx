@@ -1,4 +1,4 @@
-package crow.ecs.entities.managers;
+package crow.ecs.managers;
 
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
