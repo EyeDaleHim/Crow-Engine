@@ -1,4 +1,4 @@
-package crow.entities;
+package crow.ecs.entities;
 
 import flixel.graphics.tile.FlxDrawQuadsItem;
 import flixel.graphics.frames.FlxFrame;

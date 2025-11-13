@@ -76,8 +76,6 @@ class InteractableLayout extends Layout
 					selectedIndex = nextInteractableIndex;
 			}
 		}
-
-		trace(selectedIndex);
 	}
 
 	private function isInteractable(object:FlxObject):Bool

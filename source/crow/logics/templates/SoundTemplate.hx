@@ -10,7 +10,7 @@ class SoundTemplate extends Template
 			"play_sound" => ExecutableAction.createAction((ctx) ->
 			{
 				final soundId:String = ctx.values.sound;
-				final volume:Float = ctx.values.volume != null ? ctx.values.volume : 1.0;
+				final volume:Float = ctx.values.volume ?? 1.0;
 				FlxG.sound.play(soundId, volume);
 				ctx.onComplete();
 			}, [

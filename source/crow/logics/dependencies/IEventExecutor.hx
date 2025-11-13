@@ -1,7 +1,7 @@
 package crow.logics.dependencies;
 
-import crow.entities.managers.TimerManager;
-import crow.entities.managers.TweenManager;
+import crow.ecs.entities.managers.TimerManager;
+import crow.ecs.entities.managers.TweenManager;
 
 interface IEventExecutor
 {
@@ -13,6 +13,8 @@ interface IEventExecutor
 	public var logicState:LogicState;
 
     public var music:Music;
+
+    public var soundInstances:Map<String, FlxSound>;
 
     public var entities:Map<String, Entity>;
 

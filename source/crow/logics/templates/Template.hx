@@ -4,7 +4,7 @@ import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
 import crow.logics.evaluators.LogicEvaluator;
 import crow.logics.validators.LogicValidator;
-import crow.entities.Entity;
+import crow.ecs.entities.Entity;
 
 /**
  * The base class for all executable action templates.

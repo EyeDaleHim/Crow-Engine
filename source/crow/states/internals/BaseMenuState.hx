@@ -2,8 +2,8 @@ package crow.states.internals;
 
 import crow.assets.metadata.logics.LogicMetadata;
 import crow.assets.metadata.menus.MenuMetadata;
-import crow.entities.managers.TimerManager;
-import crow.entities.managers.TweenManager;
+import crow.ecs.entities.managers.TimerManager;
+import crow.ecs.entities.managers.TweenManager;
 import crow.objects.layout.InteractableLayout;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
@@ -22,6 +22,12 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * The music is carried over between menu states.
 	 */
 	public var music:Music;
+
+	/**
+	 * The list of sounds that are currently loaded for
+	 * this menu.
+	 */
+	public var soundInstances:Map<String, FlxSound> = [];
 
 	/**
 	 * A map of all layouts in the menu, keyed by their name.

@@ -41,13 +41,13 @@ import crow.assets.AssetHistory;
 import crow.assets.Assets;
 import crow.assets.Bundle;
 
-import crow.entities.Entity;
+import crow.ecs.entities.Entity;
 
 import crow.input.Input;
 
 import crow.music.Music;
 
-import crow.entities.AnimatedText;
+import crow.ecs.entities.AnimatedText;
 
 import crow.logics.evaluators.PredicateEvaluator;
 

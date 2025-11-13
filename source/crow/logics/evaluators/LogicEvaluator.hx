@@ -13,7 +13,7 @@ import crow.logics.tools.EntityFilter;
 import crow.logics.tools.StringInterpolator;
 import crow.logics.tools.ValidatorLevel;
 import crow.logics.validators.LogicValidator;
-import crow.entities.AnimatedText;
+import crow.ecs.entities.AnimatedText;
 import crow.utils.ColorData;
 
 /**

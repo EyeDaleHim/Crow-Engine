@@ -2,7 +2,7 @@ package crow.logics.tools;
 
 import crow.assets.metadata.game.EntityMetadata;
 import crow.assets.metadata.logics.LogicMetadata;
-import crow.entities.Entity;
+import crow.ecs.entities.Entity;
 import flixel.FlxG;
 import flixel.util.FlxStringUtil;
 import Type;

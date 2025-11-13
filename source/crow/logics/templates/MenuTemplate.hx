@@ -1,6 +1,6 @@
 package crow.logics.templates;
 
-import crow.entities.Entity;
+import crow.ecs.entities.Entity;
 import crow.logics.dependencies.LogicState;
 import crow.logics.evaluators.LogicEvaluator;
 import crow.logics.templates.Template;

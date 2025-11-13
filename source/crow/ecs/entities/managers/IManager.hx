@@ -1,4 +1,4 @@
-package crow.entities.managers;
+package crow.ecs.entities.managers;
 
 /**
  * A generic interface for managing a collection of named objects,

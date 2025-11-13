@@ -1,4 +1,4 @@
-package crow.entities;
+package crow.ecs.entities;
 
 import crow.logics.dependencies.LogicState;
 import crow.assets.metadata.game.EntityMetadata;
