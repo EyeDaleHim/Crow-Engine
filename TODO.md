@@ -5,3 +5,4 @@
     * This way, we can allow for things like cameras to be modified like an entity and apply components to it.
     * A big caveat is that this could make the line between what is an entity and what isn't, is the save data also an entity?
     * It's important to make clear and concrete distinctions regarding what counts an entity.
+* TODO: `LogicEvaluator.hx`'s `globalState` need to have some form of read-only values that data files cannot modify, other than the game itself.

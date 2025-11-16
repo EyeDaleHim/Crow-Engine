@@ -26,20 +26,10 @@ typedef MenuMetadata =
 	var ?elements:Array<MenuItem>;
 
 	/**
-	 * A map of custom data to be stored and processed.
-	 */
-	var ?storedData:Dynamic;
-
-	/**
 	 * Defines actions to be taken on specific inputs.
 	 * This allows for data-driven control flow.
 	 */
 	var ?inputActions:Array<MenuInput>;
-
-	/**
-	 * Logic properties for the menu, including initial state and listeners.
-	 */
-	var ?logic:LogicMetadata;
 };
 
 /**
@@ -136,6 +126,13 @@ typedef MenuItem =
 	 * This overrides the `position` property for the specified axes.
 	 */
 	var ?screenCenter:AxeData<Bool>;
+	
+	/**
+	 * The name of the camera this item belongs to.
+	 * 
+	 * If undefined, `FlxG.camera` will be used.
+	 */
+	var ?camera:String;
 };
 
 /**

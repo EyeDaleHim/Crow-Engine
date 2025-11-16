@@ -2,6 +2,7 @@ package crow.logics.tools;
 
 import crow.assets.metadata.game.EntityMetadata;
 import crow.assets.metadata.logics.LogicMetadata;
+import crow.ds.OrderedMap;
 import crow.ecs.entities.Entity;
 import flixel.FlxG;
 import flixel.util.FlxStringUtil;
@@ -20,7 +21,7 @@ class EntityFilter
 	 * @param filters An array of `EntityFilterMetadata` objects.
 	 * @return An array of entities that match all filter criteria.
 	 */
-	public static function filterEntities(allEntities:Map<String, Entity>, filters:Array<EntityFilterMetadata>):Array<Entity>
+	public static function filterEntities(allEntities:OrderedMap<String, Entity>, filters:Array<EntityFilterMetadata>):Array<Entity>
 	{
 		if (filters == null || filters.length == 0)
 		{

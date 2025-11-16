@@ -1,20 +1,16 @@
 package crow.logics.evaluators;
 
-import crow.assets.metadata.logics.ActionMetadata;
 import crow.assets.metadata.logics.LogicMetadata;
+import crow.ds.OrderedMap;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
+import crow.logics.templates.*;
 import crow.logics.templates.Template;
 import crow.logics.templates.Template.ActionContext;
-import crow.logics.templates.*;
-import crow.logics.tools.ActionChangeType;
-import crow.logics.tools.ActionScope;
 import crow.logics.tools.EntityFilter;
 import crow.logics.tools.StringInterpolator;
 import crow.logics.tools.ValidatorLevel;
 import crow.logics.validators.LogicValidator;
-import crow.ecs.entities.AnimatedText;
-import crow.utils.ColorData;
 
 /**
  * A utility class for executing actions defined by `ListenerActionMetadata`.
@@ -35,6 +31,11 @@ class LogicEvaluator
 	public static function init():Void
 	{
 		var list:Array<Class<Template>> = [];
+
+		globalState.allowRestriction = true;
+		
+		globalState.setRestricted("gameWidth", FlxG.width);
+		globalState.setRestricted("gameHeight", FlxG.height);
 
 		list.push(ActionTemplate);
 		list.push(AnimationTemplate);
@@ -67,7 +68,7 @@ class LogicEvaluator
 		}
 	}
 
-	public static function execute(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState, ?entities:Map<String, Entity>,
+	public static function execute(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState, ?entities:OrderedMap<String, Entity>,
 			?executor:IEventExecutor):Void
 	{
 		for (action in actions)

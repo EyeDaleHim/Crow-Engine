@@ -2,8 +2,10 @@ package crow.states.internals;
 
 import crow.assets.metadata.logics.LogicMetadata;
 import crow.assets.metadata.scenes.MenuMetadata;
+import crow.ds.OrderedMap;
 import crow.ecs.managers.TimerManager;
 import crow.ecs.managers.TweenManager;
+import crow.ecs.systems.BaseSystem;
 import crow.objects.layout.InteractableLayout;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
@@ -42,7 +44,12 @@ class BaseMenuState extends MainState implements IEventExecutor
 	/**
 	 * A map of all entities loaded for this menu.
 	 */
-	public var entities:Map<String, Entity> = [];
+	public var entities:OrderedMap<String, Entity> = new OrderedMap<String, Entity>();
+
+	/**
+	 * A list of all systems loaded for this menu, in order.
+	 */
+	public var systems:Array<ISystem> = [];
 
 	/**
 	 * The metadata that defines the structure and behavior of this menu.
@@ -386,6 +393,9 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 	override function update(elapsed:Float)
 	{
+		for (system in systems)
+			system.preUpdate(elapsed);
+
 		super.update(elapsed);
 
 		onEvent("update");
@@ -426,6 +436,9 @@ class BaseMenuState extends MainState implements IEventExecutor
 				}
 			}
 		}
+
+		for (system in systems)
+			system.postUpdate(elapsed);
 	}
 
 	/**
@@ -439,7 +452,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	{
 		localState ??= new LogicState();
 
-		var map:Map<String, Entity> = [];
+		var map:OrderedMap<String, Entity> = new OrderedMap<String, Entity>();
 		if (entity != null)
 			map.set(entity.entityName, entity);
 		LogicEvaluator.execute([action], this.logicState, localState, map, this);

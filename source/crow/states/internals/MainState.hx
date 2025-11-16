@@ -1,5 +1,7 @@
 package crow.states.internals;
 
+import crow.ecs.entities.Camera;
+import crow.assets.metadata.scenes.SceneMetadata.SceneCameras;
 import crow.objects.transition.TransitionObject;
 import flixel.util.typeLimit.NextState;
 
@@ -13,6 +15,7 @@ class MainState extends FlxSubState
 	}
 
 	public var transitionObject:TransitionObject;
+	public var cameraList:Array<Camera>;
 
 	public function new()
 	{
@@ -22,6 +25,19 @@ class MainState extends FlxSubState
 		destroySubStates = false;
 
 		persistentUpdate = persistentDraw = false;
+	}
+
+	public function createCamerasFromData(data:SceneCameras):Void
+	{
+		if (data?.length == 0)
+		{
+			data = [{name: "_main"}];
+		}
+
+		for (camera in data)
+		{
+
+		}
 	}
 
 	override public function update(elapsed:Float)
