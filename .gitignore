@@ -1,4 +1,5 @@
 .build_time
 .haxelib/
+dump/
 source/_test/
 export/
