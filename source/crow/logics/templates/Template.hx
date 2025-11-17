@@ -1,5 +1,6 @@
 package crow.logics.templates;
 
+import crow.ds.Nullable;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
 import crow.logics.evaluators.LogicEvaluator;
@@ -143,4 +144,35 @@ typedef Requirements =
 	 * If the action wants to be able to signal completion.
 	 */
 	var ?wantsOnComplete:Bool;
+}
+
+enum abstract FieldType(String) to String
+{
+	var TString = "String";
+	var TInt = "Int";
+	var TFloat = "Float";
+	var TBool = "Bool";
+	var TDynamic = "Dynamic";
+
+	
+	@:from
+	static public function fromString(s:String):FieldType
+	{
+		return switch (s.toLowerCase().trim())
+		{
+			case "string":
+				TString;
+			case "int":
+				TInt;
+			case "float":
+				TFloat;
+			case "bool":
+				TBool;
+			case "dynamic":
+				TDynamic;
+			default:
+				throw 'Unknown FieldType: $s';
+		}
+	}
+	
 }

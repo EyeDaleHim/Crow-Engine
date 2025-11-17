@@ -1,7 +1,9 @@
 package crow.ecs.components;
 
-class BaseComponent implements IComponent
+abstract class BaseComponent implements IComponent
 {
+	public var entity:Entity;
+
 	/**
 	 * The traits of the component.
 	 * Traits are used to define how the component is processed.
@@ -24,6 +26,8 @@ class BaseComponent implements IComponent
 
 interface IComponent
 {
+	public var entity:Entity;
+
 	public var trait(get, never):ComponentTrait;
     public var customTrait:String;
 

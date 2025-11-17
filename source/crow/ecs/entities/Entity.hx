@@ -1,5 +1,6 @@
 package crow.ecs.entities;
 
+import crow.ecs.components.BaseComponent.IComponent;
 import crow.logics.dependencies.LogicState;
 import crow.assets.metadata.game.EntityMetadata;
 import flixel.util.FlxColor;
@@ -9,7 +10,7 @@ import crow.utils.ColorData;
  * A data-driven game object that can be animated and controlled through JSON metadata.
  * It acts as a container for sprites and manages its own state and event-based logic.
  */
-class Entity extends FlxSpriteContainer
+class Entity extends FlxSpriteContainer implements IComponentActor
 {
 	/**
 	 * The name of this entity, from metadata.
@@ -42,6 +43,11 @@ class Entity extends FlxSpriteContainer
 	 * A map of sprites that contain the reference to their metadata, accessible by name.
 	 */
 	public var membersMetricsMap:Map<String, Dynamic> = [];
+
+	/**
+	 * Components attached to this entity.
+	 */
+	public var components:Array<IComponent> = [];
 
 	/**
 	 * A list of tags associated with this entity.
@@ -116,6 +122,42 @@ class Entity extends FlxSpriteContainer
 			if (metadata.layoutTarget.height != null)
 				this.layoutTarget.height = metadata.layoutTarget.height;
 		}
+	}
+
+	/**
+	 * Gets the component of this type. If there are multiple components,
+	 * the first one is used.
+	 * 
+	 * @return The component. Can be null.
+	 */
+	public function getComponentByType(type:Class<IComponent>):IComponent
+	{
+		for (component in components)
+		{
+			if (Std.isOfType(component, type))
+			{
+				return component;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets all components of this type.
+	 * 
+	 * @return An array of components. Can be empty.
+	 */
+	public function getComponentsByType(type:Class<IComponent>):Array<IComponent>
+	{
+		var result:Array<IComponent> = [];
+		for (component in components)
+		{
+			if (Std.isOfType(component, type))
+			{
+				result.push(cast component);
+			}
+		}
+		return result;
 	}
 
 	public function updateLayoutTargetPosition():Void
