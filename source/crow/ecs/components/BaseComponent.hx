@@ -34,6 +34,8 @@ interface IComponent
     private function get_trait():ComponentTrait;
 }
 
+typedef OrderedComponentMap = crow.ds.OrderedMap<Class<IComponent>, Array<IComponent>>;
+
 @:transitive
 @:forward
 abstract ComponentTrait(Int) from Int to Int

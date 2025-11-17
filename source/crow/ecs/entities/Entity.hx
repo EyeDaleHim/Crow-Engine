@@ -1,5 +1,6 @@
 package crow.ecs.entities;
 
+import crow.ds.OrderedMap.IOrderedMap;
 import crow.ecs.components.BaseComponent.IComponent;
 import crow.logics.dependencies.LogicState;
 import crow.assets.metadata.game.EntityMetadata;
@@ -47,7 +48,7 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 	/**
 	 * Components attached to this entity.
 	 */
-	public var components:Array<IComponent> = [];
+	public var components:OrderedComponentMap = new OrderedComponentMap();
 
 	/**
 	 * A list of tags associated with this entity.
@@ -158,6 +159,41 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 			}
 		}
 		return result;
+	}
+
+	public function addComponent(component:IComponent):Void
+	{
+		components.set((Type.getSuperClass(component) : IComponent), component);
+	}
+
+	public function addComponents(components:Array<IComponent>):Void
+	{
+		for (component in components)
+		{
+			addComponent(component);
+		}
+	}
+	public function removeComponents(components:Array<IComponent>, ?filter:IComponent->Bool):Void
+	{
+		final filtered = components.iterator().filter(c -> filter == null || filter(c)).array();
+
+		for (component in filtered)
+		{
+			removeComponent(component);
+		}
+	}
+
+	public function removeComponentsByType(type:Class<IComponent>, ?filter:IComponent->Bool):Void
+	{
+		final filtered = components.iterator().filter(c -> filter == null || filter(c)).array();
+
+		for (component in filtered)
+		{
+			if (Std.isOfType(component, type))
+			{
+				removeComponent(component);
+			}
+		}
 	}
 
 	public function updateLayoutTargetPosition():Void
