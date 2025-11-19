@@ -33,6 +33,11 @@ typedef EntityMetadata =
 	 * Rendering order depends on the order of elements in this array.
 	 */
 	var objects:Array<EntityObject>;
+
+	/**
+	 * The components to be added to this entity on creation.
+	 */
+	var ?components:Array<ComponentMetadata>;
 };
 
 /**
@@ -54,7 +59,7 @@ typedef LayoutTargetData =
 	 * The position of the layout target relative to the entity's origin.
 	 */
 	var ?position:AxeData<Null<Float>>;
-	
+
 	/**
 	 * Assuming `position` doesn't satisfy your needs, this field will force
 	 * the entity to be positioned relative to the center of the layout target.
@@ -79,7 +84,7 @@ typedef EntityObject =
 	 * This only contains fields unique to that data.
 	 */
 	var data:Dynamic;
-	
+
 	/**
 	 * If the object has antialiasing, this option determines whether the
 	 * object is rendered with antialiasing or not.
@@ -141,7 +146,6 @@ typedef TextObjectData =
 	 * The scroll factor of this object.
 	 */
 	var ?scrollFactor:AxeData<Float>;
-	
 };
 
 /**
@@ -246,6 +250,7 @@ typedef SpriteAssetMethod =
 	 * The width of the graphic. Used by the `graphic` type.
 	 */
 	var ?width:Int;
+
 	/**
 	 * The height of the graphic. Used by the `graphic` type.
 	 */
@@ -296,7 +301,7 @@ typedef SpriteObjectData =
 	/**
 	 * The scale of this sprite. Width and height will be updated.
 	 */
-    var ?scale:AxeData<Float>;
+	var ?scale:AxeData<Float>;
 
 	/**
 	 * The scroll factor of this sprite.
@@ -308,7 +313,7 @@ typedef SpriteObjectData =
 	/**
 	 * The rotation of this sprite, in degrees.
 	 */
-    var ?angle:Float;
+	var ?angle:Float;
 
 	/**
 	 * The color tint of this sprite.

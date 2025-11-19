@@ -439,6 +439,22 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 		for (system in systems)
 			system.postUpdate(elapsed);
+
+		for (system in systems)
+		{
+			@:privateAccess
+			for (weak in system._weakComponents)
+			{
+				if (weak.entity != null)
+				{
+					weak.entity.removeComponent(weak);
+				}
+				weak.destroy();
+			}
+
+			@:privateAccess
+			system._weakComponents.splice(0, system._weakComponents.length);
+		}
 	}
 
 	/**

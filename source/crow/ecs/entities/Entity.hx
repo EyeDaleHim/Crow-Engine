@@ -1,11 +1,15 @@
 package crow.ecs.entities;
 
-import crow.ds.OrderedMap.IOrderedMap;
+import crow.ecs.components.BaseComponent;
+import crow.ecs.components.BaseComponent.ComponentTrait;
 import crow.ecs.components.BaseComponent.IComponent;
+import crow.ecs.components.PositionComponent;
 import crow.logics.dependencies.LogicState;
 import crow.assets.metadata.game.EntityMetadata;
 import flixel.util.FlxColor;
 import crow.utils.ColorData;
+
+using Lambda;
 
 /**
  * A data-driven game object that can be animated and controlled through JSON metadata.
@@ -48,7 +52,7 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 	/**
 	 * Components attached to this entity.
 	 */
-	public var components:OrderedComponentMap = new OrderedComponentMap();
+	public var components:Array<IComponent> = [];
 
 	/**
 	 * A list of tags associated with this entity.
@@ -126,8 +130,8 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 	}
 
 	/**
-	 * Gets the component of this type. If there are multiple components,
-	 * the first one is used.
+	 * Gets the component of this type. If there are multiple components 
+	 * of the same type, the first one is used.
 	 * 
 	 * @return The component. Can be null.
 	 */
@@ -148,7 +152,7 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 	 * 
 	 * @return An array of components. Can be empty.
 	 */
-	public function getComponentsByType(type:Class<IComponent>):Array<IComponent>
+	public function getComponentsByType(type:Class<IComponent>, ?filter:IComponent->Bool):Array<IComponent>
 	{
 		var result:Array<IComponent> = [];
 		for (component in components)
@@ -161,21 +165,122 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 		return result;
 	}
 
-	public function addComponent(component:IComponent):Void
-	{
-		components.set((Type.getSuperClass(component) : IComponent), component);
-	}
-
-	public function addComponents(components:Array<IComponent>):Void
+	/**
+	 * Gets the component of this name. If there are multiple components 
+	 * of the same name, the first one is used.
+	 * 
+	 * @return The component. Can be null.
+	 */
+	public function getComponentByName(name:String):IComponent
 	{
 		for (component in components)
+		{
+			if (component.name == name)
+			{
+				return component;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets all components of this name.
+	 * 
+	 * @return An array of components. Can be empty.
+	 */
+	public function getComponentsByName(name:String, ?filter:IComponent->Bool):Array<IComponent>
+	{
+		var result:Array<IComponent> = components.filter((component) ->
+		{
+			return component.name == name && (filter == null || filter(component));
+		});
+
+		return result;
+	}
+
+	/**
+	 * Adds a component to this entity.
+	 * 
+	 * If the component has the `Single` trait, and a component of the same type already exists,
+	 * the new component will not be added.
+	 * 
+	 * If the component has the `Replace` trait, and a component of the same type already exists,
+	 * the existing component will be removed before the new one is added.
+	 * 
+	 * If the component has the `Multi` trait, it will always be added.
+	 * 
+	 * @param component The component to add.
+	 */
+	public function addComponent(component:IComponent):Void
+	{
+		final trait = component.trait;
+
+		if (trait.has(ComponentTrait.Single) || trait.has(ComponentTrait.Replace))
+		{
+			final type = Type.getClass(component);
+			final existing = getComponentByType(type);
+
+			if (existing != null)
+			{
+				if (trait.has(ComponentTrait.Single))
+				{
+					// Don't add, as a component of this type already exists.
+					return;
+				}
+				else if (trait.has(ComponentTrait.Replace))
+				{
+					// Remove the existing component before adding the new one.
+					removeComponent(existing);
+				}
+				component.destroy();
+				return;
+			}
+		}
+
+		this.components.push(component);
+	}
+
+	/**
+	 * Adds multiple components to this entity.
+	 * @param components The components to add.
+	 * @param filter The optional filter to apply. If a component passes the filter, it will be added.
+	 */
+	public function addComponents(components:Array<IComponent>, ?filter:IComponent->Bool):Void
+	{
+		final filtered = filter == null ? components : components.filter(filter);
+
+		for (component in filtered)
 		{
 			addComponent(component);
 		}
 	}
+
+	/**
+	 * Removes a component from this entity.
+	 * @param component The component to remove.
+	 */
+	public function removeComponent(component:IComponent):Void
+	{
+		if (component == null)
+		{
+			return;
+		}
+
+		if (this.components.indexOf(component) != -1)
+		{
+			this.components.remove(component);
+			component.entity = null; // Detach from entity
+		}
+	}
+
+	/**
+	 * Removes multiple components from this entity. 
+	 * @param components The components to remove.
+	 * @param filter The optional filter to apply to the components. If a component passes the filter, it will be removed.
+	 */
 	public function removeComponents(components:Array<IComponent>, ?filter:IComponent->Bool):Void
 	{
-		final filtered = components.iterator().filter(c -> filter == null || filter(c)).array();
+		final filtered = filter == null ? components : components.filter(filter);
 
 		for (component in filtered)
 		{
@@ -185,7 +290,7 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 
 	public function removeComponentsByType(type:Class<IComponent>, ?filter:IComponent->Bool):Void
 	{
-		final filtered = components.iterator().filter(c -> filter == null || filter(c)).array();
+		final filtered = filter == null ? components : components.filter(filter);
 
 		for (component in filtered)
 		{

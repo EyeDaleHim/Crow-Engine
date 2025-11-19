@@ -2,7 +2,12 @@ package crow.ecs.components;
 
 abstract class BaseComponent implements IComponent
 {
-	public var entity:Entity;
+	public var entity(default, set):Entity;
+
+	function set_entity(value:Entity):Entity
+	{
+		return this.entity = value;
+	}
 
 	/**
 	 * The traits of the component.
@@ -22,23 +27,45 @@ abstract class BaseComponent implements IComponent
      * However, if not null, systems will use `customTrait` instead of `trait`.
      */
     public var customTrait:String;
+
+	/**
+	 * The name of the component. Must be unique.
+	 */
+	public var name(get, null):String;
+
+	function get_name():String
+	{
+		if (name == null)
+			name = crow.utils.UUID.generateV4();
+		return name;
+	}
+
+	public function destroy():Void
+	{
+		this.entity = null;
+		this.name = null;
+	}
 }
 
 interface IComponent
 {
-	public var entity:Entity;
+	public var entity(default, set):Entity;
 
 	public var trait(get, never):ComponentTrait;
     public var customTrait:String;
 
-    private function get_trait():ComponentTrait;
-}
+	public function destroy():Void;
 
-typedef OrderedComponentMap = crow.ds.OrderedMap<Class<IComponent>, Array<IComponent>>;
+    private function get_trait():ComponentTrait;
+
+	public var name(get, null):String;
+
+	private function get_name():String;
+}
 
 @:transitive
 @:forward
-abstract ComponentTrait(Int) from Int to Int
+abstract ComponentTrait(UInt) from UInt to UInt
 {
 	/**
 	 * If a component does not need to inhabit these traits, for custom behavior.

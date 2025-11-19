@@ -5,6 +5,8 @@ import crow.logics.dependencies.IEventExecutor;
 
 class BaseSystem implements ISystem
 {
+	private var _weakComponents:Array<IComponent> = [];
+
 	/**
 	 * Process a single entity.
 	 * @param entity The entity to process.
@@ -13,6 +15,14 @@ class BaseSystem implements ISystem
 	public function processEntity(entity:Entity, elapsed:Float):Void
 	{
 		// Base implementation does nothing.
+	}
+
+	public function postProcessComponent(processedComponent:IComponent):Void
+	{
+		if (processedComponent?.trait.has(ComponentTrait.Weak))
+		{
+			_weakComponents.push(processedComponent);
+		}
 	}
 
 	/**
@@ -38,9 +48,12 @@ class BaseSystem implements ISystem
 
 interface ISystem
 {
+	private var _weakComponents:Array<IComponent>;
+
 	function onAdd():Void;
 	function onRemove():Void;
 	function processEntity(entity:Entity, elapsed:Float):Void;
+	function postProcessComponent(processedComponent:IComponent):Void;
 	function preUpdate(elapsed:Float):Void;
 	function postUpdate(elapsed:Float):Void;
 }

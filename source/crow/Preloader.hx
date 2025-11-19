@@ -16,6 +16,7 @@ class Preloader extends FlxBasePreloader
 		Main.bundle = Bundle.load('assets.bundle');
 		#end
 
+		crow.ecs.managers.ComponentTable.init();
 		crow.logics.evaluators.LogicEvaluator.init();
 
 		Main.game = new FlxGame(0, 0, () -> new crow.states.internals.RootState(() -> new crow.states.menus.TitleState()));

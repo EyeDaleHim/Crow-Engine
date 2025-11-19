@@ -11,6 +11,7 @@ class FieldLerpSystem extends BaseSystem
 		if (lerps == null)
 			return;
 
+		@:privateAccess
 		for (lerp in lerps)
 		{
 			var current = lerp.getCurrentValue();
@@ -23,6 +24,8 @@ class FieldLerpSystem extends BaseSystem
 
 			var newValue = current + (target - current) * factor;
 			lerp.updateValue(newValue);
+
+			postProcessComponent(lerp);
 		}
 	}
 }
