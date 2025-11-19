@@ -7,8 +7,10 @@
     },
     {
       "name": "flixel",
-      "type": "haxelib",
-      "version": null
+      "type": "git",
+      "version": null,
+      "ref": "latest",
+      "url": "https://github.com/EyeDaleHim/flixel"
     },
     {
       "name": "flixel-addons",
