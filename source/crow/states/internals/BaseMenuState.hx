@@ -1,11 +1,13 @@
 package crow.states.internals;
 
+import crow.ecs.components.FieldLerpComponent;
 import crow.assets.metadata.logics.LogicMetadata;
 import crow.assets.metadata.scenes.MenuMetadata;
 import crow.ds.OrderedMap;
 import crow.ecs.managers.TimerManager;
 import crow.ecs.managers.TweenManager;
 import crow.ecs.systems.BaseSystem;
+import crow.ecs.systems.*;
 import crow.objects.layout.InteractableLayout;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
@@ -49,7 +51,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	/**
 	 * A list of all systems loaded for this menu, in order.
 	 */
-	public var systems:Array<ISystem> = [];
+	public var systems:Array<BaseSystem> = [];
 
 	/**
 	 * The metadata that defines the structure and behavior of this menu.
@@ -100,6 +102,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 				onEvent("transitionInFinished");
 			}
 		};
+
+		systems.push(new FieldLerpSystem());
 	}
 
 	/**
@@ -434,6 +438,14 @@ class BaseMenuState extends MainState implements IEventExecutor
 					for (action in inputAction.actions)
 						handleMenuAction(action, null, null, new LogicState());
 				}
+			}
+		}
+
+		for (entity in entities)
+		{
+			for (system in systems)
+			{
+				system.processEntity(entity, elapsed);
 			}
 		}
 

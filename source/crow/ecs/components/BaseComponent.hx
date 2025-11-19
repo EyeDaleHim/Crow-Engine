@@ -31,7 +31,7 @@ abstract class BaseComponent implements IComponent
 	/**
 	 * The name of the component. Must be unique.
 	 */
-	public var name(get, null):String;
+	public var name(get, default):String;
 
 	function get_name():String
 	{
@@ -58,7 +58,7 @@ interface IComponent
 
     private function get_trait():ComponentTrait;
 
-	public var name(get, null):String;
+	public var name(get, default):String;
 
 	private function get_name():String;
 }

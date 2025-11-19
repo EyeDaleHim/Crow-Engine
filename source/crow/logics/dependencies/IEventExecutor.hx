@@ -19,7 +19,7 @@ interface IEventExecutor
     public var soundInstances:Map<String, FlxSound>;
 
     public var entities:OrderedMap<String, Entity>;
-    public var systems:Array<ISystem>;
+    public var systems:Array<BaseSystem>;
 
     public function switchScene(sceneName:String):Bool;
 

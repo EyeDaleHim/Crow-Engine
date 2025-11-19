@@ -54,8 +54,8 @@ class FieldLerpComponent extends BaseComponent
 		this.to = to;
 
 		var val = Reflect.getProperty(entity, targetField);
-		if (val == null || (!Std.isOfType(val, Float) && !Std.isOfType(val, Int)))
-			throw 'Field "$targetField" must exist and be numerical (Int/Float).';
+		if (val == null || !Std.isOfType(val, Float))
+			throw 'Field "$targetField" must exist and be numerical (Float).';
 
 		this._currentValue = val;
 	}
@@ -82,16 +82,7 @@ class FieldLerpComponent extends BaseComponent
 	{
 		_currentValue = newValue;
 
-		// Preserve original type (Int vs Float)
-		var currentOnEntity = Reflect.getProperty(entity, targetField);
-		if (Std.isOfType(currentOnEntity, Int))
-		{
-			Reflect.setProperty(entity, targetField, Std.int(newValue));
-		}
-		else
-		{
-			Reflect.setProperty(entity, targetField, newValue);
-		}
+		Reflect.setProperty(entity, targetField, newValue);
 	}
 
 	/**

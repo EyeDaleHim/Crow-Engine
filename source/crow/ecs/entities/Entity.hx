@@ -4,6 +4,7 @@ import crow.ecs.components.BaseComponent;
 import crow.ecs.components.BaseComponent.ComponentTrait;
 import crow.ecs.components.BaseComponent.IComponent;
 import crow.ecs.components.PositionComponent;
+import crow.ecs.managers.ComponentTable;
 import crow.logics.dependencies.LogicState;
 import crow.assets.metadata.game.EntityMetadata;
 import flixel.util.FlxColor;
@@ -126,6 +127,15 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 				this.layoutTarget.width = metadata.layoutTarget.width;
 			if (metadata.layoutTarget.height != null)
 				this.layoutTarget.height = metadata.layoutTarget.height;
+		}
+
+		if (metadata.components != null)
+		{
+			for (componentMeta in metadata.components)
+			{
+				var component = ComponentTable.fromMetadata(componentMeta, this);
+				addComponent(component);
+			}
 		}
 	}
 

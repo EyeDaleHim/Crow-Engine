@@ -7,6 +7,11 @@ class BaseSystem implements ISystem
 {
 	private var _weakComponents:Array<IComponent> = [];
 
+	public function new()
+	{
+		_weakComponents = [];
+	}
+
 	/**
 	 * Process a single entity.
 	 * @param entity The entity to process.

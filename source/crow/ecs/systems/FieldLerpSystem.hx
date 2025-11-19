@@ -1,5 +1,6 @@
 package crow.ecs.systems;
 
+import crow.ecs.components.BaseComponent;
 import crow.ecs.components.FieldLerpComponent;
 import crow.ecs.systems.BaseSystem;
 
@@ -7,7 +8,17 @@ class FieldLerpSystem extends BaseSystem
 {
 	override public function processEntity(entity:Entity, elapsed:Float):Void
 	{
+		#if hl
+		var lerps:Array<FieldLerpComponent> = [];
+		var rawLerps:Array<IComponent> = entity.getComponentsByType(IComponent);
+
+		for (lerp in rawLerps)
+		{
+			lerps.push(cast(lerp, FieldLerpComponent));
+		}
+		#else
 		var lerps:Array<FieldLerpComponent> = cast entity.getComponentsByType(FieldLerpComponent);
+		#end
 		if (lerps == null)
 			return;
 
