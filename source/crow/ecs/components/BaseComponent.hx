@@ -70,30 +70,30 @@ abstract ComponentTrait(UInt) from UInt to UInt
 	/**
 	 * If a component does not need to inhabit these traits, for custom behavior.
 	 */
-	public static inline var None = 0;
+	public static inline var None = 0x0;
 
 	/**
 	 * Remove this component after it has been processed.
 	 */
-	public static inline var Weak = 1 << 0;
+	public static inline var Weak = 0x1;
 
 	/**
 	 * Allow components of the same type to be added multiple times to an entity.
 	 */
-	public static inline var Multi = 1 << 1;
+	public static inline var Multi = 0x2;
 
 	/**
 	 * Allow only one component of the same type to be added to an entity.
 	 */
-	public static inline var Single = 1 << 2;
+	public static inline var Single = 0x4;
 
 	/**
 	 * Like Single, but replaces the same component of this type if it already exists.
 	 */
-	public static inline var Replace = 1 << 3;
+	public static inline var Replace = 0x8;
 
 	@:from
-	static function fromInt(value:Int):ComponentTrait
+	static function fromUInt(value:UInt):ComponentTrait
 	{
 		if ((value & Multi != 0) && (value & Single != 0))
 		{
@@ -103,12 +103,12 @@ abstract ComponentTrait(UInt) from UInt to UInt
 	}
 
 	@:to
-	function toInt():Int
+	function toUInt():UInt
 	{
 		return this;
 	}
 
-	public function new(value:Int)
+	public function new(value:UInt)
 	{
 		if ((value & Multi != 0) && (value & Single != 0))
 		{
@@ -120,21 +120,21 @@ abstract ComponentTrait(UInt) from UInt to UInt
 	@:op(A | B)
 	function or(other:ComponentTrait):ComponentTrait
 	{
-		return fromInt(this | other.toInt());
+		return fromUInt(this | other.toUInt());
 	}
 
 	public inline function has(flag:ComponentTrait):Bool
 	{
-		return (this & flag.toInt()) == flag.toInt();
+		return (this & flag.toUInt()) == flag.toUInt();
 	}
 
 	public inline function add(flag:ComponentTrait):ComponentTrait
 	{
-		return fromInt(this | flag.toInt());
+		return fromUInt(this | flag.toUInt());
 	}
 
 	public inline function remove(flag:ComponentTrait):ComponentTrait
 	{
-		return fromInt(this & (~flag.toInt()));
+		return fromUInt(this & (~flag.toUInt()));
 	}
 }
