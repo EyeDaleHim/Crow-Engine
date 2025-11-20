@@ -30,13 +30,13 @@ class ColorData
 			return FlxColor.fromString(value);
 		}
 		// Treat as a color object if it has at least one of the expected color properties.
-		else if (Reflect.isObject(value) && (Reflect.hasField(value, "r") || Reflect.hasField(value, "g") || Reflect.hasField(value, "b") || Reflect.hasField(value, "a")))
+		else if (value.r != null || value.g != null || value.b != null || value.a != null)
 		{
-			final r:Null<Int> = Reflect.getProperty(value, "r");
-			final g:Null<Int> = Reflect.getProperty(value, "g");
-			final b:Null<Int> = Reflect.getProperty(value, "b");
-			final a:Null<Int> = Reflect.getProperty(value, "a");
-			return FlxColor.fromRGB(r ?? 0, g ?? 0, b ?? 0, a ?? 255);
+			final r:Null<Int> = value.r ?? 0;
+			final g:Null<Int> = value.g ?? 0;
+			final b:Null<Int> = value.b ?? 0;
+			final a:Null<Int> = value.a ?? 255;
+			return FlxColor.fromRGB(r, g, b, a);
 		}
 
 		return null;
