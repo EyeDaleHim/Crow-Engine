@@ -29,8 +29,6 @@ class MenuTemplate extends Template
 
 				final formerObject = targetLayout.selectedObject;
 				final formerItem = menuState.elementMetadataMap.get(formerObject);
-				if (formerItem == null)
-					return; // Should not happen if the layout has selectable items
 
 				final formerEntity = menuState.entities.get(formerItem.name);
 
@@ -39,36 +37,32 @@ class MenuTemplate extends Template
 
 				final localState = ctx.localState ?? new LogicState();
 
-				if (formerItem.onDeselect != null)
-				{
-					localState.set("index", targetLayout.members.indexOf(formerObject));
-					menuState.handleMenuAction(formerItem.onDeselect, formerItem, formerEntity, localState);
-				}
+				final deselectState = ctx.localState ?? new LogicState();
+				deselectState.set("index", targetLayout.members.indexOf(formerObject));
+
+				// REPLACED: menuState.handleMenuAction(formerItem.onDeselect...
+				menuState.onItemEvent(formerItem, "deselect", formerEntity, deselectState);
 
 				final selectedObject = targetLayout.selectedObject;
 				final selectedItem = menuState.elementMetadataMap.get(selectedObject);
-				if (selectedItem == null)
-					return; // Should not happen
+
 				final selectedEntity = menuState.entities.get(selectedItem.name);
 
-				if (selectedItem.onSelect != null)
-				{
-					localState.set("index", targetLayout.selectedIndex);
-					menuState.handleMenuAction(selectedItem.onSelect, selectedItem, selectedEntity, localState);
-				}
+				final selectState = ctx.localState ?? new LogicState();
+				selectState.set("index", targetLayout.selectedIndex);
+
+				// REPLACED: menuState.handleMenuAction(selectedItem.onSelect...
+				menuState.onItemEvent(selectedItem, "select", selectedEntity, selectState);
 
 				if (ctx.localState != null)
 				{
 					ctx.localState.clear();
 				}
 
-				if (selectedItem.onIndex != null)
-				{
-					localState.set("oldIndex", targetLayout.members.indexOf(formerObject));
-					localState.set("newIndex", targetLayout.selectedIndex);
+				localState.set("oldIndex", targetLayout.members.indexOf(formerObject));
+				localState.set("newIndex", targetLayout.selectedIndex);
 
-					menuState.handleMenuAction(selectedItem.onIndex, selectedItem, selectedEntity, localState);
-				}
+				menuState.onItemEvent(selectedItem, "index", selectedEntity, localState);
 			},
 				[{name: "layout", type: "String"}, {name: "direction", type: "Int"}], {wantsExecutor: true}),
 			"accept_selection" => ExecutableAction.createAction((ctx) ->
@@ -87,10 +81,11 @@ class MenuTemplate extends Template
 				if (selectedObject != null)
 				{
 					final selectedItem = menuState.elementMetadataMap.get(selectedObject);
-					if (selectedItem?.onAccept != null)
+					if (selectedItem != null)
 					{
 						final selectedEntity = menuState.entities.get(selectedItem.name);
-						menuState.handleMenuAction(selectedItem.onAccept, selectedItem, selectedEntity, menuState.logicState);
+
+						menuState.onItemEvent(selectedItem, "accept", selectedEntity, menuState.logicState);
 					}
 				}
 			},

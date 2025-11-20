@@ -45,26 +45,43 @@
         },
         {
             "entity": "menu/story_mode",
-            "onAccept": {
-                "type": "dispatch_event",
-                "values": {
-                    "eventName": "accept"
+            "listeners": [
+                {
+                    "event": "accept",
+                    "actions": [
+                        {
+                            "type": "dispatch_event",
+                            "values": {
+                                "eventName": "accept"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "event": "select",
+                    "actions": [
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "selected",
+                                "force": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "event": "deselect",
+                    "actions": [
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "idle",
+                                "force": true
+                            }
+                        }
+                    ]
                 }
-            },
-            "onSelect": {
-                "type": "play_animation",
-                "values": {
-                    "anim": "selected",
-                    "force": true
-                }
-            },
-            "onDeselect": {
-                "type": "play_animation",
-                "values": {
-                    "anim": "idle",
-                    "force": true
-                }
-            },
+            ],
             "overrideData": {
                 "layoutTarget": {
                     "width": 300,
@@ -78,26 +95,43 @@
         },
         {
             "entity": "menu/freeplay",
-            "onAccept": {
-                "type": "dispatch_event",
-                "values": {
-                    "eventName": "accept"
+            "listeners": [
+                {
+                    "event": "accept",
+                    "actions": [
+                        {
+                            "type": "dispatch_event",
+                            "values": {
+                                "eventName": "accept"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "event": "select",
+                    "actions": [
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "selected",
+                                "force": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "event": "deselect",
+                    "actions": [
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "idle",
+                                "force": true
+                            }
+                        }
+                    ]
                 }
-            },
-            "onSelect": {
-                "type": "play_animation",
-                "values": {
-                    "anim": "selected",
-                    "force": true
-                }
-            },
-            "onDeselect": {
-                "type": "play_animation",
-                "values": {
-                    "anim": "idle",
-                    "force": true
-                }
-            },
+            ],
             "overrideData": {
                 "layoutTarget": {
                     "width": 300,
@@ -111,26 +145,43 @@
         },
         {
             "entity": "menu/credits",
-            "onAccept": {
-                "type": "dispatch_event",
-                "values": {
-                    "eventName": "accept"
+            "listeners": [
+                {
+                    "event": "accept",
+                    "actions": [
+                        {
+                            "type": "dispatch_event",
+                            "values": {
+                                "eventName": "accept"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "event": "select",
+                    "actions": [
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "selected",
+                                "force": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "event": "deselect",
+                    "actions": [
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "idle",
+                                "force": true
+                            }
+                        }
+                    ]
                 }
-            },
-            "onSelect": {
-                "type": "play_animation",
-                "values": {
-                    "anim": "selected",
-                    "force": true
-                }
-            },
-            "onDeselect": {
-                "type": "play_animation",
-                "values": {
-                    "anim": "idle",
-                    "force": true
-                }
-            },
+            ],
             "layoutTarget": {
                 "width": 300,
                 "height": 130,
@@ -152,26 +203,43 @@
         },
         {
             "entity": "menu/options",
-            "onAccept": {
-                "type": "dispatch_event",
-                "values": {
-                    "eventName": "accept"
+            "listeners": [
+                {
+                    "event": "accept",
+                    "actions": [
+                        {
+                            "type": "dispatch_event",
+                            "values": {
+                                "eventName": "accept"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "event": "select",
+                    "actions": [
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "selected",
+                                "force": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "event": "deselect",
+                    "actions": [
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "idle",
+                                "force": true
+                            }
+                        }
+                    ]
                 }
-            },
-            "onSelect": {
-                "type": "play_animation",
-                "values": {
-                    "anim": "selected",
-                    "force": true
-                }
-            },
-            "onDeselect": {
-                "type": "play_animation",
-                "values": {
-                    "anim": "idle",
-                    "force": true
-                }
-            },
+            ],
             "overrideData": {
                 "layoutTarget": {
                     "width": 300,

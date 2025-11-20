@@ -71,32 +71,10 @@ typedef MenuItem =
 	var ?overrideData:EntityMetadata;
 
 	/**
-	 * An action to be triggered when this item is accepted.
-	 * 
-	 * The entity used for this event listener is itself.
+	 * The list of listeners for events.
+	 * This can be anything like on-beat events to the music, etc.
 	 */
-	var ?onAccept:ListenerActionMetadata;
-
-	/**
-	 * An action to be triggered when this item is selected.
-	 * 
-	 * The entity used for this event listener is itself.
-	 */
-	var ?onSelect:ListenerActionMetadata;
-
-	/**
-	 * An action to be triggered when this item is deselected.
-	 * 
-	 * The entity used for this event listener is itself.
-	 */
-	var ?onDeselect:ListenerActionMetadata;
-
-	/**
-	 * An action to be triggered when the layout's index changes in general.
-	 * 
-	 * The entity used for this event listener is itself.
-	 */
-	var ?onIndex:ListenerActionMetadata;
+	var ?listeners:Array<ListenerMetadata>;
 
 	/**
 	 * The layout properties for this item's children, if it is a sub-menu.

@@ -306,7 +306,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 		for (elementData in elements)
 		{
 			var menuObject:FlxObject = null;
-			var isDecoration:Bool = elementData.onAccept == null && elementData.items == null;
+			var isDecoration:Bool = (elementData.listeners == null || elementData.listeners.length == 0) && elementData.items == null;
 
 			if (elementData.name == "_root_layout")
 			{
@@ -466,6 +466,48 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 			@:privateAccess
 			system._weakComponents.splice(0, system._weakComponents.length);
+		}
+	}
+
+	/**
+	 * Triggers an event specifically on a MenuItem.
+	 * This filters the item's listener list for the specific event name.
+	 */
+	public function onItemEvent(item:MenuItem, eventName:String, ?entity:Entity, ?localState:LogicState):Void
+	{
+		if (item.listeners == null)
+			return;
+
+		// Reuse the main onEvent logic, but scope it to this item's listeners
+		// We create a temporary LogicMetadata structure to pass to a helper or duplicate the logic slightly.
+		// Here is the direct implementation for clarity:
+
+		localState ??= new LogicState();
+
+		for (listener in item.listeners)
+		{
+			var listenerEvents = listener.events ?? (listener.event != null ? [listener.event] : []);
+
+			if (!listenerEvents.contains(eventName))
+				continue;
+
+			// Evaluate condition
+			if (!PredicateEvaluator.evaluate(listener.condition, this.logicState, localState))
+				continue;
+
+			// Prepare entity map for the action (usually the item itself)
+			var targetMap:OrderedMap<String, Entity> = null;
+			if (entity != null)
+			{
+				targetMap = new OrderedMap<String, Entity>();
+				targetMap.set(entity.entityName, entity);
+			}
+
+			// Execute actions
+			if (listener.actions != null)
+			{
+				LogicEvaluator.execute(listener.actions, this.logicState, localState, targetMap ?? this.entities, this);
+			}
 		}
 	}
 
