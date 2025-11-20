@@ -123,6 +123,10 @@ class Project extends HXProject
 		// setHaxedef("JSON_TO_MESSAGEPACK");
 		// setHaxedef("XML_TO_MESSAGEPACK");
 
+		// If SBS_SPARROW is defined, then XML assets that are clearly related to spritesheets
+		// will be converted to .sbs format.
+		setHaxedef("SBS_SPARROW");
+
 		setHaxedef("hscriptPos");
 
 		if (isCpp())

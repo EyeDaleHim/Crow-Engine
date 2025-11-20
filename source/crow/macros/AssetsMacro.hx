@@ -1,5 +1,6 @@
 package crow.macros;
 
+import haxe.Exception;
 import sys.FileSystem;
 import sys.io.File;
 #if macro
@@ -108,9 +109,37 @@ class AssetsMacro
 			}
 			#end
 
-			#if XML_TO_MESSAGEPACK
+			#if (XML_TO_MESSAGEPACK || SBS_SPARROW)
 			if (Path.extension(item) == 'xml')
 			{
+				#if SBS_SPARROW
+				var pngItem = Path.withExtension(item, 'png');
+				if (pngItem != null && FileSystem.exists(pngItem))
+				{
+					try
+					{
+						final xmlContent = File.getContent(item);
+						final byteGraphics = File.getBytes(pngItem);
+						final sbsBytes = crow.assets.format.BinarySparrow.fromXML(xmlContent, byteGraphics);
+
+						var exportItemPath:String = Path.join([exportPath, item]);
+						var sbsPath = Path.withExtension(exportItemPath, 'sbs');
+						File.saveBytes(sbsPath, sbsBytes);
+						processed = true;
+						continue;
+					}
+					catch (e)
+					{
+						Context.warning('Failed to convert ${item} to SBS: ${e}. Copying original file.', Context.currentPos());
+						printExceptionStack(e);
+						var exportItemPath:String = Path.join([exportPath, item]);
+						File.copy(item, exportItemPath);
+						continue;
+					}
+				}
+				#end
+
+				#if XML_TO_MESSAGEPACK
 				try
 				{
 					final xmlContent = File.getContent(item);
@@ -124,18 +153,11 @@ class AssetsMacro
 				catch (e)
 				{
 					Context.warning('Failed to convert ${item} to MessagePack: ${e}. Copying original file.', Context.currentPos());
-					for (stackItem in e.stack)
-					{
-						switch (stackItem)
-						{
-							case FilePos(s, file, line, col):
-								Context.warning('	at ${file}:${line}:${col}', Context.currentPos());
-							default:
-						}
-					}
+					printExceptionStack(e);
 					var exportItemPath:String = Path.join([exportPath, item]);
 					File.copy(item, exportItemPath);
 				}
+				#end
 			}
 			#end
 
@@ -148,5 +170,20 @@ class AssetsMacro
 		#end
 
 		return macro {};
+	}
+
+	private static function printExceptionStack(e:Exception)
+	{
+		#if macro
+		for (stackItem in e.stack)
+		{
+			switch (stackItem)
+			{
+				case FilePos(s, file, line, col):
+					Context.warning('	at ${file}:${line}:${col}', Context.currentPos());
+				default:
+			}
+		}
+		#end
 	}
 }

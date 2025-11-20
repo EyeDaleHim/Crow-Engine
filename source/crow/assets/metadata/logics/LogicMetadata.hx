@@ -125,8 +125,7 @@ typedef ListenerActionMetadata =
 	 * If the `type` is asynchronous (e.g. a tween or a timer),
 	 * which will trigger if the tween or timed event is completed.
 	 * If the `type` is not asynchronous, all events in `postListenerEvents` get executed
-	 * immediately, it's better to use `actions` instead since the former counts toward
-	 * stack overflow.
+	 * immediately, it's better to use `actions` instead.
 	 */
 	var ?postListenerEvents:Array<ListenerActionMetadata>;
 
