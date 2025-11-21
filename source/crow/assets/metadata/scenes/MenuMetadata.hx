@@ -13,10 +13,16 @@ import crow.objects.layout.LayoutProperties;
 typedef MenuMetadata =
 {
 	> SceneMetadata,
+
 	/**
 	 * A list of layout properties for the menu.
 	 */
 	var ?layouts:Array<MenuLayout>;
+
+	/**
+	 * A list of generic elements that can be reused and customized.
+	 */
+	var ?genericElements:Array<GenericMenuItem>;
 
 	/**
 	 * A list of elements to be displayed in the menu, including both interactive items and decorations.
@@ -33,10 +39,37 @@ typedef MenuMetadata =
 };
 
 /**
+ * Represents a generic menu item that can be reused and customized.
+ */
+typedef GenericMenuItem =
+{
+	/**
+	 * The name of this generic item.
+	 * 
+	 * If the menu item inheriting this item does not have a name,
+	 * this `name` will be used.
+	 */
+	var name:String;
+
+	/**
+	 * The menu item to be used as a template. Fields like `template`
+	 * are ignored.
+	 */
+	var menuItem:MenuItem;
+
+};
+
+/**
  * Represents a single item within a menu.
  */
 typedef MenuItem =
 {
+	/**
+	 * If defined, this menu item will inherit properties from a generic menu item.
+	 * The `name` field of the generic item will be used to identify it.
+	 */
+	var ?genericReference:String;
+
 	/**
 	 * The name or identifier for this menu item.
 	 * 
@@ -104,7 +137,7 @@ typedef MenuItem =
 	 * This overrides the `position` property for the specified axes.
 	 */
 	var ?screenCenter:AxeData<Bool>;
-	
+
 	/**
 	 * The name of the camera this item belongs to.
 	 * 
@@ -127,22 +160,27 @@ typedef MenuLayout =
 	 * The direction in which items are laid out (e.g., `VERTICAL` or `HORIZONTAL`).
 	 */
 	var ?direction:LayoutDirection;
+
 	/**
 	 * The amount of space between each item in the layout.
 	 */
 	var ?gap:Float;
+
 	/**
 	 * The padding around the entire layout.
 	 */
 	var ?padding:Float;
+
 	/**
 	 * How items are distributed along the main axis.
 	 */
 	var ?justifyContent:JustifyContent;
+
 	/**
 	 * How items are aligned along the cross axis.
-	- */
+		- */
 	var ?alignItems:AlignItems;
+
 	/**
 	 * Whether items should wrap to the next line if they exceed the layout's size.
 	 */

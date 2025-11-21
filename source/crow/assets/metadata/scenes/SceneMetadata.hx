@@ -1,5 +1,6 @@
 package crow.assets.metadata.scenes;
 
+import crow.assets.metadata.game.EntityMetadata;
 import crow.assets.metadata.logics.LogicMetadata;
 
 /**
@@ -26,6 +27,14 @@ typedef SceneMetadata =
 	 * Defines how transitions are handled for a scene state.
 	 */
 	var ?transitions:SceneTransitions;
+
+	/**
+	 * Entities for this scene, however, this field is almost never used as
+	 * SceneMetadata is meant to be extendible, this field is used if
+	 * the scene does not intend to implement custom behavior for
+	 * their entities.
+	 */
+	var ?entities:Array<EntityMetadata>;
 
 	/**
 	 * The cameras to define for this scene.

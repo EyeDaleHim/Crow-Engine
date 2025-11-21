@@ -305,6 +305,34 @@ class BaseMenuState extends MainState implements IEventExecutor
 		var rootLayoutAndData:{layout:InteractableLayout, data:Dynamic} = null;
 		for (elementData in elements)
 		{
+			if (elementData.genericReference != null && menuMetadata.genericElements != null)
+			{
+				var genericItem:GenericMenuItem = null;
+				for (g in menuMetadata.genericElements)
+				{
+					if (g.name == elementData.genericReference)
+					{
+						genericItem = g;
+						break;
+					}
+				}
+
+				if (genericItem != null)
+				{
+					// Odd way to copy data?
+					var mergedData:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(genericItem.menuItem));
+
+					// Merge fields from the specific element into the generic one
+					for (field in Reflect.fields(elementData))
+					{
+						Reflect.setField(mergedData, field, Reflect.field(elementData, field));
+					}
+
+					// Use the merged data for the rest of the processing
+					elementData = mergedData;
+				}
+			}
+
 			var menuObject:FlxObject = null;
 			var isDecoration:Bool = (elementData.listeners == null || elementData.listeners.length == 0) && elementData.items == null;
 

@@ -27,6 +27,41 @@
             }
         ]
     },
+    "genericElements": [
+        {
+            "name": "main_menu_item",
+            "menuItem": {
+                "listeners": [
+                    {
+                        "event": "accept",
+                        "actions": [
+                            {
+                                "type": "dispatch_event",
+                                "values": {
+                                    "eventName": "accept"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "event": "select",
+                        "actions": [
+                            { "type": "play_animation", "values": { "anim": "selected", "force": true } }
+                        ]
+                    },
+                    {
+                        "event": "deselect",
+                        "actions": [
+                            { "type": "play_animation", "values": { "anim": "idle", "force": true } }
+                        ]
+                    }
+                ],
+                "overrideData": {
+                    "layoutTarget": { "width": 300, "height": 130, "relativeToCenter": { "x": true, "y": true } }
+                }
+            }
+        }
+    ],
     "elements": [
         {
             "name": "background",
@@ -44,212 +79,20 @@
             }
         },
         {
-            "entity": "menu/story_mode",
-            "listeners": [
-                {
-                    "event": "accept",
-                    "actions": [
-                        {
-                            "type": "dispatch_event",
-                            "values": {
-                                "eventName": "accept"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "event": "select",
-                    "actions": [
-                        {
-                            "type": "play_animation",
-                            "values": {
-                                "anim": "selected",
-                                "force": true
-                            }
-                        }
-                    ]
-                },
-                {
-                    "event": "deselect",
-                    "actions": [
-                        {
-                            "type": "play_animation",
-                            "values": {
-                                "anim": "idle",
-                                "force": true
-                            }
-                        }
-                    ]
-                }
-            ],
-            "overrideData": {
-                "layoutTarget": {
-                    "width": 300,
-                    "height": 130,
-                    "relativeToCenter": {
-                        "x": true,
-                        "y": true
-                    }
-                }
-            }
+            "genericReference": "main_menu_item",
+            "entity": "menu/story_mode"
         },
         {
-            "entity": "menu/freeplay",
-            "listeners": [
-                {
-                    "event": "accept",
-                    "actions": [
-                        {
-                            "type": "dispatch_event",
-                            "values": {
-                                "eventName": "accept"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "event": "select",
-                    "actions": [
-                        {
-                            "type": "play_animation",
-                            "values": {
-                                "anim": "selected",
-                                "force": true
-                            }
-                        }
-                    ]
-                },
-                {
-                    "event": "deselect",
-                    "actions": [
-                        {
-                            "type": "play_animation",
-                            "values": {
-                                "anim": "idle",
-                                "force": true
-                            }
-                        }
-                    ]
-                }
-            ],
-            "overrideData": {
-                "layoutTarget": {
-                    "width": 300,
-                    "height": 130,
-                    "relativeToCenter": {
-                        "x": true,
-                        "y": true
-                    }
-                }
-            }
+            "genericReference": "main_menu_item",
+            "entity": "menu/freeplay"
         },
         {
-            "entity": "menu/credits",
-            "listeners": [
-                {
-                    "event": "accept",
-                    "actions": [
-                        {
-                            "type": "dispatch_event",
-                            "values": {
-                                "eventName": "accept"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "event": "select",
-                    "actions": [
-                        {
-                            "type": "play_animation",
-                            "values": {
-                                "anim": "selected",
-                                "force": true
-                            }
-                        }
-                    ]
-                },
-                {
-                    "event": "deselect",
-                    "actions": [
-                        {
-                            "type": "play_animation",
-                            "values": {
-                                "anim": "idle",
-                                "force": true
-                            }
-                        }
-                    ]
-                }
-            ],
-            "layoutTarget": {
-                "width": 300,
-                "height": 130,
-                "relativeToCenter": {
-                    "x": true,
-                    "y": true
-                }
-            },
-            "overrideData": {
-                "layoutTarget": {
-                    "width": 300,
-                    "height": 130,
-                    "relativeToCenter": {
-                        "x": true,
-                        "y": true
-                    }
-                }
-            }
+            "genericReference": "main_menu_item",
+            "entity": "menu/credits"
         },
         {
-            "entity": "menu/options",
-            "listeners": [
-                {
-                    "event": "accept",
-                    "actions": [
-                        {
-                            "type": "dispatch_event",
-                            "values": {
-                                "eventName": "accept"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "event": "select",
-                    "actions": [
-                        {
-                            "type": "play_animation",
-                            "values": {
-                                "anim": "selected",
-                                "force": true
-                            }
-                        }
-                    ]
-                },
-                {
-                    "event": "deselect",
-                    "actions": [
-                        {
-                            "type": "play_animation",
-                            "values": {
-                                "anim": "idle",
-                                "force": true
-                            }
-                        }
-                    ]
-                }
-            ],
-            "overrideData": {
-                "layoutTarget": {
-                    "width": 300,
-                    "height": 130,
-                    "relativeToCenter": {
-                        "x": true,
-                        "y": true
-                    }
-                }
-            }
+            "genericReference": "main_menu_item",
+            "entity": "menu/options"
         }
     ],
     "inputActions": [
