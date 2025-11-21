@@ -319,12 +319,27 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 				if (genericItem != null)
 				{
-					// Odd way to copy data?
 					var mergedData:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(genericItem.menuItem));
 
-					// Merge fields from the specific element into the generic one
+					// If listenerAppends is true, merge the listeners from the specific item into the generic item's listeners.
+					if (genericItem.listenerAppends == true && elementData.listeners != null && mergedData.listeners != null)
+					{
+						for (listener in elementData.listeners)
+						{
+							mergedData.listeners.push(listener);
+						}
+					}
+
+					// Merge fields from the specific element into the generic one.
+					// If listenerAppends is true, we skip the 'listeners' field to avoid overwriting the merge.
+					// If listenerAppends is false (or null), 'listeners' will be overwritten like any other field.
 					for (field in Reflect.fields(elementData))
 					{
+						if (genericItem.listenerAppends == true && field == "listeners")
+						{
+							continue;
+						}
+						
 						Reflect.setField(mergedData, field, Reflect.field(elementData, field));
 					}
 

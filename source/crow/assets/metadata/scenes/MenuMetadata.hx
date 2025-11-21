@@ -57,6 +57,16 @@ typedef GenericMenuItem =
 	 */
 	var menuItem:MenuItem;
 
+	/**
+	 * If a menu item uses this generic item and it has its own
+	 * `listeners` fields. This boolean determines if the generic 
+	 * item's listeners should be appended to the specific item's 
+	 * listeners, rather than overwriting them.
+	 * 
+	 * If `false` (default), the specific item's listeners will overwrite the 
+	 * generic item's listeners.
+	 */
+	var ?listenerAppends:Bool;
 };
 
 /**
