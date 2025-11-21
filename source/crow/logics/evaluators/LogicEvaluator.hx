@@ -40,6 +40,7 @@ class LogicEvaluator
 		list.push(ActionTemplate);
 		list.push(AnimationTemplate);
 		list.push(CameraTemplate);
+		list.push(ComponentTemplate);
 		list.push(EntityTemplate);
 		list.push(GlobalTemplate);
 		list.push(MusicTemplate);
