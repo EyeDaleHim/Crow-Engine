@@ -11,6 +11,8 @@ The idea of Crow Engine's data-driven design comes from the fact that developers
 ## Modding
 Crow Engine does not offer any options for mod folders or load mods itself, it is only expected to load content from its assets folder. In such cases, mods made with Crow Engine will need to be distributed as one compressed package, either with or without the executable, adding onto the original asset folder or replacing it entirely.
 
+
+
 # Credits
 
 - [EyeDaleHim](https://github.com/EyeDaleHim) Main developer and maintainer of Crow Engine.

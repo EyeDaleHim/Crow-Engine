@@ -109,11 +109,14 @@ class AssetsMacro
 			}
 			#end
 
-			#if (XML_TO_MESSAGEPACK || SBS_SPARROW)
+			#if SBS_SPARROW
+			var pngItem = Path.withExtension(item, 'png');
+			var xmlItem = Path.withExtension(item, 'xml');
+			if (FileSystem.exists(pngItem) && FileSystem.exists(xmlItem) && item == pngItem)
+				continue;
+
 			if (Path.extension(item) == 'xml')
 			{
-				#if SBS_SPARROW
-				var pngItem = Path.withExtension(item, 'png');
 				if (pngItem != null && FileSystem.exists(pngItem))
 				{
 					try
@@ -126,7 +129,6 @@ class AssetsMacro
 						var sbsPath = Path.withExtension(exportItemPath, 'sbs');
 						File.saveBytes(sbsPath, sbsBytes);
 						processed = true;
-						continue;
 					}
 					catch (e)
 					{
@@ -134,30 +136,8 @@ class AssetsMacro
 						printExceptionStack(e);
 						var exportItemPath:String = Path.join([exportPath, item]);
 						File.copy(item, exportItemPath);
-						continue;
 					}
 				}
-				#end
-
-				#if XML_TO_MESSAGEPACK
-				try
-				{
-					final xmlContent = File.getContent(item);
-					final parsedXml = MessagePack.fromXmlString(xmlContent);
-					final msgpBytes = MessagePack.serialize(parsedXml);
-
-					var exportItemPath:String = Path.join([exportPath, item]);
-					var msgpPath = Path.withExtension(exportItemPath, 'msgp_x');
-					File.saveBytes(msgpPath, msgpBytes);
-				}
-				catch (e)
-				{
-					Context.warning('Failed to convert ${item} to MessagePack: ${e}. Copying original file.', Context.currentPos());
-					printExceptionStack(e);
-					var exportItemPath:String = Path.join([exportPath, item]);
-					File.copy(item, exportItemPath);
-				}
-				#end
 			}
 			#end
 

@@ -1,27 +1,15 @@
 [
     {
-        "type": "image",
+        "type": "spritesheet",
         "path": "title/gfDanceTitle"
     },
     {
-        "type": "text",
-        "path": "textures/title/gfDanceTitle.xml"
-    },
-    {
-        "type": "image",
+        "type": "spritesheet",
         "path": "title/logoBumpin"
     },
     {
-        "type": "text",
-        "path": "textures/title/logoBumpin.xml"
-    },
-    {
-        "type": "image",
+        "type": "spritesheet",
         "path": "title/titleEnter"
-    },
-    {
-        "type": "text",
-        "path": "textures/title/titleEnter.xml"
     },
     {
         "type": "image",

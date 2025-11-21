@@ -1,11 +1,7 @@
 [
     {
-        "type": "image",
+        "type": "spritesheet",
         "path": "generic/mainText"
-    },
-    {
-        "type": "text",
-        "path": "textures/generic/mainText.xml"
     },
     {
         "type": "image",
