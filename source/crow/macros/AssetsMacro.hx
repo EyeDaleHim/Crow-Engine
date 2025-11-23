@@ -1,13 +1,9 @@
 package crow.macros;
 
-import haxe.Exception;
+import haxe.macro.Context;
 import sys.FileSystem;
 import sys.io.File;
-#if macro
-import haxe.macro.Context;
-#end
-import crow.assets.format.MessagePack;
-import haxe.zip.Compress;
+import haxe.io.Path;
 
 class AssetsMacro
 {
@@ -16,15 +12,16 @@ class AssetsMacro
 		return macro $v{Sys.getCwd()};
 	}
 
-	// assets to export folder
 	public static macro function buildAssets()
 	{
 		#if (display || web)
 		return macro {};
 		#end
 
+		// Only continue if we are NOT bundling.
+		// If ASSETS_PACKAGING is true, BundleMacro handles the transfer.
+		#if !ASSETS_PACKAGING
 		var target:String = Context.definedValue('target.name');
-
 		if (target == 'cpp')
 		{
 			#if windows
@@ -36,134 +33,53 @@ class AssetsMacro
 			#end
 		}
 
-		var exportPath:String = Path.join(['export', #if debug 'debug' #else 'release' #end, target, 'bin']);
-		var assetFolder:String = Path.join([exportPath, 'assets']);
+		var exportPath:String = Path.join(['export', 'builds', #if debug 'debug' #else 'release' #end, target, 'bin']);
+		var finalAssetsFolder:String = Path.join([exportPath, 'assets']);
 
-		FileSystem.createDirectory(assetFolder);
-
-		final directories:Array<String> = [];
-		final list:Array<String> = [];
-
-		function addFiles(directory:String)
+		if (!FileSystem.exists(finalAssetsFolder))
 		{
-			for (path in FileSystem.readDirectory(directory))
+			FileSystem.createDirectory(finalAssetsFolder);
+		}
+
+		// Copy everything from export/processed_assets -> export/builds/release/windows/bin/assets
+		var processedDir = AssetProcessorMacro.processDir;
+
+		function copyRec(dir:String)
+		{
+			if (!FileSystem.exists(dir))
+				return;
+
+			for (file in FileSystem.readDirectory(dir))
 			{
-				var currentPath:String = Path.join([directory, path]);
-				if (FileSystem.isDirectory(currentPath))
+				// Skip cache file
+				if (file == AssetProcessorMacro.cacheFile)
+					continue;
+
+				var srcPath = Path.join([dir, file]);
+				var relPath = srcPath.substr(processedDir.length + 1);
+				var destPath = Path.join([finalAssetsFolder, relPath]);
+
+				if (FileSystem.isDirectory(srcPath))
 				{
-					directories.push(currentPath);
-					addFiles(currentPath);
+					if (!FileSystem.exists(destPath))
+						FileSystem.createDirectory(destPath);
+					copyRec(srcPath);
 				}
 				else
 				{
-					list.push(currentPath);
+					// Simple timestamp check to avoid redundant IO
+					if (!FileSystem.exists(destPath)
+						|| FileSystem.stat(srcPath).mtime.getTime() > FileSystem.stat(destPath).mtime.getTime())
+					{
+						File.copy(srcPath, destPath);
+					}
 				}
 			}
 		}
 
-		addFiles('assets');
-
-		#if !ASSETS_PACKAGING
-		for (item in directories)
-		{
-			var exportItemPath:String = Path.join([exportPath, item]);
-			FileSystem.createDirectory(exportItemPath);
-		}
-
-		for (item in list)
-		{
-			var processed:Bool = false;
-
-			#if JSON_TO_MESSAGEPACK
-			if (Path.extension(item) == 'json')
-			{
-				try
-				{
-					final jsonContent = File.getContent(item);
-					final parsedJson = Json.parse(JsonComment.removeComments(jsonContent));
-					final msgpBytes = MessagePack.serialize(parsedJson);
-
-					var exportItemPath:String = Path.join([exportPath, item]);
-					var msgpPath = Path.withExtension(exportItemPath, 'msgp_j');
-					File.saveBytes(msgpPath, msgpBytes);
-					processed = true;
-				}
-				catch (e)
-				{
-					Context.warning('Failed to convert ${item} to MessagePack: ${e}. Copying original file.', Context.currentPos());
-
-					// stack trace
-					for (stackItem in e.stack)
-					{
-						switch (stackItem)
-						{
-							case FilePos(s, file, line, col):
-								Context.warning('	at ${file}:${line}:${col}', Context.currentPos());
-							default:
-						}
-					}
-
-					var exportItemPath:String = Path.join([exportPath, item]);
-					File.copy(item, exportItemPath);
-				}
-			}
-			#end
-
-			#if SBS_SPARROW
-			var pngItem = Path.withExtension(item, 'png');
-			var xmlItem = Path.withExtension(item, 'xml');
-			if (FileSystem.exists(pngItem) && FileSystem.exists(xmlItem) && item == pngItem)
-				continue;
-
-			if (Path.extension(item) == 'xml')
-			{
-				if (pngItem != null && FileSystem.exists(pngItem))
-				{
-					try
-					{
-						final xmlContent = File.getContent(item);
-						final byteGraphics = File.getBytes(pngItem);
-						final sbsBytes = crow.assets.format.BinarySparrow.fromXML(xmlContent, byteGraphics);
-
-						var exportItemPath:String = Path.join([exportPath, item]);
-						var sbsPath = Path.withExtension(exportItemPath, 'sbs');
-						File.saveBytes(sbsPath, sbsBytes);
-						processed = true;
-					}
-					catch (e)
-					{
-						Context.warning('Failed to convert ${item} to SBS: ${e}. Copying original file.', Context.currentPos());
-						printExceptionStack(e);
-						var exportItemPath:String = Path.join([exportPath, item]);
-						File.copy(item, exportItemPath);
-					}
-				}
-			}
-			#end
-
-			if (!processed)
-			{
-				var exportItemPath:String = Path.join([exportPath, item]);
-				File.copy(item, exportItemPath);
-			}
-		}
+		copyRec(processedDir);
 		#end
 
 		return macro {};
-	}
-
-	private static function printExceptionStack(e:Exception)
-	{
-		#if macro
-		for (stackItem in e.stack)
-		{
-			switch (stackItem)
-			{
-				case FilePos(s, file, line, col):
-					Context.warning('	at ${file}:${line}:${col}', Context.currentPos());
-				default:
-			}
-		}
-		#end
 	}
 }

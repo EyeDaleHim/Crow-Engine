@@ -30,12 +30,11 @@ class BundleMacro
 		}
 		catch (e:Any)
 		{
-			Context.warning("Could not parse ASSETS_PACKAGING_COMPRESSION value, disabling compression.", Context.currentPos());
 			compressionLevel = -1;
 		}
 		#end
 
-		var assetsRoot = "assets";
+		var assetsRoot = AssetProcessorMacro.processDir;
 		var cacheFile = ".bundle_cache";
 
 		var target:String = Context.definedValue('target.name');
@@ -49,23 +48,19 @@ class BundleMacro
 			target = "linux";
 			#end
 		}
-		var exportPath:String = Path.join(['export', #if debug 'debug' #else 'release' #end, target, 'bin']);
+		var exportPath:String = Path.join(['export', 'builds', #if debug 'debug' #else 'release' #end, target, 'bin']);
 		var outputBundleFile = Path.join([exportPath, 'assets.bundle']);
 		var outputCacheFile = Path.join([exportPath, cacheFile]);
 
-		// Read cache
+		// Read Bundle Cache
 		var oldCache:Map<String, Float> = new Map<String, Float>();
 		if (FileSystem.exists(outputCacheFile))
 		{
 			try
 			{
-				var content = File.getContent(outputCacheFile);
-				oldCache = Unserializer.run(content);
+				oldCache = Unserializer.run(File.getContent(outputCacheFile));
 			}
-			catch (e:Any)
-			{
-				Context.warning("Could not read bundle cache file.", Context.currentPos());
-			}
+			catch (e:Any) {}
 		}
 
 		var files:Map<String, Bytes> = new Map<String, Bytes>();
@@ -74,10 +69,21 @@ class BundleMacro
 
 		function traverse(dir:String)
 		{
+			if (!FileSystem.exists(dir))
+				return;
+
 			for (item in FileSystem.readDirectory(dir))
 			{
+				// Skip internal processor cache file
+				if (item == AssetProcessorMacro.cacheFile)
+					continue;
+
 				var fullPath = Path.join([dir, item]);
-				var normalizedPath = Path.normalize(fullPath);
+
+				// Calculate path relative to the process root (e.g. "data/config.json")
+				var relPath = fullPath.substr(assetsRoot.length + 1);
+				var normalizedPath = Path.normalize(relPath);
+
 				if (FileSystem.isDirectory(fullPath))
 				{
 					traverse(fullPath);
@@ -92,7 +98,7 @@ class BundleMacro
 						isDirty = true;
 					}
 
-					var content = File.getBytes(normalizedPath);
+					var content = File.getBytes(fullPath);
 					files.set(normalizedPath, content);
 				}
 			}
@@ -101,11 +107,9 @@ class BundleMacro
 		traverse(assetsRoot);
 
 		if (Lambda.count(newCache) != Lambda.count(oldCache))
-		{
 			isDirty = true;
-		}
 
-		if (!isDirty)
+		if (!isDirty && FileSystem.exists(outputBundleFile))
 		{
 			return fields;
 		}
@@ -113,21 +117,23 @@ class BundleMacro
 		var fileInfos:Map<String, {size:Int, offset:Int}> = new Map<String, {size:Int, offset:Int}>();
 		var currentOffset = 0;
 
-		// Get file paths and sort them to ensure a consistent bundle layout
-		var filePaths = [];
-		for (path in files.keys())
-		{
-			filePaths.push(path);
-		}
+		var filePaths = [for (k in files.keys()) k];
 
+		// Collect Directories for the header
 		function addDirs(root:String)
 		{
+			if (!FileSystem.exists(root))
+				return;
 			for (dir in FileSystem.readDirectory(root))
 			{
+				if (dir == AssetProcessorMacro.cacheFile)
+					continue;
 				var fullPath = Path.join([root, dir]);
 				if (FileSystem.isDirectory(fullPath))
 				{
-					fileInfos.set(fullPath, {size: -1, offset: currentOffset});
+					var relPath = fullPath.substr(assetsRoot.length + 1);
+					var norm = Path.normalize(relPath);
+					fileInfos.set(norm, {size: -1, offset: currentOffset});
 					addDirs(fullPath);
 				}
 			}
@@ -136,16 +142,12 @@ class BundleMacro
 
 		filePaths.sort(Reflect.compare);
 
-		// Build file information and byte array in sorted order
 		var allBytes = [];
 		for (path in filePaths)
 		{
 			var bytes = files.get(path);
-
 			if (compressionLevel != -1)
-			{
 				bytes = Compress.run(bytes, compressionLevel);
-			}
 
 			var size = bytes.length;
 			fileInfos.set(path, {size: size, offset: currentOffset});
@@ -168,16 +170,10 @@ class BundleMacro
 			try
 			{
 				var preloadMb = Std.parseInt(preloadAllAssetsValue);
-				var preloadBytes = preloadMb * 1024 * 1024;
-				if (currentOffset < preloadBytes)
-				{
+				if (currentOffset < (preloadMb * 1024 * 1024))
 					haxe.macro.Compiler.define("PRELOAD_ALL_ASSETS");
-				}
 			}
-			catch (e:Any)
-			{
-				Context.warning("Could not parse PRELOAD_ALL_ASSETS_VALUE.", Context.currentPos());
-			}
+			catch (e:Any) {}
 		}
 		#end
 
@@ -191,12 +187,9 @@ class BundleMacro
 		var headerBytes = Bytes.ofString(serializedHeader);
 		headerBytes = Compress.run(headerBytes, 9);
 
-		// Create directory if it doesn't exist
 		var outputDir = Path.directory(outputBundleFile);
 		if (!FileSystem.exists(outputDir))
-		{
 			FileSystem.createDirectory(outputDir);
-		}
 
 		var out = File.write(outputBundleFile, true);
 		out.writeInt32(headerBytes.length);
@@ -204,12 +197,11 @@ class BundleMacro
 		out.write(bundleBytes);
 		out.close();
 
-		// Write new cache
 		try
 		{
-			var serializedCache = Serializer.run(newCache);
-			File.saveContent(outputCacheFile, serializedCache);
+			File.saveContent(outputCacheFile, Serializer.run(newCache));
 		}
+		catch (e:Dynamic) {}
 		#end
 
 		return fields;
