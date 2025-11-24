@@ -199,7 +199,7 @@ abstract OrderedMap<K, V>(IOrderedMap<K, V>)
 	}
 }
 
-interface IOrderedMap<K, V> extends Map.IMap<K, V>
+interface IOrderedMap<K, V> extends haxe.Constraints.IMap<K, V>
 {
 	/**
 		Returns a shallow copy of this Map.
