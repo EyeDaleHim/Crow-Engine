@@ -125,7 +125,7 @@ class Project extends HXProject
 
 		// If SBS_SPARROW is defined, then XML assets that are clearly related to spritesheets
 		// will be converted to .sbs format.
-		if (!isDebug()) 
+		// if (!isDebug()) 
 			setHaxedef("SBS_SPARROW");
 
 		// If USE_TEXTURE is defined, then PNG assets will be compressed to a texture format,

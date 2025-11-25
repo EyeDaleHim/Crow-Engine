@@ -4,6 +4,7 @@ package crow.assets.format;
 import openfl.display.PNGEncoderOptions;
 import flixel.system.FlxAssets.FlxXmlAsset;
 import flixel.FlxG;
+import openfl.display3D.textures.Texture;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
@@ -37,6 +38,7 @@ class BinarySparrow
 
 	// Header Options Flags
 	private static final OPT_HAS_EMBEDDED_IMAGE:Int = 0x01;
+	private static final OPT_IMAGE_IS_ATF:Int = 0x02;
 
 	#if !macro
 	/**
@@ -88,9 +90,26 @@ class BinarySparrow
 			if (imageBlob != null)
 			{
 				// Create a unique key for the bitmap cache from the blob data
-				final key = 'sbs_blob_${Sha1.encode(imageBlob.toHex())}';
-				final bitmapData = BitmapData.fromBytes(imageBlob);
-				flxGraphic = FlxG.bitmap.add(bitmapData, false, key);
+				final key = 'sbs_blob_${Sha1.encode(imageBlob.toHex())}'; // Key is based on blob content
+
+				@:privateAccess
+				if ((options & OPT_IMAGE_IS_ATF) != 0)
+				{
+					// Handle ATF
+					var texture = FlxG.stage.context3D.createTexture(getATFWidth(imageBlob), getATFHeight(imageBlob), COMPRESSED_ALPHA, false);
+					texture.uploadCompressedTextureFromByteArray(imageBlob, 0);
+					
+					final bitmapData = new BitmapData(getATFWidth(imageBlob), getATFHeight(imageBlob), true, 0);
+					bitmapData.__texture = texture;
+					bitmapData.__textureContext = texture.__textureContext;
+					flxGraphic = FlxG.bitmap.add(bitmapData, false, key);
+				}
+				else
+				{
+					// Handle PNG/JPG
+					final bitmapData = BitmapData.fromBytes(imageBlob);
+					flxGraphic = FlxG.bitmap.add(bitmapData, false, key);
+				}
 			}
 			else if (imagePath != null)
 			{
@@ -252,6 +271,12 @@ class BinarySparrow
 		if (imageBlob != null)
 		{
 			options |= OPT_HAS_EMBEDDED_IMAGE;
+
+			// Check if the blob is an ATF file by reading its magic number ("ATF")
+			if (imageBlob.length > 3 && imageBlob.get(0) == 0x41 && imageBlob.get(1) == 0x54 && imageBlob.get(2) == 0x46)
+			{
+				options |= OPT_IMAGE_IS_ATF;
+			}
 		}
 		output.writeByte(options);
 		// 2. Write Image Block
@@ -338,6 +363,39 @@ class BinarySparrow
 			}
 		}
 		return output.getBytes();
+	}
+
+	/**
+	 * Reads the width from an ATF (Adobe Texture Format) file's header.
+	 * @param bytes The raw byte data of the ATF file.
+	 * @return The width of the texture in pixels, or 0 if the format is invalid.
+	 */
+	public static function getATFWidth(bytes:Bytes):Int
+	{
+		// ATF header: signature (3), version (1), length (4), tdata (1), width (1), height (1), mipcount (1)
+		if (bytes == null || bytes.length < 12 || bytes.getString(0, 3) != "ATF")
+		{
+			return 0;
+		}
+		// Width is stored as a power of 2. The byte at offset 9 is the exponent.
+		// This is based on reverse-engineering OpenFL's ATFReader.
+		return 1 << bytes.get(9);
+	}
+
+	/**
+	 * Reads the height from an ATF (Adobe Texture Format) file's header.
+	 * @param bytes The raw byte data of the ATF file.
+	 * @return The height of the texture in pixels, or 0 if the format is invalid.
+	 */
+	public static function getATFHeight(bytes:Bytes):Int
+	{
+		// ATF header: signature (3), version (1), length (4), tdata (1), width (1), height (1), mipcount (1)
+		if (bytes == null || bytes.length < 12 || bytes.getString(0, 3) != "ATF")
+		{
+			return 0;
+		}
+		// Height is stored as a power of 2. The byte at offset 10 is the exponent.
+		return 1 << bytes.get(10);
 	}
 
 	/**

@@ -159,53 +159,6 @@ class AssetProcessorMacro
 				}
 			}
 			#end
-
-			// PNG -> ATF
-			#if USE_TEXTURE
-			final texConvPath = #if windows "tools/png2atf.exe" #else "tools/png2atf" #end;
-			if (ext == 'png')
-			{
-				if (!FileSystem.exists(texConvPath))
-				{
-					Context.warning('png2atf.exe not found at "' + texConvPath + '", skipping ATF compression.', Context.currentPos());
-					// Fallthrough to copy
-				}
-				else
-				{
-					final atfPath = Path.withExtension(targetPath, "atf");
-
-					// Launch the process
-					var args = [
-						"-c d", // use compressed container
-						"-r", // use DXT compression
-						"-f DXT5", // explicitly choose DXT5
-						"-n 0,0", // not a normal map
-						"-i",
-						sourcePath,
-						"-o",
-						atfPath // output ATF file
-					];
-					var proc = new Process(texConvPath, args);
-
-					var stdout = proc.stdout.readAll().toString();
-					var stderr = proc.stderr.readAll().toString();
-
-					var exit = proc.exitCode(true);
-					proc.close();
-
-					if (exit != 0)
-					{
-						Context.warning('png2atf failed: exit=' + exit + ' stdout=' + stdout + ' stderr=' + stderr, Context.currentPos());
-					}
-					else if (!FileSystem.exists(atfPath))
-					{
-						Context.warning('png2atf succeeded but ATF not found at ' + atfPath + ' stdout=' + stdout + ' stderr=' + stderr, Context.currentPos());
-					}
-				}
-				// Fallthrough to copy the original PNG as well
-			}
-			#end
-
 			// XML/PNG -> SBS
 			#if SBS_SPARROW
 			if (ext == 'xml')
@@ -214,10 +167,64 @@ class AssetProcessorMacro
 				if (FileSystem.exists(pngPath))
 				{
 					try
-					{
+					{	
 						var xmlContent = File.getContent(sourcePath);
-						var pngBytes = File.getBytes(pngPath);
-						var sbsBytes = crow.assets.format.BinarySparrow.fromXML(xmlContent, pngBytes);
+						var textureBytes:haxe.io.Bytes = null;
+
+						// Attempt ATF conversion if USE_TEXTURE is defined
+						#if USE_TEXTURE
+						final texConvPath = #if windows "tools/png2atf.exe" #else "tools/png2atf" #end;
+						if (!FileSystem.exists(texConvPath))
+						{
+							Context.warning('png2atf.exe not found at "' + texConvPath + '", skipping ATF compression for $relPath. Using raw PNG.', Context.currentPos());
+						}
+						else
+						{
+							// The targetPath already includes the processDir and relative path structure.
+							// We want the temporary ATF file to be in the same relative location within processDir.
+							final tempAtfPath = Path.withExtension(targetPath, "atf");
+
+							var args = [
+								"-c d",
+								"-r",
+								"-f DXT5",
+								"-n 0,0",
+								"-i",
+								pngPath, // Input is the original PNG
+								"-o",
+								tempAtfPath // Output to temp ATF
+							];
+							var proc = new Process(texConvPath, args);
+
+							var stdout = proc.stdout.readAll().toString();
+							var stderr = proc.stderr.readAll().toString();
+
+							var exit = proc.exitCode(true);
+							proc.close();
+
+							if (exit != 0)
+							{
+								Context.warning('png2atf failed for $relPath: exit=' + exit + ' stdout=' + stdout + ' stderr=' + stderr + '. Using raw PNG.', Context.currentPos());
+							}
+							else if (!FileSystem.exists(tempAtfPath))
+							{
+								Context.warning('png2atf succeeded for $relPath but ATF not found at ' + tempAtfPath + ' stdout=' + stdout + ' stderr=' + stderr + '. Using raw PNG.', Context.currentPos());
+							}
+							else
+							{
+								// ATF conversion successful, use ATF bytes
+								textureBytes = File.getBytes(tempAtfPath);
+								FileSystem.deleteFile(tempAtfPath); // Clean up temporary ATF file
+							}
+						}
+						#end
+
+						if (textureBytes == null) {
+							// If ATF conversion failed or not attempted, use PNG bytes
+							textureBytes = File.getBytes(pngPath);
+						}
+						// BinarySparrow.fromXML will now receive either PNG bytes or ATF bytes
+						var sbsBytes = crow.assets.format.BinarySparrow.fromXML(xmlContent, textureBytes);
 
 						var outPath = Path.withExtension(targetPath, 'sbs');
 						File.saveBytes(outPath, sbsBytes);
