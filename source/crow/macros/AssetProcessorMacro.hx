@@ -9,6 +9,7 @@ import haxe.Serializer;
 import haxe.Unserializer;
 import crow.assets.format.MessagePack;
 import crow.utils.JsonComment;
+import sys.io.Process;
 
 typedef ProcessorCache =
 {
@@ -23,7 +24,7 @@ class AssetProcessorMacro
 	public static var cacheFile:String = ".processor_cache";
 
 	// Defines that affect asset processing. If these change, we rebuild everything.
-	static final CRITICAL_DEFINES = ["JSON_TO_MESSAGEPACK", "SBS_SPARROW"];
+	static final CRITICAL_DEFINES = ["JSON_TO_MESSAGEPACK", "SBS_SPARROW", "USE_TEXTURE"];
 
 	public static macro function run():haxe.macro.Expr.ExprOf<Void>
 	{
@@ -126,10 +127,10 @@ class AssetProcessorMacro
 			File.saveContent(cachePath, Serializer.run(cache));
 		}
 
-        return macro {};
+		return macro {};
 	}
 
-    #if macro
+	#if macro
 	static function processFile(sourcePath:String, relPath:String):Bool
 	{
 		var ext = Path.extension(sourcePath).toLowerCase();
@@ -156,6 +157,52 @@ class AssetProcessorMacro
 					Context.warning('MsgPack conversion failed for $relPath: $e. Using raw JSON.', Context.currentPos());
 					// Fallthrough to copy
 				}
+			}
+			#end
+
+			// PNG -> ATF
+			#if USE_TEXTURE
+			final texConvPath = #if windows "tools/png2atf.exe" #else "tools/png2atf" #end;
+			if (ext == 'png')
+			{
+				if (!FileSystem.exists(texConvPath))
+				{
+					Context.warning('png2atf.exe not found at "' + texConvPath + '", skipping ATF compression.', Context.currentPos());
+					// Fallthrough to copy
+				}
+				else
+				{
+					final atfPath = Path.withExtension(targetPath, "atf");
+
+					// Launch the process
+					var args = [
+						"-c d", // use compressed container
+						"-r", // use DXT compression
+						"-f DXT5", // explicitly choose DXT5
+						"-n 0,0", // not a normal map
+						"-i",
+						sourcePath,
+						"-o",
+						atfPath // output ATF file
+					];
+					var proc = new Process(texConvPath, args);
+
+					var stdout = proc.stdout.readAll().toString();
+					var stderr = proc.stderr.readAll().toString();
+
+					var exit = proc.exitCode(true);
+					proc.close();
+
+					if (exit != 0)
+					{
+						Context.warning('png2atf failed: exit=' + exit + ' stdout=' + stdout + ' stderr=' + stderr, Context.currentPos());
+					}
+					else if (!FileSystem.exists(atfPath))
+					{
+						Context.warning('png2atf succeeded but ATF not found at ' + atfPath + ' stdout=' + stdout + ' stderr=' + stderr, Context.currentPos());
+					}
+				}
+				// Fallthrough to copy the original PNG as well
 			}
 			#end
 
@@ -225,5 +272,5 @@ class AssetProcessorMacro
 			}
 		}
 	}
-    #end
+	#end
 }

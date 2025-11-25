@@ -120,11 +120,18 @@ class Project extends HXProject
 		// If JSON_TO_MESSAGEPACK is defined, then all JSON assets will be converted to MessagePack.
 		// This is useful for reducing file size and improving parsing performance.
 		// This is only recommended for release builds, as it will make the assets unreadable.		
-		// setHaxedef("JSON_TO_MESSAGEPACK");
+		if (!isDebug()) 
+			setHaxedef("JSON_TO_MESSAGEPACK");
 
 		// If SBS_SPARROW is defined, then XML assets that are clearly related to spritesheets
 		// will be converted to .sbs format.
-		setHaxedef("SBS_SPARROW");
+		if (!isDebug()) 
+			setHaxedef("SBS_SPARROW");
+
+		// If USE_TEXTURE is defined, then PNG assets will be compressed to a texture format,
+		// .sbs files will also store image blobs as BC7 instead of uncompressed PNG.
+		// if (!isDebug())
+			setHaxedef("USE_TEXTURE");
 
 		setHaxedef("hscriptPos");
 
