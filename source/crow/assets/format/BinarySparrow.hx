@@ -91,15 +91,18 @@ class BinarySparrow
 			{
 				// Create a unique key for the bitmap cache from the blob data
 				final key = 'sbs_blob_${Sha1.encode(imageBlob.toHex())}'; // Key is based on blob content
-
 				@:privateAccess
 				if ((options & OPT_IMAGE_IS_ATF) != 0)
 				{
 					// Handle ATF
-					var texture = FlxG.stage.context3D.createTexture(getATFWidth(imageBlob), getATFHeight(imageBlob), COMPRESSED_ALPHA, false);
+					final atfInfo = crow.utils.ATFUtil.getATFInfo(imageBlob);
+					final w = atfInfo.width;
+					final h = atfInfo.height;
+
+					var texture = FlxG.stage.context3D.createTexture(w, h, COMPRESSED_ALPHA, false);
 					texture.uploadCompressedTextureFromByteArray(imageBlob, 0);
-					
-					final bitmapData = new BitmapData(getATFWidth(imageBlob), getATFHeight(imageBlob), true, 0);
+
+					final bitmapData = new BitmapData(w, h, true, 0);
 					bitmapData.__texture = texture;
 					bitmapData.__textureContext = texture.__textureContext;
 					flxGraphic = FlxG.bitmap.add(bitmapData, false, key);
@@ -271,7 +274,6 @@ class BinarySparrow
 		if (imageBlob != null)
 		{
 			options |= OPT_HAS_EMBEDDED_IMAGE;
-
 			// Check if the blob is an ATF file by reading its magic number ("ATF")
 			if (imageBlob.length > 3 && imageBlob.get(0) == 0x41 && imageBlob.get(1) == 0x54 && imageBlob.get(2) == 0x46)
 			{
@@ -293,11 +295,10 @@ class BinarySparrow
 		// 3. Write Sprite Table
 		var count:UInt = 0;
 		final subTextures = root.elementsNamed("SubTexture");
-        var subTexturesAsArray:Array<Xml> = [];
+		var subTexturesAsArray:Array<Xml> = [];
 
 		for (subTexture in subTextures)
 			subTexturesAsArray.push(subTexture);
-
 		count = subTexturesAsArray.length;
 		output.writeUInt16(count);
 		var lastWidth:Int = 0;
@@ -363,39 +364,6 @@ class BinarySparrow
 			}
 		}
 		return output.getBytes();
-	}
-
-	/**
-	 * Reads the width from an ATF (Adobe Texture Format) file's header.
-	 * @param bytes The raw byte data of the ATF file.
-	 * @return The width of the texture in pixels, or 0 if the format is invalid.
-	 */
-	public static function getATFWidth(bytes:Bytes):Int
-	{
-		// ATF header: signature (3), version (1), length (4), tdata (1), width (1), height (1), mipcount (1)
-		if (bytes == null || bytes.length < 12 || bytes.getString(0, 3) != "ATF")
-		{
-			return 0;
-		}
-		// Width is stored as a power of 2. The byte at offset 9 is the exponent.
-		// This is based on reverse-engineering OpenFL's ATFReader.
-		return 1 << bytes.get(9);
-	}
-
-	/**
-	 * Reads the height from an ATF (Adobe Texture Format) file's header.
-	 * @param bytes The raw byte data of the ATF file.
-	 * @return The height of the texture in pixels, or 0 if the format is invalid.
-	 */
-	public static function getATFHeight(bytes:Bytes):Int
-	{
-		// ATF header: signature (3), version (1), length (4), tdata (1), width (1), height (1), mipcount (1)
-		if (bytes == null || bytes.length < 12 || bytes.getString(0, 3) != "ATF")
-		{
-			return 0;
-		}
-		// Height is stored as a power of 2. The byte at offset 10 is the exponent.
-		return 1 << bytes.get(10);
 	}
 
 	/**

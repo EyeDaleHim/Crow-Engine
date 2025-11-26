@@ -1,8 +1,6 @@
 package crow.assets;
 
 import haxe.CallStack;
-import haxe.zip.Compress;
-import haxe.zip.Uncompress;
 import flixel.system.frontEnds.AssetFrontEnd;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
@@ -11,6 +9,9 @@ import crow.assets.AssetHistory;
 import crow.assets.AssetCache;
 import crow.assets.AssetPaths;
 import crow.assets.AssetContext;
+#if USE_TEXTURE
+import openfl.display3D.textures.RectangleTexture;
+#end
 import crow.assets.stitching.AtlasStitchData;
 import crow.assets.stitching.StitchedAtlas;
 
