@@ -88,9 +88,9 @@ class PredicateEvaluator
 
 			case STATE_COMPARE:
 				final state1 = getStateFromScope(predicate.scope, globalState, localState, entityState);
-				// The second value for comparison can also have a scope, but for now we assume it's a key in the same scope.
-				final state2 = state1;
-
+				// The second value for comparison has its own scope, defaulting to the first value's scope if not provided.
+				final state2 = getStateFromScope(predicate.targetScope ?? predicate.scope, globalState, localState, entityState);
+				
 				final value1 = state1.get(predicate.stateKey);
 				final value2 = state2.get(predicate.targetValues[0]);
 

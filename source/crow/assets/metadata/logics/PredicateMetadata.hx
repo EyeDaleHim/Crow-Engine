@@ -1,5 +1,7 @@
 package crow.assets.metadata.logics;
 
+import crow.logics.tools.ActionScope;
+
 typedef PredicateMetadata =
 {
 	// The type of logical operation this node represents: "AND", "OR", "NOT", "CHECK"
@@ -16,6 +18,9 @@ typedef PredicateMetadata =
 
 	// For "CHECK": The comparison operator: "EQ", "NEQ", "GT", "LT", "MODULO", etc.
 	var ?operatorCode:String;
+
+	// For "STATE_COMPARE": The scope of the target value for comparison.
+	var ?targetScope:ActionScope;
 
 	// For "CHECK": The value(s) to compare against.
 	var ?targetValues:Array<Dynamic>;
