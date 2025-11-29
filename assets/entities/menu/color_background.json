@@ -1,0 +1,23 @@
+{
+	"name": "main_menu_background",
+	"objects": [
+		{
+			"type": "sprite",
+			"data": {
+				"name": "bg_sprite",
+				"method": {
+					"type": "simple",
+					"path": "generic/grayBG"
+				},
+				"scale": {
+					"x": 1.175,
+					"y": 1.175
+				},
+				"scrollFactor": {
+					"x": 0,
+					"y": 0.25
+				}
+			}
+		}
+	]
+}

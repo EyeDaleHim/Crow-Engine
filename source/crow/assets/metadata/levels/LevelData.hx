@@ -59,7 +59,8 @@ typedef LevelData =
 	> LevelInfoData,
 
 	/**
-	 * The unique ID of the level.
+	 * The unique ID of the level. It is important for the ID
+	 * to be unique.
 	 */
 	var id:String;
 
@@ -80,12 +81,7 @@ typedef LevelData =
 	 * black stage with no entities.
 	 */
 	var ?scenePath:String;
-
-    /**
-     * Initial BPM of the song.
-     */
-    var bpm:Float;
-
+	
 	/**
 	 * The predicate required for this level to be selectable.
 	 */

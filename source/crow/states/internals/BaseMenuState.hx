@@ -303,123 +303,191 @@ class BaseMenuState extends MainState implements IEventExecutor
 			return;
 
 		var rootLayoutAndData:{layout:InteractableLayout, data:Dynamic} = null;
-		for (elementData in elements)
+		for (rawElementData in elements)
 		{
-			if (elementData.genericReference != null && menuMetadata.genericElements != null)
+			var itemsToProcess:Array<{data:MenuItem, context:Dynamic}> = [];
+
+			if (rawElementData.dataSource != null)
 			{
-				var genericItem:GenericMenuItem = null;
-				for (g in menuMetadata.genericElements)
+				// Fetch the list from registry
+				var list:Array<Dynamic> = fetchDataSource(rawElementData.dataSource, rawElementData.dataFilter);
+
+				for (entry in list)
 				{
-					if (g.name == elementData.genericReference)
-					{
-						genericItem = g;
-						break;
-					}
-				}
+					// Clone the metadata to create a unique instance for this entry
+					var clonedItem:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(rawElementData));
 
-				if (genericItem != null)
-				{
-					var mergedData:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(genericItem.menuItem));
+					clonedItem.dataSource = null;
+					clonedItem.name = entry.id;
 
-					// If listenerAppends is true, merge the listeners from the specific item into the generic item's listeners.
-					if (genericItem.listenerAppends == true && elementData.listeners != null && mergedData.listeners != null)
-					{
-						for (listener in elementData.listeners)
-						{
-							mergedData.listeners.push(listener);
-						}
-					}
-
-					// Merge fields from the specific element into the generic one.
-					// If listenerAppends is true, we skip the 'listeners' field to avoid overwriting the merge.
-					// If listenerAppends is false (or null), 'listeners' will be overwritten like any other field.
-					for (field in Reflect.fields(elementData))
-					{
-						if (genericItem.listenerAppends == true && field == "listeners")
-						{
-							continue;
-						}
-						
-						Reflect.setField(mergedData, field, Reflect.field(elementData, field));
-					}
-
-					// Use the merged data for the rest of the processing
-					elementData = mergedData;
+					itemsToProcess.push({data: clonedItem, context: entry});
 				}
 			}
-
-			var menuObject:FlxObject = null;
-			var isDecoration:Bool = (elementData.listeners == null || elementData.listeners.length == 0) && elementData.items == null;
-
-			if (elementData.name == "_root_layout")
+			else
 			{
-				if (rootLayoutInElements)
+				itemsToProcess.push({data: rawElementData, context: null});
+			}
+
+			for (processEntry in itemsToProcess)
+			{
+				var elementData = processEntry.data;
+				var dataContext = processEntry.context;
+
+				if (elementData.genericReference != null && menuMetadata.genericElements != null)
 				{
-					rootLayoutAndData = {layout: parentLayout, data: elementData};
-					if (elementData.position != null)
+					var genericItem:GenericMenuItem = null;
+					for (g in menuMetadata.genericElements)
+					{
+						if (g.name == elementData.genericReference)
+						{
+							genericItem = g;
+							break;
+						}
+					}
+
+					if (genericItem != null)
+					{
+						var mergedData:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(genericItem.menuItem));
+
+						// If listenerAppends is true, merge the listeners from the specific item into the generic item's listeners.
+						if (genericItem.listenerAppends == true && elementData.listeners != null && mergedData.listeners != null)
+						{
+							for (listener in elementData.listeners)
+							{
+								mergedData.listeners.push(listener);
+							}
+						}
+
+						// Merge fields from the specific element into the generic one.
+						// If listenerAppends is true, we skip the 'listeners' field to avoid overwriting the merge.
+						// If listenerAppends is false (or null), 'listeners' will be overwritten like any other field.
+						for (field in Reflect.fields(elementData))
+						{
+							if (genericItem.listenerAppends == true && field == "listeners")
+							{
+								continue;
+							}
+
+							Reflect.setField(mergedData, field, Reflect.field(elementData, field));
+						}
+
+						// Use the merged data for the rest of the processing
+						elementData = mergedData;
+					}
+				}
+
+				var menuObject:FlxObject = null;
+				var isDecoration:Bool = (elementData.listeners == null || elementData.listeners.length == 0) && elementData.items == null;
+
+				if (elementData.name == "_root_layout")
+				{
+					if (rootLayoutInElements)
+					{
+						rootLayoutAndData = {layout: parentLayout, data: elementData};
+						if (elementData.position != null)
+						{
+							if (elementData.position != null)
+							{
+								parentLayout.x = elementData.position.x;
+								parentLayout.y = elementData.position.y;
+							}
+						}
+						add(parentLayout);
+					}
+					continue;
+				}
+
+				if (elementData.items != null)
+				{
+					// This item is a sub-menu (a nested layout).
+					final subLayout = new InteractableLayout();
+					buildElements(elementData.items, subLayout, elementData.layout);
+					menuObject = subLayout;
+				}
+				else if (elementData.entity != null)
+				{
+					// This item is a single, data-driven entity.
+					final entity = new Entity(0, 0, elementData.entity, elementData.overrideData);
+					menuObject = entity;
+
+					if (elementData.name == null)
+					{
+						elementData.name = entity.entityName;
+					}
+					entities.set(elementData.name, entity);
+
+					if (dataContext != null)
+					{
+						// Inject data properties (id, displayName, etc.) into the Entity's logic state.
+						// This allows text components to use "${displayName}" immediately.
+						if (Reflect.hasField(dataContext, "id"))
+							entity.logicState.set("id", Reflect.field(dataContext, "id"));
+
+						if (Reflect.hasField(dataContext, "displayName"))
+						{
+							// Handle TranslatableString resolution if necessary, here assuming string
+							entity.logicState.set("displayName", Std.string(Reflect.field(dataContext, "displayName")));
+						}
+
+						// Inject metaInfo if available
+						if (Reflect.hasField(dataContext, "metaInfo") && Reflect.field(dataContext, "metaInfo") != null)
+						{
+							var meta:Dynamic = Reflect.field(dataContext, "metaInfo");
+							for (f in Reflect.fields(meta))
+							{
+								entity.logicState.set(f, Reflect.field(meta, f));
+							}
+						}
+
+						// Force an update on the entity to refresh Text/Sprites with new variables
+						// We might need a specific "refresh" method or trigger a specific event
+						// We use a local event execution for this entity
+						var singleEntityMap = new crow.ds.OrderedMap<String, Entity>();
+						singleEntityMap.set(entity.entityName, entity);
+						
+						LogicEvaluator.execute( // Create a dummy action to update text or run init logic
+							[
+								{type: "state_change", values: {state: {changeType: "SET", stateKey: "dummy", value: 0}}}
+							], logicState, null, singleEntityMap, // OrderedMap helper
+							this);
+
+						// If the entity has listeners for "create", trigger them now with the new data
+						onItemEvent(elementData, "create", entity, entity.logicState);
+					}
+				}
+				else if (elementData.name == null)
+				{
+					// TODO: Generate a random UUID for items without a name or entity.
+					elementData.name = '${Math.random() * 5000000}';
+				}
+
+				if (menuObject != null)
+				{
+					if (elementData.position != null || elementData.screenCenter != null || isDecoration)
 					{
 						if (elementData.position != null)
 						{
-							parentLayout.x = elementData.position.x;
-							parentLayout.y = elementData.position.y;
+							menuObject.x = elementData.position.x;
+							menuObject.y = elementData.position.y;
 						}
+						if (elementData.screenCenter != null && Std.isOfType(menuObject, Entity))
+						{
+							final entity:Entity = cast menuObject;
+							if (elementData.screenCenter.x)
+								entity.screenCenter(X);
+							if (elementData.screenCenter.y)
+								entity.screenCenter(Y);
+						}
+						add(menuObject);
 					}
-					add(parentLayout);
-				}
-				continue;
-			}
-
-			if (elementData.items != null)
-			{
-				// This item is a sub-menu (a nested layout).
-				final subLayout = new InteractableLayout();
-				buildElements(elementData.items, subLayout, elementData.layout);
-				menuObject = subLayout;
-			}
-			else if (elementData.entity != null)
-			{
-				// This item is a single, data-driven entity.
-				final entity = new Entity(0, 0, elementData.entity, elementData.overrideData);
-				menuObject = entity;
-
-				if (elementData.name == null)
-				{
-					elementData.name = entity.entityName;
-				}
-				entities.set(elementData.name, entity);
-			}
-			else if (elementData.name == null)
-			{
-				// TODO: Generate a random UUID for items without a name or entity.
-				elementData.name = '${Math.random() * 5000000}';
-			}
-
-			if (menuObject != null)
-			{
-				if (elementData.position != null || elementData.screenCenter != null || isDecoration)
-				{
-					if (elementData.position != null)
+					else
 					{
-						menuObject.x = elementData.position.x;
-						menuObject.y = elementData.position.y;
-					}
-					if (elementData.screenCenter != null && Std.isOfType(menuObject, Entity))
-					{
-						final entity:Entity = cast menuObject;
-						if (elementData.screenCenter.x)
-							entity.screenCenter(X);
-						if (elementData.screenCenter.y)
-							entity.screenCenter(Y);
-					}
-					add(menuObject);
-				}
-				else
-				{
-					parentLayout.add(menuObject);
-					elementMetadataMap.set(menuObject, elementData);
-					if (elementData.alignSelf != null)
-					{
-						parentLayout.getLayoutData(menuObject).alignSelf = elementData.alignSelf;
+						parentLayout.add(menuObject);
+						elementMetadataMap.set(menuObject, elementData);
+						if (elementData.alignSelf != null)
+						{
+							parentLayout.getLayoutData(menuObject).alignSelf = elementData.alignSelf;
+						}
 					}
 				}
 			}
@@ -810,5 +878,50 @@ class BaseMenuState extends MainState implements IEventExecutor
 			if (this.music != null)
 				castedState.music.swapAttributes(this.music.getAttributes());
 		}
+	}
+
+	/**
+	 * Helper to retrieve data lists from LevelRegistry
+	 */
+	private function fetchDataSource(source:MenuDataSource, filter:String):Array<Dynamic>
+	{
+		var results:Array<Dynamic> = [];
+
+		switch (source)
+		{
+			case GROUPS:
+				// Return objects containing {id, displayName, metaInfo}
+				for (gid in Main.levels.sortedGroupIDs)
+				{
+					var g = Main.levels.getGroup(gid);
+					if (g != null && g.isVisible())
+					{
+						results.push({
+							id: g.id,
+							displayName: g.title,
+							metaInfo: g.data.metaInfo
+						});
+					}
+				}
+			case LEVELS:
+				// Expects filter to be a Group ID
+				var g = Main.levels.getGroup(filter);
+				if (g != null)
+				{
+					for (lvl in g.levels)
+					{
+						// Check level specific visibility if you have it
+						results.push({
+							id: lvl.id,
+							displayName: lvl.title,
+							metaInfo: lvl.data.metaInfo
+						});
+					}
+				}
+			case PLAYLIST:
+				// Implementation for playlists
+		}
+
+		return results;
 	}
 }

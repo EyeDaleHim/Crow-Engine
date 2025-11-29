@@ -2,17 +2,17 @@ package crow.states.menus;
 
 import crow.states.internals.BaseMenuState;
 
-class MainMenuState extends BaseMenuState
+class FreeplayState extends BaseMenuState
 {
 	public function new()
 	{
 		super();
 
-		nextScenes = ["story_mode", "freeplay", "settings"];
+		nextScenes = ["gameplay"];
 
 		try
 		{
-			menuMetadata = cast Main.assets.json('data/menus/main_menu');
+			menuMetadata = cast Main.assets.json('data/menus/freeplay');
 		}
 		catch (e)
 		{
@@ -26,9 +26,6 @@ class MainMenuState extends BaseMenuState
 	{
 		return switch (sceneName)
 		{
-			// case "story_mode": new StoryModeMenuState();
-			case "freeplay": new FreeplayState();
-			// case "settings": new SettingsMenuState();
 			default:
 				null;
 		}

@@ -35,12 +35,12 @@
                     {
                         "event": "accept",
                         "actions": [
-                            {
-                                "type": "dispatch_event",
-                                "values": {
-                                    "eventName": "accept"
-                                }
-                            }
+							{
+								"type": "switch_scene",
+								"values": {
+									"scene": "freeplay"
+								}
+							}
                         ]
                     },
                     {

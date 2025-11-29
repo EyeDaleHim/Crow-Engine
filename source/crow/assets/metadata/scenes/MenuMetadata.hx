@@ -154,6 +154,18 @@ typedef MenuItem =
 	 * If undefined, `FlxG.camera` will be used.
 	 */
 	var ?camera:String;
+
+	/**
+	 * If defined, this item acts as a template generator. 
+	 * The menu will create a copy of this item for every entry found in the specified data source.
+	 */
+	var ?dataSource:MenuDataSource;
+
+	/**
+	 * If using `dataSource`, this filter allows narrowing down the list 
+	 * (e.g., the ID of a playlist or a specific LevelGroup ID to get levels from).
+	 */
+	var ?dataFilter:String;
 };
 
 /**
@@ -188,7 +200,7 @@ typedef MenuLayout =
 
 	/**
 	 * How items are aligned along the cross axis.
-		- */
+						- */
 	var ?alignItems:AlignItems;
 
 	/**
@@ -274,4 +286,22 @@ enum abstract MenuInputCheck(String) from String to String
 
 	/** Triggers continuously while the input is not held down (is up). */
 	var Released = "released";
+}
+
+enum abstract MenuDataSource(String) from String to String
+{
+	/**
+	 * Generates an item for every LevelGroup (Song) defined in the MasterList.
+	 */
+	var GROUPS = "GROUPS";
+
+	/**
+	 * Generates an item for every Level inside a specific Group (defined by `dataFilter`).
+	 */
+	var LEVELS = "LEVELS";
+
+	/**
+	 * Generates an item for every entry in a Playlist (defined by `dataFilter`).
+	 */
+	var PLAYLIST = "PLAYLIST";
 }

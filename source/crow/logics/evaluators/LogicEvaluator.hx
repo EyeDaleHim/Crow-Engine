@@ -33,7 +33,7 @@ class LogicEvaluator
 		var list:Array<Class<Template>> = [];
 
 		globalState.allowRestriction = true;
-		
+
 		globalState.setRestricted("gameWidth", FlxG.width);
 		globalState.setRestricted("gameHeight", FlxG.height);
 
@@ -69,37 +69,11 @@ class LogicEvaluator
 		}
 	}
 
-	public static function execute(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState, ?entities:OrderedMap<String, Entity>,
-			?executor:IEventExecutor):Void
+	public static function execute(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
+			?entities:OrderedMap<String, Entity>, ?executor:IEventExecutor):Void
 	{
 		for (action in actions)
 		{
-			// Interpolate string values before execution
-			final values:Dynamic = {};
-			if (action.values != null)
-			{
-				if (!Reflect.isObject(action.values))
-					throw 'action.values must be an object, not an array or primitive.';
-
-				for (field in Reflect.fields(action.values))
-				{
-					if (Std.isOfType(Reflect.field(action.values, field), String))
-					{
-						Reflect.setField(values, field, StringInterpolator.interpolate(Reflect.field(action.values, field), executorState, localState));
-					}
-					else
-					{
-						Reflect.setField(values, field, Reflect.field(action.values, field));
-					}
-				}
-			}
-			final postEvents = action.postListenerEvents;
-
-			final onComplete = (postEvents != null && executor != null) ? () ->
-			{
-				execute(postEvents, executorState, localState, entities, executor);
-			} : () -> {};
-
 			final targetedEntities:Array<Entity> = if (entities != null)
 			{
 				if (action.targets != null)
@@ -107,10 +81,45 @@ class LogicEvaluator
 				else
 					[for (entity in entities) entity]; // If targets are omitted, apply to all entities.
 			}
-			else
+			else null;
+
+			var entityContext:LogicState = null;
+			if (targetedEntities != null && targetedEntities.length == 1)
 			{
-				null;
-			};
+				// If we are targeting exactly one entity, use its state for variables
+				entityContext = targetedEntities[0].logicState;
+			}
+
+			// Interpolate string values before execution
+            final values:Dynamic = {};
+            if (action.values != null)
+            {
+                if (!Reflect.isObject(action.values))
+                    throw 'action.values must be an object, not an array or primitive.';
+
+                for (field in Reflect.fields(action.values))
+                {
+                    final val:Dynamic = Reflect.field(action.values, field);
+
+                    // Strictly check if the value is a String before interpolating
+                    if (Std.isOfType(val, String))
+                    {
+                        final strVal:String = cast val;
+                        Reflect.setField(values, field, StringInterpolator.interpolate(strVal, executorState, localState, entityContext));
+                    }
+                    else
+                    {
+                        Reflect.setField(values, field, val);
+                    }
+                }
+            }
+
+			final postEvents = action.postListenerEvents;
+
+			final onComplete = (postEvents != null && executor != null) ? () ->
+			{
+				execute(postEvents, executorState, localState, entities, executor);
+			} : () -> {};
 
 			final actionType = action.type.trim();
 			if (jumpTables.exists(actionType))
@@ -139,7 +148,7 @@ class LogicEvaluator
 				executable.execute(context);
 				continue;
 			}
-			
+
 			trace('WARNING: Unknown action type: ${action.type}');
 		}
 	}

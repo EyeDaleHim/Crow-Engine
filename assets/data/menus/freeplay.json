@@ -1,0 +1,88 @@
+{
+    "logic": {
+        "initialState": {
+            "bgColor": "0xFF9933"
+        }
+    },
+    "layouts": [
+        {
+            "name": "song_list",
+            "direction": "VERTICAL",
+            "gap": 15,
+            "alignItems": "CENTER",
+            "selectionMode": "BOUND",
+            "onSelect": {
+                "type": "play_sound",
+                "values": {
+                    "sound": "scrollMenu"
+                }
+            },
+            "onIndex": {
+                "type": "camera_scroll_to_selection"
+            }
+        }
+    ],
+    "elements": [
+        {
+            "name": "bg",
+            "entity": "menu/color_background",
+            "screenCenter": {
+                "x": true,
+                "y": true
+            }
+        },
+        {
+            "name": "_root_layout",
+            "layout": "song_list",
+            "position": {
+                "x": 0,
+                "y": 100
+            }
+        },
+        {
+            "dataSource": "GROUPS",
+            "entity": "menus/items/song_card_capsule",
+            "listeners": [
+                {
+                    "event": "create",
+                    "actions": [
+                        {
+                            "type": "set_text",
+                            "values": {
+                                "text": "${displayName}"
+                            },
+                            "targets": [
+                                {
+                                    "type": "AnimatedText"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "play_animation",
+                            "values": {
+                                "anim": "${icon_name}"
+                            },
+                            "targets": [
+                                {
+                                    "name": "icon_sprite"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "event": "accept",
+                    "actions": [
+                        {
+                            "type": "switch_scene",
+                            "values": {
+                                "scene": "gameplay",
+                                "levelId": "${id}"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
