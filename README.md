@@ -8,10 +8,13 @@ The advantage of Crow Engine is that despite its limited control, it still gives
 
 The idea of Crow Engine's data-driven design comes from the fact that developers often duplicate a lot of logic in their source-code mods, which can result in inconsistent implementation or poor practices. Another factor is that developers don't really need that much power or control over the features they want to implement, so Crow Engine offers a unique path by giving developers the appropriate amount of control and a certain option over how data flows.
 
+Additionally, Crow Engine was also made with personal use in mind, and any feature or infrastructure implemented is generally prioritizing my own needs before others. However, this does not imply that documentation or quality-of-life features will be cut if it disrupts my workflow as feedback towards the engine is also feedback towards my workflow.
+
 ## Modding
 Crow Engine does not offer any options for mod folders or load mods itself, it is only expected to load content from its assets folder. In such cases, mods made with Crow Engine will need to be distributed as one compressed package, either with or without the executable, adding onto the original asset folder or replacing it entirely.
 
-
+## Loading Songs
+Crow Engine treats songs as levels, including their difficulty and variants. This solves the issue where a song's difficulty is locked to its suffix defined by the engine. This can also scale as you don't need to explicitly define a mix variant or difficulty of a song, or both. 
 
 # Credits
 

@@ -15,7 +15,7 @@ enum LoadContext
 
 class AssetHistory
 {
-	public static var verbose:Bool = (haxe.macro.Compiler.getDefine('debug') == "1") ?? false;
+	public static var verbose:Bool = false;
 
 	private static final FLX_ASSET_TYPES:Array<FlxAssetType> = [TEXT, IMAGE, SOUND, FONT, BINARY];
 

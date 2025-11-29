@@ -1,5 +1,6 @@
 package crow;
 
+import crow.game.levels.LevelRegistry;
 import openfl.Lib;
 import openfl.display.DisplayObjectContainer;
 
@@ -10,6 +11,8 @@ class Main extends DisplayObjectContainer
 
 	public static var assets:Assets;
 	public static var input:Input;
+
+	public static var levels:LevelRegistry;
 
 	public function new()
 	{

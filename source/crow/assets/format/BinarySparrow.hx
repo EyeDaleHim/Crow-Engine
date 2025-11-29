@@ -99,7 +99,7 @@ class BinarySparrow
 					final w = atfInfo.width;
 					final h = atfInfo.height;
 
-					var texture = FlxG.stage.context3D.createTexture(w, h, COMPRESSED_ALPHA, false);
+					var texture = FlxG.stage.context3D.createTexture(w, h, COMPRESSED_ALPHA, true);
 					texture.uploadCompressedTextureFromByteArray(imageBlob, 0);
 
 					final bitmapData = new BitmapData(w, h, true, 0);

@@ -447,7 +447,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 		onEvent("update");
 
-		if (menuMetadata.inputActions == null)
+		if (menuMetadata?.inputActions == null)
 			return;
 
 		// Process data-driven input actions.
