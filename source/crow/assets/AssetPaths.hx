@@ -4,6 +4,8 @@ import flixel.system.frontEnds.AssetFrontEnd.FlxAssetType;
 
 class AssetPaths 
 {
+    public static final jsonExt = #if JSON_TO_MESSAGEPACK 'msgp_j' #else 'json' #end;
+
     public static function from(id:String, type:FlxAssetType):String
     {
         return switch (type)

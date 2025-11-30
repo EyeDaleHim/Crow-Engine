@@ -1,0 +1,6 @@
+{
+	"id": "spookeez",
+	"displayName": "Spookeez",
+	"levels": ["spookeez-easy", "spookeez-normal", "spookeez-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#223344" }
+}

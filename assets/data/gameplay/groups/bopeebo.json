@@ -1,0 +1,6 @@
+{
+	"id": "bopeebo",
+	"displayName": "Bopeebo",
+	"levels": ["bopeebo-easy", "bopeebo-normal", "bopeebo-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#9271FD" }
+}

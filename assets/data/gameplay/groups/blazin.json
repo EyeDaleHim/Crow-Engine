@@ -1,0 +1,6 @@
+{
+	"id": "blazin",
+	"displayName": "Blazin",
+	"levels": ["blazin-easy", "blazin-normal", "blazin-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#70359D" }
+}

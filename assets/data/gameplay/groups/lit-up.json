@@ -1,0 +1,6 @@
+{
+	"id": "lit-up",
+	"displayName": "Lit Up",
+	"levels": ["lit-up-easy", "lit-up-normal", "lit-up-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#70359D" }
+}

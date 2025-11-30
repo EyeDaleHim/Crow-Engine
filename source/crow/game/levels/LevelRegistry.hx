@@ -1,5 +1,6 @@
 package crow.game.levels;
 
+import crow.assets.AssetPaths;
 import crow.assets.metadata.internals.MasterListMetadata;
 import crow.assets.metadata.levels.LevelData;
 import crow.assets.metadata.levels.LevelGroupData;
@@ -11,9 +12,9 @@ import haxe.io.Path;
  */
 class LevelRegistry
 {
-	public static final MASTER_LIST_PATH = "data/config/master_level_list";
-	public static final GROUPS_PATH = "data/levels/groups";
-	public static final LEVELS_PATH = "data/levels/songs";
+	public static final MASTER_LIST_PATH = "data/config/master_levels";
+	public static final GROUPS_PATH = "data/gameplay/groups";
+	public static final LEVELS_PATH = "data/gameplay/levels";
 
 	/**
 	 * All registered groups, keyed by ID.
@@ -44,12 +45,13 @@ class LevelRegistry
 		playlists = new Map();
 
 		loadRegistry();
+		trace(groups);
 	}
 
 	public function loadRegistry():Void
 	{
 		// 1. Load Master List to get order and definitions
-		if (!Main.assets.exists(MASTER_LIST_PATH))
+		if (!Main.assets.exists(Path.withExtension(MASTER_LIST_PATH, AssetPaths.jsonExt)))
 		{
 			trace("LevelRegistry: Master list not found at " + MASTER_LIST_PATH);
 			return;

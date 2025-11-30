@@ -1,0 +1,6 @@
+{
+	"id": "senpai",
+	"displayName": "Senpai",
+	"levels": ["senpai-easy", "senpai-normal", "senpai-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#FF78BF" }
+}

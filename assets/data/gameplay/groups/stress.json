@@ -1,0 +1,6 @@
+{
+	"id": "stress",
+	"displayName": "Stress",
+	"levels": ["stress-easy", "stress-normal", "stress-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#F6B604" }
+}

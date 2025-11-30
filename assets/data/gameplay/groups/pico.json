@@ -1,0 +1,6 @@
+{
+	"id": "pico",
+	"displayName": "Pico",
+	"levels": ["pico-easy", "pico-normal", "pico-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#B7D855" }
+}

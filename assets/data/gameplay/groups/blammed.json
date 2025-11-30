@@ -1,0 +1,6 @@
+{
+	"id": "blammed",
+	"displayName": "Blammed",
+	"levels": ["blammed-easy", "blammed-normal", "blammed-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#B7D855" }
+}

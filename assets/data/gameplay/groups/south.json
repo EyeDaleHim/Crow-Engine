@@ -1,0 +1,6 @@
+{
+	"id": "south",
+	"displayName": "South",
+	"levels": ["south-easy", "south-normal", "south-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#223344" }
+}

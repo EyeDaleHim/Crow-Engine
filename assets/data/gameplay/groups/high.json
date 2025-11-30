@@ -1,0 +1,6 @@
+{
+	"id": "high",
+	"displayName": "High",
+	"levels": ["high-easy", "high-normal", "high-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#D8558E" }
+}

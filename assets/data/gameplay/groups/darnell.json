@@ -1,0 +1,6 @@
+{
+	"id": "darnell",
+	"displayName": "Darnell",
+	"levels": ["darnell-easy", "darnell-normal", "darnell-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#70359D" }
+}

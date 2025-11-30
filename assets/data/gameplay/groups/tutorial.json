@@ -1,0 +1,6 @@
+{
+	"id": "tutorial",
+	"displayName": "Tutorial",
+	"levels": ["tutorial-easy", "tutorial-normal", "tutorial-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#FF9999" }
+}

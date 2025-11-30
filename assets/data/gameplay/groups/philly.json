@@ -1,0 +1,6 @@
+{
+	"id": "philly",
+	"displayName": "Philly Nice",
+	"levels": ["philly-easy", "philly-normal", "philly-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#B7D855" }
+}

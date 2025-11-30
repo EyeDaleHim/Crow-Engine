@@ -1,0 +1,6 @@
+{
+	"id": "monster",
+	"displayName": "Monster",
+	"levels": ["monster-easy", "monster-normal", "monster-hard"],
+	"metaInfo": { "artist": "BassetFilms", "color": "#223344" }
+}

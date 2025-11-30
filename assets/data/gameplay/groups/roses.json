@@ -1,0 +1,6 @@
+{
+	"id": "roses",
+	"displayName": "Roses",
+	"levels": ["roses-easy", "roses-normal", "roses-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#FF78BF" }
+}

@@ -1,0 +1,6 @@
+{
+	"id": "thorns",
+	"displayName": "Thorns",
+	"levels": ["thorns-easy", "thorns-normal", "thorns-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#FF78BF" }
+}

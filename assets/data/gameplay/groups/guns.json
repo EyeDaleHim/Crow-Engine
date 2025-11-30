@@ -1,0 +1,6 @@
+{
+	"id": "guns",
+	"displayName": "Guns",
+	"levels": ["guns-easy", "guns-normal", "guns-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#F6B604" }
+}

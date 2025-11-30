@@ -364,8 +364,9 @@ class Assets
 	{
 		try
 		{
+			final path = '$id.${AssetPaths.jsonExt}';
+
 			#if JSON_TO_MESSAGEPACK
-			final path = '$id.msgp_j';
 			final msgpBytes = FlxG.assets.getBytesUnsafe(path);
 			if (msgpBytes == null)
 			{
@@ -373,7 +374,6 @@ class Assets
 			}
 			return crow.assets.format.MessagePack.parse(msgpBytes);
 			#else
-			final path = '$id.json';
 			final jsonString = FlxG.assets.getTextUnsafe(path);
 			if (jsonString == null)
 			{

@@ -1,0 +1,51 @@
+{
+	"groups": [
+		"tutorial",
+		"bopeebo", "fresh", "dadbattle",
+		"spookeez", "south", "monster",
+		"pico", "philly", "blammed",
+		"satin-panties", "high", "milf",
+		"cocoa", "eggnog", "winter-horrorland",
+		"senpai", "roses", "thorns",
+		"ugh", "guns", "stress",
+		"darnell", "lit-up", "2hot", "blazin"
+	],
+	"playlists": [
+		{
+			"id": "tutorial",
+			"content": ["tutorial"]
+		},
+		{
+			"id": "week1",
+			"content": ["bopeebo", "fresh", "dadbattle"]
+		},
+		{
+			"id": "week2",
+			"content": ["spookeez", "south", "monster"]
+		},
+		{
+			"id": "week3",
+			"content": ["pico", "philly", "blammed"]
+		},
+		{
+			"id": "week4",
+			"content": ["satin-panties", "high", "milf"]
+		},
+		{
+			"id": "week5",
+			"content": ["cocoa", "eggnog", "winter-horrorland"]
+		},
+		{
+			"id": "week6",
+			"content": ["senpai", "roses", "thorns"]
+		},
+		{
+			"id": "week7",
+			"content": ["ugh", "guns", "stress"]
+		},
+		{
+			"id": "weekend1",
+			"content": ["darnell", "lit-up", "2hot", "blazin"]
+		}
+	]
+}

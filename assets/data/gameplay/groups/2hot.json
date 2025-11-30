@@ -1,0 +1,6 @@
+{
+	"id": "2hot",
+	"displayName": "2hot",
+	"levels": ["2hot-easy", "2hot-normal", "2hot-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#70359D" }
+}

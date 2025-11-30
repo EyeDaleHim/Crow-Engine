@@ -80,6 +80,11 @@ class Music extends FlxBasic
 	public var syncWithGame:Bool = false;
 
 	/**
+	 * If true, the position is not updated from a sound object, and must be updated manually.
+	 */
+	public var manualSync:Bool = false;
+
+	/**
 	 * Current position of the sound in milliseconds.
 	 */
 	public var position:Float = 0.0;
@@ -140,8 +145,11 @@ class Music extends FlxBasic
 
 		if (this.metadata != null)
 		{
-			soundObject.volume = metadata.volume;
-			soundObject.looped = metadata.looped;
+			if (soundObject != null)
+			{
+				soundObject.volume = metadata.volume;
+				soundObject.looped = metadata.looped;
+			}
 		}
 
 		_precalculateTempoMap();
@@ -157,7 +165,6 @@ class Music extends FlxBasic
 		_lastPosition = attributes.lastPosition;
 
 		_precalculateTempoMap();
-		
 	}
 
 	public function getAttributes():MusicAttributes
@@ -173,43 +180,52 @@ class Music extends FlxBasic
 
 	public function pause():Void
 	{
-		soundObject.pause();
+		soundObject?.pause();
 	}
 
 	public function play():Void
 	{
-		soundObject.play();
+		soundObject?.play();
 	}
 
 	public function stop():Void
 	{
 		_lastPosition = 0.0;
 
-		soundObject.stop();
+		soundObject?.stop();
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 
-		if (soundObject?.playing)
+		var active:Bool = soundObject?.playing ?? manualSync;
+
+		if (active)
 		{
-			if (syncWithGame)
+			if (manualSync)
 			{
-				if (soundObject.time == _lastPosition)
+				position += elapsed * 1000;
+			}
+			else
+			{
+				if (syncWithGame)
 				{
-					position += elapsed * 1000;
+					if (soundObject.time == _lastPosition)
+					{
+						position += elapsed * 1000;
+					}
+					else
+					{
+						position = soundObject.time;
+					}
+
+					_lastPosition = soundObject?.time ?? position;
 				}
 				else
 				{
 					position = soundObject.time;
 				}
-
-				_lastPosition = soundObject.time;
-			}
-			else
-			{
-				position = soundObject.time;
 			}
 
 			if (updateFields && metadata != null)
@@ -383,10 +399,11 @@ class Music extends FlxBasic
 	}
 }
 
-typedef MusicAttributes = {
-	sound:FlxSound,
-	metadata:SoundMetadata,
-	lastBeat:Int,
-	lastStep:Int,
-	lastPosition:Float
+typedef MusicAttributes =
+{
+	var sound:FlxSound;
+	var metadata:SoundMetadata;
+	var lastBeat:Int;
+	var lastStep:Int;
+	var lastPosition:Float;
 };

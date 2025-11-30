@@ -1,0 +1,7 @@
+// fresh.json
+{
+	"id": "fresh",
+	"displayName": "Fresh",
+	"levels": ["fresh-easy", "fresh-normal", "fresh-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#9271FD" }
+}

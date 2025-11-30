@@ -1,0 +1,6 @@
+{
+	"id": "dadbattle",
+	"displayName": "Dad Battle",
+	"levels": ["dadbattle-easy", "dadbattle-normal", "dadbattle-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#9271FD" }
+}

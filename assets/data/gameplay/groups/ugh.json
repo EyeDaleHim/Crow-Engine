@@ -1,0 +1,6 @@
+{
+	"id": "ugh",
+	"displayName": "Ugh",
+	"levels": ["ugh-easy", "ugh-normal", "ugh-hard"],
+	"metaInfo": { "artist": "Kawai Sprite", "color": "#F6B604" }
+}
