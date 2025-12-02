@@ -10,6 +10,8 @@ class Preloader extends FlxBasePreloader
 
 		FlxGraphic.defaultPersist = true;
 
+		Main.version = SemVer.fromString(FlxG.stage.application.meta.get("version")) ?? new SemVer(0, 0, 0);
+
 		Main.assets = new Assets();
 
 		#if ASSETS_PACKAGING

@@ -64,6 +64,7 @@ import haxe.io.Path;
 
 import crow.utils.AxeData;
 import crow.utils.JsonComment;
+import crow.utils.SemVer;
 
 using StringTools;
 using Lambda;

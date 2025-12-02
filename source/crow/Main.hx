@@ -13,6 +13,7 @@ class Main extends DisplayObjectContainer
 	public static var input:Input;
 
 	public static var levels:LevelRegistry;
+	public static var version:SemVer;
 
 	public function new()
 	{
