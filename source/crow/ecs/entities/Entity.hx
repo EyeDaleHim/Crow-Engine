@@ -66,7 +66,7 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 	 */
 	public var logicState:LogicState = new LogicState();
 
-	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String, ?overrideMetadata:EntityMetadata)
+	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String, ?overrideMetadata:EntityMetadata, ?initialState:Dynamic)
 	{
 		super(x, y);
 
@@ -91,6 +91,14 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 		}
 
 		this.entityName = metadata.name;
+
+		if (initialState != null)
+		{
+			for (field in Reflect.fields(initialState))
+			{
+				logicState.set(field, Reflect.field(initialState, field));
+			}
+		}
 
 		if (metadata.visible != null)
 		{

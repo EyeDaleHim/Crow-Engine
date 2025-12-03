@@ -9,12 +9,14 @@ class FieldLerpSystem extends BaseSystem
 	override public function processEntity(entity:Entity, elapsed:Float):Void
 	{
 		#if hl
+		// wtf is this shit workaround
 		var lerps:Array<FieldLerpComponent> = [];
 		var rawLerps:Array<IComponent> = entity.getComponentsByType(IComponent);
 
 		for (lerp in rawLerps)
 		{
-			lerps.push(cast(lerp, FieldLerpComponent));
+			if (Std.isOfType(lerp, FieldLerpComponent))
+				lerps.push(cast(lerp, FieldLerpComponent));
 		}
 		#else
 		var lerps:Array<FieldLerpComponent> = cast entity.getComponentsByType(FieldLerpComponent);

@@ -3,6 +3,7 @@ package crow.ecs.managers;
 import crow.assets.metadata.game.ComponentMetadata;
 import crow.ecs.components.BaseComponent;
 import crow.ecs.components.*;
+import crow.logics.tools.StringInterpolator;
 
 class ComponentTable
 {
@@ -16,6 +17,7 @@ class ComponentTable
 		list.set("field_lerp", FieldLerpComponent);
 		list.set("position", PositionComponent);
 		list.set("tags", TagComponent);
+		list.set("positional_index", PositionalIndexComponent);
 	}
 
 	/**
@@ -28,7 +30,7 @@ class ComponentTable
 	@:generic
 	public static function fromMetadata<T:IComponent>(metadata:ComponentMetadata, entity:Entity):IComponent
 	{
-		var  type = list.get(metadata.name);
+		var type = list.get(metadata.name);
 
 		if (type == null)
 		{
@@ -40,26 +42,31 @@ class ComponentTable
 		{
 			case FieldLerpComponent:
 				{
-					final targetField:String = metadata.struct.targetField;
-					final to:Float = metadata.struct.to;
-					final lerpPower:Float = metadata.struct.lerpPower;
+					final targetField:String = resolve(metadata.struct.targetField, entity);
+					final to:Float = resolve(metadata.struct.to, entity);
+					final lerpPower:Float = resolve(metadata.struct.lerpPower, entity);
 					new FieldLerpComponent(entity, targetField, to, lerpPower);
 				}
 			case PositionComponent:
 				{
-					final x:Float = metadata.struct.x;
-					final y:Float = metadata.struct.y;
+					final x:Float = resolve(metadata.struct.x, entity);
+					final y:Float = resolve(metadata.struct.y, entity);
 					new PositionComponent(entity, x, y);
 				}
 			case TagComponent:
 				{
-					final tags:Array<String> = metadata.struct.tags;
+					final tags:Array<String> = resolve(metadata.struct.tags, entity);
 					new TagComponent(tags);
 				}
-            default:
-                Type.createEmptyInstance(BaseComponent);
+			case PositionalIndexComponent:
+				{
+					final index:Int = resolve(metadata.struct.index, entity);
+					new PositionalIndexComponent(index);
+				}
+			default:
+				Type.createEmptyInstance(BaseComponent);
 		};
-        component.entity = entity;
+		component.entity = entity;
 
 		if (metadata.id != null)
 		{
@@ -67,5 +74,36 @@ class ComponentTable
 		}
 
 		return (component : IComponent);
+	}
+
+	private static function resolve(value:Dynamic, entity:Entity):Dynamic
+	{
+		if (Std.isOfType(value, String))
+		{
+			final strVal:String = cast value;
+			if (strVal.indexOf("${") != -1)
+			{
+				var resolved = StringInterpolator.interpolate(strVal, crow.logics.evaluators.LogicEvaluator.globalState, null,
+					entity.logicState);
+
+				// Attempt to convert back to typed values since Interpolator returns Strings
+				var f = Std.parseFloat(resolved);
+				if (!Math.isNaN(f))
+				{
+					// It's a number
+					if (resolved.indexOf(".") == -1)
+						return Std.parseInt(resolved);
+					return f;
+				}
+				if (resolved == "true")
+					return true;
+				if (resolved == "false")
+					return false;
+
+				return resolved;
+			}
+		}
+		// Return array as-is, maybe handle deep resolution later?
+		return value;
 	}
 }

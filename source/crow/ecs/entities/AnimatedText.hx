@@ -34,6 +34,12 @@ class AnimatedText extends FlxTypedSpriteContainer<AnimatedTextLine>
 
 	private var _frames:FlxFramesCollection;
 
+	/**
+	 * @param x The position of this `AnimatedText` object, horizontally.
+	 * @param y The position of this `AnimatedText` object, vertically.
+	 * @param path The path to load the font from.
+	 * @param text The text to initialize the `AnimatedText` with.
+	 */
 	public function new(?x:Float = 0.0, ?y:Float = 0.0, path:String, ?text:String = "")
 	{
 		super(x, y);

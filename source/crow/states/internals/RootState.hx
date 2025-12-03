@@ -8,7 +8,7 @@ import crow.objects.transition.TransitionObject;
  * This state typically holds global services (toasts, transitions, and soundtray) 
  * that persist throughout the game's lifecycle.
  * 
- * It is not necessary for data components to touch this class.
+ * Data components generally should never touch this class.
  */
 class RootState extends FlxState
 {
@@ -18,6 +18,13 @@ class RootState extends FlxState
 	{
 		return Main;
 	}
+
+	/**
+	 * Get the current state the player is in.
+	 * In debugging, this skips the chain of writing
+	 * `FlxG.state.subState.subState. ...`.
+	 */
+	public var focusedState(get, never):MainState;
 
 	public var rootCamera:FlxCamera;
 
@@ -133,5 +140,19 @@ class RootState extends FlxState
 
 			FlxCamera._defaultCameras = oldDefaultCameras;
 		}
+	}
+
+	function get_focusedState():MainState
+	{
+		var _current:FlxState = this;
+		while (_current.subState != null)
+		{
+			if (Std.isOfType(_current.subState, MainState))
+			{
+				_current = cast(_current.subState, MainState);
+			}
+		}
+
+		return cast(_current, MainState);
 	}
 }

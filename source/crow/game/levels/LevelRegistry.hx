@@ -46,6 +46,8 @@ class LevelRegistry
 
 		loadRegistry();
 		trace(groups);
+		// test
+		trace(groups.get("dadbattle"));
 	}
 
 	public function loadRegistry():Void

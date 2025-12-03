@@ -37,6 +37,8 @@ class LogicEvaluator
 		globalState.setRestricted("gameWidth", FlxG.width);
 		globalState.setRestricted("gameHeight", FlxG.height);
 
+		globalState.setRestricted("songListLength", Main.levels.groups.count());
+
 		list.push(ActionTemplate);
 		list.push(AnimationTemplate);
 		list.push(CameraTemplate);

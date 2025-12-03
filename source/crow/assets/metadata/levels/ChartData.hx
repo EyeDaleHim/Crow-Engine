@@ -10,6 +10,13 @@ import flixel.util.typeLimit.OneOfTwo;
 typedef ChartData =
 {
 	/**
+	 * The version (Crow Engine) this chart was generated with.
+	 * 
+	 * If this is omitted, the engine is forced to assume the current version.
+	 */
+	var ?version:Int;
+
+	/**
 	 * The scroll speed for this specific chart.
 	 * 
 	 * Can be a fixed `Float` or a list of `ChartChangeNode`s for automation.

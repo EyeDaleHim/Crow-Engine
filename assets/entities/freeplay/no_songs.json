@@ -1,0 +1,15 @@
+{
+    "name": "no_songs",
+    "objects": [
+        {
+            "type": "animated_text",
+            "data": {
+                "name": "no_song_text",
+                "text": "NO SONGS FOUND",
+                "font": "boldText",
+                "fieldWidth": 1280,
+                "alignment": "CENTER"
+            }
+        }
+    ]
+}

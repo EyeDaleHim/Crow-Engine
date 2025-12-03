@@ -28,5 +28,7 @@ class Preloader extends FlxBasePreloader
 		FlxG.sound.volumeDownKeys = null;
 		FlxG.sound.muteKeys = null;
 		FlxG.sound.soundTrayEnabled = false;
+
+		
 	}
 }

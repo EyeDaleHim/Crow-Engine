@@ -52,4 +52,9 @@ class LevelGroup
 			return null;
 		return Reflect.field(data.metaInfo, key);
 	}
+
+	public function toString():String
+	{
+		return 'LevelGroup(id: $id, title: "$title", levels: ${levels.length})';
+	}
 }

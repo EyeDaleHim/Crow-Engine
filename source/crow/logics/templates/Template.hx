@@ -49,6 +49,8 @@ class ExecutableAction
 	 */
 	private var _name:String;
 
+	// TODO: func is actually stored in its own scope, so we're not executing our own arguments
+	// in the first place!
 	public static function createAction(?func:ActionFunction, list:Array<Field>, ?reqs:Requirements):ExecutableAction
 	{
 		final action = Type.createEmptyInstance(ExecutableAction);

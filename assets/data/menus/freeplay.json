@@ -2,7 +2,49 @@
     "logic": {
         "initialState": {
             "bgColor": "0xFF9933"
-        }
+        },
+        "listeners": [
+            {
+                "event": "songs_notempty",
+                "actions": [
+                    {
+                        "type": "toggle_nosongs",
+                        "target": "no_songs_found",
+                        "values": {
+                            "show": true
+                        }
+                    }
+                ],
+                "condition": {
+                    "type": "CHECK",
+                    "stateKey": "songListLength",
+                    "operatorCode": "NEQ",
+                    "targetValues": [
+                        0
+                    ]
+                }
+            },
+            {
+                "event": "songs_empty",
+                "actions": [
+                    {
+                        "type": "toggle_nosongs",
+                        "target": "no_songs_found",
+                        "values": {
+                            "show": false
+                        }
+                    }
+                ],
+                "condition": {
+                    "type": "CHECK",
+                    "stateKey": "songListLength",
+                    "operatorCode": "EQ",
+                    "targetValues": [
+                        0
+                    ]
+                }
+            }
+        ]
     },
     "layouts": [
         {
@@ -10,16 +52,7 @@
             "direction": "VERTICAL",
             "gap": 15,
             "alignItems": "CENTER",
-            "selectionMode": "BOUND",
-            "onSelect": {
-                "type": "play_sound",
-                "values": {
-                    "sound": "scrollMenu"
-                }
-            },
-            "onIndex": {
-                "type": "camera_scroll_to_selection"
-            }
+            "selectionMode": "BOUND"
         }
     ],
     "elements": [
@@ -41,7 +74,7 @@
         },
         {
             "dataSource": "GROUPS",
-            "entity": "menus/items/song_card_capsule",
+            "entity": "generic/scroll_text_capsule",
             "listeners": [
                 {
                     "event": "create",
@@ -53,20 +86,23 @@
                             },
                             "targets": [
                                 {
-                                    "type": "AnimatedText"
+                                    "type": "animated_text"
                                 }
                             ]
                         },
                         {
-                            "type": "play_animation",
+                            "type": "dispatch_event",
                             "values": {
-                                "anim": "${icon_name}"
-                            },
-                            "targets": [
-                                {
-                                    "name": "icon_sprite"
-                                }
-                            ]
+                                "name": "songs_notempty",
+                                "actions": {}
+                            }
+                        },
+                        {
+                            "type": "dispatch_event",
+                            "values": {
+                                "name": "songs_empty",
+                                "actions": {}
+                            }
                         }
                     ]
                 },
@@ -81,6 +117,17 @@
                             }
                         }
                     ]
+                }
+            ]
+        }
+    ],
+    "inputActions": [
+        {
+            "input": "back",
+            "check": "just_pressed",
+            "actions": [
+                {
+                    "type": "return_to_previous_scene"
                 }
             ]
         }

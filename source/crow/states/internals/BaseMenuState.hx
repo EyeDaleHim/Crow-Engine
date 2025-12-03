@@ -1,6 +1,5 @@
 package crow.states.internals;
 
-import crow.ecs.components.FieldLerpComponent;
 import crow.assets.metadata.logics.LogicMetadata;
 import crow.assets.metadata.scenes.MenuMetadata;
 import crow.ds.OrderedMap;
@@ -13,6 +12,7 @@ import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
 import crow.logics.evaluators.LogicEvaluator;
 import crow.logics.evaluators.PredicateEvaluator;
+import crow.utils.UUID;
 
 /**
  * A base state for creating data-driven, interactive menus.
@@ -305,12 +305,13 @@ class BaseMenuState extends MainState implements IEventExecutor
 		var rootLayoutAndData:{layout:InteractableLayout, data:Dynamic} = null;
 		for (rawElementData in elements)
 		{
-			var itemsToProcess:Array<{data:MenuItem, context:Dynamic}> = [];
+			var itemsToProcess:Array<{data:MenuItem, context:Dynamic, index:Int}> = [];
 
 			if (rawElementData.dataSource != null)
 			{
 				// Fetch the list from registry
 				var list:Array<Dynamic> = fetchDataSource(rawElementData.dataSource, rawElementData.dataFilter);
+				var i:Int = 0;
 
 				for (entry in list)
 				{
@@ -320,18 +321,20 @@ class BaseMenuState extends MainState implements IEventExecutor
 					clonedItem.dataSource = null;
 					clonedItem.name = entry.id;
 
-					itemsToProcess.push({data: clonedItem, context: entry});
+					itemsToProcess.push({data: clonedItem, context: entry, index: i});
+					i++;
 				}
 			}
 			else
 			{
-				itemsToProcess.push({data: rawElementData, context: null});
+				itemsToProcess.push({data: rawElementData, context: null, index: -1});
 			}
 
 			for (processEntry in itemsToProcess)
 			{
 				var elementData = processEntry.data;
 				var dataContext = processEntry.context;
+				var index = processEntry.index;
 
 				if (elementData.genericReference != null && menuMetadata.genericElements != null)
 				{
@@ -406,8 +409,35 @@ class BaseMenuState extends MainState implements IEventExecutor
 				}
 				else if (elementData.entity != null)
 				{
+					var initialState:Dynamic = {};
+
+					if (dataContext != null)
+					{
+						// Inject data properties (id, displayName, etc.) into the Entity's logic state.
+						if (Reflect.hasField(dataContext, "id"))
+							Reflect.setField(initialState, "id", Reflect.field(dataContext, "id"));
+
+						if (Reflect.hasField(dataContext, "displayName"))
+							Reflect.setField(initialState, "displayName", Std.string(Reflect.field(dataContext, "displayName")));
+
+						// Inject metaInfo if available
+						if (Reflect.hasField(dataContext, "metaInfo") && Reflect.field(dataContext, "metaInfo") != null)
+						{
+							var meta:Dynamic = Reflect.field(dataContext, "metaInfo");
+							for (f in Reflect.fields(meta))
+							{
+								Reflect.setField(initialState, f, Reflect.field(meta, f));
+							}
+						}
+					}
+
+					if (index != -1)
+					{
+						Reflect.setField(initialState, "index", index);
+					}
+
 					// This item is a single, data-driven entity.
-					final entity = new Entity(0, 0, elementData.entity, elementData.overrideData);
+					final entity = new Entity(0, 0, elementData.entity, elementData.overrideData, initialState);
 					menuObject = entity;
 
 					if (elementData.name == null)
@@ -418,33 +448,12 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 					if (dataContext != null)
 					{
-						// Inject data properties (id, displayName, etc.) into the Entity's logic state.
-						// This allows text components to use "${displayName}" immediately.
-						if (Reflect.hasField(dataContext, "id"))
-							entity.logicState.set("id", Reflect.field(dataContext, "id"));
-
-						if (Reflect.hasField(dataContext, "displayName"))
-						{
-							// Handle TranslatableString resolution if necessary, here assuming string
-							entity.logicState.set("displayName", Std.string(Reflect.field(dataContext, "displayName")));
-						}
-
-						// Inject metaInfo if available
-						if (Reflect.hasField(dataContext, "metaInfo") && Reflect.field(dataContext, "metaInfo") != null)
-						{
-							var meta:Dynamic = Reflect.field(dataContext, "metaInfo");
-							for (f in Reflect.fields(meta))
-							{
-								entity.logicState.set(f, Reflect.field(meta, f));
-							}
-						}
-
 						// Force an update on the entity to refresh Text/Sprites with new variables
 						// We might need a specific "refresh" method or trigger a specific event
 						// We use a local event execution for this entity
 						var singleEntityMap = new crow.ds.OrderedMap<String, Entity>();
 						singleEntityMap.set(entity.entityName, entity);
-						
+
 						LogicEvaluator.execute( // Create a dummy action to update text or run init logic
 							[
 								{type: "state_change", values: {state: {changeType: "SET", stateKey: "dummy", value: 0}}}
@@ -458,7 +467,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				else if (elementData.name == null)
 				{
 					// TODO: Generate a random UUID for items without a name or entity.
-					elementData.name = '${Math.random() * 5000000}';
+					elementData.name = UUID.generateV4();
 				}
 
 				if (menuObject != null)
@@ -613,6 +622,11 @@ class BaseMenuState extends MainState implements IEventExecutor
 				targetMap = new OrderedMap<String, Entity>();
 				targetMap.set(entity.entityName, entity);
 			}
+			else
+			{
+				trace("Entity null");
+			}
+			trace(targetMap);
 
 			// Execute actions
 			if (listener.actions != null)
