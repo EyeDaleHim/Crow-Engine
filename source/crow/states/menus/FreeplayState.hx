@@ -1,9 +1,10 @@
 package crow.states.menus;
 
-import crow.states.internals.BaseMenuState;
 import crow.assets.metadata.logics.LogicMetadata;
-import crow.assets.metadata.scenes.MenuMetadata;
+import crow.ds.OrderedMap;
+import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
+import crow.states.internals.BaseMenuState;
 
 class FreeplayState extends BaseMenuState
 {
@@ -32,14 +33,18 @@ class FreeplayState extends BaseMenuState
 		entities.set(noSongsText.entityName, noSongsText);
 	}
 
-	override public function handleMenuAction(action:ListenerActionMetadata, ?menuItem:MenuItem, ?entity:Entity, ?localState:LogicState):Void
+	override public function executeLogic(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
+			?entities:OrderedMap<String, Entity>, ?executor:IEventExecutor):Void
 	{
-		if (action.type == "toggle_nosongs")
+		for (action in actions)
 		{
-			noSongsText.exists = localState.get("show") ?? false;
-			return;
+			if (action.type ==  "check_empty")
+			{
+				actions.remove(action);
+				trace(executorState, localState);
+			}
 		}
-		super.handleMenuAction(action, menuItem, entity, localState);
+		super.executeLogic(actions, executorState, localState, entities, executor);
 	}
 
 	override public function createScene(sceneName:String):BaseMenuState

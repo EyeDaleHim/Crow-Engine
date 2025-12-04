@@ -1,7 +1,7 @@
 package crow.states.menus;
 
 import crow.states.internals.BaseMenuState;
-import crow.states.internals.BaseMenuState;
+import crow.logics.dependencies.LogicState;
 
 /**
  * While normally, you don't need a separate class to run a state since JSON files
@@ -30,6 +30,15 @@ class TitleState extends BaseMenuState
 		}
 
 		buildMenu();
+	}
+
+	// DEBUG
+		override public function onEvent(eventName:String, ?localState:LogicState):Void
+	{
+		if (eventName != "update")
+			trace(eventName);
+
+		super.onEvent(eventName, localState);
 	}
 
 	override public function createScene(sceneName:String):BaseMenuState

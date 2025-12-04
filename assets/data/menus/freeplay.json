@@ -5,13 +5,56 @@
         },
         "listeners": [
             {
+                "event": "create",
+                "weak": true,
+                "actions": [
+                    {
+                        "type": "dispatch_event",
+                        "values": {
+                            "name": "check_songs"
+                        }
+                    }
+                ]
+            },
+            {
+                "event": "transitionInFinished",
+                "weak": true,
+                "actions": [
+                    {
+                        "type": "dispatch_event",
+                        "values": {
+                            "name": "check_songs"
+                        }
+                    }
+                ]
+            },
+            {
+                "event": "check_songs",
+                "actions": [
+                    {
+                        "type": "dispatch_event",
+                        "values": {
+                            "name": "songs_notempty"
+                        }
+                    },
+                    {
+                        "type": "dispatch_event",
+                        "values": {
+                            "name": "songs_empty"
+                        }
+                    }
+                ]
+            },
+            {
                 "event": "songs_notempty",
                 "actions": [
                     {
-                        "type": "toggle_nosongs",
-                        "target": "no_songs_found",
+                        "type": "dispatch_event",
                         "values": {
-                            "show": true
+                            "name": "check_empty",
+                            "actions": {
+                                "show": true
+                            }
                         }
                     }
                 ],
@@ -28,10 +71,12 @@
                 "event": "songs_empty",
                 "actions": [
                     {
-                        "type": "toggle_nosongs",
-                        "target": "no_songs_found",
+                        "type": "dispatch_event",
                         "values": {
-                            "show": false
+                            "name": "check_empty",
+                            "actions": {
+                                "show": false
+                            }
                         }
                     }
                 ],
@@ -83,25 +128,6 @@
                             "type": "set_text",
                             "values": {
                                 "text": "${displayName}"
-                            },
-                            "targets": [
-                                {
-                                    "type": "animated_text"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "dispatch_event",
-                            "values": {
-                                "name": "songs_notempty",
-                                "actions": {}
-                            }
-                        },
-                        {
-                            "type": "dispatch_event",
-                            "values": {
-                                "name": "songs_empty",
-                                "actions": {}
                             }
                         }
                     ]

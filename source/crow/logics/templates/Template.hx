@@ -49,14 +49,14 @@ class ExecutableAction
 	 */
 	private var _name:String;
 
-	// TODO: func is actually stored in its own scope, so we're not executing our own arguments
-	// in the first place!
+	public function new() {}
+
 	public static function createAction(?func:ActionFunction, list:Array<Field>, ?reqs:Requirements):ExecutableAction
 	{
-		final action = Type.createEmptyInstance(ExecutableAction);
+		var action = new ExecutableAction();
 		action.execute = func;
 		action.fieldList = list;
-		action.requirements = reqs ?? {};
+		action.requirements = reqs != null ? Reflect.copy(reqs) : {};
 		return action;
 	}
 
@@ -79,32 +79,32 @@ typedef ActionContext =
 	/**
 	 * The interpolated values/parameters for the action.
 	 */
-	final values:Dynamic;
+	var values:Dynamic;
 
 	/**
 	 * The state of the event executor.
 	 */
-	final executorState:LogicState;
+	var executorState:LogicState;
 
 	/**
 	 * The temporary state for the current event.
 	 */
-	final ?localState:LogicState;
+	var ?localState:LogicState;
 
 	/**
 	 * The entities targeted by this action. Can be null.
 	 */
-	final ?targetedEntities:Array<Entity>;
+	var ?targetedEntities:Array<Entity>;
 
 	/**
 	 * The executor responsible for handling engine-specific events. Can be null.
 	 */
-	final ?executor:IEventExecutor;
+	var ?executor:IEventExecutor;
 
 	/**
 	 * A callback to be executed upon completion of an asynchronous action. Can be null.
 	 */
-	final ?onComplete:Void->Void;
+	var ?onComplete:Void->Void;
 }
 
 typedef Field =

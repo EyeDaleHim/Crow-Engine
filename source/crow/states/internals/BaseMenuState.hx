@@ -454,7 +454,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 						var singleEntityMap = new crow.ds.OrderedMap<String, Entity>();
 						singleEntityMap.set(entity.entityName, entity);
 
-						LogicEvaluator.execute( // Create a dummy action to update text or run init logic
+						executeLogic( // Create a dummy action to update text or run init logic
 							[
 								{type: "state_change", values: {state: {changeType: "SET", stateKey: "dummy", value: 0}}}
 							], logicState, null, singleEntityMap, // OrderedMap helper
@@ -626,12 +626,11 @@ class BaseMenuState extends MainState implements IEventExecutor
 			{
 				trace("Entity null");
 			}
-			trace(targetMap);
 
 			// Execute actions
 			if (listener.actions != null)
 			{
-				LogicEvaluator.execute(listener.actions, this.logicState, localState, targetMap ?? this.entities, this);
+				executeLogic(listener.actions, this.logicState, localState, targetMap ?? this.entities, this);
 			}
 		}
 	}
@@ -650,7 +649,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 		var map:OrderedMap<String, Entity> = new OrderedMap<String, Entity>();
 		if (entity != null)
 			map.set(entity.entityName, entity);
-		LogicEvaluator.execute([action], this.logicState, localState, map, this);
+		executeLogic([action], this.logicState, localState, map, this);
 	}
 
 	/**
@@ -690,7 +689,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 			// All conditions passed, execute actions.
 			if (listener.actions != null)
-				LogicEvaluator.execute(listener.actions, this.logicState, localState, this.entities, this);
+				executeLogic(listener.actions, this.logicState, localState, this.entities, this);
 
 			// If the listener is weak, mark it for removal.
 			if (listener.weak)
@@ -707,6 +706,21 @@ class BaseMenuState extends MainState implements IEventExecutor
 			for (listener in listenersToRemove)
 				menuMetadata.logic.listeners.remove(listener);
 		}
+	}
+
+	/**
+	 * A wrapper which simply calls `LogicEvaluator.execute` with the provided parameters. 
+	 * This method exists to allow overriding.
+	 * @param actions 
+	 * @param executorState 
+	 * @param localState 
+	 * @param entities 
+	 * @param executor 
+	 */
+	public function executeLogic(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
+			?entities:OrderedMap<String, Entity>, ?executor:IEventExecutor)
+	{
+		LogicEvaluator.execute(actions, executorState, localState, entities, executor);
 	}
 
 	/**
