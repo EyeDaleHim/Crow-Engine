@@ -6,6 +6,8 @@ import crow.ecs.components.BaseComponent.IComponent;
 import crow.ecs.managers.ComponentTable;
 import crow.logics.dependencies.LogicState;
 import crow.logics.templates.Template;
+import crow.logics.evaluators.PredicateEvaluator;
+import crow.logics.tools.ActionScope;
 
 class ComponentTemplate extends Template
 {
@@ -17,36 +19,31 @@ class ComponentTemplate extends Template
 			 */
 			"set_component_field" => ExecutableAction.createAction((ctx) ->
 			{
-				final identifier:String = ctx.values.component; // Class name (e.g., "field_lerp") OR Instance Name
-				final fieldName:String = ctx.values.field; // Field to change (e.g., "to")
-				final newValue:Dynamic = ctx.values.value; // New Value
+				final identifier:String = ctx.values.component; 
+				final fieldName:String = ctx.values.field; 
+				final newValue:Dynamic = ctx.values.value; 
 
 				final filter:Dynamic = ctx.values.filter;
 
-				// Resolve Class Type if possible
 				var componentClass:Class<IComponent> = ComponentTable.list.get(identifier);
 
 				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) ->
 				{
-					// gather candidates
 					var candidates:Array<IComponent> = [];
 
 					if (componentClass != null)
-					{
-						// It's a Type (e.g. "field_lerp"), get all of them
 						candidates = entity.getComponentsByType(componentClass);
-					}
 					else
-					{
-						// It's a specific Name/ID, try to find it
-						// Note: We search all components because getComponentByName returns singular
 						candidates = entity.getComponentsByName(identifier);
-					}
+
+                    // Build context for this entity
+                    var entityScopes = ctx.scopes.copy();
+                    entityScopes.set(ActionScope.ENTITY, entity.logicState);
 
 					// 2. Filter Candidates
 					for (comp in candidates)
 					{
-						if (shouldModifyComponent(comp, filter, ctx.executorState, entity.logicState))
+						if (shouldModifyComponent(comp, filter, entityScopes))
 						{
 							applyChange(comp, fieldName, newValue);
 						}
@@ -62,7 +59,7 @@ class ComponentTemplate extends Template
 		];
 	}
 
-	private function shouldModifyComponent(comp:IComponent, filter:ComponentFilterMetadata, globalState:LogicState, entityState:LogicState):Bool
+	private function shouldModifyComponent(comp:IComponent, filter:ComponentFilterMetadata, scopes:Map<String, LogicState>):Bool
 	{
 		if (filter == null)
 			return true;
@@ -75,9 +72,13 @@ class ComponentTemplate extends Template
 
 		if (filter.condition != null)
 		{
-			var proxyState = new ComponentProxyState(comp);
+            // The "local" scope in this context refers to the component proxy
+			var proxyState = new ComponentProxyState("component_proxy_state", comp);
+            
+            var componentScopes = scopes.copy();
+            componentScopes.set(ActionScope.LOCAL, proxyState);
 
-			if (!PredicateEvaluator.evaluate(filter.condition, globalState, proxyState, entityState))
+			if (!PredicateEvaluator.evaluate(filter.condition, componentScopes))
 			{
 				return false;
 			}
@@ -86,7 +87,8 @@ class ComponentTemplate extends Template
 		return true;
 	}
 
-	private function applyChange(comp:IComponent, field:String, value:Dynamic):Void
+    // ... [applyChange and ComponentProxyState remain unchanged] ...
+    private function applyChange(comp:IComponent, field:String, value:Dynamic):Void
 	{
 		try
 		{
@@ -106,17 +108,13 @@ class ComponentTemplate extends Template
 	}
 }
 
-/**
- * A lightweight wrapper that tricks LogicState into reading directly from a Component object.
- * This allows Predicates to check component values (like "x", "to", "visible") without copying data.
- */
 private class ComponentProxyState extends LogicState
 {
 	public var target:Dynamic;
 
-	public function new(target:Dynamic)
+	public function new(name:String, target:Dynamic)
 	{
-		super();
+		super(name);
 		this.target = target;
 	}
 

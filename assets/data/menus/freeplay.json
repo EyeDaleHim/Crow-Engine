@@ -61,6 +61,7 @@
                 "condition": {
                     "type": "CHECK",
                     "stateKey": "songListLength",
+                    "scope": "global",
                     "operatorCode": "NEQ",
                     "targetValues": [
                         0
@@ -83,6 +84,7 @@
                 "condition": {
                     "type": "CHECK",
                     "stateKey": "songListLength",
+                    "scope": "global",
                     "operatorCode": "EQ",
                     "targetValues": [
                         0

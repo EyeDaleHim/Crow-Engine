@@ -12,6 +12,7 @@ import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
 import crow.logics.evaluators.LogicEvaluator;
 import crow.logics.evaluators.PredicateEvaluator;
+import crow.logics.tools.ActionScope;
 import crow.utils.UUID;
 
 /**
@@ -61,7 +62,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	/**
 	 * The internal state for the menu's logic, which can be modified by listeners.
 	 */
-	public var logicState:LogicState = new LogicState();
+	public var logicState:LogicState = new LogicState("menu_logic_state");
 
 	/**
 	 * The last beat that was processed. Used to prevent duplicate beat events.
@@ -184,7 +185,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 		rootLayout.updateLayout();
 
 		// Trigger the "create" event for any initial setup logic.
-		onEvent("create", new LogicState());
+		onEvent("create", new LogicState("menu_create_logic_state"));
 	}
 
 	private function processStoredData():Void
@@ -290,7 +291,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 					final selectedItem = menuMetadata.elements[newIndex];
 					final selectedEntity = entities.get(selectedItem.name);
 
-					final localState = new LogicState();
+					final localState = new LogicState("layout_index_logic_state");
 					localState.set("oldIndex", oldIndex);
 					localState.set("newIndex", newIndex);
 
@@ -530,8 +531,12 @@ class BaseMenuState extends MainState implements IEventExecutor
 		// Process data-driven input actions.
 		for (inputAction in menuMetadata.inputActions)
 		{
-			// Evaluate condition first to potentially skip input checks
-			if (inputAction.condition != null && !PredicateEvaluator.evaluate(inputAction.condition, this.logicState))
+			// Prepare scopes for evaluation
+			var scopes = new Map<String, LogicState>();
+			scopes.set("executor", this.logicState); // Use menu state as executor/global context
+
+			// Evaluate condition
+			if (!PredicateEvaluator.evaluate(inputAction.condition, scopes))
 			{
 				continue;
 			}
@@ -556,7 +561,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				if (inputAction.actions != null)
 				{
 					for (action in inputAction.actions)
-						handleMenuAction(action, null, null, new LogicState());
+						handleMenuAction(action, null, null, new LogicState("input_action_logic_state"));
 				}
 			}
 		}
@@ -598,11 +603,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 		if (item.listeners == null)
 			return;
 
-		// Reuse the main onEvent logic, but scope it to this item's listeners
-		// We create a temporary LogicMetadata structure to pass to a helper or duplicate the logic slightly.
-		// Here is the direct implementation for clarity:
-
-		localState ??= new LogicState();
+		localState ??= new LogicState("item_event_logic_state_default");
 
 		for (listener in item.listeners)
 		{
@@ -611,8 +612,14 @@ class BaseMenuState extends MainState implements IEventExecutor
 			if (!listenerEvents.contains(eventName))
 				continue;
 
+			// Prepare scopes
+			var scopes = new Map<String, LogicState>();
+			scopes.set("executor", this.logicState);
+			if (localState != null)
+				scopes.set(LOCAL, localState);
+
 			// Evaluate condition
-			if (!PredicateEvaluator.evaluate(listener.condition, this.logicState, localState))
+			if (!PredicateEvaluator.evaluate(listener.condition, scopes))
 				continue;
 
 			// Prepare entity map for the action (usually the item itself)
@@ -644,7 +651,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 */
 	public function handleMenuAction(action:ListenerActionMetadata, ?menuItem:MenuItem, ?entity:Entity, ?localState:LogicState):Void
 	{
-		localState ??= new LogicState();
+		localState ??= new LogicState("menu_action_logic_state_default");
 
 		var map:OrderedMap<String, Entity> = new OrderedMap<String, Entity>();
 		if (entity != null)
@@ -681,10 +688,14 @@ class BaseMenuState extends MainState implements IEventExecutor
 			if (!listenerEvents.contains(eventName))
 				continue;
 
-			// Evaluate the condition.
-			final conditionMet = PredicateEvaluator.evaluate(listener.condition, this.logicState, localState);
+			// Prepare scopes for evaluation
+			var scopes = new Map<String, LogicState>();
+			scopes.set("executor", this.logicState);
+			if (localState != null)
+				scopes.set("local", localState);
 
-			if (!conditionMet)
+			// Evaluate the condition.
+			if (!PredicateEvaluator.evaluate(listener.condition, scopes))
 				continue;
 
 			// All conditions passed, execute actions.
@@ -848,7 +859,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 			// Calculate the difference between when it should have happened and the current music time
 			final elapsed = music.position - beatTime;
 
-			var localState = new LogicState();
+			var localState = new LogicState("beat_logic_state");
 			localState.set("beat", b);
 			localState.set("catchupMs", elapsed);
 			localState.set("compensate", b == beat && Math.abs(lastBeatHit - beat) > 1);
@@ -884,7 +895,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 			final stepTime = music.stepToMs(s);
 			final elapsed = music.position - stepTime;
 
-			var localState = new LogicState();
+			var localState = new LogicState("step_logic_state");
 			localState.set("step", s);
 			localState.set("catchupMs", elapsed);
 			localState.set("compensate", s == step && Math.abs(lastStepHit - step) > 1);

@@ -64,7 +64,7 @@ class Entity extends FlxSpriteContainer implements IComponentActor
 	/**
 	 * The internal state for the entity's logic.
 	 */
-	public var logicState:LogicState = new LogicState();
+	public var logicState:LogicState = new LogicState("entity");
 
 	public function new(?x:Float = 0.0, ?y:Float = 0.0, inputFile:String, ?overrideMetadata:EntityMetadata, ?initialState:Dynamic)
 	{

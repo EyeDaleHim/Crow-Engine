@@ -82,6 +82,12 @@ typedef ActionContext =
 	var values:Dynamic;
 
 	/**
+	 * A map of all active LogicStates available in this context, keyed by scope name.
+	 * e.g., "global", "local", "executor", "entity".
+	 */
+	var scopes:Map<String, LogicState>;
+
+	/**
 	 * The state of the event executor.
 	 */
 	var executorState:LogicState;

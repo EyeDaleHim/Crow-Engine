@@ -4,6 +4,7 @@ import crow.assets.metadata.levels.LevelGroupData;
 import crow.assets.metadata.helpers.TranslatableString;
 import crow.logics.evaluators.PredicateEvaluator;
 import crow.logics.evaluators.LogicEvaluator;
+import crow.logics.tools.ActionScope;
 
 /**
  * A container for multiple Levels.
@@ -40,7 +41,7 @@ class LevelGroup
 	 */
 	public function isVisible():Bool
 	{
-		return PredicateEvaluator.evaluate(data.displayCondition, LogicEvaluator.globalState);
+		return PredicateEvaluator.evaluate(data.displayCondition, []);
 	}
 
 	/**

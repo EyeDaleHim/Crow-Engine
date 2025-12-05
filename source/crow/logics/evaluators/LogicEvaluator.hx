@@ -7,6 +7,7 @@ import crow.logics.dependencies.LogicState;
 import crow.logics.templates.*;
 import crow.logics.templates.Template;
 import crow.logics.templates.Template.ActionContext;
+import crow.logics.tools.ActionScope;
 import crow.logics.tools.EntityFilter;
 import crow.logics.tools.StringInterpolator;
 import crow.logics.tools.ValidatorLevel;
@@ -17,7 +18,7 @@ import crow.logics.validators.LogicValidator;
  */
 class LogicEvaluator
 {
-	public static final globalState:LogicState = new LogicState();
+	public static final globalState:LogicState = new LogicState("_global");
 
 	/**
 	 * Requires executable actions to have their context validated before execution.
@@ -74,6 +75,12 @@ class LogicEvaluator
 	public static function execute(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
 			?entities:OrderedMap<String, Entity>, ?executor:IEventExecutor):Void
 	{
+		final baseScopes = new Map<String, LogicState>();
+		
+		// Add standard scopes
+		if (executorState != null) baseScopes.set("executor", executorState); // Commonly used for state variables
+		if (localState != null) baseScopes.set(LOCAL, localState);
+		
 		for (action in actions)
 		{
 			final targetedEntities:Array<Entity> = if (entities != null)
@@ -107,6 +114,9 @@ class LogicEvaluator
                     if (Std.isOfType(val, String))
                     {
                         final strVal:String = cast val;
+                        // StringInterpolator likely needs updates to use scopes map too, 
+                        // but keeping old signature for now to minimize breakage if strictly necessary,
+                        // ideally StringInterpolator should also accept the map.
                         Reflect.setField(values, field, StringInterpolator.interpolate(strVal, executorState, localState, entityContext));
                     }
                     else
@@ -127,8 +137,11 @@ class LogicEvaluator
 			if (jumpTables.exists(actionType))
 			{
 				final executable = jumpTables.get(actionType);
-				final context:ActionContext = {
+				
+                // Create the context with the scope map
+                final context:ActionContext = {
 					values: values,
+					scopes: baseScopes, 
 					executorState: executorState,
 					localState: localState,
 					targetedEntities: targetedEntities,

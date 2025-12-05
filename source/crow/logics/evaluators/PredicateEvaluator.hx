@@ -21,14 +21,13 @@ class PredicateEvaluator
 	public static var validationLevel:ValidatorLevel = REQUIRED;
 
 	/**
-	 * Evaluates a predicate against an entity's state and context.
+	 * Evaluates a predicate against a context of logic states.
+	 * 
 	 * @param predicate The metadata defining the condition to evaluate. No predicate implies `true` (always passes).
-	 * @param globalState The primary state map.
-	 * @param localState An optional secondary, temporary state map.
-	 * @param entityState An optional entity-specific state map.
+	 * @param scopes A map of available LogicStates keyed by their scope name (e.g. "local", "entity", "settings").
 	 * @return `true` if the condition is met, `false` otherwise.
 	 */
-	public static function evaluate(?predicate:PredicateMetadata, ?globalState:LogicState, ?localState:LogicState, ?entityState:LogicState):Bool
+	public static function evaluate(?predicate:PredicateMetadata, scopes:Map<String, LogicState>):Bool
 	{
 		if (predicate == null)
 			return true;
@@ -48,7 +47,7 @@ class PredicateEvaluator
 			case AND:
 				for (operand in predicate.operands)
 				{
-					if (!evaluate(operand, globalState, localState, entityState))
+					if (!evaluate(operand, scopes))
 						return false;
 				}
 				return true;
@@ -56,16 +55,16 @@ class PredicateEvaluator
 			case OR:
 				for (operand in predicate.operands)
 				{
-					if (evaluate(operand, globalState, localState, entityState))
+					if (evaluate(operand, scopes))
 						return true;
 				}
 				return false;
 
 			case NOT:
-				return !evaluate(predicate.operands[0], globalState, localState, entityState);
+				return !evaluate(predicate.operands[0], scopes);
 
 			case CHECK:
-				return check(predicate, globalState, localState, entityState);
+				return check(predicate, scopes);
 
 			case RANGED_RANDOM:
 				final minGen:Int = predicate.targetValues[0] ?? FlxMath.MIN_VALUE_INT;
@@ -77,7 +76,7 @@ class PredicateEvaluator
 				return randomValue >= minCheck && randomValue <= maxCheck;
 
 			case LIST_CONTAINS:
-				final state = getStateFromScope(predicate.scope, globalState, localState, entityState);
+				final state = getStateFromScope(predicate.scope, scopes);
 
 				final list:Array<Dynamic> = state.get(predicate.stateKey);
 				if (list == null || list.length == 0)
@@ -87,9 +86,9 @@ class PredicateEvaluator
 				return list.indexOf(valueToFind) != -1;
 
 			case STATE_COMPARE:
-				final state1 = getStateFromScope(predicate.scope, globalState, localState, entityState);
+				final state1 = getStateFromScope(predicate.scope, scopes);
 				// The second value for comparison has its own scope, defaulting to the first value's scope if not provided.
-				final state2 = getStateFromScope(predicate.targetScope ?? predicate.scope, globalState, localState, entityState);
+				final state2 = getStateFromScope(predicate.targetScope ?? predicate.scope, scopes);
 				
 				final value1 = state1.get(predicate.stateKey);
 				final value2 = state2.get(predicate.targetValues[0]);
@@ -113,9 +112,9 @@ class PredicateEvaluator
 		}
 	}
 
-	private static function check(predicate:PredicateMetadata, globalState:LogicState, localState:LogicState, entityState:LogicState):Bool
+	private static function check(predicate:PredicateMetadata, scopes:Map<String, LogicState>):Bool
 	{
-		final state = getStateFromScope(predicate.scope, globalState, localState, entityState);
+		final state = getStateFromScope(predicate.scope, scopes);
 		final value:Dynamic = state.get(predicate.stateKey);
 
 		// `value` can be null if the state doesn't exist, which is a valid check (e.g., `key == null`).
@@ -135,20 +134,31 @@ class PredicateEvaluator
 		}
 	}
 
-	private static function getStateFromScope(?scope:ActionScope, globalState:LogicState, localState:LogicState, entityState:LogicState):LogicState
+	/**
+	 * Retrieves the LogicState for a given scope string.
+	 * If the scope is not found in the provided map, or is explicitly "global", 
+	 * it defaults to LogicEvaluator.globalState.
+	 */
+	private static function getStateFromScope(scope:String, scopes:Map<String, LogicState>):LogicState
 	{
-		final scopeStr = scope ?? GLOBAL;
-		return switch (scopeStr)
+		// Default to global if undefined
+		if (scope == null) 
+			scope = ActionScope.GLOBAL;
+
+		// 1. Try to find the scope in the provided map
+		if (scopes != null && scopes.exists(scope))
 		{
-			case LOCAL:
-				localState;
-			case ENTITY:
-				entityState;
-			case GLOBAL:
-				globalState;
-			default:
-				trace('Warning: Unknown scope "${scopeStr}" in predicate. Defaulting to global.');
-				globalState;
+			return scopes.get(scope);
 		}
+
+		// 2. Fallback: If scope is "global" (or we failed to find it above), use the static global state.
+		// This prevents the developer from having to manually insert LogicEvaluator.globalState into the map every time.
+		if (scope == ActionScope.GLOBAL)
+		{
+			return LogicEvaluator.globalState;
+		}
+
+		trace('Warning: Unknown scope "${scope}" requested and not found in context. Defaulting to LogicEvaluator.globalState.');
+		return LogicEvaluator.globalState;
 	}
 }

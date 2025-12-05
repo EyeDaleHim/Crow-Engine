@@ -14,6 +14,12 @@ import crow.ds.Set;
 class LogicState extends haxe.ds.StringMap<Dynamic>
 {
 	/**
+	 * The name for this LogicState, doesn't do anything useful
+	 * on its own but very nice for debugging.
+	 */
+	public var name:String = "undefined";
+
+	/**
 	 * Keys only the game should write to, data files will
 	 * not be able to write to them.
 	 * 
@@ -27,9 +33,10 @@ class LogicState extends haxe.ds.StringMap<Dynamic>
 	 */
 	public var allowRestriction:Bool = false;
 
-	public function new()
+	public function new(name:String)
 	{
 		super();
+		this.name = name;
 		restrictedKeys = new Set<String>();
 	}
 
