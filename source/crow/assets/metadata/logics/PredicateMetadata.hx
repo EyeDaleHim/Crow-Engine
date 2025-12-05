@@ -10,7 +10,7 @@ typedef PredicateMetadata =
 	// For "AND", "OR", "NOT": a list of nested PredicateMetadata.
 	var ?operands:Array<PredicateMetadata>;
 
-	// The scope of the state to check. Can be "global", "local", or "entity".
+	// The scope of the state to check. Can be "global" (default), "local", or "entity".
 	var ?scope:String;
 
 	// For "CHECK": The field to check on the entity's state.

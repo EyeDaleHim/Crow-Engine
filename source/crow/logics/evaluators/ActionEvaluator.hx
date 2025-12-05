@@ -2,7 +2,6 @@ package crow.logics.evaluators;
 
 import crow.assets.metadata.logics.ActionMetadata;
 import crow.logics.dependencies.LogicState;
-import crow.logics.tools.ActionScope;
 import crow.logics.tools.ValidatorLevel;
 import crow.logics.validators.ActionValidator;
 
@@ -19,11 +18,13 @@ class ActionEvaluator
 	public static var validationLevel:ValidatorLevel = REQUIRED;
 
 	/**
-	 * Evaluates a state change action and modifies the state located within the provided scopes.
+	 * Evaluates a state change action and modifies the provided state map.
 	 * @param action The metadata defining the state change.
-	 * @param scopes A map of available LogicStates keyed by their scope name.
+	 * @param globalState The primary state map to modify.
+	 * @param localState A secondary, temporary state map.
+	 * @param entityState A third state map, typically associated with a specific entity.
 	 */
-	public static function evaluate(action:ActionMetadata, scopes:Map<String, LogicState>):Void
+	public static function evaluate(action:ActionMetadata, globalState:LogicState, ?localState:LogicState, ?entityState:LogicState):Void
 	{
 		switch (validationLevel)
 		{
@@ -36,23 +37,13 @@ class ActionEvaluator
 			
 		}
 
-		final scope = action.scope ?? ActionScope.GLOBAL;
-		
-		var state:LogicState = null;
-		
-		if (scopes.exists(scope))
+		final scope = action.scope ?? GLOBAL;
+		final state:LogicState = switch (scope)
 		{
-			state = scopes.get(scope);
-		}
-		else if (scope == ActionScope.GLOBAL)
-		{
-			state = LogicEvaluator.globalState;
-		}
-		else
-		{
-			trace('Error: Action targets unknown scope "$scope". Change ignored.');
-			return;
-		}
+			case LOCAL: localState;
+			case ENTITY: entityState;
+			default: globalState;
+		};
 
 		switch (action.changeType)
 		{

@@ -35,11 +35,12 @@ class MenuTemplate extends Template
 				final amount:Int = ctx.values.direction ?? 0;
 				targetLayout.changeSelection(amount);
 
-				final localState = ctx.localState ?? new LogicState("context_local_state");
+				final localState = ctx.localState ?? new LogicState();
 
-				final deselectState = ctx.localState ?? new LogicState("context_deselect_state");
+				final deselectState = ctx.localState ?? new LogicState();
 				deselectState.set("index", targetLayout.members.indexOf(formerObject));
 
+				// REPLACED: menuState.handleMenuAction(formerItem.onDeselect...
 				menuState.onItemEvent(formerItem, "deselect", formerEntity, deselectState);
 
 				final selectedObject = targetLayout.selectedObject;
@@ -47,9 +48,10 @@ class MenuTemplate extends Template
 
 				final selectedEntity = menuState.entities.get(selectedItem.name);
 
-				final selectState = ctx.localState ?? new LogicState("context_select_state");
+				final selectState = ctx.localState ?? new LogicState();
 				selectState.set("index", targetLayout.selectedIndex);
 
+				// REPLACED: menuState.handleMenuAction(selectedItem.onSelect...
 				menuState.onItemEvent(selectedItem, "select", selectedEntity, selectState);
 
 				if (ctx.localState != null)
