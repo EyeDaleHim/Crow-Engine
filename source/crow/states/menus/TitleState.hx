@@ -32,15 +32,6 @@ class TitleState extends BaseMenuState
 		buildMenu();
 	}
 
-	// DEBUG
-		override public function onEvent(eventName:String, ?localState:LogicState):Void
-	{
-		if (eventName != "update")
-			trace(eventName);
-
-		super.onEvent(eventName, localState);
-	}
-
 	override public function createScene(sceneName:String):BaseMenuState
 	{
 		return switch (sceneName)
