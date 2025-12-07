@@ -1,6 +1,7 @@
 package crow.logics.evaluators;
 
 import crow.assets.metadata.logics.PredicateMetadata;
+import crow.logics.dependencies.LogicContext;
 import crow.logics.dependencies.LogicState;
 import crow.logics.tools.ActionScope;
 import crow.logics.tools.PredicateOperatorCode;
@@ -21,14 +22,24 @@ class PredicateEvaluator
 	public static var validationLevel:ValidatorLevel = REQUIRED;
 
 	/**
-	 * Evaluates a predicate against an entity's state and context.
-	 * @param predicate The metadata defining the condition to evaluate. No predicate implies `true` (always passes).
-	 * @param globalState The primary state map.
-	 * @param localState An optional secondary, temporary state map.
-	 * @param entityState An optional entity-specific state map.
-	 * @return `true` if the condition is met, `false` otherwise.
+	 * Legacy entry point. Wraps arguments into a LogicContext.
 	 */
 	public static function evaluate(?predicate:PredicateMetadata, ?globalState:LogicState, ?localState:LogicState, ?entityState:LogicState):Bool
+	{
+		// If no global state is provided, use the static one from LogicEvaluator to maintain legacy behavior
+		var gState = globalState ?? LogicEvaluator.globalState;
+		
+		var context = LogicContext.createLegacy(gState, localState, entityState);
+		return evaluateContext(predicate, context);
+	}
+
+	/**
+	 * Evaluates a predicate using a flexible LogicContext.
+	 * @param predicate The metadata defining the condition to evaluate.
+	 * @param context The context provider for looking up states.
+	 * @return `true` if the condition is met, `false` otherwise.
+	 */
+	public static function evaluateContext(?predicate:PredicateMetadata, context:ILogicContext):Bool
 	{
 		if (predicate == null)
 			return true;
@@ -48,7 +59,7 @@ class PredicateEvaluator
 			case AND:
 				for (operand in predicate.operands)
 				{
-					if (!evaluate(operand, globalState, localState, entityState))
+					if (!evaluateContext(operand, context))
 						return false;
 				}
 				return true;
@@ -56,16 +67,16 @@ class PredicateEvaluator
 			case OR:
 				for (operand in predicate.operands)
 				{
-					if (evaluate(operand, globalState, localState, entityState))
+					if (evaluateContext(operand, context))
 						return true;
 				}
 				return false;
 
 			case NOT:
-				return !evaluate(predicate.operands[0], globalState, localState, entityState);
+				return !evaluateContext(predicate.operands[0], context);
 
 			case CHECK:
-				return check(predicate, globalState, localState, entityState);
+				return check(predicate, context);
 
 			case RANGED_RANDOM:
 				final minGen:Int = predicate.targetValues[0] ?? FlxMath.MIN_VALUE_INT;
@@ -77,9 +88,9 @@ class PredicateEvaluator
 				return randomValue >= minCheck && randomValue <= maxCheck;
 
 			case LIST_CONTAINS:
-				final state = getStateFromScope(predicate.scope, globalState, localState, entityState);
+				final state = getStateFromContext(predicate.scope, context);
 
-				final list:Array<Dynamic> = state.get(predicate.stateKey);
+				final list:Array<Dynamic> = state?.get(predicate.stateKey);
 				if (list == null || list.length == 0)
 					return false;
 
@@ -87,68 +98,70 @@ class PredicateEvaluator
 				return list.indexOf(valueToFind) != -1;
 
 			case STATE_COMPARE:
-				final state1 = getStateFromScope(predicate.scope, globalState, localState, entityState);
+				final state1 = getStateFromContext(predicate.scope, context);
 				// The second value for comparison has its own scope, defaulting to the first value's scope if not provided.
-				final state2 = getStateFromScope(predicate.targetScope ?? predicate.scope, globalState, localState, entityState);
+				final state2 = getStateFromContext(predicate.targetScope ?? predicate.scope, context);
 				
+				if (state1 == null || state2 == null)
+					return false;
+
 				final value1 = state1.get(predicate.stateKey);
 				final value2 = state2.get(predicate.targetValues[0]);
 
 				if (value1 == null || value2 == null)
 					return false;
 
-				return switch (predicate.operatorCode)
-				{
-					case EQ: value1 == value2;
-					case NEQ: value1 != value2;
-					case GT: value1 > value2;
-					case LT: value1 < value2;
-					case GTE: value1 >= value2;
-					case LTE: value1 <= value2;
-					default: false;
-				}
+				return compareValues(value1, value2, predicate.operatorCode);
 
 			default:
 				return false;
 		}
 	}
 
-	private static function check(predicate:PredicateMetadata, globalState:LogicState, localState:LogicState, entityState:LogicState):Bool
+	private static function check(predicate:PredicateMetadata, context:ILogicContext):Bool
 	{
-		final state = getStateFromScope(predicate.scope, globalState, localState, entityState);
+		final state = getStateFromContext(predicate.scope, context);
+		if (state == null) 
+			return false;
+
 		final value:Dynamic = state.get(predicate.stateKey);
 
 		// `value` can be null if the state doesn't exist, which is a valid check (e.g., `key == null`).
 		if (predicate.targetValues == null)
 			return false;
 
-		return switch (predicate.operatorCode)
+		return compareValues(value, predicate.targetValues[0], predicate.operatorCode, predicate.targetValues[1]);
+	}
+
+	private static function compareValues(val1:Dynamic, val2:Dynamic, op:PredicateOperatorCode, ?extra:Dynamic):Bool
+	{
+		return switch (op)
 		{
-			case EQ: value == predicate.targetValues[0];
-			case NEQ: value != predicate.targetValues[0];
-			case GT: value > predicate.targetValues[0];
-			case LT: value < predicate.targetValues[0];
-			case GTE: value >= predicate.targetValues[0];
-			case LTE: value <= predicate.targetValues[0];
-			case MODULO: (Std.int(value) % predicate.targetValues[0]) == predicate.targetValues[1];
+			case EQ: val1 == val2;
+			case NEQ: val1 != val2;
+			case GT: val1 > val2;
+			case LT: val1 < val2;
+			case GTE: val1 >= val2;
+			case LTE: val1 <= val2;
+			case MODULO: (Std.int(val1) % val2) == extra;
 			default: false;
 		}
 	}
 
-	private static function getStateFromScope(?scope:ActionScope, globalState:LogicState, localState:LogicState, entityState:LogicState):LogicState
+	private static function getStateFromContext(scope:String, context:ILogicContext):LogicState
 	{
-		final scopeStr = scope ?? GLOBAL;
-		return switch (scopeStr)
+		// We allow raw strings or the ActionScope enum string
+		final foundState = context.getState(scope);
+		
+		if (foundState == null)
 		{
-			case LOCAL:
-				localState;
-			case ENTITY:
-				entityState;
-			case GLOBAL:
-				globalState;
-			default:
-				trace('Warning: Unknown scope "${scopeStr}" in predicate. Defaulting to global.');
-				globalState;
+			// Optional: Decide if we fall back to GLOBAL, or just return null and let the check fail.
+			// Legacy behavior often implied global fallback, but strict scoping is cleaner.
+			// Falling back to global for backward compat:
+			if (scope == null || scope == "") 
+				return context.getState(ActionScope.GLOBAL);
 		}
+		
+		return foundState;
 	}
 }

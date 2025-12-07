@@ -1,30 +1,17 @@
 package crow.logics.evaluators;
 
 import crow.assets.metadata.logics.ActionMetadata;
+import crow.logics.dependencies.LogicContext;
 import crow.logics.dependencies.LogicState;
+import crow.logics.tools.ActionScope;
 import crow.logics.tools.ValidatorLevel;
 import crow.logics.validators.ActionValidator;
 
-/**
- * A utility class for evaluating state-changing actions defined by `ActionMetadata`.
- */
 class ActionEvaluator
 {
-	/**
-	 * Requires actions to be valid and type-safe before it is processed on-demand.
-	 * 
-	 * Disabling this will incur some performance benefit.
-	 */
 	public static var validationLevel:ValidatorLevel = REQUIRED;
 
-	/**
-	 * Evaluates a state change action and modifies the provided state map.
-	 * @param action The metadata defining the state change.
-	 * @param globalState The primary state map to modify.
-	 * @param localState A secondary, temporary state map.
-	 * @param entityState A third state map, typically associated with a specific entity.
-	 */
-	public static function evaluate(action:ActionMetadata, globalState:LogicState, ?localState:LogicState, ?entityState:LogicState):Void
+	public static function evaluate(action:ActionMetadata, context:ILogicContext):Void
 	{
 		switch (validationLevel)
 		{
@@ -34,27 +21,25 @@ class ActionEvaluator
 			case WARN:
 				ActionValidator.validate(action);
 			case NONE:
-			
 		}
 
-		final scope = action.scope ?? GLOBAL;
-		final state:LogicState = switch (scope)
+		final scope = action.scope ?? ActionScope.GLOBAL;
+		final state = context.getState(scope);
+
+		if (state == null)
 		{
-			case LOCAL: localState;
-			case ENTITY: entityState;
-			default: globalState;
-		};
+			trace('ActionEvaluator: Scope "$scope" not found in context.');
+			return;
+		}
 
 		switch (action.changeType)
 		{
 			case SET:
 				state.set(action.stateKey, action.value);
-			case INCREMENT | DECREMENT:
-				// For integer increments/decrements
+			case INCREMENT, DECREMENT:
 				untyped final change:Int = (action.changeType == INCREMENT) ? action.value : -action.value;
 				state.set(action.stateKey, state.get(action.stateKey) + change);
-			case ADD | SUBTRACT:
-				// For float addition/subtraction
+			case ADD, SUBTRACT:
 				final value:Float = (action.changeType == ADD) ? action.value : -action.value;
 				state.set(action.stateKey, state.get(action.stateKey) + value);
 			case MULTIPLY:

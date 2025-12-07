@@ -191,3 +191,30 @@ enum abstract SelectionMode(String) to String
 		}
 	}
 }
+
+/**
+ * Defines the behavior of the layout.
+ */
+enum abstract LayoutType(String) to String
+{
+	/**
+	 * Standard static layout (Vertical/Horizontal).
+	 */
+	var LINEAR = "LINEAR";
+
+	/**
+	 * Dynamic layout where items lerp to positions based on selection.
+	 */
+	var DYNAMIC = "DYNAMIC";
+
+	@:from
+	public static function fromString(value:String):LayoutType
+	{
+		return switch (value.trim().toUpperCase())
+		{
+			case "DYNAMIC": DYNAMIC;
+			case "LINEAR": LINEAR;
+			default: LINEAR;
+		}
+	}
+}

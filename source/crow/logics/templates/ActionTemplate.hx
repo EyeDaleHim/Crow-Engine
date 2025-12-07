@@ -4,6 +4,7 @@ import crow.assets.metadata.logics.ActionMetadata;
 import crow.logics.dependencies.LogicState;
 import crow.logics.evaluators.ActionEvaluator;
 import crow.logics.templates.Template;
+import crow.logics.tools.ActionScope;
 
 class ActionTemplate extends Template
 {
@@ -13,18 +14,24 @@ class ActionTemplate extends Template
 			"state_change" => ExecutableAction.createAction((ctx) ->
 			{
 				final stateChange:ActionMetadata = ctx.values.state;
-				if (stateChange.scope == ENTITY)
+
+				if (stateChange.scope == ActionScope.ENTITY)
 				{
 					ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) ->
 					{
-						ActionEvaluator.evaluate(stateChange, ctx.executorState, ctx.localState, entity.logicState);
+						// Temporarily register this entity in the context so the Evaluator finds it
+						ctx.logicContext.register(ActionScope.ENTITY, entity.logicState);
+						ActionEvaluator.evaluate(stateChange, ctx.logicContext);
 					});
+					// Clean up entity scope after iteration to prevent stale references
+					ctx.logicContext.unregister(ActionScope.ENTITY);
 				}
 				else
-					ActionEvaluator.evaluate(stateChange, ctx.executorState, ctx.localState);
+				{
+					ActionEvaluator.evaluate(stateChange, ctx.logicContext);
+				}
 				ctx.onComplete();
-			},
-				[], {wantsTargetedEntities: true}),
+			}, [], {wantsTargetedEntities: true}),
 
 			"dispatch_event" => ExecutableAction.createAction((ctx) ->
 			{
@@ -60,7 +67,8 @@ class ActionTemplate extends Template
 					ctx.executor.removeListenersByTag(tagToRemove);
 				}
 				ctx.onComplete();
-			}, [{name: "tag", type: "String", optional: false}], {wantsExecutor: true}),
+			},
+				[{name: "tag", type: "String", optional: false}], {wantsExecutor: true}),
 			"switch_scene" => ExecutableAction.createAction((ctx) ->
 			{
 				if (ctx.executor == null)

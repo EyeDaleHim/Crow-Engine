@@ -10,6 +10,10 @@ The idea of Crow Engine's data-driven design comes from the fact that developers
 
 Additionally, Crow Engine was also made with personal use in mind, and any feature or infrastructure implemented is generally prioritizing my own needs before others. However, this does not imply that documentation or quality-of-life features will be cut if it disrupts my workflow as feedback towards the engine is also feedback towards my workflow.
 
+## Risks
+Crow Engine requires a higher level of skill floor than other Friday Night Funkin' engines like Psych Engine due to the amount of
+behavior you have to define explicitly.
+
 ## Modding
 Crow Engine does not offer any options for mod folders or load mods itself, it is only expected to load content from its assets folder. In such cases, mods made with Crow Engine will need to be distributed as one compressed package, either with or without the executable, adding onto the original asset folder or replacing it entirely.
 

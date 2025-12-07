@@ -3,76 +3,75 @@ package crow.logics.evaluators;
 import crow.assets.metadata.logics.LogicMetadata;
 import crow.ds.OrderedMap;
 import crow.logics.dependencies.IEventExecutor;
+import crow.logics.dependencies.LogicContext;
 import crow.logics.dependencies.LogicState;
 import crow.logics.templates.*;
 import crow.logics.templates.Template;
-import crow.logics.templates.Template.ActionContext;
+import crow.logics.tools.ActionScope;
 import crow.logics.tools.EntityFilter;
 import crow.logics.tools.StringInterpolator;
 import crow.logics.tools.ValidatorLevel;
 import crow.logics.validators.LogicValidator;
 
-/**
- * A utility class for executing actions defined by `ListenerActionMetadata`.
- */
 class LogicEvaluator
 {
-	public static final globalState:LogicState = new LogicState();
+	public static final globalState:LogicState = new LogicState("_global");
 
-	/**
-	 * Requires executable actions to have their context validated before execution.
-	 *
-	 * Disabling this may provide a minor performance benefit at the cost of safety.
-	 */
 	public static var validationLevel:ValidatorLevel = REQUIRED;
 
 	public static final jumpTables:Map<String, ExecutableAction> = [];
 
 	public static function init():Void
 	{
-		var list:Array<Class<Template>> = [];
-
 		globalState.allowRestriction = true;
-
 		globalState.setRestricted("gameWidth", FlxG.width);
 		globalState.setRestricted("gameHeight", FlxG.height);
-
 		globalState.setRestricted("songListLength", Main.levels.groups.count());
 
-		list.push(ActionTemplate);
-		list.push(AnimationTemplate);
-		list.push(CameraTemplate);
-		list.push(ComponentTemplate);
-		list.push(EntityTemplate);
-		list.push(GlobalTemplate);
-		list.push(MusicTemplate);
-		list.push(MenuTemplate);
-		list.push(SoundTemplate);
-		list.push(SpriteTemplate);
-		list.push(TextTemplate);
-		list.push(TimerTemplate);
-		list.push(TweenTemplate);
+		var list:Array<Class<Template>> = [
+			ActionTemplate,
+			AnimationTemplate,
+			CameraTemplate,
+			ComponentTemplate,
+			EntityTemplate,
+			GlobalTemplate,
+			MusicTemplate,
+			MenuTemplate,
+			SoundTemplate,
+			SpriteTemplate,
+			TextTemplate,
+			TimerTemplate,
+			TweenTemplate
+		];
 
 		for (item in list)
 		{
 			var template = Type.createEmptyInstance(item);
-			var actions = template.actions();
-
-			for (name => action in actions)
+			for (name => action in template.actions())
 			{
 				if (jumpTables.exists(name))
-				{
-					throw 'Action with name "$name" already exists. Please use a unique name.';
-				}
-				@:privateAccess
-				action._name = name; // Feels stupid to assign this way?
+					throw 'Action "$name" already exists.';
+				@:privateAccess action._name = name;
 				jumpTables.set(name, action);
 			}
 		}
 	}
 
+	/**
+	 * Executes a list of actions.
+	 */
 	public static function execute(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
 			?entities:OrderedMap<String, Entity>, ?executor:IEventExecutor):Void
+	{
+		var ctx = LogicContext.createLegacy(executorState, localState);
+		executeContext(actions, ctx, entities, executor);
+	}
+
+	/**
+	 * Executes actions using the new LogicContext system.
+	 */
+	public static function executeContext(actions:Array<ListenerActionMetadata>, logicContext:LogicContext, ?entities:OrderedMap<String, Entity>,
+			?executor:IEventExecutor):Void
 	{
 		for (action in actions)
 		{
@@ -81,56 +80,59 @@ class LogicEvaluator
 				if (action.targets != null)
 					EntityFilter.filterEntities(entities, action.targets);
 				else
-					[for (entity in entities) entity]; // If targets are omitted, apply to all entities.
+					[for (entity in entities) entity];
 			}
 			else null;
 
-			var entityContext:LogicState = null;
+			// Context Swap for Entity Scope during Interpolation
+			// If exactly one entity is targeted, we register it as "entity" scope for this action's interpolation
 			if (targetedEntities != null && targetedEntities.length == 1)
 			{
-				// If we are targeting exactly one entity, use its state for variables
-				entityContext = targetedEntities[0].logicState;
+				logicContext.register(crow.logics.tools.ActionScope.ENTITY, targetedEntities[0].logicState);
+			}
+			else
+			{
+				logicContext.unregister(crow.logics.tools.ActionScope.ENTITY);
 			}
 
-			// Interpolate string values before execution
-            final values:Dynamic = {};
-            if (action.values != null)
-            {
-                if (!Reflect.isObject(action.values))
-                    throw 'action.values must be an object, not an array or primitive.';
-
-                for (field in Reflect.fields(action.values))
-                {
-                    final val:Dynamic = Reflect.field(action.values, field);
-
-                    // Strictly check if the value is a String before interpolating
-                    if (Std.isOfType(val, String))
-                    {
-                        final strVal:String = cast val;
-                        Reflect.setField(values, field, StringInterpolator.interpolate(strVal, executorState, localState, entityContext));
-                    }
-                    else
-                    {
-                        Reflect.setField(values, field, val);
-                    }
-                }
-            }
+			// Interpolate Values
+			final values:Dynamic = {};
+			if (action.values != null && Reflect.isObject(action.values))
+			{
+				for (field in Reflect.fields(action.values))
+				{
+					final val:Dynamic = Reflect.field(action.values, field);
+					if (Std.isOfType(val, String))
+					{
+						Reflect.setField(values, field, StringInterpolator.interpolate(cast val, logicContext));
+					}
+					else
+					{
+						Reflect.setField(values, field, val);
+					}
+				}
+			}
 
 			final postEvents = action.postListenerEvents;
-
-			final onComplete = (postEvents != null && executor != null) ? () ->
+			final onComplete = (postEvents != null) ? () ->
 			{
-				execute(postEvents, executorState, localState, entities, executor);
+				executeContext(postEvents, logicContext, entities, executor);
 			} : () -> {};
 
 			final actionType = action.type.trim();
 			if (jumpTables.exists(actionType))
 			{
 				final executable = jumpTables.get(actionType);
+
+				// Re-extract specific states for legacy compatibility in ActionContext
+				var execState = logicContext.getState(GLOBAL);
+				var locState = logicContext.getState(LOCAL);
+
 				final context:ActionContext = {
 					values: values,
-					executorState: executorState,
-					localState: localState,
+					logicContext: logicContext, // New System
+					executorState: execState, // temp
+					localState: locState, // temp
 					targetedEntities: targetedEntities,
 					executor: executor,
 					onComplete: onComplete
@@ -140,18 +142,17 @@ class LogicEvaluator
 				{
 					case REQUIRED:
 						if (!LogicValidator.validate(executable, context))
-						{
-							continue; // Skip execution if validation fails
-						}
+							continue;
 					case WARN:
-						LogicValidator.validate(executable, context); // Trace warnings but don't stop execution
-					case NONE: // Do nothing
+						LogicValidator.validate(executable, context);
+					case NONE:
 				}
 				executable.execute(context);
-				continue;
 			}
-
-			trace('WARNING: Unknown action type: ${action.type}');
+			else
+			{
+				trace('WARNING: Unknown action type: ${action.type}');
+			}
 		}
 	}
 }

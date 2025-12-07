@@ -162,7 +162,23 @@ class BaseMenuState extends MainState implements IEventExecutor
 			}
 		}
 
-		final rootLayout = new InteractableLayout();
+		// --- CHANGED SECTION START ---
+		var rootLayoutProps:MenuLayout = null;
+
+		if (menuMetadata.layouts != null)
+		{
+			for (layout in menuMetadata.layouts)
+			{
+				if (layout.name == null || layout.name == "main")
+				{
+					rootLayoutProps = layout;
+					break;
+				}
+			}
+		}
+
+		final rootLayout = createLayoutInstance(rootLayoutProps);
+
 		if (!rootLayoutAdded)
 			add(rootLayout);
 
@@ -403,7 +419,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 				if (elementData.items != null)
 				{
 					// This item is a sub-menu (a nested layout).
-					final subLayout = new InteractableLayout();
+					final subLayout = createLayoutInstance(elementData.layout);
 					buildElements(elementData.items, subLayout, elementData.layout);
 					menuObject = subLayout;
 				}
@@ -906,6 +922,45 @@ class BaseMenuState extends MainState implements IEventExecutor
 			if (this.music != null)
 				castedState.music.swapAttributes(this.music.getAttributes());
 		}
+	}
+
+	private function createLayoutInstance(props:MenuLayout):InteractableLayout
+	{
+		var layout:InteractableLayout;
+
+		if (props == null)
+		{
+			return (layout = new InteractableLayout());
+		}
+
+		switch (props.type)
+		{
+			case DYNAMIC:
+				{
+					var dyn = new crow.objects.layout.DynamicListLayout();
+					if (props.lerpSpeed != null)
+						dyn.lerpSpeed = props.lerpSpeed;
+					if (props.xOffset != null)
+						dyn.xOffset = props.xOffset;
+					if (props.centerOnSelection != null)
+						dyn.centerOnSelection = props.centerOnSelection;
+					if (props.deselectedAlpha != null)
+						dyn.deselectedAlpha = props.deselectedAlpha;
+					layout = dyn;
+				}
+			default:
+				{
+					layout = new InteractableLayout();
+				}
+		}
+
+		if (props.position != null)
+		{
+			layout.x = props.position.x ?? layout.x;
+			layout.y = props.position.y ?? layout.y;
+		}
+
+		return layout;
 	}
 
 	/**

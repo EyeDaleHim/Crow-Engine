@@ -1,32 +1,55 @@
 package crow.logics.tools;
 
+import crow.logics.dependencies.LogicContext;
 import crow.logics.dependencies.LogicState;
+import crow.logics.tools.ActionScope;
 
 class StringInterpolator
 {
-	private static final INTERPOLATION_REGEX = ~/(\${[a-zA-Z0-9_]+(?:\[[0-9]+\])?})/g;
+	private static final INTERPOLATION_REGEX = ~/(\${[a-zA-Z0-9_.]+(?:\[[0-9]+\])?})/g;
 
-	public static function interpolate(text:String, globalState:LogicState, ?localState:LogicState, ?entityState:LogicState):String
+	public static function interpolate(text:String, context:ILogicContext):String
 	{
 		return INTERPOLATION_REGEX.map(text, (regex) ->
 		{
 			final fullMatch = regex.matched(1);
-			final expression = fullMatch.substring(2, fullMatch.length - 1);
+			final expression = fullMatch.substring(2, fullMatch.length - 1); // remove ${ and }
 			final parts = expression.split("[");
-			final varName = parts[0];
+			var varPath = parts[0];
 
 			var value:Dynamic = null;
 
-			// Priority: Local (Event) -> Entity (Object) -> Global (Menu)
-			if (localState != null && localState.exists(varName))
-				value = localState.get(varName);
-			else if (entityState != null && entityState.exists(varName))
-				value = entityState.get(varName);
-			else if (globalState.exists(varName))
-				value = globalState.get(varName);
+			// Check for explicit scoping (e.g. "settings.volume")
+			if (varPath.indexOf(".") != -1)
+			{
+				final pathParts = varPath.split(".");
+				final scope = pathParts[0];
+				final key = pathParts[1];
+				
+				final state = context.getState(scope);
+				if (state != null && state.exists(key))
+				{
+					value = state.get(key);
+				}
+			}
 			else
-				return fullMatch;
+			{
+				// Legacy Priority: Local -> Entity -> Global
+				var local = context.getState(ActionScope.LOCAL);
+				var entity = context.getState(ActionScope.ENTITY);
+				var global = context.getState(ActionScope.GLOBAL);
 
+				if (local != null && local.exists(varPath))
+					value = local.get(varPath);
+				else if (entity != null && entity.exists(varPath))
+					value = entity.get(varPath);
+				else if (global != null && global.exists(varPath))
+					value = global.get(varPath);
+				else
+					return fullMatch; // Variable not found
+			}
+
+			// Handle Array Indexing
 			if (parts.length > 1)
 			{
 				final indexString = parts[1].substring(0, parts[1].length - 1);

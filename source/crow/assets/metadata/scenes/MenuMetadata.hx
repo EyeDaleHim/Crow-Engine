@@ -179,6 +179,17 @@ typedef MenuLayout =
 	var ?name:String;
 
 	/**
+	 * The position of the layout.
+	 */
+	var ?position:AxeData<Float>;
+
+	/**
+	 * The type of layout to create.
+	 * Default is LINEAR.
+	 */
+	var ?type:LayoutType;
+
+	/**
 	 * The direction in which items are laid out (e.g., `VERTICAL` or `HORIZONTAL`).
 	 */
 	var ?direction:LayoutDirection;
@@ -200,7 +211,7 @@ typedef MenuLayout =
 
 	/**
 	 * How items are aligned along the cross axis.
-						- */
+	 */
 	var ?alignItems:AlignItems;
 
 	/**
@@ -238,6 +249,29 @@ typedef MenuLayout =
 	 * An action to be triggered when the layout's selection index changes.
 	 */
 	var ?onIndex:ListenerActionMetadata;
+
+	// -- Dynamic Layout --
+
+	/**
+	 * For DYNAMIC type: The speed at which items interpolate to their position.
+	 */
+	var ?lerpSpeed:Float;
+
+	/**
+	 * For DYNAMIC type: The horizontal offset applied based on distance from center.
+	 * Creates the "diagonal" menu effect.
+	 */
+	var ?xOffset:Float;
+
+	/**
+	 * For DYNAMIC type: If true, the selected item stays vertically centered on screen.
+	 */
+	var ?centerOnSelection:Bool;
+
+	/**
+	 * For DYNAMIC type: The alpha value of non-selected items.
+	 */
+	var ?deselectedAlpha:Float;
 };
 
 /**

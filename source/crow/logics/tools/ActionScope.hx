@@ -1,6 +1,6 @@
 package crow.logics.tools;
 
-enum abstract ActionScope(String) to String
+enum abstract ActionScope(String) from String to String
 {
 	var GLOBAL = "global";
 	var LOCAL = "local";
@@ -9,12 +9,13 @@ enum abstract ActionScope(String) to String
     @:from
 	public static function fromString(value:String):ActionScope
 	{
-		return switch ((value ?? "").trim().toLowerCase())
+		final finalValue = (value ?? "").trim().toLowerCase();
+		return switch (finalValue)
 		{
 			case "global": GLOBAL;
 			case "local": LOCAL;
 			case "entity": ENTITY;
-			default: null;
+			default: cast finalValue;
 		}
 	}
 }

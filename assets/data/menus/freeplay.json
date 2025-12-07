@@ -53,7 +53,7 @@
                         "values": {
                             "name": "check_empty",
                             "actions": {
-                                "show": true
+                                "show": false
                             }
                         }
                     }
@@ -75,7 +75,7 @@
                         "values": {
                             "name": "check_empty",
                             "actions": {
-                                "show": false
+                                "show": true
                             }
                         }
                     }
@@ -93,11 +93,18 @@
     },
     "layouts": [
         {
-            "name": "song_list",
+            "name": "main",
+            "type": "DYNAMIC",
             "direction": "VERTICAL",
-            "gap": 15,
-            "alignItems": "CENTER",
-            "selectionMode": "BOUND"
+            "selectionMode": "WRAP",
+            "position": {
+                "x": 20,
+                "y": 0
+            },
+            "gap": 120,
+            "centerOnSelection": true,
+            "lerpSpeed": 8.0,
+            "xOffset": 20.0
         }
     ],
     "elements": [
@@ -154,6 +161,46 @@
             "actions": [
                 {
                     "type": "return_to_previous_scene"
+                }
+            ]
+        },
+                {
+            "input": "ui_up",
+            "check": "just_pressed",
+            "actions": [
+                {
+                    "type": "navigate",
+                    "values": {
+                        "direction": -1,
+                        "layout": "main"
+                    }
+                },
+                {
+                    "type": "play_sound",
+                    "values": {
+                        "sound": "sfx/navigate/scroll",
+                        "volume": 0.6
+                    }
+                }
+            ]
+        },
+        {
+            "input": "ui_down",
+            "check": "just_pressed",
+            "actions": [
+                {
+                    "type": "navigate",
+                    "values": {
+                        "direction": 1,
+                        "layout": "main"
+                    }
+                },
+                {
+                    "type": "play_sound",
+                    "values": {
+                        "sound": "sfx/navigate/scroll",
+                        "volume": 0.6
+                    }
                 }
             ]
         }

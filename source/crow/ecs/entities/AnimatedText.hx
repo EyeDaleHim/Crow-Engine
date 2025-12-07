@@ -290,10 +290,8 @@ class AnimatedTextLine extends FlxSprite
 			if (!camera.visible || !camera.exists)
 				continue;
 
-			final transform = parentText.colorTransform;
-
-			final isColored = (transform != null #if !html5 && transform.hasRGBMultipliers() #end);
-			final hasColorOffsets:Bool = (transform != null && transform.hasRGBAOffsets());
+			final isColored = (colorTransform != null #if !html5 && colorTransform.hasRGBMultipliers() #end);
+			final hasColorOffsets:Bool = (colorTransform != null && colorTransform.hasRGBAOffsets());
 
 			// Flixel kindly helps us re-use the last line's batch automatically here
 			var batch:FlxDrawQuadsItem = camera.startQuadBatch(frames.parent, isColored, hasColorOffsets, parentText.blend, parentText.antialiasing,
@@ -328,7 +326,7 @@ class AnimatedTextLine extends FlxSprite
 					matrix.ty = Math.floor(matrix.ty);
 				}
 
-				batch.addQuad(frame, matrix, transform);
+				batch.addQuad(frame, matrix, colorTransform);
 			}
 
 			#if FLX_DEBUG

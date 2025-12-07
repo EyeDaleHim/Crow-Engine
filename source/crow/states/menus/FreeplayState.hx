@@ -25,10 +25,11 @@ class FreeplayState extends BaseMenuState
 			trace('Error parsing title intro file: $e');
 		}
 
-		buildMenu();
-
 		noSongsText = new Entity("freeplay/no_songs");
 		noSongsText.screenCenter(Y);
+
+		buildMenu();
+
 		add(noSongsText);
 		entities.set(noSongsText.entityName, noSongsText);
 	}
@@ -38,10 +39,10 @@ class FreeplayState extends BaseMenuState
 	{
 		for (action in actions)
 		{
-			if (action.type ==  "check_empty")
+			if (action.values?.name ==  "check_empty")
 			{
 				actions.remove(action);
-				trace(executorState, localState);
+				noSongsText.visible = action.values.actions?.show ?? false;
 			}
 		}
 		super.executeLogic(actions, executorState, localState, entities, executor);

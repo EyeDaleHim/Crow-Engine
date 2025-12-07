@@ -1,5 +1,6 @@
 package crow.ecs.managers;
 
+import crow.logics.dependencies.LogicContext;
 import crow.assets.metadata.game.ComponentMetadata;
 import crow.ecs.components.BaseComponent;
 import crow.ecs.components.*;
@@ -18,6 +19,7 @@ class ComponentTable
 		list.set("position", PositionComponent);
 		list.set("tags", TagComponent);
 		list.set("positional_index", PositionalIndexComponent);
+		list.set("value_router", ValueRouterComponent);
 	}
 
 	/**
@@ -63,6 +65,12 @@ class ComponentTable
 					final index:Int = resolve(metadata.struct.index, entity);
 					new PositionalIndexComponent(index);
 				}
+			case ValueRouterComponent:
+				{
+					final target:String = resolve(metadata.struct.target, entity);
+					final field:String = resolve(metadata.struct.field, entity);
+					new ValueRouterComponent(target, field);
+				}
 			default:
 				Type.createEmptyInstance(BaseComponent);
 		};
@@ -83,8 +91,9 @@ class ComponentTable
 			final strVal:String = cast value;
 			if (strVal.indexOf("${") != -1)
 			{
-				var resolved = StringInterpolator.interpolate(strVal, crow.logics.evaluators.LogicEvaluator.globalState, null,
-					entity.logicState);
+				var ctx = LogicContext.createLegacy(crow.logics.evaluators.LogicEvaluator.globalState, null, entity.logicState);
+
+				var resolved = StringInterpolator.interpolate(strVal, ctx);
 
 				// Attempt to convert back to typed values since Interpolator returns Strings
 				var f = Std.parseFloat(resolved);
