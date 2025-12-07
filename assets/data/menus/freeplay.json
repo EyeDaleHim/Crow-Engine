@@ -98,7 +98,7 @@
             "direction": "VERTICAL",
             "selectionMode": "WRAP",
             "position": {
-                "x": 20,
+                "x": 80,
                 "y": 0
             },
             "gap": 120,
@@ -118,11 +118,7 @@
         },
         {
             "name": "_root_layout",
-            "layout": "song_list",
-            "position": {
-                "x": 0,
-                "y": 100
-            }
+            "layout": "song_list"
         },
         {
             "dataSource": "GROUPS",

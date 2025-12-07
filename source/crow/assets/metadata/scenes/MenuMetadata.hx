@@ -139,6 +139,8 @@ typedef MenuItem =
 
 	/**
 	 * An optional position to place the entity, overriding its default and any layout calculations.
+	 * 
+	 * If this entity is named "_root_layout", this will override the layout's `position` property.
 	 */
 	var ?position:AxeData<Float>;
 

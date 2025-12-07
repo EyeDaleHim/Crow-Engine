@@ -10,7 +10,6 @@ class TextTemplate extends Template
 			"set_text" => ExecutableAction.createAction((ctx) ->
 			{
 				final text:String = ctx.values.text != null ? ctx.values.text : "";
-				trace(ctx.targetedEntities);
 				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) ->
 				{
 					entity.forEachOfType(AnimatedText, (textObject) -> textObject.text = text);
