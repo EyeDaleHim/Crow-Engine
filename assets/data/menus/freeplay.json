@@ -160,7 +160,7 @@
                 }
             ]
         },
-                {
+        {
             "input": "ui_up",
             "check": "just_pressed",
             "actions": [
@@ -181,8 +181,56 @@
             ]
         },
         {
+            "input": "ui_up",
+            "check": "repeated",
+            "advanced": {
+                "repeatStart": 0.5,
+                "repeatRate": 0.1
+            },
+            "actions": [
+                {
+                    "type": "navigate",
+                    "values": {
+                        "direction": -1,
+                        "layout": "main"
+                    }
+                },
+                {
+                    "type": "play_sound",
+                    "values": {
+                        "sound": "sfx/navigate/scroll",
+                        "volume": 0.6
+                    }
+                }
+            ]
+        },
+        {
             "input": "ui_down",
             "check": "just_pressed",
+            "actions": [
+                {
+                    "type": "navigate",
+                    "values": {
+                        "direction": 1,
+                        "layout": "main"
+                    }
+                },
+                {
+                    "type": "play_sound",
+                    "values": {
+                        "sound": "sfx/navigate/scroll",
+                        "volume": 0.6
+                    }
+                }
+            ]
+        },
+                {
+            "input": "ui_down",
+            "check": "repeated",
+            "advanced": {
+                "repeatStart": 0.5,
+                "repeatRate": 0.1
+            },
             "actions": [
                 {
                     "type": "navigate",

@@ -303,10 +303,32 @@ typedef MenuInput =
 	var ?check:MenuInputCheck;
 
 	/**
+	 * The advanced input options.
+	 */
+	var ?advanced:MenuInputAdvanced;
+
+	/**
 	 * An optional condition that must be met for this input to be processed.
 	 * The condition is evaluated against the menu's `logicState`.
 	 */
 	var ?condition:PredicateMetadata;
+};
+
+/**
+ * Defines advanced parameters for input checks, allowing for more complex
+ * interactions like holds, taps, and repeats.
+ */
+typedef MenuInputAdvanced =
+{
+	/**
+	 * For `repeated` checks: The initial delay (in seconds) before the first repeat.
+	 */
+	var ?repeatStart:Float;
+
+	/**
+	 * For `repeated` checks: The interval (in seconds) for subsequent repeats.
+	 */
+	var ?repeatRate:Float;
 };
 
 enum abstract MenuInputCheck(String) from String to String
@@ -322,6 +344,9 @@ enum abstract MenuInputCheck(String) from String to String
 
 	/** Triggers continuously while the input is not held down (is up). */
 	var Released = "released";
+
+	/** Triggers repeatedly while the input is held down, based on `repeatStart` and `repeatRate` in `advanced` options. */
+	var Repeated = "repeated";
 }
 
 enum abstract MenuDataSource(String) from String to String

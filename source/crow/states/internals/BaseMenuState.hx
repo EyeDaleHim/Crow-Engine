@@ -405,11 +405,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 						rootLayoutAndData = {layout: parentLayout, data: elementData};
 						if (elementData.position != null)
 						{
-							if (elementData.position != null)
-							{
-								parentLayout.x = elementData.position.x;
-								parentLayout.y = elementData.position.y;
-							}
+							parentLayout.x = elementData.position.x;
+							parentLayout.y = elementData.position.y;
 						}
 						add(parentLayout);
 					}
@@ -565,6 +562,16 @@ class BaseMenuState extends MainState implements IEventExecutor
 					triggered = Main.input.isPressed(inputAction.input);
 				case Released:
 					triggered = Main.input.isPressed(inputAction.input) == false;
+				case Repeated:
+					final adv = inputAction.advanced;
+					if (adv != null)
+					{
+						triggered = Main.input.isRepeated(inputAction.input, adv.repeatStart, adv.repeatRate);
+					}
+					else
+					{
+						triggered = Main.input.isRepeated(inputAction.input);
+					}
 			}
 
 			if (triggered)

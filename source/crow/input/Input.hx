@@ -20,6 +20,10 @@ class Input
 	private var _activeImpulses:Set<InputImpulse>; // Set of impulses currently held down
 	private var _justPressedImpulses:Set<InputImpulse>; // Impulses that became active THIS frame
 	private var _justReleasedImpulses:Set<InputImpulse>; // Impulses that became inactive THIS frame
+	private var _repeatedActions:Set<String>; // actionIds that repeated this frame
+	private var _actionRepeatStates:Map<String, ActionRepeatState>;
+	private var _dynamicRepeatStates:Map<String, ActionRepeatState>; // For on-the-fly isRepeated() calls
+	private var _elapsed:Float = 0;
 
 	/**
 	 * Reads an internal input file.
@@ -38,6 +42,9 @@ class Input
 		_activeImpulses = new Set();
 		_justPressedImpulses = new Set();
 		_justReleasedImpulses = new Set();
+		_repeatedActions = new Set();
+		_actionRepeatStates = new Map<String, ActionRepeatState>();
+		_dynamicRepeatStates = new Map<String, ActionRepeatState>();
 
 		if (stage != null)
 		{
@@ -72,6 +79,7 @@ class Input
 			for (actionBind in inputMetadata.binds)
 			{
 				_actionBinds.set(actionBind.id, actionBind);
+				_actionRepeatStates.set(actionBind.id, new ActionRepeatState());
 			}
 			trace('Input metadata loaded successfully from $inputFile.');
 		}
@@ -87,12 +95,52 @@ class Input
 	 */
 	public function update(elapsed:Float):Void
 	{
+		_elapsed = elapsed;
+
 		// Update duration for active impulses
 		for (impulse in _activeImpulses)
 		{
 			if (impulse.active)
 			{
 				impulse.duration += elapsed;
+			}
+		}
+
+		// Update repeat logic
+		for (actionId => action in _actionBinds)
+		{
+			final repeatDelay = action.repeatDelay;
+			final repeatRate = action.repeatRate;
+
+			// Skip if this action doesn't support repeating
+			if (repeatDelay == null || repeatRate == null || repeatRate <= 0)
+			{
+				continue;
+			}
+
+			var state = _actionRepeatStates.get(actionId);
+			if (isPressed(actionId))
+			{
+				if (!state.isRepeating)
+				{
+					// Check if we should start repeating
+					if (getDuration(actionId) >= repeatDelay)
+					{
+						state.isRepeating = true;
+						state.timeUntilNextRepeat = repeatRate;
+						_repeatedActions.add(actionId);
+					}
+				}
+				else
+				{
+					// We are already in repeat mode, check if we should fire again
+					state.timeUntilNextRepeat -= elapsed;
+					if (state.timeUntilNextRepeat <= 0)
+					{
+						_repeatedActions.add(actionId);
+						state.timeUntilNextRepeat += repeatRate; // Use += to account for over-stepping
+					}
+				}
 			}
 		}
 	}
@@ -112,6 +160,25 @@ class Input
 		// Clear just pressed/released states from this frame, preparing for the next.
 		_justPressedImpulses.clear();
 		_justReleasedImpulses.clear();
+		_repeatedActions.clear();
+
+		// Reset repeat state for any actions that are no longer pressed
+		for (actionId => state in _actionRepeatStates)
+		{
+			if (state.isRepeating && !isPressed(actionId))
+			{
+				state.reset();
+			}
+		}
+
+		// Reset dynamic repeat states for any actions that are no longer pressed
+		for (actionId => state in _dynamicRepeatStates)
+		{
+			if (state.isRepeating && !isPressed(actionId))
+			{
+				state.reset();
+			}
+		}
 	}
 
 	// --- Event Handlers ---
@@ -166,7 +233,8 @@ class Input
 			return;
 
 		final buttonId = MouseButton.toId(code);
-		if (buttonId == -1) return;
+		if (buttonId == -1)
+			return;
 
 		final impulseKey = _getImpulseKey(InputDevice.Mouse, buttonId);
 		var impulse = _inputImpulses.get(impulseKey);
@@ -191,7 +259,8 @@ class Input
 			return;
 
 		final buttonId = MouseButton.toId(code);
-		if (buttonId == -1) return;
+		if (buttonId == -1)
+			return;
 
 		final impulseKey = _getImpulseKey(InputDevice.Mouse, buttonId);
 		var impulse = _inputImpulses.get(impulseKey);
@@ -304,6 +373,66 @@ class Input
 	public function isTapped(actionId:String, maxDuration:Float = 0.25):Bool
 	{
 		return isJustReleasedWithDuration(actionId, 0, maxDuration);
+	}
+
+	/**
+	 * Checks if an action was repeated this frame.
+	 * An action repeats if it has been held down past its `repeatDelay`, and then at every `repeatRate` interval.
+	 * 
+	 * If `start` and `delay` are provided, this function performs a stateful, on-the-fly check using those values.
+	 * If they are `null`, it checks for repeats defined in the input configuration file.
+	 * 
+	 * @param actionId The unique identifier of the action.
+	 * @param start The initial delay in seconds before the first repeat. Overrides JSON configuration.
+	 * @param rate The interval in seconds for subsequent repeats. Overrides JSON configuration.
+	 * @return True if the action repeated this frame, false otherwise.
+	 */
+	public function isRepeated(actionId:String, ?start:Float, ?rate:Float):Bool
+	{
+		if (start == null || rate == null)
+		{
+			return _repeatedActions.contains(actionId);
+		}
+
+		if (rate <= 0)
+		{
+			return false;
+		}
+
+		if (!isPressed(actionId))
+		{
+			return false;
+		}
+
+		var state = _dynamicRepeatStates.get(actionId);
+		if (state == null)
+		{
+			state = new ActionRepeatState();
+			_dynamicRepeatStates.set(actionId, state);
+		}
+
+		if (!state.isRepeating)
+		{
+			// Check if we should start repeating
+			if (getDuration(actionId) >= start)
+			{
+				state.isRepeating = true;
+				state.timeUntilNextRepeat = rate;
+				return true; // First repeat happens immediately
+			}
+		}
+		else
+		{
+			// We are already in repeat mode, check if we should fire again
+			state.timeUntilNextRepeat -= _elapsed;
+			if (state.timeUntilNextRepeat <= 0)
+			{
+				state.timeUntilNextRepeat += rate; // Use += to account for over-stepping
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -543,7 +672,8 @@ class Input
 				}
 			}
 
-			if (relevantImpulseCount != trigger.inputs.length || (_activeImpulses.size + _justReleasedImpulses.size) != trigger.inputs.length)
+			if (relevantImpulseCount != trigger.inputs.length
+				|| (_activeImpulses.size + _justReleasedImpulses.size) != trigger.inputs.length)
 			{
 				return false;
 			}
@@ -615,7 +745,10 @@ class Input
 			for (inputSource in trigger.inputs)
 			{
 				final impulse = _getImpulseFromSource(inputSource);
-				if (impulse != null && _justReleasedImpulses.contains(impulse) && impulse.duration >= minDuration && impulse.duration <= maxDuration)
+				if (impulse != null
+					&& _justReleasedImpulses.contains(impulse)
+					&& impulse.duration >= minDuration
+					&& impulse.duration <= maxDuration)
 				{
 					return true;
 				}
@@ -634,7 +767,8 @@ class Input
 			default: -1;
 		}
 
-		if (deviceId == -1) return null;
+		if (deviceId == -1)
+			return null;
 
 		var code:Int = switch (source.device)
 		{
@@ -643,7 +777,8 @@ class Input
 			default: -1; // Or handle other devices like Gamepad
 		}
 
-		if (code == -1) return null;
+		if (code == -1)
+			return null;
 
 		return _inputImpulses.get(_getImpulseKey(source.device, code));
 	}

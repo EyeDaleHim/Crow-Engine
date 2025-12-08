@@ -33,6 +33,19 @@ typedef ActionBind =
 	 * allows for primary and alternate keybindings.
 	 */
 	var triggers:Array<InputTrigger>;
+
+	/**
+	 * The initial delay in seconds after an input is held down before it starts repeating.
+	 * If this and `repeatRate` are defined, the action will be repeatable.
+	 * e.g., 0.5
+	 */
+	var ?repeatDelay:Float;
+
+	/**
+	 * The interval in seconds at which the action repeats after the initial `repeatDelay`.
+	 * A smaller value means faster repetition. e.g., 0.1
+	 */
+	var ?repeatRate:Float;
 };
 
 /**
