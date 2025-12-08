@@ -329,6 +329,14 @@ typedef MenuInputAdvanced =
 	 * For `repeated` checks: The interval (in seconds) for subsequent repeats.
 	 */
 	var ?repeatRate:Float;
+	
+	/**
+	 * For `repeated` checks: This input is paused if other inputs in this list
+	 * are being held. Note that pausing is different than stopping as one of these
+	 * inputs will resume from where it was when the other inputs are no longer held.
+	 * (e.g. `ui_up` and `ui_down`)
+	 */
+	var ?pauseOnOthers:Array<String>;
 };
 
 enum abstract MenuInputCheck(String) from String to String

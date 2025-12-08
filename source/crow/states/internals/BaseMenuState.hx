@@ -566,6 +566,20 @@ class BaseMenuState extends MainState implements IEventExecutor
 					final adv = inputAction.advanced;
 					if (adv != null)
 					{
+						var isPaused = false;
+						if (adv.pauseOnOthers != null)
+						{
+							for (otherInput in adv.pauseOnOthers)
+							{
+								if (Main.input.isPressed(otherInput))
+								{
+									isPaused = true;
+									break;
+								}
+							}
+						}
+
+						if (!isPaused)
 						triggered = Main.input.isRepeated(inputAction.input, adv.repeatStart, adv.repeatRate);
 					}
 					else

@@ -184,7 +184,7 @@
             "input": "ui_up",
             "check": "repeated",
             "advanced": {
-                "repeatStart": 0.5,
+                "repeatStart": 0.25,
                 "repeatRate": 0.1
             },
             "actions": [
@@ -224,11 +224,11 @@
                 }
             ]
         },
-                {
+        {
             "input": "ui_down",
             "check": "repeated",
             "advanced": {
-                "repeatStart": 0.5,
+                "repeatStart": 0.25,
                 "repeatRate": 0.1
             },
             "actions": [
