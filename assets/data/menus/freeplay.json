@@ -185,7 +185,8 @@
             "check": "repeated",
             "advanced": {
                 "repeatStart": 0.25,
-                "repeatRate": 0.1
+                "repeatRate": 0.1,
+                "pauseOnOthers": ["ui_down"]
             },
             "actions": [
                 {
@@ -229,7 +230,8 @@
             "check": "repeated",
             "advanced": {
                 "repeatStart": 0.25,
-                "repeatRate": 0.1
+                "repeatRate": 0.1,
+                "pauseOnOthers": ["ui_up"]
             },
             "actions": [
                 {

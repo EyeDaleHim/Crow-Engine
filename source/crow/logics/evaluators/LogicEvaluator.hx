@@ -1,7 +1,7 @@
 package crow.logics.evaluators;
 
 import crow.assets.metadata.logics.LogicMetadata;
-import crow.ds.OrderedMap;
+import crow.ds.orderedmap.OrderedStringMap;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicContext;
 import crow.logics.dependencies.LogicState;
@@ -61,7 +61,7 @@ class LogicEvaluator
 	 * Executes a list of actions.
 	 */
 	public static function execute(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
-			?entities:OrderedMap<String, Entity>, ?executor:IEventExecutor):Void
+			?entities:OrderedStringMap<Entity>, ?executor:IEventExecutor):Void
 	{
 		var ctx = LogicContext.createLegacy(executorState, localState);
 		executeContext(actions, ctx, entities, executor);
@@ -70,7 +70,7 @@ class LogicEvaluator
 	/**
 	 * Executes actions using the new LogicContext system.
 	 */
-	public static function executeContext(actions:Array<ListenerActionMetadata>, logicContext:LogicContext, ?entities:OrderedMap<String, Entity>,
+	public static function executeContext(actions:Array<ListenerActionMetadata>, logicContext:LogicContext, ?entities:OrderedStringMap<Entity>,
 			?executor:IEventExecutor):Void
 	{
 		for (action in actions)

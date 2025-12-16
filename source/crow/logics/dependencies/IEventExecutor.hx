@@ -1,6 +1,6 @@
 package crow.logics.dependencies;
 
-import crow.ds.OrderedMap;
+import crow.ds.orderedmap.OrderedStringMap;
 import crow.ecs.systems.BaseSystem;
 import crow.ecs.managers.TimerManager;
 import crow.ecs.managers.TweenManager;
@@ -18,7 +18,7 @@ interface IEventExecutor
 
     public var soundInstances:Map<String, FlxSound>;
 
-    public var entities:OrderedMap<String, Entity>;
+    public var entities:OrderedStringMap<Entity>;
     public var systems:Array<BaseSystem>;
 
     public function switchScene(sceneName:String):Bool;

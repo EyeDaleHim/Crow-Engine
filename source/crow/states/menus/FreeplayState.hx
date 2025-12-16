@@ -1,7 +1,7 @@
 package crow.states.menus;
 
 import crow.assets.metadata.logics.LogicMetadata;
-import crow.ds.OrderedMap;
+import crow.ds.orderedmap.OrderedStringMap;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
 import crow.states.internals.BaseMenuState;
@@ -35,7 +35,7 @@ class FreeplayState extends BaseMenuState
 	}
 
 	override public function executeLogic(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
-			?entities:OrderedMap<String, Entity>, ?executor:IEventExecutor):Void
+			?entities:OrderedStringMap<Entity>, ?executor:IEventExecutor):Void
 	{
 		for (action in actions)
 		{

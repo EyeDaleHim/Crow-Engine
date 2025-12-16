@@ -1,6 +1,5 @@
 package crow.ds.orderedmap;
 
-import crow.ds.OrderedMap.IOrderedMap;
 import crow.ds.LinkedList;
 import haxe.ds.ObjectMap in StdMap;
 
@@ -8,7 +7,7 @@ import haxe.ds.ObjectMap in StdMap;
 	Represents a Map object of the `{}` keys.
 	You can iterate through the keys in insertion order.
 **/
-class OrderedObjectMap<K:{}, V> implements IOrderedMap<K, V>
+class OrderedObjectMap<K:{}, V> 
 {
 	final map:StdMap<K, LinkedListNode<Pair<K, V>>>;
 	final list:LinkedList<Pair<K, V>>;

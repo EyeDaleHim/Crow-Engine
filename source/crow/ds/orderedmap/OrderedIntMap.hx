@@ -1,6 +1,5 @@
 package crow.ds.orderedmap;
 
-import crow.ds.OrderedMap.IOrderedMap;
 import crow.ds.LinkedList;
 import haxe.ds.IntMap in StdMap;
 
@@ -8,7 +7,7 @@ import haxe.ds.IntMap in StdMap;
 	Represents a Map object of `Int` keys.
 	You can iterate through the keys in insertion order.
 **/
-class OrderedIntMap<V> implements IOrderedMap<Int, V>
+class OrderedIntMap<V>
 {
 	final map:StdMap<LinkedListNode<Pair<Int, V>>>;
 	final list:LinkedList<Pair<Int, V>>;

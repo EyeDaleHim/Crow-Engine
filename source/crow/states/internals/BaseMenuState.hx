@@ -2,7 +2,7 @@ package crow.states.internals;
 
 import crow.assets.metadata.logics.LogicMetadata;
 import crow.assets.metadata.scenes.MenuMetadata;
-import crow.ds.OrderedMap;
+import crow.ds.orderedmap.OrderedStringMap;
 import crow.ecs.managers.TimerManager;
 import crow.ecs.managers.TweenManager;
 import crow.ecs.systems.BaseSystem;
@@ -46,7 +46,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	/**
 	 * A map of all entities loaded for this menu.
 	 */
-	public var entities:OrderedMap<String, Entity> = new OrderedMap<String, Entity>();
+	public var entities:OrderedStringMap<Entity> = new OrderedStringMap<Entity>();
 
 	/**
 	 * A list of all systems loaded for this menu, in order.
@@ -464,7 +464,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 						// Force an update on the entity to refresh Text/Sprites with new variables
 						// We might need a specific "refresh" method or trigger a specific event
 						// We use a local event execution for this entity
-						var singleEntityMap = new crow.ds.OrderedMap<String, Entity>();
+						var singleEntityMap = new OrderedStringMap<Entity>();
 						singleEntityMap.set(entity.entityName, entity);
 
 						executeLogic( // Create a dummy action to update text or run init logic
@@ -580,7 +580,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 						}
 
 						if (!isPaused)
-						triggered = Main.input.isRepeated(inputAction.input, adv.repeatStart, adv.repeatRate);
+							triggered = Main.input.isRepeated(inputAction.input, adv.repeatStart, adv.repeatRate);
 					}
 					else
 					{
@@ -653,10 +653,10 @@ class BaseMenuState extends MainState implements IEventExecutor
 				continue;
 
 			// Prepare entity map for the action (usually the item itself)
-			var targetMap:OrderedMap<String, Entity> = null;
+			var targetMap:OrderedStringMap<Entity> = null;
 			if (entity != null)
 			{
-				targetMap = new OrderedMap<String, Entity>();
+				targetMap = new OrderedStringMap<Entity>();
 				targetMap.set(entity.entityName, entity);
 			}
 			else
@@ -683,7 +683,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	{
 		localState ??= new LogicState();
 
-		var map:OrderedMap<String, Entity> = new OrderedMap<String, Entity>();
+		var map:OrderedStringMap<Entity> = new OrderedStringMap<Entity>();
 		if (entity != null)
 			map.set(entity.entityName, entity);
 		executeLogic([action], this.logicState, localState, map, this);
@@ -755,7 +755,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * @param executor 
 	 */
 	public function executeLogic(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
-			?entities:OrderedMap<String, Entity>, ?executor:IEventExecutor)
+			?entities:OrderedStringMap<Entity>, ?executor:IEventExecutor)
 	{
 		LogicEvaluator.execute(actions, executorState, localState, entities, executor);
 	}

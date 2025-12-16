@@ -1,6 +1,5 @@
 package crow.ds.orderedmap;
 
-import crow.ds.OrderedMap.IOrderedMap;
 import crow.ds.LinkedList;
 import haxe.ds.StringMap in StdMap;
 
@@ -8,7 +7,7 @@ import haxe.ds.StringMap in StdMap;
 	Represents a Map object of `String` keys.
 	You can iterate through the keys in insertion order.
 **/
-class OrderedStringMap<V> implements IOrderedMap<String, V>
+class OrderedStringMap<V>
 {
 	final map:StdMap<LinkedListNode<Pair<String, V>>>;
 	final list:LinkedList<Pair<String, V>>;

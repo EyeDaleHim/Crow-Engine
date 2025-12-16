@@ -1,6 +1,5 @@
 package crow.ds.orderedmap;
 
-import crow.ds.OrderedMap.IOrderedMap;
 import crow.ds.LinkedList;
 import haxe.ds.EnumValueMap in StdMap;
 
@@ -8,7 +7,7 @@ import haxe.ds.EnumValueMap in StdMap;
 	Represents a Map object of `EnumValue` keys.
 	You can iterate through the keys in insertion order.
 **/
-class OrderedEnumValueMap<K:EnumValue, V> implements IOrderedMap<K, V>
+class OrderedEnumValueMap<K:EnumValue, V>
 {
 	final map:StdMap<K, LinkedListNode<Pair<K, V>>>;
 	final list:LinkedList<Pair<K, V>>;
