@@ -1,6 +1,7 @@
 package crow.ds;
 
-enum Maybe<T> {
-    Some(x:T);
-    None;
+enum Maybe<T>
+{
+	Some(x:T);
+	None;
 }
