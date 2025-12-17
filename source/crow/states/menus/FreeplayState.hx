@@ -26,7 +26,7 @@ class FreeplayState extends BaseMenuState
 		}
 
 		noSongsText = new Entity("freeplay/no_songs");
-		noSongsText.screenCenter(Y);
+		noSongsText.getModel().screenCenter(Y);
 
 		buildMenu();
 

@@ -10,13 +10,13 @@ class SpriteTemplate extends Template
 			"set_alpha" => ExecutableAction.createAction((ctx) ->
 			{
 				final alpha:Float = ctx.values.alpha;
-				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) -> entity.alpha = alpha);
+				ExecutableAction.handleModelAction(ctx.targetedEntities, (model) -> model.alpha = alpha);
 				ctx.onComplete();
 			}, [{name: "alpha", type: "Float", optional: false}], {wantsTargetedEntities: true}),
 			"set_visible" => ExecutableAction.createAction((ctx) ->
 			{
 				final visible:Bool = ctx.values.visible;
-				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) -> entity.visible = visible);
+				ExecutableAction.handleModelAction(ctx.targetedEntities, (model) -> model.visible = visible);
 				ctx.onComplete();
 			}, [{name: "visible", type: "Bool", optional: false}], {wantsTargetedEntities: true})
 		];

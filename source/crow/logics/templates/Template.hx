@@ -7,6 +7,7 @@ import crow.logics.dependencies.LogicState;
 import crow.logics.evaluators.LogicEvaluator;
 import crow.logics.validators.LogicValidator;
 import crow.ecs.entities.Entity;
+import crow.ecs.entities.Model;
 
 abstract class Template
 {
@@ -41,6 +42,15 @@ class ExecutableAction
 		for (entity in entities)
 		{
 			entityFunc(entity);
+		}
+	}
+
+	public static function handleModelAction(entities:Array<Entity>, modelFunc:Model->Void):Void
+	{
+		if (entities == null) return;
+		for (entity in entities)
+		{
+			modelFunc(entity.getModel());
 		}
 	}
 }

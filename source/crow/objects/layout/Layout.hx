@@ -277,7 +277,7 @@ class Layout extends UIComponent
 		if (Std.isOfType(member, Entity))
 		{
 			var entity = cast(member, Entity);
-			return entity.layoutTarget ?? entity;
+			return entity.layoutTarget ?? entity.getModel();
 		}
 		return member;
 	}

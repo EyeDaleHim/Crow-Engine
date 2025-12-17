@@ -18,7 +18,6 @@ class ComponentTable
 		list.set("field_lerp", FieldLerpComponent);
 		list.set("position", PositionComponent);
 		list.set("tags", TagComponent);
-		list.set("positional_index", PositionalIndexComponent);
 		list.set("value_router", ValueRouterComponent);
 	}
 
@@ -59,11 +58,6 @@ class ComponentTable
 				{
 					final tags:Array<String> = resolve(metadata.struct.tags, entity);
 					new TagComponent(tags);
-				}
-			case PositionalIndexComponent:
-				{
-					final index:Int = resolve(metadata.struct.index, entity);
-					new PositionalIndexComponent(index);
 				}
 			case ValueRouterComponent:
 				{

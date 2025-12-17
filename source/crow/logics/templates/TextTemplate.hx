@@ -10,18 +10,18 @@ class TextTemplate extends Template
 			"set_text" => ExecutableAction.createAction((ctx) ->
 			{
 				final text:String = ctx.values.text != null ? ctx.values.text : "";
-				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) ->
+				ExecutableAction.handleModelAction(ctx.targetedEntities, (model) ->
 				{
-					entity.forEachOfType(AnimatedText, (textObject) -> textObject.text = text);
+					model.forEachOfType(AnimatedText, (textObject) -> textObject.text = text);
 				});
 				ctx.onComplete();
 			}, [{name: "text", type: "String", optional: true}], {wantsTargetedEntities: true}),
 			"add_text" => ExecutableAction.createAction((ctx) ->
 			{
 				final newText:String = ctx.values.text != null ? ctx.values.text : "";
-				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) ->
+				ExecutableAction.handleModelAction(ctx.targetedEntities, (model) ->
 				{
-					entity.forEachOfType(AnimatedText, (textObject) ->
+					model.forEachOfType(AnimatedText, (textObject) ->
 					{
 						textObject.text += (textObject.text == "" ? "" : "\n") + newText;
 					});
@@ -30,9 +30,9 @@ class TextTemplate extends Template
 			}, [{name: "text", type: "String", optional: true}], {wantsTargetedEntities: true}),
 			"clear_text" => ExecutableAction.createAction((ctx) ->
 			{
-				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) ->
+				ExecutableAction.handleModelAction(ctx.targetedEntities, (model) ->
 				{
-					entity.forEachOfType(AnimatedText, (textObject) -> textObject.text = "");
+					model.forEachOfType(AnimatedText, (textObject) -> textObject.text = "");
 				});
 				ctx.onComplete();
 			}, [])

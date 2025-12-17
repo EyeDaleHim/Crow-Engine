@@ -1,5 +1,6 @@
 package crow.objects.layout;
 
+import crow.ecs.components.ModelComponent;
 import crow.objects.layout.PsuedoRuling;
 
 class UIComponent extends FlxSprite implements IFlxSprite
@@ -7,11 +8,15 @@ class UIComponent extends FlxSprite implements IFlxSprite
 	// converts any object to a UIComponent
 	public static function addAsComponent(object:Entity):UIComponent
 	{
-		var component = new UIComponent(object.x, object.y);
-		object.x = 0;
-		object.y = 0;
-		component.add(object);
-		component.setSize(object.width, object.height);
+		final model = object.getModel();
+		if (model == null)
+			return null;
+
+		var component = new UIComponent(model.x, model.y);
+		model.x = 0;
+		model.y = 0;
+		component.add(model);
+		component.setSize(model.width, model.height);
 		component._isUIConverted = true;
 		return component;
 	}

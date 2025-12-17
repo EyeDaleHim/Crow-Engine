@@ -105,7 +105,7 @@ class DynamicListLayout extends InteractableLayout
 				{
 					if (router.field == "alpha")
 					{
-						var target = entity.spritesMap.get(router.target);
+						var target = entity.getModel().spritesMap.get(router.target);
 						if (target != null)
 						{
 							target.alpha = FlxMath.lerp(target.alpha, targetAlpha, lerpRatio);

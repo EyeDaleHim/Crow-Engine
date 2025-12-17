@@ -152,7 +152,7 @@ class Model extends FlxSpriteContainer
 	private function createNestedEntity(entityMeta:NestedEntityObjectData):Void
 	{
 		final nestedEntity = new Entity(entityMeta.position?.x ?? 0.0, entityMeta.position?.y ?? 0.0, entityMeta.entityFile);
-		final nestedModel = (cast nestedEntity.getComponentByType(ModelComponent):ModelComponent).model;
+		final nestedModel = nestedEntity.getModel();
 		membersMetricsMap.set(entityMeta.name, entityMeta);
 
 		if (entityMeta.scale != null)

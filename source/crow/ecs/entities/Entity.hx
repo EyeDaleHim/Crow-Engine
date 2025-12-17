@@ -87,10 +87,9 @@ class Entity extends FlxBasic implements IComponentActor
 		}
 
 		this.entityName = metadata.name;
-		final modelComp = getComponentByType(ModelComponent);
-		if (modelComp != null)
+		final model = getModel();
+		if (model != null)
 		{
-			final model = (cast modelComp:ModelComponent).model;
 			model.x = x;
 			model.y = y;
 		}
@@ -114,8 +113,8 @@ class Entity extends FlxBasic implements IComponentActor
 			this.layoutTarget.debugBoundingBoxColor = FlxColor.PURPLE;
 			if (metadata.layoutTarget.position != null)
 			{
-				final model = (cast getComponentByType(ModelComponent):ModelComponent).model;
-				if (model != null) {
+				if (model != null)
+				{
 					this.layoutTarget.x = model.x + (metadata.layoutTarget.position.x ?? 0);
 					this.layoutTarget.y = model.y + (metadata.layoutTarget.position.y ?? 0);
 				}
@@ -136,11 +135,7 @@ class Entity extends FlxBasic implements IComponentActor
 		}
 
 		// After all components are added, initialize the model
-		final modelCompAfter = getComponentByType(ModelComponent);
-		if (modelCompAfter != null)
-		{
-			(cast modelCompAfter:ModelComponent).model.init(this);
-		}
+		model.init(this);
 	}
 
 	/**
@@ -315,6 +310,20 @@ class Entity extends FlxBasic implements IComponentActor
 		}
 	}
 
+	/**
+	 * Gets the model from the ModelComponent, if it exists.
+	 * @return The model. Can be null.
+	 */
+	public function getModel():Model
+	{
+		final modelComp = getComponentByType(ModelComponent);
+		if (modelComp != null)
+		{
+			return (cast modelComp : ModelComponent).model;
+		}
+		return null;
+	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
@@ -322,9 +331,7 @@ class Entity extends FlxBasic implements IComponentActor
 		// TODO: Don't call every frame
 		if (layoutTarget != null && metadata.layoutTarget != null)
 		{
-			final modelComp = getComponentByType(ModelComponent);
-			if (modelComp != null)
-				(cast modelComp:ModelComponent).model.updateLayoutTargetPosition(layoutTarget, metadata.layoutTarget);
+			getModel().updateLayoutTargetPosition(layoutTarget, metadata.layoutTarget);
 		}
 	}
 
@@ -335,11 +342,9 @@ class Entity extends FlxBasic implements IComponentActor
 			layoutTarget.draw();
 		}
 
-		final modelComp = getComponentByType(ModelComponent);
-		if (modelComp != null)
+		final model = getModel();
+		if (model != null)
 		{
-			final model = (cast modelComp:ModelComponent).model;
-			// Sync visibility
 			model.visible = this.visible;
 			if (model.exists && model.alive && model.visible)
 			{
@@ -358,10 +363,10 @@ class Entity extends FlxBasic implements IComponentActor
 			layoutTarget = null;
 		}
 
-		final modelComp = getComponentByType(ModelComponent);
-		if (modelComp != null)
+		final model = getModel();
+		if (model != null)
 		{
-			(cast modelComp:ModelComponent).model.destroy();
+			model.destroy();
 		}
 
 		super.destroy();

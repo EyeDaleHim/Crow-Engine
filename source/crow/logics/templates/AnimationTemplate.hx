@@ -1,5 +1,6 @@
 package crow.logics.templates;
 
+import crow.ecs.components.ModelComponent;
 import crow.logics.templates.Template;
 
 class AnimationTemplate extends Template
@@ -16,8 +17,16 @@ class AnimationTemplate extends Template
 				final updateLayoutPosition:Bool = ctx.values.updateLayoutPosition ?? true;
 				ExecutableAction.handleEntityAction(ctx.targetedEntities, (entity) ->
 				{
+					final modelComp = entity.getComponentByType(ModelComponent);
+					if (modelComp == null)
+						return;
+
+					final model = (cast modelComp : ModelComponent).model;
+					if (model == null)
+						return;
+
 					// TODO: Filters for sprites within entities?
-					entity.forEachOfType(FlxSprite, (spr) ->
+					model.forEachOfType(FlxSprite, (spr) ->
 					{
 						spr.animation.play(animName, force);
 						if (ctx.localState != null)
@@ -31,7 +40,12 @@ class AnimationTemplate extends Template
 						if (updateHitbox)
 							spr.updateHitbox();
 						if (updateLayoutPosition)
-							entity.updateLayoutTargetPosition();
+						{
+							if (entity.layoutTarget != null && entity.metadata.layoutTarget != null)
+							{
+								model.updateLayoutTargetPosition(entity.layoutTarget, entity.metadata.layoutTarget);
+							}
+						}
 					});
 				});
 			}, [

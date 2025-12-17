@@ -68,8 +68,8 @@ class EntityFilter
 
 		if (filter.type != null)
 		{
-			final entityMetrics = entity.membersMetricsMap.get(entity.entityName);
-			if (entityMetrics == null || entityMetrics.type != filter.type)
+			final metrics = entity.getModel().membersMetricsMap.get(entity.entityName);
+			if (metrics == null || metrics.type != filter.type)
 			{
 				return false;
 			}

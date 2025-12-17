@@ -3,6 +3,7 @@ package crow.states.internals;
 import crow.assets.metadata.logics.LogicMetadata;
 import crow.assets.metadata.scenes.MenuMetadata;
 import crow.ds.orderedmap.OrderedStringMap;
+import crow.ecs.entities.Model;
 import crow.ecs.managers.TimerManager;
 import crow.ecs.managers.TweenManager;
 import crow.ecs.systems.BaseSystem;
@@ -451,7 +452,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 					// This item is a single, data-driven entity.
 					final entity = new Entity(0, 0, elementData.entity, elementData.overrideData, initialState);
-					menuObject = entity;
+					menuObject = entity.getModel();
 
 					if (elementData.name == null)
 					{
@@ -492,13 +493,13 @@ class BaseMenuState extends MainState implements IEventExecutor
 							menuObject.x = elementData.position.x;
 							menuObject.y = elementData.position.y;
 						}
-						if (elementData.screenCenter != null && Std.isOfType(menuObject, Entity))
+						if (elementData.screenCenter != null && Std.isOfType(menuObject, Model))
 						{
-							final entity:Entity = cast menuObject;
+							final model:Model = cast menuObject;
 							if (elementData.screenCenter.x)
-								entity.screenCenter(X);
+								model.screenCenter(X);
 							if (elementData.screenCenter.y)
-								entity.screenCenter(Y);
+								model.screenCenter(Y);
 						}
 						add(menuObject);
 					}

@@ -11,12 +11,6 @@
     ],
     "components": [
         {
-            "name": "positional_index",
-            "struct": {
-                "index": "${index}"
-            }
-        },
-        {
             "name": "value_router",
             "struct": {
                 "target": "scroll_text_object",
