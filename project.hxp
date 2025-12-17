@@ -27,7 +27,7 @@ class Project extends HXProject
 	//                               Path Settings
 	// =========================================================================
 	static final SOURCE_DIR:String = "source";
-	static final BUILD_DIR:String = "export/builds";
+	static final BUILD_DIR:String = "export";
 	static final LAUNCH_IMAGE_PATH:String = "assets/images/splash.png";
 
 	public function new() 

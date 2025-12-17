@@ -33,7 +33,7 @@ class AssetsMacro
 			#end
 		}
 
-		var exportPath:String = Path.join(['export', 'builds', #if debug 'debug' #else 'release' #end, target, 'bin']);
+		var exportPath:String = Path.join(['export', #if debug 'debug' #else 'release' #end, target, 'bin']);
 		var finalAssetsFolder:String = Path.join([exportPath, 'assets']);
 
 		if (!FileSystem.exists(finalAssetsFolder))

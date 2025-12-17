@@ -37,7 +37,7 @@ class ActionEvaluator
 			case SET:
 				state.set(action.stateKey, action.value);
 			case INCREMENT, DECREMENT:
-				untyped final change:Int = (action.changeType == INCREMENT) ? action.value : -action.value;
+				final change:Int = (action.changeType == INCREMENT) ? Std.int(action.value) : -Std.int(action.value);
 				state.set(action.stateKey, state.get(action.stateKey) + change);
 			case ADD, SUBTRACT:
 				final value:Float = (action.changeType == ADD) ? action.value : -action.value;

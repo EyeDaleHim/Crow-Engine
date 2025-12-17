@@ -20,7 +20,7 @@ typedef ProcessorCache =
 class AssetProcessorMacro
 {
 	public static var sourceDir:String = "assets";
-	public static var processDir:String = "export/processed_assets";
+	public static var processDir:String = "processed_assets";
 	public static var cacheFile:String = ".processor_cache";
 
 	// Defines that affect asset processing. If these change, we rebuild everything.
