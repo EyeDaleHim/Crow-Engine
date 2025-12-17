@@ -17,7 +17,7 @@ using Lambda;
  * A data-driven game object that can be animated and controlled through JSON metadata.
  * It acts as a logical container for components and manages its own state and event-based logic.
  */
-class Entity extends FlxBasic implements IComponentActor
+class Entity extends FlxObject implements IComponentActor
 {
 	/**
 	 * The name of this entity, from metadata.
@@ -70,8 +70,6 @@ class Entity extends FlxBasic implements IComponentActor
 		}
 
 		addComponent(new PositionComponent(this, x, y));
-
-		// Add ModelComponent by default to handle visuals
 		addComponent(new ModelComponent(this));
 
 		this.metadata = metadata;
@@ -104,7 +102,7 @@ class Entity extends FlxBasic implements IComponentActor
 
 		if (metadata.visible != null)
 		{
-			this.visible = metadata.visible;
+			model.visible = this.visible = metadata.visible;
 		}
 
 		if (metadata.layoutTarget != null)
@@ -136,6 +134,11 @@ class Entity extends FlxBasic implements IComponentActor
 
 		// After all components are added, initialize the model
 		model.init(this);
+	}
+
+	override function initVars():Void
+	{
+		// Don't initialize FlxObject initVars()
 	}
 
 	/**
@@ -326,12 +329,20 @@ class Entity extends FlxBasic implements IComponentActor
 
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
+		#if FLX_DEBUG
+		FlxBasic.visibleCount++;
+		#end
 
-		// TODO: Don't call every frame
-		if (layoutTarget != null && metadata.layoutTarget != null)
+		final model = getModel();
+		if (model != null)
 		{
-			getModel().updateLayoutTargetPosition(layoutTarget, metadata.layoutTarget);
+			// TODO: Don't call every frame
+			if (layoutTarget != null && metadata.layoutTarget != null)
+			{
+				getModel().updateLayoutTargetPosition(layoutTarget, metadata.layoutTarget);
+			}
+
+			model.update(elapsed);
 		}
 	}
 

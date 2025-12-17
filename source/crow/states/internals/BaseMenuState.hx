@@ -480,12 +480,12 @@ class BaseMenuState extends MainState implements IEventExecutor
 				}
 				else if (elementData.name == null)
 				{
-					// TODO: Generate a random UUID for items without a name or entity.
 					elementData.name = UUID.generateV4();
 				}
 
 				if (menuObject != null)
 				{
+					var menuObjectAsModel:Model = cast(menuObject, Model);
 					if (elementData.position != null || elementData.screenCenter != null || isDecoration)
 					{
 						if (elementData.position != null)
@@ -501,15 +501,15 @@ class BaseMenuState extends MainState implements IEventExecutor
 							if (elementData.screenCenter.y)
 								model.screenCenter(Y);
 						}
-						add(menuObject);
+						add(menuObjectAsModel.entity);
 					}
 					else
 					{
-						parentLayout.add(menuObject);
-						elementMetadataMap.set(menuObject, elementData);
+						parentLayout.add(menuObjectAsModel.entity);
+						elementMetadataMap.set(menuObjectAsModel.entity, elementData);
 						if (elementData.alignSelf != null)
 						{
-							parentLayout.getLayoutData(menuObject).alignSelf = elementData.alignSelf;
+							parentLayout.getLayoutData(menuObjectAsModel.entity).alignSelf = elementData.alignSelf;
 						}
 					}
 				}

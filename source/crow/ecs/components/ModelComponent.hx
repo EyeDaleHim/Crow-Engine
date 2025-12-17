@@ -13,7 +13,7 @@ class ModelComponent extends BaseComponent
 	public function new(entity:Entity)
 	{
 		this.entity = entity;
-		model = new Model();
+		model = new Model(entity);
 	}
 
 	override function get_trait():ComponentTrait

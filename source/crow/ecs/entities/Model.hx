@@ -17,6 +17,11 @@ import crow.utils.ColorData;
 class Model extends FlxSpriteContainer
 {
 	/**
+	 * The entity that owns this model.
+	 */
+	public var entity:Entity;
+
+	/**
 	 * A map of sprites belonging to this entity, accessible by name.
 	 */
 	public var spritesMap:Map<String, FlxSprite> = [];
@@ -26,9 +31,11 @@ class Model extends FlxSpriteContainer
 	 */
 	public var membersMetricsMap:Map<String, Dynamic> = [];
 
-	public function new(?x:Float = 0, ?y:Float = 0)
+	public function new(?entity:Entity, ?x:Float = 0, ?y:Float = 0)
 	{
 		super(x, y);
+
+		this.entity = entity;
 	}
 
 	public function init(entity:Entity)

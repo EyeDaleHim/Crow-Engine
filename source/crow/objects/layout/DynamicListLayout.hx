@@ -85,6 +85,13 @@ class DynamicListLayout extends InteractableLayout
 
 			item.x = FlxMath.lerp(item.x, targetX, lerpRatio);
 			item.y = FlxMath.lerp(item.y, targetY, lerpRatio);
+			
+			final model = cast(item, Entity).getModel();
+			if (model != null)
+			{
+				model.x = item.x;
+				model.y = item.y;
+			}
 
 			if (Std.isOfType(item, Entity))
 			{

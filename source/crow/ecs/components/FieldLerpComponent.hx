@@ -53,7 +53,7 @@ class FieldLerpComponent extends BaseComponent
 		this.lerpPower = lerpPower;
 		this.to = to;
 
-		var val = Reflect.getProperty(entity, targetField);
+		var val = Reflect.getProperty(entity.getModel(), targetField);
 		if (val == null || !Std.isOfType(val, Float))
 			throw 'Field "$targetField" must exist and be numerical (Float).';
 
@@ -82,7 +82,7 @@ class FieldLerpComponent extends BaseComponent
 	{
 		_currentValue = newValue;
 
-		Reflect.setProperty(entity, targetField, newValue);
+		Reflect.setProperty(entity.getModel(), targetField, newValue);
 	}
 
 	/**
