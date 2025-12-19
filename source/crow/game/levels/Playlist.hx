@@ -12,6 +12,8 @@ class Playlist
 
 	public var currentIndex(default, null):Int = 0;
 
+	public var length(get, never):Int;
+
 	public function new(levels:Array<Level>)
 	{
 		this.queue = levels;
@@ -34,5 +36,10 @@ class Playlist
 	public function reset():Void
 	{
 		currentIndex = 0;
+	}
+
+	function get_length():Int
+	{
+		return queue.length;
 	}
 }

@@ -1,7 +1,8 @@
 package crow.states.internals;
 
-import crow.ecs.entities.Camera;
+import crow.assets.metadata.levels.GameStemData;
 import crow.assets.metadata.scenes.SceneMetadata.SceneCameras;
+import crow.ecs.entities.Camera;
 import crow.objects.transition.TransitionObject;
 import flixel.util.typeLimit.NextState;
 
@@ -89,6 +90,15 @@ class MainState extends FlxSubState
 					openSubState(castedState);
 				});
 			}
+		}
+	}
+
+	public function loadGame(gameStem:GameStemData):Void
+	{
+		if (gameStem.level == null && gameStem.playlist?.length == 0)
+		{
+			trace("ERROR: No level or playlist provided to loadGame.");
+			return;
 		}
 	}
 

@@ -1,10 +1,9 @@
 package crow.logics.templates;
 
+import crow.ecs.components.data.LoadLevelComponent;
 import crow.ecs.entities.Entity;
 import crow.logics.dependencies.LogicState;
-import crow.logics.evaluators.LogicEvaluator;
 import crow.logics.templates.Template;
-import crow.objects.layout.InteractableLayout;
 import crow.states.internals.BaseMenuState;
 
 /**
@@ -113,7 +112,29 @@ class MenuTemplate extends Template
 				{
 					menuState.transitionOut(onFinish);
 				}
-			}, [], {wantsExecutor: true})
+			}, [], {wantsExecutor: true}),
+			"load_level" => ExecutableAction.createAction((ctx) ->
+			{
+				final menuState = cast(ctx.executor, BaseMenuState);
+				final levelName:String = ctx.values.level;
+
+				if (ctx.targetedEntities == null || ctx.targetedEntities.length == 0)
+				{
+					trace('ERROR: No entity targeted for level loading.');
+					return;
+				}
+
+				final entity = ctx.targetedEntities[0];
+				final levelComponent = entity.getComponentByType(LoadLevelComponent);
+
+				if (levelComponent == null)
+				{
+					trace('ERROR: Targeted entity does not have a LoadLevelComponent.');
+					return;
+				}
+
+				menuState.loadGame(levelComponent.gameStem);
+			}, [], {wantsExecutor: true, wantsTargetedEntities: true}),
 		];
 	}
 }

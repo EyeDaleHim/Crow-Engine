@@ -134,6 +134,7 @@ class Entity extends FlxObject implements IComponentActor
 
 		// After all components are added, initialize the model
 		model.init(this);
+		_isInit = true;
 	}
 
 	override function initVars():Void
@@ -362,8 +363,6 @@ class Entity extends FlxObject implements IComponentActor
 				model.draw();
 			}
 		}
-
-		super.draw();
 	}
 
 	override function destroy()
@@ -381,5 +380,27 @@ class Entity extends FlxObject implements IComponentActor
 		}
 
 		super.destroy();
+	}
+
+	// prevent dumb crash
+	private var _isInit:Bool = false;
+
+	// maybe have an EntitySystem or the state itself to have the
+	// model sync with this entity's data? 
+
+	override function set_x(value:Float):Float
+	{
+		if (!_isInit)
+			return super.set_x(value);
+
+		throw "Use the model's PositionComponent instead";
+	}
+
+	override function set_y(value:Float):Float
+	{
+		if (!_isInit)
+			return super.set_y(value);
+
+		throw "Use the model's PositionComponent instead";
 	}
 }
