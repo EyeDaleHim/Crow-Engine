@@ -1,27 +1,53 @@
 package crow.utils;
 
-import haxe.ds.StringMap;
-
+/**
+ * Utility for handling JSON with comments (JSONC).
+ */
+@:final
 class JsonComment
 {
+	// Static-only class: hide constructor
+	private function new() {}
+
 	/**
-	 * Removes single-line and multi-line comments from a string.
-	 * This method is safe against removing comment-like sequences inside string literals.
-	 * @param text The string to remove comments from.
-	 * @return The string with comments removed.
+	 * Cleans and parses a JSON string containing comments or trailing commas.
 	 */
+	public static function parse(text:String):Dynamic
+	{
+		return haxe.Json.parse(strip(text));
+	}
+
+	/**
+	 * Removes comments and trailing commas, preserving line numbers for error reporting.
+	 */
+	public static function strip(text:String):String
+	{
+		return removeTrailingCommas(removeComments(text));
+	}
+
 	public static function removeComments(text:String):String
 	{
+		// Regex handles: "strings", 'strings', /* multi */, and // single
 		var regex = new EReg('("(\\\\.|[^"\\\\])*")|(\'(\\\\.|[^\'\\\\])*\')|(/\\*[\\s\\S]*?\\*/)|(//.*)', "g");
 
-		return regex.map(text, (ereg) -> {
+		return regex.map(text, (ereg) ->
+		{
 			var match = ereg.matched(0);
-			// If the match is a comment (starts with /), return an empty string to remove it.
-			// Otherwise, it's a string literal, so return it unchanged.
-			if (StringTools.startsWith(match, "/")) {
-				return "";
+			if (StringTools.startsWith(match, "/"))
+			{
+				// Replace comment content with spaces to preserve error line offsets
+				return ~/./g.map(match, (e) ->
+				{
+					var c = e.matched(0);
+					return (c == "\n" || c == "\r") ? c : " ";
+				});
 			}
 			return match;
 		});
+	}
+
+	public static function removeTrailingCommas(json:String):String
+	{
+		return ~/,\s*([\]}])/g.replace(json, "$1");
 	}
 }
