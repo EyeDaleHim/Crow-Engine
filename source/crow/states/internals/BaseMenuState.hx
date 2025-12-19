@@ -183,19 +183,6 @@ class BaseMenuState extends MainState implements IEventExecutor
 		if (!rootLayoutAdded)
 			add(rootLayout);
 
-		var rootLayoutProps:MenuLayout = null;
-		if (menuMetadata.layouts != null)
-		{
-			for (layout in menuMetadata.layouts)
-			{
-				// Might need to adjust later.
-				if (layout.name == null || layout.name == "main")
-				{
-					rootLayoutProps = layout;
-					break;
-				}
-			}
-		}
 		buildElements(menuMetadata.elements, rootLayout, rootLayoutProps, rootLayoutAdded);
 
 		rootLayout.updateLayout();

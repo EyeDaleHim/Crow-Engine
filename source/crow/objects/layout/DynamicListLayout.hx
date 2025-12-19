@@ -83,14 +83,11 @@ class DynamicListLayout extends InteractableLayout
 			// We use a time-bound lerp to ensure framerate independence
 			var lerpRatio = FlxMath.bound(elapsed * lerpSpeed, 0, 1);
 
-			item.x = FlxMath.lerp(item.x, targetX, lerpRatio);
-			item.y = FlxMath.lerp(item.y, targetY, lerpRatio);
-			
 			final model = cast(item, Entity).getModel();
 			if (model != null)
 			{
-				model.x = item.x;
-				model.y = item.y;
+				model.x = FlxMath.lerp(model.x, targetX, lerpRatio);
+				model.y = FlxMath.lerp(model.y, targetY, lerpRatio);
 			}
 
 			if (Std.isOfType(item, Entity))
