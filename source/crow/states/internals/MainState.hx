@@ -1,7 +1,8 @@
 package crow.states.internals;
 
-import crow.assets.metadata.levels.GameStemData;
+import crow.assets.metadata.scenes.SceneMetadata.SceneContexts;
 import crow.assets.metadata.scenes.SceneMetadata.SceneCameras;
+import crow.assets.metadata.levels.GameStemData;
 import crow.ecs.entities.Camera;
 import crow.objects.transition.TransitionObject;
 import flixel.util.typeLimit.NextState;
@@ -55,6 +56,27 @@ class MainState extends FlxSubState
 		if (transitionObject != null && transitionObject.exists && transitionObject.alive && transitionObject.exists)
 		{
 			transitionObject.draw();
+		}
+	}
+
+	public function handleContexts(contexts:SceneContexts)
+	{
+		if (contexts != null)
+		{
+			if (contexts.unload != null)
+			{
+				for (contextName in contexts.unload)
+				{
+					Main.assets.unloadContext(contextName);
+				}
+			}
+			if (contexts.load != null)
+			{
+				for (contextName in contexts.load)
+				{
+					Main.assets.loadContext(contextName);
+				}
+			}
 		}
 	}
 
