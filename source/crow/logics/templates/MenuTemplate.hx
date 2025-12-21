@@ -125,7 +125,7 @@ class MenuTemplate extends Template
 				}
 
 				final entity = ctx.targetedEntities[0];
-				final levelComponent = entity.getComponentByType(LoadLevelComponent);
+				final levelComponent = cast(entity.getComponentByType(LoadLevelComponent), LoadLevelComponent);
 
 				if (levelComponent == null)
 				{

@@ -2,6 +2,7 @@ package crow.ecs.components.data;
 
 import crow.assets.metadata.levels.GameStemData;
 import crow.ecs.components.BaseComponent;
+import crow.game.levels.Playlist;
 
 /**
  * This component just holds GameStemData, it's initialized through 

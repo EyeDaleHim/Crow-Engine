@@ -6,3 +6,5 @@
     * A big caveat is that this could make the line between what is an entity and what isn't, is the save data also an entity?
     * It's important to make clear and concrete distinctions regarding what counts an entity.
 * TODO: Complete implementation of ATF blobs in .sbs files.
+* TODO: While very low on the list, we might need some profiler for things like asset context.
+    * This is needed because I discovered it might be difficult for someone to keep track of what context file loaded the asset.

@@ -9,12 +9,13 @@ import crow.assets.AssetHistory;
 import crow.assets.AssetCache;
 import crow.assets.AssetPaths;
 import crow.assets.AssetContext;
+import lime.app.Future;
+import lime.app.Promise;
 #if USE_TEXTURE
 import openfl.display3D.textures.RectangleTexture;
 #end
 import crow.assets.stitching.AtlasStitchData;
 import crow.assets.stitching.StitchedAtlas;
-
 class Assets
 {
 	public static final classExclusions:Array<String> = [
@@ -444,6 +445,79 @@ class Assets
 		#end
 
 		return false;
+	}
+
+	/**
+	 * Asynchronously loads all assets within a context.
+	 * Returns a Future that completes when all assets are loaded.
+	 */
+	public function loadContextAsync(fileInput:String, ?reload:Bool = false):Future<AssetContext>
+	{
+		var promise = new Promise<AssetContext>();
+
+		var context = findContext(fileInput);
+		if (context != null && !reload)
+		{
+			return Future.withValue(context);
+		}
+
+		context = new AssetContext(fileInput);
+		contexts.push(context);
+
+		var assetsToLoad = context.entries.length;
+		var completedCount = 0;
+
+		if (assetsToLoad == 0)
+		{
+			promise.complete(context);
+			return promise.future;
+		}
+
+		for (entry in context.entries)
+		{
+			// We use OpenFL/Lime's async methods here
+			var loadTask:Future<Dynamic> = switch (entry.type)
+			{
+				case IMAGE: BitmapData.loadFromFile(entry.path);
+				case SOUND: Sound.loadFromFile(entry.path);
+				case FONT: Font.loadFromFile(entry.path);
+				case TEXT: lime.utils.Assets.loadText(entry.path);
+				case BINARY: lime.utils.Assets.loadBytes(entry.path);
+				default: Future.withValue(null);
+			}
+
+			loadTask.onComplete(function(asset:Dynamic)
+			{
+				if (asset != null)
+				{
+					if (entry.type == FONT)
+						Font.registerFont(asset);
+					cache.set(entry.path, asset);
+					pushHistory(IO_SUCCESS, entry.type, entry.path);
+				}
+
+				completedCount++;
+				if (completedCount == assetsToLoad)
+				{
+					promise.complete(context);
+				}
+			});
+
+			loadTask.onError(function(err)
+			{
+				trace('Async Load Error: $err for ${entry.path}');
+				pushHistory(FAILURE, entry.type, entry.path);
+
+				// Even on failure, we increment to avoid hanging the whole process
+				completedCount++;
+				if (completedCount == assetsToLoad)
+				{
+					promise.complete(context);
+				}
+			});
+		}
+
+		return promise.future;
 	}
 
 	private function checkOrphanedAssets():Void

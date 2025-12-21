@@ -52,23 +52,19 @@ class AssetContext
 			{
 				// The `type` from JSON is a string, we need to convert it to FlxAssetType enum
 				final rawType:String = cast(entry.type, String).toLowerCase().trim();
-				#if !SBS_SPARROW
-				// We aren't using SBS, convert this spritesheet entry to .png and .xml
 				if (rawType == "spritesheet")
 				{
+					#if !SBS_SPARROW
+					// We aren't using SBS, convert this spritesheet entry to .png and .xml
 					uniqueEntries.set(entry.path, {path: entry.path, type: IMAGE});
 					final xmlPath = Path.join(['textures', Path.withExtension(entry.path, 'xml')]);
 					uniqueEntries.set(xmlPath, {path: xmlPath, type: TEXT});
-					continue;
-				}
-				#else
-				if (rawType == "spritesheet")
-				{
+					#else
 					final sbsPath = Path.join(['textures', Path.withExtension(entry.path, 'sbs')]);
 					uniqueEntries.set(sbsPath, {path: sbsPath, type: BINARY});
-					continue;
+					#end
+						continue;
 				}
-				#end
 				final assetType:FlxAssetType = switch (cast(entry.type, String).toLowerCase().trim())
 				{
 					case "image": IMAGE;

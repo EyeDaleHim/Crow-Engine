@@ -1,5 +1,7 @@
-package crow.states;
+package crow.states.internals;
 
+import crow.assets.AssetContext;
+import crow.assets.metadata.levels.GameStemData;
 import crow.ds.orderedmap.OrderedStringMap;
 import crow.ecs.managers.TimerManager;
 import crow.ecs.managers.TweenManager;
@@ -57,13 +59,99 @@ class PlayState extends MainState implements IEventExecutor
 	 */
 	public var nextScenes:Array<String>;
 
+	/**
+	 * The loading screen.
+	 * This is the background image for the loading screen.
+	 */
+	public var loadingScreenBackground:FlxSprite;
+
+	/**
+	 * This is the loading screen text.
+	 */
+	public var loadingScreenText:FlxText;
+
+	/**
+	 * This is the logo for the loading screen.
+	 */
+	public var loadingScreenLogo:FlxSprite;
+
+	/**
+	 * This is the progress bar for the loading screen.
+	 */
+	public var loadingScreenProgress:FlxSprite;
+
+	/**
+	 * The camera for the loading screen.
+	 */
+	public var loadingScreenCamera:FlxCamera;
+
 	public var tweenManager:TweenManager;
 	public var timerManager:TimerManager;
+
+	/**
+	 * All the merged asset contexts to load.
+	 */
+	private var _contextToLoadBuffer:Array<AssetContext> = [];
 
 	public function new()
 	{
 		super();
+
+		music = new Music();
+		add(music);
+
+		timerManager = new TimerManager();
+		tweenManager = new TweenManager();
 	}
+
+	/**
+	 * Prepares the PlayState for a new game session based on the provided `GameStemData`.
+	 * @param gameStem  The data that defines the game session, including the level or playlist to load.
+	 */
+	public function prepare(gameStem:GameStemData):Void {}
+
+	/**
+	 * Starts loading all the relevant context.
+	 */
+	public function startLoading():Void {}
+
+	/**
+	 * Like `destroy()`, but only for the entities and data that
+	 * this game session loaded, this PlayState instance should be 
+	 * reusable.
+	 * 
+	 * This should only be called if the game is actually done
+	 * with the gameplay.
+	 * 
+	 * The exception is the loading screen itself.
+	 */
+	public function clearGame():Void
+	{
+		for (entity in entities)
+		{
+			entity.destroy();
+		}
+		entities.clear();
+
+		systems = [];
+
+		for (musicChannel in musicChannels)
+		{
+			musicChannel.destroy();
+		}
+		musicChannels.clear();
+
+		for (sound in soundInstances)
+		{
+			sound.destroy();
+		}
+		soundInstances.clear();
+
+		timerManager.clear();
+		tweenManager.clear();
+	}
+
+	public function revertLoading():Void {}
 
 	override function update(elapsed:Float)
 	{
@@ -110,4 +198,17 @@ class PlayState extends MainState implements IEventExecutor
 	public function onEvent(eventName:String, ?localState:LogicState):Void {}
 
 	public function removeListenersByTag(tag:String):Void {}
+}
+
+enum LoadingScreenPhase
+{
+	/**
+	 * The assets are being loaded.
+	 */
+	LOADING_ASSETS;
+	
+	/**
+	 * The entities are being loaded.
+	 */
+	LOADING_ENTITIES;
 }

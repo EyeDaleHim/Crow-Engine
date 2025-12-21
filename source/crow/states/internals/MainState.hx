@@ -35,10 +35,7 @@ class MainState extends FlxSubState
 			data = [{name: "_main"}];
 		}
 
-		for (camera in data)
-		{
-
-		}
+		for (camera in data) {}
 	}
 
 	override public function update(elapsed:Float)
@@ -100,6 +97,9 @@ class MainState extends FlxSubState
 			trace("ERROR: No level or playlist provided to loadGame.");
 			return;
 		}
+
+		if (Main.gameSession == null)
+			Main.gameSession = new PlayState();
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package crow;
 
 import crow.game.levels.LevelRegistry;
+import crow.states.internals.PlayState;
 import openfl.Lib;
 import openfl.display.DisplayObjectContainer;
 
@@ -14,6 +15,8 @@ class Main extends DisplayObjectContainer
 
 	public static var levels:LevelRegistry;
 	public static var version:SemVer;
+
+	public static var gameSession:PlayState;
 
 	public function new()
 	{

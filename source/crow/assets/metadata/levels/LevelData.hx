@@ -16,6 +16,14 @@ typedef LevelInfoData =
 	var ?displayName:String;
 
 	/**
+	 * The contexts to load, if any.
+	 * 
+	 * Duplicate entries are encouraged in fields like this, but the system will
+	 * ensure that only one instance of each context is loaded.
+	 */
+	var ?contextsToLoad:Array<String>;
+
+	/**
 	 * Additional meta about the object.
 	 * Keys can include "artist", "char_icon", "color", etc.
 	 */

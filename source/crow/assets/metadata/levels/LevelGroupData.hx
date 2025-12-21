@@ -19,6 +19,8 @@ typedef LevelGroupData =
 	/**
 	 * The list of Level IDs in this group, referenced by their internal ID.
 	 * These act as the "options" or "difficulties" for this group.
+	 * 
+	 * Each object in this field will refer to a `LevelData`.
 	 */
 	var levels:Array<String>;
 
