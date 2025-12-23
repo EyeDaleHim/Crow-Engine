@@ -1,4 +1,4 @@
-package crow.input;
+package crow.game.input;
 
 import flixel.input.keyboard.FlxKey;
 

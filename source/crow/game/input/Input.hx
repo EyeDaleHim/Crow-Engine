@@ -1,4 +1,4 @@
-package crow.input;
+package crow.game.input;
 
 import openfl.display.Stage;
 import openfl.events.KeyboardEvent;
@@ -6,10 +6,10 @@ import openfl.events.MouseEvent;
 import lime.system.System;
 import flixel.input.keyboard.FlxKey; // For mapping key codes
 import crow.assets.metadata.internals.InputMetadata;
-import crow.input.ComboReleaseCondition;
-import crow.input.InputDevice;
+import crow.game.input.ComboReleaseCondition;
+import crow.game.input.InputDevice;
 import crow.ds.Set;
-import crow.input.MouseButton;
+import crow.game.input.MouseButton;
 
 class Input
 {

@@ -43,7 +43,7 @@ import crow.assets.Bundle;
 
 import crow.ecs.entities.Entity;
 
-import crow.input.Input;
+import crow.game.input.Input;
 
 import crow.music.Music;
 

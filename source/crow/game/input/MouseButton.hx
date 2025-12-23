@@ -1,4 +1,4 @@
-package crow.input;
+package crow.game.input;
 
 enum abstract MouseButton(String) from String to String
 {

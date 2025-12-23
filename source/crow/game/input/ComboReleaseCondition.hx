@@ -1,4 +1,4 @@
-package crow.input;
+package crow.game.input;
 
 enum abstract ComboReleaseCondition(String) from String to String
 {
