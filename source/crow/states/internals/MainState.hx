@@ -16,6 +16,18 @@ class MainState extends FlxSubState
 		return Main;
 	}
 
+	public var parentState(get, never):RootState;
+
+	function get_parentState():RootState
+	{
+		if (Std.isOfType(FlxG.state, RootState))
+		{
+			return cast(FlxG.state, RootState);
+		}
+
+		return null;
+	}
+
 	public var transitionObject:TransitionObject;
 	public var cameraList:Array<Camera>;
 
@@ -59,7 +71,7 @@ class MainState extends FlxSubState
 		}
 	}
 
-	public function handleContexts(contexts:SceneContexts)
+	public function handleContexts(contexts:SceneContexts, ?async:Bool = false, ?asyncCall:() -> Void = null)
 	{
 		if (contexts != null)
 		{
@@ -72,10 +84,52 @@ class MainState extends FlxSubState
 			}
 			if (contexts.load != null)
 			{
-				for (contextName in contexts.load)
+				if (async)
 				{
-					Main.assets.loadContext(contextName);
+						if (parentState != null)
+						{
+							parentState.loadingScreenObject.fadeIn();
+						}
+						Main.assets.loadContextsAsync(contexts.load).progress((progress, length) ->
+						{
+							haxe.MainLoop.runInMainThread(() ->
+							{
+								if (parentState != null)
+								{
+									parentState.loadingScreenObject.setProgress((progress / length) * 100);
+								}
+							});
+						}).complete(() ->
+							{
+								if (parentState != null)
+								{
+									parentState.loadingScreenObject.fadeOut(() ->
+									{
+										if (asyncCall != null)
+										{
+											haxe.MainLoop.runInMainThread(asyncCall);
+										}
+									});
+								}
+
+								Main.assetAsyncThread.clearSignals();
+							});
 				}
+				else
+				{
+					for (contextName in contexts.load)
+					{
+						Main.assets.loadContext(contextName);
+					}
+				}
+			}
+		}
+
+		if (asyncCall != null)
+		{
+			if (!async)
+			{
+				asyncCall();
 			}
 		}
 	}

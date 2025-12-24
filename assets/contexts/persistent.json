@@ -6,5 +6,33 @@
     {
         "type": "image",
         "path": "game/healthbar"
+    },
+    {
+        "type": "music",
+        "path": "menu/main"
+    },
+    {
+        "type": "sfx",
+        "path": "navigate/back"
+    },
+    {
+        "type": "sfx",
+        "path": "navigate/confirm"
+    },
+    {
+        "type": "sfx",
+        "path": "navigate/scroll"
+    },
+        {
+        "type": "sfx",
+        "path": "soundtray/down"
+    },
+    {
+        "type": "sfx",
+        "path": "soundtray/max"
+    },
+    {
+        "type": "sfx",
+        "path": "soundtray/up"
     }
 ]

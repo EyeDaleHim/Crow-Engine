@@ -1,5 +1,6 @@
 package crow.states.internals;
 
+import crow.objects.loading.LoadingScreen;
 import crow.assets.AssetContext;
 import crow.assets.metadata.levels.GameStemData;
 import crow.ds.orderedmap.OrderedStringMap;
@@ -61,32 +62,12 @@ class PlayState extends MainState implements IEventExecutor
 
 	/**
 	 * The loading screen.
-	 * This is the background image for the loading screen.
 	 */
-	public var loadingScreenBackground:FlxSprite;
-
-	/**
-	 * This is the loading screen text.
-	 */
-	public var loadingScreenText:FlxText;
-
-	/**
-	 * This is the logo for the loading screen.
-	 */
-	public var loadingScreenLogo:FlxSprite;
-
-	/**
-	 * This is the progress bar for the loading screen.
-	 */
-	public var loadingScreenProgress:FlxSprite;
-
-	/**
-	 * The camera for the loading screen.
-	 */
-	public var loadingScreenCamera:FlxCamera;
+	public var loadingScreen:LoadingScreen;
 
 	public var tweenManager:TweenManager;
 	public var timerManager:TimerManager;
+
 
 	/**
 	 * All the merged asset contexts to load.
@@ -99,6 +80,10 @@ class PlayState extends MainState implements IEventExecutor
 
 		music = new Music();
 		add(music);
+
+		loadingScreen = new LoadingScreen();
+		loadingScreen.visible = false;
+		add(loadingScreen);
 
 		timerManager = new TimerManager();
 		tweenManager = new TweenManager();
@@ -122,8 +107,6 @@ class PlayState extends MainState implements IEventExecutor
 	 * 
 	 * This should only be called if the game is actually done
 	 * with the gameplay.
-	 * 
-	 * The exception is the loading screen itself.
 	 */
 	public function clearGame():Void
 	{
@@ -198,17 +181,4 @@ class PlayState extends MainState implements IEventExecutor
 	public function onEvent(eventName:String, ?localState:LogicState):Void {}
 
 	public function removeListenersByTag(tag:String):Void {}
-}
-
-enum LoadingScreenPhase
-{
-	/**
-	 * The assets are being loaded.
-	 */
-	LOADING_ASSETS;
-	
-	/**
-	 * The entities are being loaded.
-	 */
-	LOADING_ENTITIES;
 }

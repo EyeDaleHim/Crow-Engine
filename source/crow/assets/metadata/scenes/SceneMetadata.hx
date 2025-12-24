@@ -24,6 +24,12 @@ typedef SceneMetadata =
 	var ?contexts:SceneContexts;
 
 	/**
+	 * If `true`, the scene will load asynchronously, showing a loading screen.
+	 * If `false` or `null`, the scene will load synchronously.
+	 */
+	var ?asyncLoading:Bool;
+
+	/**
 	 * Defines how transitions are handled for a scene state.
 	 */
 	var ?transitions:SceneTransitions;

@@ -1,5 +1,6 @@
 package crow.states.internals;
 
+import crow.objects.loading.LoadingScreen;
 import crow.objects.soundtray.SoundTrayObject;
 import crow.objects.transition.TransitionObject;
 
@@ -30,6 +31,7 @@ class RootState extends FlxState
 
 	public var transitionObject:TransitionObject;
 	public var soundTrayObject:SoundTrayObject;
+	public var loadingScreenObject:LoadingScreen;
 
 	public function new(?startState:() -> MainState)
 	{
@@ -53,6 +55,10 @@ class RootState extends FlxState
 		transitionObject = new TransitionObject();
 		transitionObject.camera = rootCamera;
 		add(transitionObject);
+
+		loadingScreenObject = new LoadingScreen();
+		loadingScreenObject.camera = rootCamera;
+		add(loadingScreenObject);
 
 		soundTrayObject = new SoundTrayObject("sfx/soundtray/up", "sfx/soundtray/down", "sfx/soundtray/max");
 		soundTrayObject.camera = rootCamera;

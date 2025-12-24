@@ -2,6 +2,8 @@ package crow;
 
 import crow.game.levels.LevelRegistry;
 import crow.states.internals.PlayState;
+import crow.utils.thread.JobListThread;
+import crow.utils.thread.ICrowThread;
 import openfl.Lib;
 import openfl.display.DisplayObjectContainer;
 
@@ -17,6 +19,9 @@ class Main extends DisplayObjectContainer
 	public static var version:SemVer;
 
 	public static var gameSession:PlayState;
+
+	// threads
+	public static var assetAsyncThread:JobListThread;
 
 	public function new()
 	{
@@ -38,7 +43,7 @@ class Main extends DisplayObjectContainer
 		{
 			Main.input.postUpdate();
 		});
-
+		
 		Lib.current.addChild(game);
 	}
 }

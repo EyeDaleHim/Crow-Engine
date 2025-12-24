@@ -1,4 +1,5 @@
 {
+	"asyncLoading": true,
 	"contexts": {
 		"load": [
 			"persistent",

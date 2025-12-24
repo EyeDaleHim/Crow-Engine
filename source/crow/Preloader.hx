@@ -1,5 +1,6 @@
 package crow;
 
+import crow.utils.thread.JobListThread;
 import flixel.system.FlxBasePreloader;
 
 class Preloader extends FlxBasePreloader
@@ -10,6 +11,8 @@ class Preloader extends FlxBasePreloader
 
 		FlxGraphic.defaultPersist = true;
 
+		Main.assetAsyncThread = new JobListThread("AsyncAssets");
+
 		Main.version = SemVer.fromString(FlxG.stage.application.meta.get("version")) ?? new SemVer(0, 0, 0);
 
 		Main.assets = new Assets();
@@ -17,6 +20,8 @@ class Preloader extends FlxBasePreloader
 		#if ASSETS_PACKAGING
 		Main.bundle = Bundle.load('assets.bundle');
 		#end
+
+		Main.assetAsyncThread.start();
 
 		Main.levels = new crow.game.levels.LevelRegistry();
 

@@ -72,6 +72,8 @@ class JobListThread extends CallbackThread
 		if (debug)
 			trace('[Thread:$name] Incrementing progress. ($_currentProgress/$_totalProgress)');
 		_currentProgress++;
+
+		update();
 	}
 
 	private function processQueue():Void

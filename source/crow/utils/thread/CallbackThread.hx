@@ -13,17 +13,22 @@ class CallbackThread implements ICrowThread
 	/**
 	 * A listener that is called when the thread succeeds.
 	 */
-	public var onComplete:Void->Void;
+	public var onComplete(get, set):Void->Void;
 
 	/**
 	 * A listener that is called when the thread gets an error.
 	 */
-	public var onError:Dynamic->Void;
+	public var onError(get, set):Dynamic->Void;
 
 	/**
 	 * A listener that is called when the thread reports progress.
 	 */
-	public var onProgress:(progress:Int, length:Int) -> Void;
+	public var onProgress(get, set):(progress:Int, length:Int) -> Void;
+
+	/**
+	 * A set of signals that can be used to listen to the thread's events.
+	 */
+	public var signals(default, null):ThreadSignals;
 
 	/**
 	 * The name of the thread, useful for debugging.
@@ -38,7 +43,7 @@ class CallbackThread implements ICrowThread
 	/**
 	 * If true, logs start, completion, and error messages to the console.
 	 */
-	public var debug:Bool = true;
+	public var debug:Bool = false;
 
 	private var thread:Thread;
 	private var complete:Bool = false;
@@ -55,6 +60,7 @@ class CallbackThread implements ICrowThread
 
 	public function new(call:() -> Void, ?immediately:Bool = false, ?name:String)
 	{
+		this.signals = new ThreadSignals();
 		this.name = name ?? UUID.generateV4();
 
 		_job = () ->
@@ -101,9 +107,14 @@ class CallbackThread implements ICrowThread
 		{
 			if (debug)
 				trace('[Thread:$name] Progress: $_currentProgress/$_totalProgress');
-			
+
 			onProgress(_currentProgress, _totalProgress);
 			_lastReportedProgress = _currentProgress;
+
+			if (_currentProgress == _totalProgress)
+			{
+				complete = true;
+			}
 		}
 
 		if (complete)
@@ -156,4 +167,20 @@ class CallbackThread implements ICrowThread
 			}
 		});
 	}
+
+	public function clearSignals():Void
+	{
+		onComplete = null;
+		onError = null;
+		onProgress = null;
+	}
+
+	private function get_onComplete() return signals.onComplete;
+	private function set_onComplete(val) return signals.onComplete = val;
+
+	private function get_onError() return signals.onError;
+	private function set_onError(val) return signals.onError = val;
+
+	private function get_onProgress() return signals.onProgress;
+	private function set_onProgress(val) return signals.onProgress = val;
 }

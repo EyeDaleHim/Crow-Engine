@@ -9,13 +9,12 @@ import crow.assets.AssetHistory;
 import crow.assets.AssetCache;
 import crow.assets.AssetPaths;
 import crow.assets.AssetContext;
-import lime.app.Future;
-import lime.app.Promise;
 #if USE_TEXTURE
 import openfl.display3D.textures.RectangleTexture;
 #end
 import crow.assets.stitching.AtlasStitchData;
 import crow.assets.stitching.StitchedAtlas;
+
 class Assets
 {
 	public static final classExclusions:Array<String> = [
@@ -449,75 +448,165 @@ class Assets
 
 	/**
 	 * Asynchronously loads all assets within a context.
-	 * Returns a Future that completes when all assets are loaded.
+	 * Returns the context immediately, but assets are loaded in the background.
 	 */
-	public function loadContextAsync(fileInput:String, ?reload:Bool = false):Future<AssetContext>
+	public function loadContextAsync(fileInput:String, ?reload:Bool = false):ThreadSignals
 	{
-		var promise = new Promise<AssetContext>();
-
 		var context = findContext(fileInput);
 		if (context != null && !reload)
 		{
-			return Future.withValue(context);
+			Main.assetAsyncThread.resetProgress(1);
+			Main.assetAsyncThread.incrementProgress();
+			return Main.assetAsyncThread.signals;
 		}
 
 		context = new AssetContext(fileInput);
 		contexts.push(context);
 
 		var assetsToLoad = context.entries.length;
-		var completedCount = 0;
 
 		if (assetsToLoad == 0)
 		{
-			promise.complete(context);
-			return promise.future;
+			Main.assetAsyncThread.resetProgress(1);
+			Main.assetAsyncThread.incrementProgress();
+			return Main.assetAsyncThread.signals;
 		}
+
+		Main.assetAsyncThread.resetProgress(assetsToLoad + 1); // offset by one
 
 		for (entry in context.entries)
 		{
-			// We use OpenFL/Lime's async methods here
-			var loadTask:Future<Dynamic> = switch (entry.type)
+			Main.assetAsyncThread.add(() ->
 			{
-				case IMAGE: BitmapData.loadFromFile(entry.path);
-				case SOUND: Sound.loadFromFile(entry.path);
-				case FONT: Font.loadFromFile(entry.path);
-				case TEXT: lime.utils.Assets.loadText(entry.path);
-				case BINARY: lime.utils.Assets.loadBytes(entry.path);
-				default: Future.withValue(null);
-			}
+				final assetPath = AssetPaths.from(entry.path, entry.type);
+				var asset:Dynamic = null;
 
-			loadTask.onComplete(function(asset:Dynamic)
-			{
+				try
+				{
+					switch (entry.type)
+					{
+						case IMAGE:
+							asset = BitmapData.fromFile(assetPath);
+						case SOUND:
+							asset = Sound.fromFile(assetPath);
+						case FONT:
+							asset = Font.fromFile(assetPath);
+						case TEXT:
+							asset = sys.io.File.getContent(assetPath);
+						case BINARY:
+							asset = sys.io.File.getBytes(assetPath);
+					}
+				}
+				catch (e:Dynamic)
+				{
+					trace('Async Load Error: $e for ${entry.path}');
+				}
+
 				if (asset != null)
 				{
+					trace('Async Loaded: ${entry.path} as ${entry.type}');
 					if (entry.type == FONT)
 						Font.registerFont(asset);
 					cache.set(entry.path, asset);
 					pushHistory(IO_SUCCESS, entry.type, entry.path);
 				}
-
-				completedCount++;
-				if (completedCount == assetsToLoad)
+				else
 				{
-					promise.complete(context);
+					pushHistory(FAILURE, entry.type, entry.path);
 				}
-			});
 
-			loadTask.onError(function(err)
-			{
-				trace('Async Load Error: $err for ${entry.path}');
-				pushHistory(FAILURE, entry.type, entry.path);
-
-				// Even on failure, we increment to avoid hanging the whole process
-				completedCount++;
-				if (completedCount == assetsToLoad)
-				{
-					promise.complete(context);
-				}
+				Main.assetAsyncThread.incrementProgress();
 			});
 		}
 
-		return promise.future;
+		return Main.assetAsyncThread.signals;
+	}
+
+	/**
+	 * Asynchronously loads multiple contexts at once.
+	 * Consolidates entries to reduce thread overhead.
+	 */
+	public function loadContextsAsync(fileInputs:Array<String>, ?reload:Bool = false):ThreadSignals
+	{
+		var loadedContexts:Array<AssetContext> = [];
+		var entriesToLoad = [];
+
+		for (fileInput in fileInputs)
+		{
+			var context = findContext(fileInput);
+			if (context != null && !reload)
+			{
+				loadedContexts.push(context);
+				continue;
+			}
+
+			context = new AssetContext(fileInput);
+			contexts.push(context);
+			loadedContexts.push(context);
+
+			for (entry in context.entries)
+			{
+				entriesToLoad.push(entry);
+			}
+		}
+
+		var assetsToLoad = entriesToLoad.length;
+
+		if (assetsToLoad == 0)
+		{
+			Main.assetAsyncThread.resetProgress(1);
+			Main.assetAsyncThread.incrementProgress();
+			return Main.assetAsyncThread.signals;
+		}
+
+		Main.assetAsyncThread.resetProgress(assetsToLoad - 1);
+
+		for (entry in entriesToLoad)
+		{
+			Main.assetAsyncThread.add(() ->
+			{
+				final assetPath = AssetPaths.from(entry.path, entry.type);
+				var asset:Dynamic = null;
+
+				try
+				{
+					switch (entry.type)
+					{
+						case IMAGE:
+							asset = BitmapData.fromFile(assetPath);
+						case SOUND:
+							asset = Sound.fromFile(assetPath);
+						case FONT:
+							asset = Font.fromFile(assetPath);
+						case TEXT:
+							asset = sys.io.File.getContent(assetPath);
+						case BINARY:
+							asset = sys.io.File.getBytes(assetPath);
+					}
+				}
+				catch (e:Dynamic)
+				{
+					trace('Async Load Error: $e for ${entry.path}');
+				}
+
+				if (asset != null)
+				{
+					trace('Async Loaded: ${entry.path} as ${entry.type}');
+					if (entry.type == FONT)
+						Font.registerFont(asset);
+					cache.set(entry.path, asset);
+					pushHistory(IO_SUCCESS, entry.type, entry.path);
+				}
+				else
+				{
+					pushHistory(FAILURE, entry.type, entry.path);
+				}
+
+				Main.assetAsyncThread.incrementProgress();
+			});
+		}
+
+		return Main.assetAsyncThread.signals;
 	}
 
 	private function checkOrphanedAssets():Void

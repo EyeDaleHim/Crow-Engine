@@ -45,9 +45,6 @@ class LevelRegistry
 		playlists = new Map();
 
 		loadRegistry();
-		trace(groups);
-		// test
-		trace(groups.get("dadbattle"));
 	}
 
 	public function loadRegistry():Void

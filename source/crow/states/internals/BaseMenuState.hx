@@ -82,6 +82,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 	public var timerManager:TimerManager;
 	public var tweenManager:TweenManager;
 
+	private var _contextsLoaded:Bool = false;
+
 	public function new()
 	{
 		super();
@@ -113,6 +115,25 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 */
 	public function buildMenu():Void
 	{
+		if (menuMetadata.asyncLoading && !_contextsLoaded)
+		{
+			handleContexts(menuMetadata.contexts, true, () ->
+			{
+				_contextsLoaded = true;
+				buildMenu();
+			});
+			return;
+		}
+
+		if (!menuMetadata.asyncLoading)
+		{
+			handleContexts(menuMetadata.contexts, false);
+		}
+
+		_contextsLoaded = true;
+
+		trace("Building menu");
+
 		if (menuMetadata == null)
 		{
 			trace("Error: menuMetadata is null. Cannot build menu.");
@@ -133,9 +154,6 @@ class BaseMenuState extends MainState implements IEventExecutor
 				logicState.set(key, Reflect.field(menuMetadata.logic.initialState, key));
 			}
 		}
-
-		// Process asset contexts for loading and unloading
-		handleContexts(menuMetadata.contexts);
 
 		var rootLayoutAdded:Bool = false;
 		for (element in menuMetadata.elements)
@@ -726,8 +744,8 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * @param entities 
 	 * @param executor 
 	 */
-	public function executeLogic(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState,
-			?entities:OrderedStringMap<Entity>, ?executor:IEventExecutor)
+	public function executeLogic(actions:Array<ListenerActionMetadata>, executorState:LogicState, ?localState:LogicState, ?entities:OrderedStringMap<Entity>,
+			?executor:IEventExecutor)
 	{
 		LogicEvaluator.execute(actions, executorState, localState, entities, executor);
 	}

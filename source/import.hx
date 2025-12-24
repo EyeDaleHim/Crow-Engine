@@ -55,6 +55,10 @@ import crow.states.internals.MainState;
 #end
 
 #if sys
+import crow.utils.thread.CallbackThread;
+import crow.utils.thread.JobListThread;
+import crow.utils.thread.ThreadSignals;
+
 import sys.FileSystem;
 import sys.io.File;
 #end
