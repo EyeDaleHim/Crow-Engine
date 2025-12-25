@@ -187,33 +187,30 @@ class BaseMenuState extends MainState implements IEventExecutor
 
 		if (menuMetadata.asyncLoading)
 		{
-			FlxTimer.wait(4.0, () ->
+			trace('i do thi');
+			buildElementsAsync(menuMetadata.elements, rootLayout, rootLayoutProps, rootLayoutAdded).progress((progress, length) ->
 			{
-				trace('i do thi');
-				buildElementsAsync(menuMetadata.elements, rootLayout, rootLayoutProps, rootLayoutAdded).progress((progress, length) ->
+				haxe.MainLoop.runInMainThread(() ->
 				{
-					haxe.MainLoop.runInMainThread(() ->
+					if (parentState != null)
 					{
-						if (parentState != null)
-						{
-							trace((progress / length) * 100);
-							parentState.loadingScreenObject.setProgress((progress / length) * 100);
-						}
-					});
-				}).complete(() ->
+						trace((progress / length) * 100);
+						parentState.loadingScreenObject.setProgress((progress / length) * 100);
+					}
+				});
+			}).complete(() ->
+				{
+					if (parentState != null)
 					{
-						if (parentState != null)
+						parentState.loadingScreenObject.fadeOut(() ->
 						{
-							parentState.loadingScreenObject.fadeOut(() ->
-							{
-								rootLayout.updateLayout();
+							rootLayout.updateLayout();
 
-								// Trigger the "create" event for any initial setup logic.
-								onEvent("create", new LogicState());
-							});
-						}
-					});
-			});
+							// Trigger the "create" event for any initial setup logic.
+							onEvent("create", new LogicState());
+						});
+					}
+				});
 		}
 		else
 		{
