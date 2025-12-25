@@ -185,12 +185,45 @@ class BaseMenuState extends MainState implements IEventExecutor
 		if (!rootLayoutAdded)
 			add(rootLayout);
 
-		buildElements(menuMetadata.elements, rootLayout, rootLayoutProps, rootLayoutAdded);
+		if (menuMetadata.asyncLoading)
+		{
+			FlxTimer.wait(4.0, () ->
+			{
+				trace('i do thi');
+				buildElementsAsync(menuMetadata.elements, rootLayout, rootLayoutProps, rootLayoutAdded).progress((progress, length) ->
+				{
+					haxe.MainLoop.runInMainThread(() ->
+					{
+						if (parentState != null)
+						{
+							trace((progress / length) * 100);
+							parentState.loadingScreenObject.setProgress((progress / length) * 100);
+						}
+					});
+				}).complete(() ->
+					{
+						if (parentState != null)
+						{
+							parentState.loadingScreenObject.fadeOut(() ->
+							{
+								rootLayout.updateLayout();
 
-		rootLayout.updateLayout();
+								// Trigger the "create" event for any initial setup logic.
+								onEvent("create", new LogicState());
+							});
+						}
+					});
+			});
+		}
+		else
+		{
+			buildElements(menuMetadata.elements, rootLayout, rootLayoutProps, rootLayoutAdded);
 
-		// Trigger the "create" event for any initial setup logic.
-		onEvent("create", new LogicState());
+			rootLayout.updateLayout();
+
+			// Trigger the "create" event for any initial setup logic.
+			onEvent("create", new LogicState());
+		}
 	}
 
 	private function processStoredData():Void
@@ -238,6 +271,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 * @param items The list of menu items to process.
 	 * @param parentLayout The layout to add the created objects to.
 	 * @param layoutProps The layout properties to apply to the `parentLayout`.
+	 * @param rootLayoutInElements The `rootLayoutInElements` parameter indicates if the root layout is explicitly defined in the elements list. 
 	 */
 	private function buildElements(elements:Array<MenuItem>, parentLayout:InteractableLayout, ?layoutProps:MenuLayout, rootLayoutInElements:Bool = false):Void
 	{
@@ -516,6 +550,320 @@ class BaseMenuState extends MainState implements IEventExecutor
 					rootLayoutAndData.layout.screenCenter(Y);
 			}
 		}
+	}
+
+	/**
+	 * Recursively builds an `InteractableLayout` from an array of `MenuItem`s, asynchronously.
+	 * @param elements 
+	 * @param parentLayout 
+	 * @param layoutProps 
+	 * @param rootLayoutInElements 
+	 * @return This ThreadSignals instance.
+	 */
+	private function buildElementsAsync(elements:Array<MenuItem>, parentLayout:InteractableLayout, ?layoutProps:MenuLayout,
+			rootLayoutInElements:Bool = false):ThreadSignals
+	{
+		if (layoutProps?.name != null)
+		{
+			menuLayouts.set(layoutProps.name, parentLayout);
+		}
+
+		if (layoutProps != null)
+		{
+			if (layoutProps.direction != null)
+				parentLayout.direction = layoutProps.direction;
+			if (layoutProps.gap != null)
+				parentLayout.gap = layoutProps.gap;
+			if (layoutProps.padding != null)
+				parentLayout.padding = layoutProps.padding;
+			if (layoutProps.justifyContent != null)
+				parentLayout.justifyContent = layoutProps.justifyContent;
+			if (layoutProps.alignItems != null)
+				parentLayout.alignItems = layoutProps.alignItems;
+			if (layoutProps.wrap != null)
+				parentLayout.wrap = layoutProps.wrap;
+			if (layoutProps.gapBehavior != null)
+				parentLayout.gapBehavior = layoutProps.gapBehavior;
+			if (layoutProps.autoSize != null)
+				parentLayout.autoSize = layoutProps.autoSize;
+			if (layoutProps.selectionMode != null)
+				parentLayout.selectionMode = layoutProps.selectionMode;
+
+			if (layoutProps.onDeselect != null)
+			{
+				parentLayout.onDeselect.add((deselected) ->
+				{
+					final selectedIndex = parentLayout.selectedIndex;
+					final selectedItem = menuMetadata.elements[selectedIndex];
+					final selectedEntity = entities.get(selectedItem.name);
+					handleMenuAction(layoutProps.onDeselect, selectedItem, selectedEntity);
+				});
+			}
+
+			if (layoutProps.onSelect != null)
+			{
+				parentLayout.onSelect.add((selected) ->
+				{
+					final selectedIndex = parentLayout.selectedIndex;
+					final selectedItem = menuMetadata.elements[selectedIndex];
+					final selectedEntity = entities.get(selectedItem.name);
+					handleMenuAction(layoutProps.onSelect, selectedItem, selectedEntity);
+				});
+			}
+
+			if (layoutProps.onIndex != null)
+			{
+				parentLayout.onIndex.add((oldIndex, newIndex) ->
+				{
+					final selectedItem = menuMetadata.elements[newIndex];
+					final selectedEntity = entities.get(selectedItem.name);
+
+					final localState = new LogicState();
+					localState.set("oldIndex", oldIndex);
+					localState.set("newIndex", newIndex);
+
+					handleMenuAction(layoutProps.onIndex, selectedItem, selectedEntity, localState);
+				});
+			}
+		}
+
+		function countTasks(?elementItems:Array<MenuItem>):Int
+		{
+			elementItems ??= elements;
+
+			var totalTasks = 0;
+			for (rawElementData in elementItems)
+			{
+				if (rawElementData.dataSource != null)
+				{
+					// Each item in a data source will generate an entity
+					var list:Array<Dynamic> = fetchDataSource(rawElementData.dataSource, rawElementData.dataFilter);
+					totalTasks += list.length;
+				}
+				else if (rawElementData.entity != null)
+				{
+					// A single entity
+					totalTasks++;
+				}
+				else if (rawElementData.items != null)
+				{
+					// Nested layout, recursively count
+					totalTasks += countTasks(rawElementData.items);
+				}
+			}
+			return totalTasks;
+		}
+
+		final totalTasks = countTasks();
+		if (totalTasks == 0)
+		{
+			Main.entityBuilderThread.resetProgress(1);
+			Main.entityBuilderThread.incrementProgress();
+			return Main.entityBuilderThread.signals;
+		}
+
+		Main.entityBuilderThread.resetProgress(totalTasks);
+
+		function scheduleElements(items:Array<MenuItem>, layout:InteractableLayout):Void
+		{
+			if (items == null || items.length == 0)
+				return;
+
+			for (rawElementData in items)
+			{
+				var itemsToProcess:Array<{data:MenuItem, context:Dynamic, index:Int}> = [];
+
+				if (rawElementData.dataSource != null)
+				{
+					var list:Array<Dynamic> = fetchDataSource(rawElementData.dataSource, rawElementData.dataFilter);
+					var i:Int = 0;
+
+					for (entry in list)
+					{
+						var clonedItem:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(rawElementData));
+						clonedItem.dataSource = null;
+						clonedItem.name = entry.id;
+						itemsToProcess.push({data: clonedItem, context: entry, index: i});
+						i++;
+					}
+				}
+				else
+				{
+					itemsToProcess.push({data: rawElementData, context: null, index: -1});
+				}
+
+				for (processEntry in itemsToProcess)
+				{
+					final elementData = processEntry.data;
+					final dataContext = processEntry.context;
+					final index = processEntry.index;
+
+					if (elementData.name == "_root_layout")
+					{
+						if (rootLayoutInElements)
+						{
+							if (elementData.position != null)
+							{
+								layout.x = elementData.position.x;
+								layout.y = elementData.position.y;
+							}
+							add(layout);
+
+							if (elementData.screenCenter != null)
+							{
+								layout.updateLayout();
+								if (elementData.screenCenter.x)
+									layout.screenCenter(X);
+								if (elementData.screenCenter.y)
+									layout.screenCenter(Y);
+							}
+						}
+						continue;
+					}
+
+					if (elementData.items != null)
+					{
+						final subLayout = createLayoutInstance(elementData.layout);
+						layout.add(subLayout);
+						scheduleElements(elementData.items, subLayout);
+						continue;
+					}
+
+					Main.entityBuilderThread.add(() ->
+					{
+						try
+						{
+							var processedData = elementData;
+
+							if (processedData.genericReference != null && menuMetadata.genericElements != null)
+							{
+								var genericItem:GenericMenuItem = null;
+								for (g in menuMetadata.genericElements)
+								{
+									if (g.name == processedData.genericReference)
+									{
+										genericItem = g;
+										break;
+									}
+								}
+
+								if (genericItem != null)
+								{
+									var mergedData:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(genericItem.menuItem));
+									if (genericItem.listenerAppends == true && processedData.listeners != null && mergedData.listeners != null)
+									{
+										for (listener in processedData.listeners)
+											mergedData.listeners.push(listener);
+									}
+
+									for (field in Reflect.fields(processedData))
+									{
+										if (genericItem.listenerAppends == true && field == "listeners")
+											continue;
+										Reflect.setField(mergedData, field, Reflect.field(processedData, field));
+									}
+									processedData = mergedData;
+								}
+							}
+
+							var menuObject:FlxObject = null;
+							var entity:Entity = null;
+							var isDecoration:Bool = (processedData.listeners == null || processedData.listeners.length == 0)
+								&& processedData.items == null;
+
+							if (processedData.entity != null)
+							{
+								var initialState:Dynamic = {};
+								if (dataContext != null)
+								{
+									if (Reflect.hasField(dataContext, "id"))
+										Reflect.setField(initialState, "id", Reflect.field(dataContext, "id"));
+									if (Reflect.hasField(dataContext, "displayName"))
+										Reflect.setField(initialState, "displayName", Std.string(Reflect.field(dataContext, "displayName")));
+									if (Reflect.hasField(dataContext, "metaInfo") && Reflect.field(dataContext, "metaInfo") != null)
+									{
+										var meta:Dynamic = Reflect.field(dataContext, "metaInfo");
+										for (f in Reflect.fields(meta))
+											Reflect.setField(initialState, f, Reflect.field(meta, f));
+									}
+								}
+
+								if (index != -1)
+									Reflect.setField(initialState, "index", index);
+
+								entity = new Entity(0, 0, processedData.entity, processedData.overrideData, initialState);
+								menuObject = entity.getModel();
+
+								if (processedData.name == null)
+									processedData.name = entity.entityName;
+							}
+							else if (processedData.name == null)
+							{
+								processedData.name = UUID.generateV4();
+							}
+
+							if (entity != null)
+							{
+								entities.set(processedData.name, entity);
+								if (dataContext != null)
+								{
+									var singleEntityMap = new OrderedStringMap<Entity>();
+									singleEntityMap.set(entity.entityName, entity);
+									executeLogic([
+										{type: "state_change", values: {state: {changeType: "SET", stateKey: "dummy", value: 0}}}
+									], logicState, null, singleEntityMap, this);
+									onItemEvent(processedData, "create", entity, entity.logicState);
+								}
+							}
+
+							if (menuObject != null)
+							{
+								haxe.MainLoop.runInMainThread(() ->
+								{
+									var menuObjectAsModel:Model = cast(menuObject, Model);
+									if (processedData.position != null || processedData.screenCenter != null || isDecoration)
+									{
+										if (processedData.position != null)
+										{
+											menuObject.x = processedData.position.x;
+											menuObject.y = processedData.position.y;
+										}
+										if (processedData.screenCenter != null)
+										{
+											final model:Model = cast menuObject;
+											if (processedData.screenCenter.x)
+												model.screenCenter(X);
+											if (processedData.screenCenter.y)
+												model.screenCenter(Y);
+										}
+										add(menuObjectAsModel.entity);
+									}
+									else
+									{
+										layout.add(menuObjectAsModel.entity);
+										elementMetadataMap.set(menuObjectAsModel.entity, processedData);
+										if (processedData.alignSelf != null)
+										{
+											layout.getLayoutData(menuObjectAsModel.entity).alignSelf = processedData.alignSelf;
+										}
+									}
+									Main.entityBuilderThread.incrementProgress();
+								});
+							}
+						}
+						catch (e:Dynamic)
+						{
+							trace('Error building entity async: $e');
+							haxe.MainLoop.runInMainThread(() -> Main.entityBuilderThread.incrementProgress());
+						}
+					});
+				}
+			}
+		}
+
+		scheduleElements(elements, parentLayout);
+
+		return Main.entityBuilderThread.signals;
 	}
 
 	override function update(elapsed:Float)

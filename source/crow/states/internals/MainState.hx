@@ -86,34 +86,29 @@ class MainState extends FlxSubState
 			{
 				if (async)
 				{
-						if (parentState != null)
+					if (parentState != null)
+					{
+						parentState.loadingScreenObject.fadeIn();
+					}
+					Main.assets.loadContextsAsync(contexts.load).progress((progress, length) ->
+					{
+						haxe.MainLoop.runInMainThread(() ->
 						{
-							parentState.loadingScreenObject.fadeIn();
-						}
-						Main.assets.loadContextsAsync(contexts.load).progress((progress, length) ->
+							if (parentState != null)
+							{
+								parentState.loadingScreenObject.setProgress((progress / length) * 100);
+							}
+						});
+					}).complete(() ->
 						{
-							haxe.MainLoop.runInMainThread(() ->
+							if (parentState != null && asyncCall != null)
 							{
-								if (parentState != null)
-								{
-									parentState.loadingScreenObject.setProgress((progress / length) * 100);
-								}
-							});
-						}).complete(() ->
-							{
-								if (parentState != null)
-								{
-									parentState.loadingScreenObject.fadeOut(() ->
-									{
-										if (asyncCall != null)
-										{
-											haxe.MainLoop.runInMainThread(asyncCall);
-										}
-									});
-								}
+								// Next thread!
+								haxe.MainLoop.runInMainThread(asyncCall);
+							}
 
-								Main.assetAsyncThread.clearSignals();
-							});
+							Main.assetAsyncThread.clearSignals();
+						});
 				}
 				else
 				{

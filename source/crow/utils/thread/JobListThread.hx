@@ -13,11 +13,15 @@ class JobListThread extends CallbackThread
 {
 	private var _queue:Deque<() -> Void>;
 	private var _lock:Lock;
+	private var _pauseLock:Lock;
+
+	public var paused(default, set):Bool = false;
 
 	public function new(?immediately:Bool = false, ?name:String)
 	{
 		_queue = new Deque();
 		_lock = new Lock();
+		_pauseLock = new Lock();
 
 		super(processQueue, immediately, name);
 	}
@@ -81,10 +85,29 @@ class JobListThread extends CallbackThread
 		while (true)
 		{
 			var job = _queue.pop(true);
+
+			while (paused)
+			{
+				_pauseLock.wait();
+			}
+
 			if (job == null)
 				break;
 
 			job();
 		}
+	}
+
+	private function set_paused(value:Bool):Bool
+	{
+		if (paused == value)
+			return value;
+
+		paused = value;
+
+		if (!paused)
+			_pauseLock.release();
+
+		return value;
 	}
 }

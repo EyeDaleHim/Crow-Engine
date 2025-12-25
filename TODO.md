@@ -8,3 +8,4 @@
 * TODO: Complete implementation of ATF blobs in .sbs files.
 * TODO: While very low on the list, we might need some profiler for things like asset context.
     * This is needed because I discovered it might be difficult for someone to keep track of what context file loaded the asset.
+* TODO: The multithreading code in BaseMenuState.hx is bullshit for readability, polish it at some point.

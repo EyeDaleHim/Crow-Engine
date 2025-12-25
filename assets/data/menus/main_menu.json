@@ -1,4 +1,5 @@
 {
+    "asyncLoading": true,
     "layouts": [
         {
             "name": "main",

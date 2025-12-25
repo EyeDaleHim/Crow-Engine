@@ -22,6 +22,7 @@ class Main extends DisplayObjectContainer
 
 	// threads
 	public static var assetAsyncThread:JobListThread;
+	public static var entityBuilderThread:JobListThread;
 
 	public function new()
 	{
@@ -43,7 +44,7 @@ class Main extends DisplayObjectContainer
 		{
 			Main.input.postUpdate();
 		});
-		
+
 		Lib.current.addChild(game);
 	}
 }

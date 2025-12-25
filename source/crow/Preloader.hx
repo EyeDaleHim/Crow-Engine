@@ -12,6 +12,7 @@ class Preloader extends FlxBasePreloader
 		FlxGraphic.defaultPersist = true;
 
 		Main.assetAsyncThread = new JobListThread("AsyncAssets");
+		Main.entityBuilderThread = new JobListThread("EntityBuilder");
 
 		Main.version = SemVer.fromString(FlxG.stage.application.meta.get("version")) ?? new SemVer(0, 0, 0);
 
@@ -22,6 +23,7 @@ class Preloader extends FlxBasePreloader
 		#end
 
 		Main.assetAsyncThread.start();
+		Main.entityBuilderThread.start();
 
 		Main.levels = new crow.game.levels.LevelRegistry();
 
