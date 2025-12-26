@@ -115,6 +115,10 @@ class BaseMenuState extends MainState implements IEventExecutor
 	 */
 	public function buildMenu():Void
 	{
+		#if !USE_MULTITHREADING
+		menuMetadata.asyncLoading = false;
+		#end
+
 		if (menuMetadata.asyncLoading && !_contextsLoaded)
 		{
 			handleContexts(menuMetadata.contexts, true, () ->
@@ -185,7 +189,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 		if (!rootLayoutAdded)
 			add(rootLayout);
 
-		if (menuMetadata.asyncLoading)
+		if (/*menuMetadata.asyncLoading*/ false)
 		{
 			trace('i do thi');
 			buildElementsAsync(menuMetadata.elements, rootLayout, rootLayoutProps, rootLayoutAdded).progress((progress, length) ->
@@ -726,47 +730,64 @@ class BaseMenuState extends MainState implements IEventExecutor
 						continue;
 					}
 
+					var processedData = elementData;
+
+					if (processedData.genericReference != null && menuMetadata.genericElements != null)
+					{
+						var genericItem:GenericMenuItem = null;
+						for (g in menuMetadata.genericElements)
+						{
+							if (g.name == processedData.genericReference)
+							{
+								genericItem = g;
+								break;
+							}
+						}
+
+						if (genericItem != null)
+						{
+							var mergedData:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(genericItem.menuItem));
+							if (genericItem.listenerAppends == true && processedData.listeners != null && mergedData.listeners != null)
+							{
+								for (listener in processedData.listeners)
+									mergedData.listeners.push(listener);
+							}
+
+							for (field in Reflect.fields(processedData))
+							{
+								if (genericItem.listenerAppends == true && field == "listeners")
+									continue;
+								Reflect.setField(mergedData, field, Reflect.field(processedData, field));
+							}
+							processedData = mergedData;
+						}
+					}
+
+					var isDecoration:Bool = (processedData.listeners == null || processedData.listeners.length == 0)
+						&& processedData.items == null;
+
+					var addToLayout = true;
+					if (processedData.position != null || processedData.screenCenter != null || isDecoration)
+						addToLayout = false;
+
+					var placeholder:FlxObject = null;
+					if (processedData.entity != null)
+					{
+						placeholder = new FlxObject();
+						placeholder.visible = false;
+						placeholder.active = false;
+						if (addToLayout)
+							layout.add(placeholder);
+						else
+							add(placeholder);
+					}
+
 					Main.entityBuilderThread.add(() ->
 					{
 						try
 						{
-							var processedData = elementData;
-
-							if (processedData.genericReference != null && menuMetadata.genericElements != null)
-							{
-								var genericItem:GenericMenuItem = null;
-								for (g in menuMetadata.genericElements)
-								{
-									if (g.name == processedData.genericReference)
-									{
-										genericItem = g;
-										break;
-									}
-								}
-
-								if (genericItem != null)
-								{
-									var mergedData:MenuItem = haxe.Unserializer.run(haxe.Serializer.run(genericItem.menuItem));
-									if (genericItem.listenerAppends == true && processedData.listeners != null && mergedData.listeners != null)
-									{
-										for (listener in processedData.listeners)
-											mergedData.listeners.push(listener);
-									}
-
-									for (field in Reflect.fields(processedData))
-									{
-										if (genericItem.listenerAppends == true && field == "listeners")
-											continue;
-										Reflect.setField(mergedData, field, Reflect.field(processedData, field));
-									}
-									processedData = mergedData;
-								}
-							}
-
 							var menuObject:FlxObject = null;
 							var entity:Entity = null;
-							var isDecoration:Bool = (processedData.listeners == null || processedData.listeners.length == 0)
-								&& processedData.items == null;
 
 							if (processedData.entity != null)
 							{
@@ -818,7 +839,7 @@ class BaseMenuState extends MainState implements IEventExecutor
 								haxe.MainLoop.runInMainThread(() ->
 								{
 									var menuObjectAsModel:Model = cast(menuObject, Model);
-									if (processedData.position != null || processedData.screenCenter != null || isDecoration)
+									if (!addToLayout)
 									{
 										if (processedData.position != null)
 										{
@@ -833,11 +854,25 @@ class BaseMenuState extends MainState implements IEventExecutor
 											if (processedData.screenCenter.y)
 												model.screenCenter(Y);
 										}
-										add(menuObjectAsModel.entity);
+
+										if (placeholder != null)
+										{
+											replace(placeholder, menuObjectAsModel.entity);
+											placeholder.destroy();
+										}
+										else
+											add(menuObjectAsModel.entity);
 									}
 									else
 									{
-										layout.add(menuObjectAsModel.entity);
+										if (placeholder != null)
+										{
+											layout.replace(placeholder, menuObjectAsModel.entity);
+											placeholder.destroy();
+										}
+										else
+											layout.add(menuObjectAsModel.entity);
+
 										elementMetadataMap.set(menuObjectAsModel.entity, processedData);
 										if (processedData.alignSelf != null)
 										{

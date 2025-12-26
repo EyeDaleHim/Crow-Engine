@@ -43,9 +43,6 @@ class LoadingScreen extends FlxSpriteGroup
 
 		background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		background.active = false;
-		#if debug
-		background.alpha = 0.5;
-		#end
 		add(background);
 
 		logo = new FlxSprite().loadGraphic("generic/crow_engine_logo");
@@ -77,12 +74,6 @@ class LoadingScreen extends FlxSpriteGroup
 		_startTime = FlxG.game.ticks;
 		alpha = 0.0;
 		FlxTween.tween(this, {alpha: 1.0}, 1.0, {
-			#if debug
-			onUpdate: (_) ->
-			{
-				background.alpha = alpha * 0.5;
-			},
-			#end
 			onComplete: (_) ->
 			{
 				if (onComplete != null)
@@ -114,6 +105,19 @@ class LoadingScreen extends FlxSpriteGroup
 				}
 			}
 		});
+	}
+
+	/**
+	 * Makes the loading screen invisible in case it is somehow
+	 * still visible.
+	 */
+	public function forceInvisible():Void
+	{
+		alpha = 0.0;
+		_targetProgress = 0.0;
+		_currentProgress = 0.0;
+		progressBar.scale.x = 0;
+		
 	}
 
 	/**

@@ -133,6 +133,9 @@ class Project extends HXProject
 		if (!isDebug())
 			setHaxedef("USE_TEXTURE");
 
+		// If USE_MULTITHREADING is defined, mulithreading is used wherever possible.
+		// setHaxedef("USE_MULTITHREADING");
+
 		setHaxedef("hscriptPos");
 
 		if (isCpp())

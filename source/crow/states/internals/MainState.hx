@@ -104,7 +104,12 @@ class MainState extends FlxSubState
 							if (parentState != null && asyncCall != null)
 							{
 								// Next thread!
-								haxe.MainLoop.runInMainThread(asyncCall);
+								// I disabled entity builder thread for now
+								parentState.loadingScreenObject.fadeOut(() ->
+								{
+									haxe.MainLoop.runInMainThread(asyncCall);
+								});
+								// haxe.MainLoop.runInMainThread(asyncCall);
 							}
 
 							Main.assetAsyncThread.clearSignals();
@@ -122,10 +127,7 @@ class MainState extends FlxSubState
 
 		if (asyncCall != null)
 		{
-			if (!async)
-			{
-				asyncCall();
-			}
+			asyncCall();
 		}
 	}
 

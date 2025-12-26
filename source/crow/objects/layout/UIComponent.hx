@@ -84,6 +84,11 @@ class UIComponent extends FlxSprite implements IFlxSprite
 		return Object;
 	}
 
+	public function replace<T:FlxObject>(OldObject:T, NewObject:T):T
+	{
+		return cast group.replace(OldObject, NewObject);
+	}
+
 	private function get_members():Array<FlxObject>
 	{
 		return group.members;

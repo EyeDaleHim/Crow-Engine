@@ -367,6 +367,17 @@ class Layout extends UIComponent
 		return Object;
 	}
 
+	override public function replace<T:FlxObject>(OldObject:T, NewObject:T):T
+	{
+		var result = group.replace(OldObject, NewObject);
+		if (result != null)
+		{
+			layoutData.remove(OldObject);
+			invalidate();
+		}
+		return cast result;
+	}
+
 	public function invalidate():Void
 	{
 		_isDirty = true;

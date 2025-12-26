@@ -58,6 +58,9 @@ class RootState extends FlxState
 
 		loadingScreenObject = new LoadingScreen();
 		loadingScreenObject.camera = rootCamera;
+		#if !USE_MULTITHREADING
+		loadingScreenObject.forceInvisible();
+		#end
 		add(loadingScreenObject);
 
 		soundTrayObject = new SoundTrayObject("sfx/soundtray/up", "sfx/soundtray/down", "sfx/soundtray/max");

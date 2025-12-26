@@ -81,10 +81,6 @@ class PlayState extends MainState implements IEventExecutor
 		music = new Music();
 		add(music);
 
-		loadingScreen = new LoadingScreen();
-		loadingScreen.visible = false;
-		add(loadingScreen);
-
 		timerManager = new TimerManager();
 		tweenManager = new TweenManager();
 	}
