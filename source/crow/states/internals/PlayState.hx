@@ -1,12 +1,12 @@
 package crow.states.internals;
 
-import crow.objects.loading.LoadingScreen;
 import crow.assets.AssetContext;
 import crow.assets.metadata.levels.GameStemData;
 import crow.ds.orderedmap.OrderedStringMap;
 import crow.ecs.managers.TimerManager;
 import crow.ecs.managers.TweenManager;
 import crow.ecs.systems.BaseSystem;
+import crow.game.session.Session;
 import crow.logics.dependencies.IEventExecutor;
 import crow.logics.dependencies.LogicState;
 
@@ -61,18 +61,15 @@ class PlayState extends MainState implements IEventExecutor
 	public var nextScenes:Array<String>;
 
 	/**
-	 * The loading screen.
+	 * The current session of the game.
 	 */
-	public var loadingScreen:LoadingScreen;
+	public var session:Session;
+
+	private var _contextToLoadBuffer:Array<String> = [];
+	private var _contextToUnloadBuffer:Array<String> = [];
 
 	public var tweenManager:TweenManager;
 	public var timerManager:TimerManager;
-
-
-	/**
-	 * All the merged asset contexts to load.
-	 */
-	private var _contextToLoadBuffer:Array<AssetContext> = [];
 
 	public function new()
 	{
@@ -89,12 +86,92 @@ class PlayState extends MainState implements IEventExecutor
 	 * Prepares the PlayState for a new game session based on the provided `GameStemData`.
 	 * @param gameStem  The data that defines the game session, including the level or playlist to load.
 	 */
-	public function prepare(gameStem:GameStemData):Void {}
+	public function prepare(gameStem:GameStemData):Void
+	{
+		clearGame();
+
+		session = new Session(gameStem);
+
+		if (session.currentLevel == null)
+		{
+			trace("ERROR: No current level in session after initialization.");
+			return;
+		}
+
+		// Load the chart data for the current level
+		if (!session.currentLevel.loadChart())
+		{
+			trace('ERROR: Failed to load chart for level "${session.currentLevel.id}"');
+			return;
+		}
+
+		// Merge contexts from the level and its scene metadata
+
+		// Add level-specific contexts
+		if (session.currentLevel.data.contextsToLoad != null)
+		{
+			_contextToLoadBuffer = _contextToLoadBuffer.concat(session.currentLevel.data.contextsToLoad);
+		}
+		if (session.currentLevel.data.contextsToUnload != null)
+		{
+			_contextToUnloadBuffer = _contextToUnloadBuffer.concat(session.currentLevel.data.contextsToUnload);
+		}
+
+		// Add scene-specific contexts
+		if (gameStem.scene != null)
+		{
+			if (gameStem.scene.contexts != null)
+			{
+				if (gameStem.scene.contexts.load != null)
+				{
+					_contextToLoadBuffer = _contextToLoadBuffer.concat(gameStem.scene.contexts.load);
+				}
+				if (gameStem.scene.contexts.unload != null)
+				{
+					_contextToUnloadBuffer = _contextToUnloadBuffer.concat(gameStem.scene.contexts.unload);
+				}
+			}
+		}
+	}
 
 	/**
-	 * Starts loading all the relevant context.
+	 * Starts loading all the relevant context and session.
 	 */
-	public function startLoading():Void {}
+	public function startLoading(?async:Bool = true):Void
+	{
+		#if !USE_MULTITHREADING
+		async = false;
+		#end
+
+		if (_contextToLoadBuffer.length == 0)
+		{
+			trace("No asset contexts to load for this session.");
+			return;
+		}
+
+		handleContexts({
+			load: _contextToLoadBuffer,
+			unload: _contextToUnloadBuffer
+		}, async, () ->
+			{
+				// All contexts are loaded, now proceed with game initialization
+				trace("All contexts loaded. Initializing game...");
+
+				createScene(async);
+
+				// For now, just transition out the loading screen
+				trace("Game ready!");
+			});
+	}
+
+	public function createScene(async:Bool = true):Void
+	{
+		#if !USE_MULTITHREADING
+		async = false;
+		#end
+
+
+	}
 
 	/**
 	 * Like `destroy()`, but only for the entities and data that
@@ -129,8 +206,6 @@ class PlayState extends MainState implements IEventExecutor
 		timerManager.clear();
 		tweenManager.clear();
 	}
-
-	public function revertLoading():Void {}
 
 	override function update(elapsed:Float)
 	{

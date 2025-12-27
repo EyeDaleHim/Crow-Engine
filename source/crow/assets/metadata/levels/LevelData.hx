@@ -17,11 +17,13 @@ typedef LevelInfoData =
 
 	/**
 	 * The contexts to load, if any.
-	 * 
-	 * Duplicate entries are encouraged in fields like this, but the system will
-	 * ensure that only one instance of each context is loaded.
 	 */
 	var ?contextsToLoad:Array<String>;
+
+	/**
+	 * The contexts to unload, if any.
+	 */
+	var ?contextsToUnload:Array<String>;
 
 	/**
 	 * Additional meta about the object.

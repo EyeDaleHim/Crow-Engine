@@ -1,5 +1,6 @@
 package crow.game.levels;
 
+import crow.assets.metadata.scenes.PlayMetadata;
 import crow.assets.AssetPaths;
 import crow.assets.metadata.internals.MasterListMetadata;
 import crow.assets.metadata.levels.LevelData;
@@ -135,11 +136,49 @@ class LevelRegistry
 		return level;
 	}
 
+	/**
+	 * Gets a registered group by its ID.
+	 * @param id ID of the group to retrieve.
+	 * @return The requested LevelGroup, or null if not found.
+	 */
 	public function getGroup(id:String):LevelGroup
+	{
 		return groups.get(id);
+	}
 
+	/**
+	 *
+	 * Gets a registered level by its ID.	 
+	 * @param id ID of the level to retrieve.
+	 * @return The Level, or null if not found.
+	 */
 	public function getLevel(id:String):Level
+	{
 		return levels.get(id);
+	}
+
+	/**
+	 * Gets the scene metadata for a given level ID.
+	 * @param id ID of the level to retrieve.
+	 * @return The PlayMetadata for the level, or null if not found.
+	 */
+	public function getScene(id:String):PlayMetadata
+	{
+		var level = getLevel(id);
+		if (level == null)
+		{
+			trace('LevelRegistry: Level "$id" not found, cannot get scene metadata.');
+			return null;
+		}
+
+		if (level.data.scenePath == null)
+		{
+			trace('LevelRegistry: Level "$id" does not have a scene defined.');
+			return null;
+		}
+
+		return Main.assets.json(level.data.scenePath);
+	}
 
 	/**
 	 * Gets a playlist configuration by ID.

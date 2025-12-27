@@ -135,23 +135,23 @@
                             }
                         }
                     ]
-                },
-                {
-                    "event": "accept",
-                    "actions": [
-                        {
-                            "type": "switch_scene",
-                            "values": {
-                                "scene": "gameplay",
-                                "levelId": "${id}"
-                            }
-                        }
-                    ]
                 }
             ]
         }
     ],
     "inputActions": [
+        {
+            "event": "accept",
+            "actions": [
+                {
+                    "type": "switch_scene",
+                    "values": {
+                        "scene": "gameplay",
+                        "levelId": "${id}"
+                    }
+                }
+            ]
+        },
         {
             "input": "back",
             "check": "just_pressed",
@@ -187,7 +187,9 @@
             "advanced": {
                 "repeatStart": 0.25,
                 "repeatRate": 0.1,
-                "pauseOnOthers": ["ui_down"]
+                "pauseOnOthers": [
+                    "ui_down"
+                ]
             },
             "actions": [
                 {
@@ -232,7 +234,9 @@
             "advanced": {
                 "repeatStart": 0.25,
                 "repeatRate": 0.1,
-                "pauseOnOthers": ["ui_up"]
+                "pauseOnOthers": [
+                    "ui_up"
+                ]
             },
             "actions": [
                 {

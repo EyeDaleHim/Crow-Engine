@@ -97,6 +97,22 @@ class AssetContext
 		}
 		return false;
 	}
+
+	public static function removeDuplicates(context:AssetContext):AssetContext
+	{
+		if (context == null)
+		{
+			return null;
+		}
+
+		final uniqueEntries = new Map<String, AssetEntry>();
+		for (entry in context.entries)
+		{
+			uniqueEntries.set(entry.path, entry);
+		}
+		context.entries = [for (entry in uniqueEntries.iterator()) entry];
+		return context;
+	}
 }
 
 /**

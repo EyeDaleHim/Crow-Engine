@@ -16,7 +16,8 @@ class LoadLevelComponent extends BaseComponent
 	{
 		gameStem = {
 			level: level != null ? Main.levels.getLevel(level) : null,
-			playlist: playlist != null ? new Playlist(Main.levels.getPlaylistContent(playlist).map(Main.levels.getLevel)) : null
+			playlist: playlist != null ? new Playlist(Main.levels.getPlaylistContent(playlist).map(Main.levels.getLevel)) : null,
+			scene: level != null ? Main.levels.getScene(level) : null
 		};
 	}
 
